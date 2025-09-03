@@ -98,7 +98,7 @@ class ShareViewer {
   async loadFromGitHubPages() {
     try {
       // GitHub Raw API üzerinden JSON dosyasını direkt çek
-      const response = await fetch(`https://raw.githubusercontent.com/supertrydev/bluetab/main/shares/${this.shareId}.json`, { 
+      const response = await fetch(`https://raw.githubusercontent.com/supertrydev/bluetab/main/docs/shares/${this.shareId}.json`, { 
         cache: "no-store" // Geliştirme sırasında cache'i bypass et
       });
       
@@ -351,3 +351,4 @@ class ShareViewer {
 document.addEventListener('DOMContentLoaded', () => {
   new ShareViewer();
 });
+
