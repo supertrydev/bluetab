@@ -1,0 +1,141 @@
+{
+  "type": "collection",
+  "groups": [
+    {
+      "date": "2025-09-03T09:48:29.678Z",
+      "isCollapsed": false,
+      "name": "Kaydedilmiş Sekmeler - 03.09.2025",
+      "tabs": [
+        {
+          "favIconUrl": "https://ssl.gstatic.com/chrome/webstore/images/icon_192px.png",
+          "title": "Chrome Web Mağazası - Geliştirici Sözleşmesi",
+          "url": "https://chrome.google.com/webstore/devconsole/register"
+        },
+        {
+          "favIconUrl": "https://temp-mail.org/images/favicon.ico",
+          "title": "Geçici Posta - Tek kullanımlık mail - Anonim posta",
+          "url": "https://temp-mail.org/tr"
+        }
+      ]
+    },
+    {
+      "date": "2025-09-03T09:44:15.029Z",
+      "isCollapsed": false,
+      "isLocked": false,
+      "name": "Kaydedilmiş Sekmeler - 03.09.2025",
+      "tabs": [
+        {
+          "favIconUrl": "https://www.gstatic.com/images/branding/searchlogo/ico/favicon.ico",
+          "title": "Google",
+          "url": "https://www.google.com/"
+        },
+        {
+          "favIconUrl": "https://cdn.search.brave.com/serp/v3/_app/immutable/assets/favicon.acxxetWH.ico",
+          "title": "liste ızgara - Brave Search",
+          "url": "https://search.brave.com/search?q=liste+%C4%B1zgara&source=desktop"
+        },
+        {
+          "favIconUrl": "https://masonry.desandro.com/favicon.ico",
+          "title": "Masonry",
+          "url": "https://masonry.desandro.com/"
+        }
+      ],
+      "tags": [
+        {
+          "color": "#9b59b6",
+          "name": "Kripto"
+        },
+        {
+          "color": "#e11d48",
+          "name": "Blender"
+        },
+        {
+          "color": "#10b981",
+          "name": "Adem"
+        },
+        {
+          "color": "#f472b6",
+          "name": "Genel"
+        },
+        {
+          "color": "#3b82f6",
+          "name": "erte"
+        },
+        {
+          "color": "#84cc16",
+          "name": "Mustafa"
+        },
+        {
+          "color": "#3b82f6",
+          "name": "dasd"
+        }
+      ]
+    },
+    {
+      "date": "2025-09-03T09:24:06.494Z",
+      "isCollapsed": false,
+      "name": "Kaydedilmiş Sekmeler - 03.09.2025",
+      "tabs": [
+        {
+          "favIconUrl": "https://www.redditstatic.com/shreddit/assets/favicon/64x64.png",
+          "title": "Reddit - The heart of the internet",
+          "url": "https://www.reddit.com/"
+        },
+        {
+          "favIconUrl": "https://www.youtube.com/s/desktop/68a20589/img/favicon_32x32.png",
+          "title": "YouTube",
+          "url": "https://www.youtube.com/"
+        },
+        {
+          "favIconUrl": "https://bulma.io/favicons/favicon.ico?v=201701041855",
+          "title": "Bulma: Free, open source, and modern CSS framework based on Flexbox",
+          "url": "https://bulma.io/"
+        },
+        {
+          "favIconUrl": "https://cdn.fastly.steamstatic.com/valvesoftware/images/favicon.ico",
+          "title": "Valve Corporation",
+          "url": "https://www.valvesoftware.com/tr/"
+        }
+      ]
+    },
+    {
+      "date": "2025-09-03T09:23:37.087Z",
+      "isCollapsed": false,
+      "isStarred": true,
+      "name": "Bitcoin",
+      "tabs": [
+        {
+          "favIconUrl": "https://pure-css.github.io/img/favicon.ico",
+          "title": "Pure",
+          "url": "https://pure-css.github.io/"
+        },
+        {
+          "favIconUrl": "https://www.speedtest.net/favicon.ico",
+          "title": "Speedtest by Ookla - The Global Broadband Speed Test",
+          "url": "https://www.speedtest.net/"
+        },
+        {
+          "favIconUrl": "https://wasabiwallet.io/images/favicon.ico",
+          "title": "Wasabi Wallet - The Privacy focused Bitcoin Wallet",
+          "url": "https://wasabiwallet.io/"
+        }
+      ]
+    },
+    {
+      "date": "2025-09-02T18:14:11.437Z",
+      "isCollapsed": false,
+      "name": "Kaydedilmiş Sekmeler - 02.09.2025",
+      "tabs": [
+        {
+          "favIconUrl": "https://www.gstatic.com/images/branding/searchlogo/ico/favicon.ico",
+          "title": "Google",
+          "url": "https://www.google.com/"
+        }
+      ]
+    }
+  ],
+  "timestamp": 1756932469304,
+  "shared_by": "BlueTab Extension",
+  "totalGroups": 5,
+  "totalTabs": 13
+}
