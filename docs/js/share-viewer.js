@@ -19,10 +19,30 @@ class ShareViewer {
   }
 
   getShareIdFromUrl() {
-    const hash = window.location.hash.slice(1);
+    // Önce URL query parametresini kontrol et: ?share=shareId
     const urlParams = new URLSearchParams(window.location.search);
+    const queryShare = urlParams.get('share') || urlParams.get('id');
     
-    this.shareId = hash || urlParams.get('id') || urlParams.get('share');
+    if (queryShare) {
+      this.shareId = queryShare;
+      return;
+    }
+    
+    // Sonra hash'i kontrol et: #shareId
+    const hash = window.location.hash.slice(1);
+    if (hash) {
+      this.shareId = hash;
+      return;
+    }
+    
+    // Son olarak path'i kontrol et: /bluetab/shareId
+    const path = window.location.pathname;
+    const pathParts = path.split('/').filter(part => part); // Boş stringleri filtrele
+    
+    // Eğer path /bluetab/shareId formatındaysa
+    if (pathParts.length >= 2 && pathParts[0] === 'bluetab') {
+      this.shareId = pathParts[1];
+    }
   }
 
   setupEventListeners() {
