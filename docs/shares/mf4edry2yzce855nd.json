@@ -1,0 +1,21 @@
+{
+  "type": "group",
+  "name": "Kaydedilmiş Sekmeler - 03.09.2025",
+  "tabs": [
+    {
+      "favIconUrl": "https://ssl.gstatic.com/chrome/webstore/images/icon_192px.png",
+      "title": "Chrome Web Mağazası - Geliştirici Sözleşmesi",
+      "url": "https://chrome.google.com/webstore/devconsole/register"
+    },
+    {
+      "favIconUrl": "https://temp-mail.org/images/favicon.ico",
+      "title": "Geçici Posta - Tek kullanımlık mail - Anonim posta",
+      "url": "https://temp-mail.org/tr"
+    }
+  ],
+  "tags": [],
+  "timestamp": 1756929367226,
+  "shared_by": "BlueTab Extension",
+  "isStarred": false,
+  "isLocked": false
+}
