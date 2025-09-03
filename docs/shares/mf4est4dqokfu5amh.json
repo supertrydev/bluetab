@@ -1,0 +1,26 @@
+{
+  "type": "group",
+  "name": "Bitcoin",
+  "tabs": [
+    {
+      "favIconUrl": "https://pure-css.github.io/img/favicon.ico",
+      "title": "Pure",
+      "url": "https://pure-css.github.io/"
+    },
+    {
+      "favIconUrl": "https://www.speedtest.net/favicon.ico",
+      "title": "Speedtest by Ookla - The Global Broadband Speed Test",
+      "url": "https://www.speedtest.net/"
+    },
+    {
+      "favIconUrl": "https://wasabiwallet.io/images/favicon.ico",
+      "title": "Wasabi Wallet - The Privacy focused Bitcoin Wallet",
+      "url": "https://wasabiwallet.io/"
+    }
+  ],
+  "tags": [],
+  "timestamp": 1756930068589,
+  "shared_by": "BlueTab Extension",
+  "isStarred": true,
+  "isLocked": false
+}
