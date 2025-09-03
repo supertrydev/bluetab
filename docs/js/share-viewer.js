@@ -97,8 +97,10 @@ class ShareViewer {
 
   async loadFromGitHubPages() {
     try {
-      // GitHub Pages'den yükleme - docs/shares/ klasöründen
-      const response = await fetch(`https://supertrydev.github.io/bluetab/docs/shares/${this.shareId}.json`);
+      // GitHub Pages'de göreli yol kullan - docs/ klasörü kök olduğu için
+      const response = await fetch(`./shares/${this.shareId}.json`, { 
+        cache: "no-store" // Geliştirme sırasında cache'i bypass et
+      });
       
       if (response.ok) {
         return await response.json();
