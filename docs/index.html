@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BlueTab Paylaşımları</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+    .hero { 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+      min-height: 50vh;
+    }
+    .tab-item { 
+      display: flex; 
+      align-items: center; 
+      gap: 0.75rem; 
+      padding: 0.75rem; 
+      border-bottom: 1px solid #f0f0f0;
+      transition: background-color 0.2s;
+    }
+    .tab-item:hover {
+      background-color: #f8f9fa;
+    }
+    .tab-item img { 
+      width: 16px; 
+      height: 16px; 
+      border-radius: 2px;
+    }
+    .tag { 
+      margin: 0.125rem; 
+      font-size: 0.75rem;
+    }
+    .group-box {
+      border: 1px solid #e9ecef;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .group-header {
+      background: linear-gradient(90deg, #f8f9fa 0%, #e9ecef 100%);
+      padding: 1rem;
+      border-bottom: 1px solid #dee2e6;
+    }
+    .share-meta {
+      background-color: #f8f9fa;
+      padding: 0.75rem 1rem;
+      font-size: 0.875rem;
+      color: #6c757d;
+    }
+    .import-success {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      display: none;
+    }
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255,255,255,0.9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+  </style>
+</head>
+<body>
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="has-text-centered">
+      <div class="is-size-1 has-text-primary mb-4">
+        <i class="fas fa-spinner fa-spin"></i>
+      </div>
+      <p class="is-size-5 has-text-weight-semibold">Paylaşım yükleniyor...</p>
+    </div>
+  </div>
+
+  <!-- Import Success Notification -->
+  <div id="importSuccess" class="import-success notification is-success">
+    <button class="delete" onclick="this.parentElement.style.display='none'"></button>
+    <p><i class="fas fa-check-circle"></i> Paylaşım başarıyla BlueTab'a aktarıldı!</p>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container has-text-centered">
+        <h1 class="title has-text-white is-size-1">
+          <i class="fas fa-share-alt mr-3"></i>
+          BlueTab Paylaşımları
+        </h1>
+        <p class="subtitle has-text-white is-size-4 mt-4">
+          Paylaşılan sekme gruplarını görüntüle ve BlueTab uzantısına aktarabilirsin
+        </p>
+        <div class="buttons is-centered mt-5">
+          <a href="https://chrome.google.com/webstore" class="button is-white is-medium" target="_blank">
+            <span class="icon">
+              <i class="fab fa-chrome"></i>
+            </span>
+            <span>BlueTab Uzantısını İndir</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <section class="section">
+    <div class="container">
+      
+      <!-- Error Message -->
+      <div id="errorMessage" class="notification is-danger" style="display: none;">
+        <button class="delete" onclick="this.style.display='none'"></button>
+        <div class="has-text-centered">
+          <p class="is-size-5"><i class="fas fa-exclamation-triangle mr-2"></i>Paylaşım yüklenemedi</p>
+          <p class="mt-2">Paylaşım linki geçersiz olabilir veya paylaşım silinmiş olabilir.</p>
+        </div>
+      </div>
+
+      <!-- Content Container -->
+      <div id="shareContent" style="display: none;">
+        <div class="columns">
+          <div class="column is-8 is-offset-2">
+            
+            <!-- Share Header -->
+            <div class="card mb-5">
+              <div class="card-content has-text-centered">
+                <h2 id="shareTitle" class="title is-3"></h2>
+                <div class="buttons is-centered mt-4">
+                  <button id="importBtn" class="button is-primary is-large">
+                    <span class="icon">
+                      <i class="fas fa-download"></i>
+                    </span>
+                    <span>BlueTab'a İçe Aktar</span>
+                  </button>
+                  <button id="copyLinkBtn" class="button is-info is-large">
+                    <span class="icon">
+                      <i class="fas fa-link"></i>
+                    </span>
+                    <span>Linki Kopyala</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Share Data -->
+            <div id="shareData"></div>
+
+            <!-- Share Footer -->
+            <div class="card">
+              <div class="card-content share-meta has-text-centered">
+                <p><i class="fas fa-info-circle mr-2"></i>Bu paylaşım <strong id="shareDate"></strong> tarihinde oluşturuldu</p>
+                <p class="mt-2"><i class="fas fa-heart mr-2 has-text-danger"></i>BlueTab uzantısı ile paylaşıldı</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- No Share ID -->
+      <div id="noShareId" class="notification is-warning" style="display: none;">
+        <div class="has-text-centered">
+          <p class="is-size-5"><i class="fas fa-link mr-2"></i>Paylaşım ID'si bulunamadı</p>
+          <p class="mt-2">Geçerli bir BlueTab paylaşım linkiyle bu sayfayı ziyaret edin.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="content has-text-centered">
+        <p>
+          <strong>BlueTab</strong> - Chrome uzantısı ile sekme yönetimi.
+          <br>
+          <a href="https://github.com/your-username/BlueTab" target="_blank">
+            <i class="fab fa-github"></i> GitHub'da görüntüle
+          </a>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/share-viewer.js"></script>
+</body>
+</html>

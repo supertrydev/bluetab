@@ -1,0 +1,40 @@
+{
+  "type": "group",
+  "name": "Web Geliştirme Araçları",
+  "tabs": [
+    {
+      "title": "GitHub",
+      "url": "https://github.com",
+      "favIconUrl": "https://github.com/favicon.ico"
+    },
+    {
+      "title": "Stack Overflow",
+      "url": "https://stackoverflow.com",
+      "favIconUrl": "https://cdn.sstatic.net/Sites/stackoverflow/Img/favicon.ico"
+    },
+    {
+      "title": "MDN Web Docs",
+      "url": "https://developer.mozilla.org",
+      "favIconUrl": "https://developer.mozilla.org/favicon.ico"
+    },
+    {
+      "title": "VS Code",
+      "url": "https://code.visualstudio.com",
+      "favIconUrl": "https://code.visualstudio.com/favicon.ico"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Geliştirme",
+      "color": "#3b82f6"
+    },
+    {
+      "name": "Araçlar",
+      "color": "#10b981"
+    }
+  ],
+  "timestamp": 1693737600000,
+  "shared_by": "BlueTab Extension",
+  "isStarred": true,
+  "isLocked": false
+}
