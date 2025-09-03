@@ -1,0 +1,55 @@
+{
+  "type": "group",
+  "name": "Kaydedilmiş Sekmeler - 03.09.2025",
+  "tabs": [
+    {
+      "favIconUrl": "https://www.gstatic.com/images/branding/searchlogo/ico/favicon.ico",
+      "title": "Google",
+      "url": "https://www.google.com/"
+    },
+    {
+      "favIconUrl": "https://cdn.search.brave.com/serp/v3/_app/immutable/assets/favicon.acxxetWH.ico",
+      "title": "liste ızgara - Brave Search",
+      "url": "https://search.brave.com/search?q=liste+%C4%B1zgara&source=desktop"
+    },
+    {
+      "favIconUrl": "https://masonry.desandro.com/favicon.ico",
+      "title": "Masonry",
+      "url": "https://masonry.desandro.com/"
+    }
+  ],
+  "tags": [
+    {
+      "color": "#9b59b6",
+      "name": "Kripto"
+    },
+    {
+      "color": "#e11d48",
+      "name": "Blender"
+    },
+    {
+      "color": "#10b981",
+      "name": "Adem"
+    },
+    {
+      "color": "#f472b6",
+      "name": "Genel"
+    },
+    {
+      "color": "#3b82f6",
+      "name": "erte"
+    },
+    {
+      "color": "#84cc16",
+      "name": "Mustafa"
+    },
+    {
+      "color": "#3b82f6",
+      "name": "dasd"
+    }
+  ],
+  "timestamp": 1756932668348,
+  "shared_by": "BlueTab Extension",
+  "isStarred": false,
+  "isLocked": false
+}
