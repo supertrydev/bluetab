@@ -43,12 +43,7 @@ class ShareViewer {
       let shareData = this.loadFromLocalStorage();
       
       if (!shareData) {
-        // GitHub Gist'ten yüklemeyi dene
-        shareData = await this.loadFromGist();
-      }
-      
-      if (!shareData) {
-        // Geleneksel GitHub Pages'den yüklemeyi dene
+        // GitHub Pages'den yüklemeyi dene
         shareData = await this.loadFromGitHubPages();
       }
       
@@ -72,8 +67,7 @@ class ShareViewer {
       
       if (storedData) {
         const parsed = JSON.parse(storedData);
-        // Eğer gist metadata'sı varsa, data kısmını döndür
-        return parsed.data || parsed;
+        return parsed;
       }
     } catch (error) {
       console.error('LocalStorage yükleme hatası:', error);
@@ -81,34 +75,10 @@ class ShareViewer {
     return null;
   }
 
-  async loadFromGist() {
-    try {
-      // Gist ID'si olarak shareId'yi kullan
-      const gistResponse = await fetch(`https://api.github.com/gists/${this.shareId}`);
-      
-      if (gistResponse.ok) {
-        const gistData = await gistResponse.json();
-        const files = gistData.files;
-        
-        // BlueTab dosyasını bul
-        const bluetabFile = Object.values(files).find(file => 
-          file.filename.startsWith('bluetab-share-') && file.filename.endsWith('.json')
-        );
-        
-        if (bluetabFile) {
-          return JSON.parse(bluetabFile.content);
-        }
-      }
-    } catch (error) {
-      console.error('Gist yükleme hatası:', error);
-    }
-    return null;
-  }
-
   async loadFromGitHubPages() {
     try {
-      // Geleneksel GitHub Pages'den yükleme
-      const response = await fetch(`shares/${this.shareId}.json`);
+      // GitHub Pages'den yükleme - docs/shares/ klasöründen
+      const response = await fetch(`https://supertrydev.github.io/bluetab/docs/shares/${this.shareId}.json`);
       
       if (response.ok) {
         return await response.json();
