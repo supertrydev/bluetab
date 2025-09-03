@@ -97,8 +97,8 @@ class ShareViewer {
 
   async loadFromGitHubPages() {
     try {
-      // GitHub Pages'de göreli yol kullan - docs/ klasörü kök olduğu için
-      const response = await fetch(`./shares/${this.shareId}.json`, { 
+      // GitHub Raw API üzerinden JSON dosyasını direkt çek
+      const response = await fetch(`https://raw.githubusercontent.com/supertrydev/bluetab/main/shares/${this.shareId}.json`, { 
         cache: "no-store" // Geliştirme sırasında cache'i bypass et
       });
       
@@ -106,7 +106,7 @@ class ShareViewer {
         return await response.json();
       }
     } catch (error) {
-      console.error('GitHub Pages yükleme hatası:', error);
+      console.error('GitHub Raw API yükleme hatası:', error);
     }
     return null;
   }
