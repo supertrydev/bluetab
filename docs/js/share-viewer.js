@@ -39,20 +39,84 @@ class ShareViewer {
     try {
       this.showLoading();
       
-      // GitHub Pages'den paylaşım verisini yükle
-      const response = await fetch(`shares/${this.shareId}.json`);
+      // Önce localStorage'dan kontrol et
+      let shareData = this.loadFromLocalStorage();
       
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: Paylaşım bulunamadı`);
+      if (!shareData) {
+        // GitHub Gist'ten yüklemeyi dene
+        shareData = await this.loadFromGist();
+      }
+      
+      if (!shareData) {
+        // Geleneksel GitHub Pages'den yüklemeyi dene
+        shareData = await this.loadFromGitHubPages();
+      }
+      
+      if (!shareData) {
+        throw new Error('Paylaşım bulunamadı');
       }
 
-      this.shareData = await response.json();
+      this.shareData = shareData;
       this.displayShare();
       
     } catch (error) {
       console.error('Paylaşım yükleme hatası:', error);
       this.showError();
     }
+  }
+
+  loadFromLocalStorage() {
+    try {
+      const shareKey = `bluetab_share_${this.shareId}`;
+      const storedData = localStorage.getItem(shareKey);
+      
+      if (storedData) {
+        const parsed = JSON.parse(storedData);
+        // Eğer gist metadata'sı varsa, data kısmını döndür
+        return parsed.data || parsed;
+      }
+    } catch (error) {
+      console.error('LocalStorage yükleme hatası:', error);
+    }
+    return null;
+  }
+
+  async loadFromGist() {
+    try {
+      // Gist ID'si olarak shareId'yi kullan
+      const gistResponse = await fetch(`https://api.github.com/gists/${this.shareId}`);
+      
+      if (gistResponse.ok) {
+        const gistData = await gistResponse.json();
+        const files = gistData.files;
+        
+        // BlueTab dosyasını bul
+        const bluetabFile = Object.values(files).find(file => 
+          file.filename.startsWith('bluetab-share-') && file.filename.endsWith('.json')
+        );
+        
+        if (bluetabFile) {
+          return JSON.parse(bluetabFile.content);
+        }
+      }
+    } catch (error) {
+      console.error('Gist yükleme hatası:', error);
+    }
+    return null;
+  }
+
+  async loadFromGitHubPages() {
+    try {
+      // Geleneksel GitHub Pages'den yükleme
+      const response = await fetch(`shares/${this.shareId}.json`);
+      
+      if (response.ok) {
+        return await response.json();
+      }
+    } catch (error) {
+      console.error('GitHub Pages yükleme hatası:', error);
+    }
+    return null;
   }
 
   displayShare() {
