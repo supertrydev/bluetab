@@ -1,48 +1,79 @@
-# <img align="center" width="40" src="docs/images/logo.png" alt="BlueTab Logo"> BlueTab
+<p align="center">
+  <img width="200" src="src/assets/logo-dark.svg" alt="BlueTab Logo">
+</p>
+
+<p align="center">
+  <strong>Tame the tab chaos. Save, encrypt, search, and automate — all locally.</strong>
+</p>
+
+<p align="center">
+  <a href="https://github.com/supertrydev/bluetab/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
+  <a href="https://github.com/supertrydev/bluetab/stargazers"><img src="https://img.shields.io/github/stars/supertrydev/bluetab?style=social" alt="Stars"></a>
+  <a href="https://github.com/supertrydev/bluetab/releases"><img src="https://img.shields.io/github/v/release/supertrydev/bluetab?include_prereleases" alt="Release"></a>
+  <img src="https://img.shields.io/badge/platform-Chrome-green?logo=googlechrome&logoColor=white" alt="Chrome">
+</p>
+
+---
 
 <img src="docs/images/hero.png" width="100%" alt="BlueTab Manager Dashboard">
 
-**Advanced tab management for Chrome with encryption, powerful search, and automation.**
+BlueTab is an open-source Chrome extension born from the need to organize the chaos of too many tabs. It runs **100% locally** with zero telemetry — your data never leaves your browser.
 
-BlueTab is an open-source extension born from the need to organize the chaos of too many tabs. It's built with modern web technologies to be lightning-fast, secure, and beautiful.
-
-## Why BlueTab?
-
-- **Never lose tabs again** - Save hundreds of tabs into organized groups.
-- **Bank-grade security** - Local AES-256 encryption for sensitive tab collections.
-- **Lightning fast** - Search 1000+ tabs in under 50ms.
-- **Smart automation** - Flow rules auto-organize tabs by URL patterns *(Cloud/Premium - Coming Soon)*.
-
-## Quick Start
+## ⚡ Quick Start
 
 <img src="docs/images/sidebar.png" width="300" alt="BlueTab Sidebar Interface">
 
 ```bash
+git clone https://github.com/supertrydev/bluetab.git
+cd bluetab
 npm install          # Install dependencies
-npm run dev          # Start development mode
-# Load dist/ folder in chrome://extensions (Developer mode)
+npm run build        # Build for production
 ```
 
-## Features
+Then load the extension:
 
-### Tab Management
-- Save all tabs with one click (`Alt+Shift+S`)
-- Restore groups in new window or merge
-- Pin, collapse, and tag groups
-- Full-text search with fuzzy matching
+1. Open `chrome://extensions/`
+2. Enable **Developer mode** (top-right toggle)
+3. Click **Load unpacked**
+4. Select the `dist/` folder
 
-### Security
-- AES-GCM encryption (256-bit)
-- PBKDF2 key derivation (100k iterations)
-- Zero telemetry, local-only storage
+> 💡 During development, use `npm run dev` for hot-reload.
 
-### Flow Automation *(Coming Soon)*
+## ✨ Features
 
+### 📁 Tab Management
+- **One-click save** — Save all tabs instantly (`Alt+Shift+S`)
+- **Smart restore** — Open groups in a new window or merge into current
+- **Organization** — Pin, collapse, tag, and add notes to groups
+- **Powerful search** — Full-text fuzzy search across 1000+ tabs in **< 50ms**
+- **Bulk actions** — Select multiple groups for batch operations
+- **Drag & drop** — Move tabs between groups effortlessly
+
+### 🔒 Security
+- **AES-GCM** encryption (256-bit) for sensitive tab collections
+- **PBKDF2** key derivation (100,000 iterations)
+- **Zero telemetry** — No analytics, no tracking, no data leaves your browser
+- **Local-only storage** — Everything stays in Chrome extension storage
+
+### 📦 Archive System
+- Archive old tab groups to keep your workspace clean
+- Password-protect archives with military-grade encryption
+- Search through archived groups with advanced filters
+- Restore archived groups anytime
+
+### 🎨 Customization
+- **Dark / Light / System** theme with smooth transitions
+- **3 layout modes** — Grid, Masonry, Dashboard
+- **Configurable text sizes** — Small, Medium, Large
+- **Group menu customization** — Drag-and-drop to reorder menu items
+
+### 🚀 Flow Automation *(Coming Soon)*
 - URL-based auto-grouping rules
 - Title pattern matching with regex
 - Drag-and-drop rule priority
+- Platform templates for common workflows
 
-## Architecture
+## 🏗️ Architecture
 
 ```text
 ┌─────────────────────────────────────────────────────────────────┐
@@ -63,7 +94,7 @@ npm run dev          # Start development mode
 ├─────────────────┴─────────────────┴─────────────────────────────┤
 │  restoration-service.ts (Smart tab restoration)                 │
 ├─────────────────────────────────────────────────────────────────┤
-│  flow-service.ts (URL/title matching, rule execution) [PRO]     │
+│  flow-service.ts (URL/title matching, rule execution)           │
 └─────────────────────────────────────────────────────────────────┘
                               │
                               ▼
@@ -87,51 +118,67 @@ npm run dev          # Start development mode
 └─────────────┴─────────────┴─────────────┴─────────────────────┘
 ```
 
-## Configuration & Local Setup
+## 🛠️ Tech Stack
 
-No `.env` file needed for local core features. All settings are stored locally in Chrome extension storage.
+| Technology | Purpose |
+|---|---|
+| **React 18** | UI framework |
+| **TypeScript** | Type-safe development |
+| **Tailwind CSS** | Utility-first styling |
+| **shadcn/ui** | Accessible component library |
+| **Vite** | Build tooling & HMR |
+| **Web Crypto API** | AES-256 encryption |
+| **Chrome Extensions API** | Browser integration |
 
-User-configurable options in Settings page:
-- Theme (dark/light/system)
-- Text size (small/medium/large)
-- Auto-backup interval
-- Tab group restore mode
+## ⚙️ Configuration
 
-### Loading in Chrome
+No `.env` file needed — all settings live in Chrome extension storage.
 
-1. Run `npm run build`
-2. Open `chrome://extensions/`
-3. Enable **Developer mode**
-4. Click **Load unpacked**
-5. Select the `dist/` folder
+User-configurable options in the Settings page:
+- 🎨 Theme (dark / light / system)
+- 🔤 Text size (small / medium / large)
+- 💾 Auto-backup interval
+- 🪟 Tab group restore mode (new window / current / smart)
+- 📋 Group menu item ordering
 
-## BlueTab Core vs Cloud Features
+## 🆚 BlueTab Core vs Cloud
 
-BlueTab is developed using an open-core model. The core extension is 100% free and runs locally. Advanced sync and team capabilities are planned as opt-in premium services supported by Supertry.
+BlueTab follows an **open-core model**. The core extension is 100% free and runs locally. Advanced sync and collaboration features are planned as opt-in cloud services.
 
-| Feature | Free (OSS Core) | Premium (Coming Soon) |
-|---------|-----------------|-----------------------|
+| Feature | Free (OSS Core) | Cloud (Coming Soon) |
+|---|:---:|:---:|
 | Save & restore tabs | ✅ | ✅ |
 | Full-text search | ✅ | ✅ |
-| Local AES-256 encryption | ✅ | ✅ |
-| Tags & pinning | ✅ | ✅ |
-| Import/Export | ✅ | ✅ |
+| AES-256 encryption | ✅ | ✅ |
+| Tags, pinning & notes | ✅ | ✅ |
+| Import / Export | ✅ | ✅ |
+| Archive system | ✅ | ✅ |
+| Multiple layouts | ✅ | ✅ |
 | **Flow automation** | ❌ | ✅ |
-| Cloud sync via Supertry | ❌ | 🔜 |
+| **Cloud sync** | ❌ | 🔜 |
 
-## Contributing
+## 🤝 Contributing
 
 <a href="https://github.com/supertrydev/bluetab/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=supertrydev/bluetab" />
 </a>
 
-BlueTab is open-source and we welcome contributions! Whether it's reporting a bug, suggesting a feature, or writing code, your help is appreciated. 
+<br>
+
+Contributions are welcome! Whether it's reporting a bug, suggesting a feature, or writing code — every bit helps.
+
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## License
+## 📄 License
 
-MIT - Built with React, TypeScript, shadcn/ui, and Tailwind CSS.
+[MIT](LICENSE) — free for personal and commercial use.
+
+---
+
+<p align="center">
+  Built with ❤️ by <a href="https://github.com/supertrydev">Supertry</a>
+</p>
