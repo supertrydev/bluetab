@@ -1,0 +1,44 @@
+/**
+ * BlueTab Design Tokens - Spacing
+ * 
+ * Philosophy: 4px grid system for consistent rhythm
+ * Based on: DesignPromptsBook spacing principles
+ */
+
+:root {
+    /* ============================================
+     SPACING SCALE - 4px Grid
+     ============================================ */
+    --space-0: 0;
+    --space-1: 0.25rem;
+    /* 4px  - tight */
+    --space-2: 0.5rem;
+    /* 8px  - compact */
+    --space-3: 0.75rem;
+    /* 12px - default gap */
+    --space-4: 1rem;
+    /* 16px - comfortable */
+    --space-5: 1.25rem;
+    /* 20px */
+    --space-6: 1.5rem;
+    /* 24px - section gap */
+    --space-8: 2rem;
+    /* 32px - large gap */
+    --space-10: 2.5rem;
+    /* 40px */
+    --space-12: 3rem;
+    /* 48px - section padding */
+    --space-16: 4rem;
+    /* 64px */
+
+    /* ============================================
+     COMPONENT SPECIFIC
+     ============================================ */
+    --card-padding: var(--space-4);
+    --section-gap: var(--space-6);
+    --page-padding: var(--space-4);
+    --input-padding-x: var(--space-3);
+    --input-padding-y: var(--space-2);
+    --button-padding-x: var(--space-4);
+    --button-padding-y: var(--space-2);
+}

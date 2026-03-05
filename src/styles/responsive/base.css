@@ -1,0 +1,292 @@
+/* Responsive Base CSS Layer - Feature 020 */
+/* Mobile-first responsive utilities for BlueTab */
+
+@layer utilities {
+  /* Responsive Container Classes */
+  .container-responsive {
+    @apply w-full mx-auto px-4;
+  }
+
+  .container-responsive-sm {
+    @apply container-responsive sm:px-6;
+  }
+
+  .container-responsive-lg {
+    @apply container-responsive sm:px-6 lg:px-8;
+  }
+
+  /* Popup Container (Chrome Extension Specific) */
+  .popup-container {
+    @apply min-w-[320px] max-w-[400px] w-full;
+  }
+
+  /* Full-Page Container */
+  .page-container {
+    @apply container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl;
+  }
+
+  /* Responsive Flex Utilities */
+  .flex-responsive-col {
+    @apply flex flex-col;
+  }
+
+  .flex-responsive-row {
+    @apply flex flex-col sm:flex-row;
+  }
+
+  .flex-responsive-center {
+    @apply flex flex-col items-center sm:flex-row sm:justify-between;
+  }
+
+  /* Responsive Grid Utilities */
+  .grid-responsive-1-2 {
+    @apply grid grid-cols-1 md:grid-cols-2;
+  }
+
+  .grid-responsive-1-2-3 {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3;
+  }
+
+  .grid-responsive-1-2-3-4 {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4;
+  }
+
+  .grid-responsive-auto {
+    @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4;
+  }
+
+  /* Responsive Gap Utilities */
+  .gap-responsive {
+    @apply gap-3 sm:gap-4 lg:gap-6;
+  }
+
+  .gap-responsive-sm {
+    @apply gap-2 sm:gap-3 lg:gap-4;
+  }
+
+  .gap-responsive-lg {
+    @apply gap-4 sm:gap-6 lg:gap-8;
+  }
+
+  /* Responsive Padding Utilities */
+  .p-responsive {
+    @apply p-4 sm:p-6 lg:p-8;
+  }
+
+  .p-responsive-sm {
+    @apply p-3 sm:p-4 lg:p-5;
+  }
+
+  .p-responsive-lg {
+    @apply p-6 sm:p-8 lg:p-12;
+  }
+
+  .px-responsive {
+    @apply px-4 sm:px-6 lg:px-8;
+  }
+
+  .py-responsive {
+    @apply py-4 sm:py-6 lg:py-8;
+  }
+
+  /* Responsive Margin Utilities */
+  .m-responsive {
+    @apply m-4 sm:m-6 lg:m-8;
+  }
+
+  .mb-responsive {
+    @apply mb-4 sm:mb-6 lg:mb-8;
+  }
+
+  .mb-responsive-sm {
+    @apply mb-3 sm:mb-4 lg:mb-6;
+  }
+
+  .mb-responsive-lg {
+    @apply mb-6 sm:mb-8 lg:mb-12;
+  }
+
+  /* Safe Area Inset Support (Mobile Notches) */
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .safe-area-left {
+    padding-left: env(safe-area-inset-left);
+  }
+
+  .safe-area-right {
+    padding-right: env(safe-area-inset-right);
+  }
+
+  .safe-area-inset {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Responsive Width Utilities */
+  .w-responsive-full {
+    @apply w-full sm:w-auto;
+  }
+
+  .w-responsive-auto {
+    @apply w-auto sm:w-full;
+  }
+
+  /* Responsive Max-Width Utilities */
+  .max-w-responsive-sm {
+    @apply max-w-full sm:max-w-sm;
+  }
+
+  .max-w-responsive-md {
+    @apply max-w-full sm:max-w-md;
+  }
+
+  .max-w-responsive-lg {
+    @apply max-w-full sm:max-w-lg md:max-w-xl;
+  }
+
+  .max-w-responsive-xl {
+    @apply max-w-full sm:max-w-xl md:max-w-2xl lg:max-w-4xl;
+  }
+
+  /* Responsive Height Utilities */
+  .h-responsive-screen {
+    @apply h-screen sm:h-auto;
+  }
+
+  .min-h-responsive-screen {
+    @apply min-h-screen sm:min-h-0;
+  }
+
+  /* Touch Target Size Utilities */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px] sm:min-h-[40px] sm:min-w-[40px] lg:min-h-[36px] lg:min-w-[36px];
+  }
+
+  .touch-target-square {
+    @apply w-11 h-11 sm:w-10 sm:h-10 lg:w-9 lg:h-9;
+  }
+
+  /* Responsive Border Radius */
+  .rounded-responsive {
+    @apply rounded-md sm:rounded-lg lg:rounded-xl;
+  }
+
+  .rounded-responsive-sm {
+    @apply rounded sm:rounded-md lg:rounded-lg;
+  }
+
+  /* Responsive Text Alignment */
+  .text-responsive-center {
+    @apply text-center sm:text-left;
+  }
+
+  .text-responsive-left {
+    @apply text-left sm:text-center;
+  }
+
+  /* Responsive Display Utilities */
+  .block-responsive {
+    @apply block sm:flex;
+  }
+
+  .flex-responsive {
+    @apply flex sm:block;
+  }
+
+  /* Responsive Overflow */
+  .overflow-responsive {
+    @apply overflow-auto sm:overflow-visible;
+  }
+
+  /* Modal/Dialog Responsive Utilities */
+  .modal-responsive {
+    @apply w-full h-full sm:h-auto sm:max-w-md md:max-w-lg lg:max-w-xl;
+  }
+
+  .modal-responsive-sm {
+    @apply w-full h-full sm:h-auto sm:max-w-sm md:max-w-md;
+  }
+
+  .modal-responsive-lg {
+    @apply w-full h-full sm:h-auto sm:max-w-lg md:max-w-xl lg:max-w-2xl;
+  }
+
+  .modal-responsive-full {
+    @apply w-full h-full;
+  }
+
+  /* Sheet/Sidebar Responsive Utilities */
+  .sheet-responsive {
+    @apply w-full h-full sm:w-96 lg:w-[480px];
+  }
+
+  .sheet-responsive-sm {
+    @apply w-full h-full sm:w-80 lg:w-96;
+  }
+
+  .sheet-responsive-lg {
+    @apply w-full h-full sm:w-[28rem] lg:w-[36rem];
+  }
+
+  /* Responsive Z-Index (Modals, Overlays) */
+  .z-responsive-modal {
+    @apply z-40 sm:z-50;
+  }
+
+  .z-responsive-overlay {
+    @apply z-30 sm:z-40;
+  }
+
+  /* Responsive Aspect Ratio */
+  .aspect-responsive-video {
+    @apply aspect-video;
+  }
+
+  .aspect-responsive-square {
+    @apply aspect-square sm:aspect-auto;
+  }
+}
+
+/* Performance Optimizations */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .popup-container,
+  .page-container {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  .safe-area-inset,
+  .safe-area-top,
+  .safe-area-bottom,
+  .safe-area-left,
+  .safe-area-right {
+    padding: 0 !important;
+  }
+}
+
+/* High DPI Displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  /* Optimize image rendering on Retina/High-DPI displays */
+  img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}

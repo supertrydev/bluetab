@@ -1,0 +1,86 @@
+/**
+ * BlueTab Design Tokens - Effects
+ * 
+ * Philosophy: Subtle shadows for depth, consistent radius
+ * Based on: DesignPromptsBook depth and UI polish principles
+ */
+
+:root {
+    /* ============================================
+     BORDER RADIUS
+     ============================================ */
+    --radius-sm: 0.375rem;
+    /* 6px  - buttons, inputs */
+    --radius-md: 0.5rem;
+    /* 8px  - cards */
+    --radius-lg: 0.75rem;
+    /* 12px - modals */
+    --radius-xl: 1rem;
+    /* 16px - large containers */
+    --radius-2xl: 1.5rem;
+    /* 24px */
+    --radius-full: 9999px;
+    /* pills, avatars */
+
+    /* ============================================
+     SHADOWS - 2-layer realistic shadows
+     Dark mode: subtle, muted
+     Light mode: more visible
+     ============================================ */
+    --shadow-sm:
+        0 1px 2px hsl(220 50% 5% / 0.15),
+        0 1px 3px hsl(220 50% 5% / 0.10);
+
+    --shadow-md:
+        0 2px 4px hsl(220 50% 5% / 0.15),
+        0 4px 12px hsl(220 50% 5% / 0.20);
+
+    --shadow-lg:
+        0 4px 8px hsl(220 50% 5% / 0.15),
+        0 8px 24px hsl(220 50% 5% / 0.25);
+
+    --shadow-xl:
+        0 8px 16px hsl(220 50% 5% / 0.15),
+        0 16px 48px hsl(220 50% 5% / 0.30);
+
+    /* Inner shadow for inputs/inset elements */
+    --shadow-inner: inset 0 1px 2px hsl(220 50% 5% / 0.10);
+
+    /* ============================================
+     TRANSITIONS
+     ============================================ */
+    --transition-fast: 150ms ease;
+    --transition-normal: 200ms ease;
+    --transition-slow: 300ms ease;
+
+    /* ============================================
+     Z-INDEX SCALE
+     ============================================ */
+    --z-dropdown: 1000;
+    --z-sticky: 1020;
+    --z-modal-backdrop: 1040;
+    --z-modal: 1050;
+    --z-popover: 1060;
+    --z-tooltip: 1070;
+    --z-toast: 1080;
+}
+
+/* Light mode shadow adjustments */
+[data-theme="light"],
+html:not(.dark) {
+    --shadow-sm:
+        0 1px 2px hsl(220 20% 50% / 0.08),
+        0 1px 4px hsl(220 20% 50% / 0.06);
+
+    --shadow-md:
+        0 2px 4px hsl(220 20% 50% / 0.08),
+        0 6px 16px hsl(220 20% 50% / 0.10);
+
+    --shadow-lg:
+        0 4px 8px hsl(220 20% 50% / 0.08),
+        0 12px 32px hsl(220 20% 50% / 0.12);
+
+    --shadow-xl:
+        0 8px 16px hsl(220 20% 50% / 0.08),
+        0 24px 64px hsl(220 20% 50% / 0.15);
+}

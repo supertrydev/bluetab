@@ -1,0 +1,2505 @@
+import { useState, useEffect } from 'react';
+import { createRoot } from 'react-dom/client';
+import { Storage } from '../utils/storage';
+import { normalizeUrl } from '../utils/normalize';
+import { deduplicateTabs, filterDuplicatesBySettings } from '../utils/dedupe';
+import { TagManager, TAG_COLORS } from '../utils/tags';
+import { sortGroupsWithPinning, getDefaultSettings, SORT_OPTIONS, type SortOrder } from '../utils/sorting';
+import { ThemeManager } from '../utils/theme';
+import ThemeToggle from '../components/ThemeToggle';
+import { textSizeService } from '../utils/TextSizeService';
+import { ToastManager } from '../components/Toast';
+import { ConfirmModal } from '../components/ConfirmModal';
+import { Toaster } from 'sonner';
+import { ArchiveModal as CreateArchiveModal, ArchiveOptions } from '../popup/components/modals/ArchiveModal';
+import { ArchiveModal } from '../components/archive-modal';
+import { useModal } from '../popup/components/modals/ModalWrapper';
+import Logo from '../components/Logo';
+import { migrateFromPersistentState, loadCollapsedStates, saveGroupState, saveMultipleStates, removeGroupState, cleanupOrphanedStates } from '../utils/collapsed-state';
+import PinButton from '../components/PinButton';
+import usePinManagement from '../hooks/usePinManagement';
+import { PinnedSectionHeader } from '../components/PinnedGroupIndicator';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { InputGroup, InputGroupInput, InputGroupAddon, InputGroupButton } from '../components/ui/input-group';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../components/ui/dropdown-menu';
+import { ChevronDown } from 'lucide-react';
+import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
+import { MasonryGroupCard } from '../components/MasonryGroupCard';
+import type { TabGroup, TabItem, Tag, Settings } from '../types/models';
+import '../styles/tailwind.css';
+import '../styles/pin-indicators.css';
+import '../styles/options-layout.css';
+
+function TabManager() {
+    const [groups, setGroups] = useState<TabGroup[]>([]);
+    const [tags, setTags] = useState<Tag[]>([]);
+    const [search, setSearch] = useState('');
+    const [editingId, setEditingId] = useState<string | null>(null);
+    const [editName, setEditName] = useState('');
+    const [showTagManager, setShowTagManager] = useState(false);
+    const [newTagName, setNewTagName] = useState('');
+    const [newTagColor, setNewTagColor] = useState(TAG_COLORS[0]);
+    const [selectedGroups, setSelectedGroups] = useState<Set<string>>(new Set());
+    const [isArchiveModalOpen, setIsArchiveModalOpen] = useState(false);
+    const [bulkMode, setBulkMode] = useState(false);
+    const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+    const [showTagModal, setShowTagModal] = useState(false);
+    const [tagModalGroupId, setTagModalGroupId] = useState<string | null>(null);
+    const [settings, setSettings] = useState<Settings>(getDefaultSettings());
+    const [currentSortOrder, setCurrentSortOrder] = useState<SortOrder>('newest');
+    const [stats, setStats] = useState({ totalGroups: 0, totalTabs: 0 });
+    const [draggedTab, setDraggedTab] = useState<{ tab: TabItem; sourceGroupId: string } | null>(null);
+    const [dragOverGroupId, setDragOverGroupId] = useState<string | null>(null);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [layoutMode, setLayoutMode] = useState<'grid' | 'masonry'>('grid');
+    const [deleteModalType, setDeleteModalType] = useState<'group' | 'selected' | 'tag'>('group');
+    const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+    const [collapsedGroups, setCollapsedGroups] = useState<Map<string, boolean>>(new Map());
+    const [isStateLoaded, setIsStateLoaded] = useState(false);
+    const [isLayoutModeInitialized, setIsLayoutModeInitialized] = useState(false);
+
+    // Pin management
+    const pinManagement = usePinManagement(groups);
+
+    // Archive modal management
+    const archiveModal = useModal();
+    const [selectedGroupForArchive, setSelectedGroupForArchive] = useState<string | null>(null);
+
+    useEffect(() => {
+        initializeApp();
+
+        // Listen for storage changes to auto-update interface
+        const handleStorageChange = async (changes: { [key: string]: chrome.storage.StorageChange }) => {
+            if (changes.groups) {
+                const newGroups = changes.groups.newValue || [];
+                // Migrate groups with pin data
+                const migratedGroups = await Storage.migrateExistingGroups(newGroups);
+                setGroups(migratedGroups);
+                // Cleanup orphaned states when groups change
+                const validIds = new Set(migratedGroups.map(g => g.id));
+                await cleanupOrphanedStates(validIds);
+            }
+            if (changes.tags) {
+                const newTags = changes.tags.newValue || [];
+                setTags(newTags);
+            }
+            if (changes.pinSettings) {
+                // Pin settings changed - reload groups with updated pin data
+                await loadGroups();
+            }
+            if (changes.settings) {
+                const newSettings = changes.settings.newValue || getDefaultSettings();
+                setSettings(newSettings);
+                setCurrentSortOrder(newSettings.sortOrder);
+            }
+            // Listen for collapsed state changes
+            if (changes.collapsedGroups) {
+                const newCollapsedGroups = changes.collapsedGroups.newValue || {};
+                setCollapsedGroups(new Map(Object.entries(newCollapsedGroups)));
+            }
+            // Listen for layoutMode changes
+            if (changes.layoutMode) {
+                const newLayoutMode = changes.layoutMode.newValue;
+                if (newLayoutMode) {
+                    setLayoutMode(newLayoutMode);
+                }
+            }
+        };
+
+        chrome.storage.onChanged.addListener(handleStorageChange);
+
+        return () => {
+            chrome.storage.onChanged.removeListener(handleStorageChange);
+        };
+    }, []);
+
+    // Close menu when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (openMenuId) {
+                const target = event.target as Element;
+                if (!target.closest('.relative')) {
+                    setOpenMenuId(null);
+                }
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [openMenuId]);
+
+    const initializeApp = async () => {
+        // Initialize text size service
+        try {
+            await textSizeService.initialize();
+        } catch (error) {
+            console.error('Failed to initialize text size service:', error);
+        }
+
+        // Migrate from old persistent state if needed
+        try {
+            await migrateFromPersistentState();
+        } catch (error) {
+            console.error('Migration failed (non-critical):', error);
+        }
+
+        await loadGroups();
+    };
+
+    useEffect(() => {
+        setStats({
+            totalGroups: groups.length,
+            totalTabs: groups.reduce((acc, group) => acc + group.tabs.length, 0)
+        });
+    }, [groups]);
+
+    // Save layoutMode preference when it changes (but not on initial load)
+    useEffect(() => {
+        if (isLayoutModeInitialized) {
+            Storage.set('layoutMode', layoutMode);
+        }
+    }, [layoutMode, isLayoutModeInitialized]);
+
+    const loadGroups = async () => {
+        const stored = await Storage.get<TabGroup[]>('groups') || [];
+        const storedTags = await Storage.get<Tag[]>('tags') || [];
+        // Migrate groups with pin data
+        const migratedGroups = await Storage.migrateExistingGroups(stored);
+        const storedSettings = await Storage.get<Settings>('settings');
+        const defaultSettings = getDefaultSettings();
+
+        // Merge stored settings with defaults to ensure all fields are present
+        const mergedSettings = {
+            ...defaultSettings,
+            ...storedSettings
+        };
+
+        ThemeManager.initializeTheme(mergedSettings);
+
+        // Save merged settings to storage if there were missing fields
+        if (JSON.stringify(storedSettings) !== JSON.stringify(mergedSettings)) {
+            await Storage.set('settings', mergedSettings);
+        }
+
+        // Load layoutMode preference
+        const storedLayoutMode = await Storage.get<'grid' | 'masonry'>('layoutMode');
+        if (storedLayoutMode) {
+            setLayoutMode(storedLayoutMode);
+        }
+        // Mark as initialized after loading from storage
+        setIsLayoutModeInitialized(true);
+
+        setGroups(migratedGroups);
+        setTags(storedTags);
+        setSettings(mergedSettings);
+        setCurrentSortOrder(mergedSettings.sortOrder);
+        await loadCollapsedState(migratedGroups);
+    };
+
+    const loadCollapsedState = async (currentGroups?: TabGroup[]) => {
+        try {
+            const allStates = await loadCollapsedStates();
+            setCollapsedGroups(allStates);
+
+            // Cleanup orphaned states if groups are provided
+            if (currentGroups) {
+                const validIds = new Set(currentGroups.map(g => g.id));
+                await cleanupOrphanedStates(validIds);
+            }
+
+            setIsStateLoaded(true);
+        } catch (error) {
+            console.error('Failed to load collapsed state:', error);
+            setIsStateLoaded(true);
+        }
+    };
+
+    const toggleCollapse = async (groupId: string) => {
+        const currentCollapsed = collapsedGroups.get(groupId) || false;
+        const newCollapsed = !currentCollapsed;
+
+        // Update UI immediately for responsiveness
+        const newState = new Map(collapsedGroups);
+        newState.set(groupId, newCollapsed);
+        setCollapsedGroups(newState);
+
+        // Save to storage
+        try {
+            await saveGroupState(groupId, newCollapsed);
+        } catch (error) {
+            console.error('Failed to save collapsed state:', error);
+            ToastManager.getInstance().error('Failed to save collapse state');
+            // Revert UI state on error
+            const revertedState = new Map(collapsedGroups);
+            revertedState.set(groupId, currentCollapsed);
+            setCollapsedGroups(revertedState);
+        }
+    };
+
+    const saveAllTabs = async () => {
+        try {
+            console.log('Starting tab save process...');
+            const tabs = await chrome.tabs.query({ currentWindow: true });
+            console.log('All tabs:', tabs);
+
+            // Get settings for filtering
+            const storedSettings = await Storage.get<Settings>('settings');
+            const mergedSettings = { ...getDefaultSettings(), ...storedSettings };
+
+            // Filter out extension pages but keep regular web pages
+            let tabsToSave = tabs.filter(tab =>
+                tab.url &&
+                !tab.url.startsWith('chrome-extension://') &&
+                !tab.url.startsWith('chrome://') &&
+                !tab.url.startsWith('edge://') &&
+                !tab.url.startsWith('about:') &&
+                !tab.url.startsWith('moz-extension://') &&
+                tab.url !== 'about:blank'
+            );
+
+            // Apply pinned tabs filter
+            if (mergedSettings.pinnedTabsMode === 'exclude') {
+                tabsToSave = tabsToSave.filter(tab => !tab.pinned);
+            }
+
+            console.log('Tabs to save:', tabsToSave);
+
+            if (tabsToSave.length === 0) {
+                ToastManager.getInstance().warning('No tabs to save');
+                return;
+            }
+
+            const tabItems: TabItem[] = tabsToSave.map(tab => ({
+                id: crypto.randomUUID(),
+                url: normalizeUrl(tab.url || ''),
+                title: tab.title || '',
+                favicon: tab.favIconUrl,
+                timestamp: Date.now(),
+                groupId: 'current',
+                pinned: tab.pinned
+            }));
+
+            // Apply duplicate filtering based on settings
+            const filteredTabs = filterDuplicatesBySettings(tabItems, groups, mergedSettings);
+            const dedupedTabs = deduplicateTabs(filteredTabs);
+
+            const newGroup: TabGroup = {
+                id: crypto.randomUUID(),
+                name: `Session ${new Date().toLocaleString()}`,
+                tabs: dedupedTabs,
+                created: Date.now(),
+                modified: Date.now()
+            };
+
+            const updatedGroups = [...groups, newGroup];
+            await Storage.set('groups', updatedGroups);
+            setGroups(updatedGroups);
+
+            console.log('Group saved, now closing tabs...');
+
+            // Get tab IDs to close (all saved tabs)
+            const tabIdsToClose = tabsToSave.map(tab => tab.id).filter(id => id !== undefined) as number[];
+
+            console.log('Tab IDs to close:', tabIdsToClose);
+
+            if (tabIdsToClose.length > 0) {
+                await chrome.tabs.remove(tabIdsToClose);
+                console.log('Tabs closed successfully');
+            }
+
+            // Show success toast
+            ToastManager.getInstance().success(`Saved ${dedupedTabs.length} tabs and closed them`);
+
+        } catch (error) {
+            console.error('Error in saveAllTabs:', error);
+            ToastManager.getInstance().error('Failed to save tabs: ' + (error as Error).message);
+        }
+    };
+
+    const restoreGroup = async (group: TabGroup) => {
+        try {
+            const settings = await Storage.get<Settings>('settings') || getDefaultSettings();
+            const restoreMode = settings.restoreMode || 'smart';
+            const tabGroupRestoreMode = settings.tabGroupRestoreMode || 'normal';
+
+            // Get current window tabs to determine behavior
+            const currentTabs = await chrome.tabs.query({ currentWindow: true });
+
+            let shouldCreateNewWindow = false;
+
+            // Debug logging
+            console.log('🔍 Restore settings:', { restoreMode, tabGroupRestoreMode });
+
+            switch (restoreMode) {
+                case 'newWindow':
+                    shouldCreateNewWindow = true;
+                    break;
+                case 'currentWindow':
+                    shouldCreateNewWindow = false;
+                    break;
+                case 'smart':
+                    // Smart mode: new window if current window has more than just BlueTab
+                    const nonBlueTabTabs = currentTabs.filter(tab =>
+                        tab.url && !tab.url.includes('src/options/index.html') && !tab.url.includes('src/settings/index.html')
+                    );
+                    shouldCreateNewWindow = nonBlueTabTabs.length > 0;
+                    console.log('Smart mode analysis:', { totalTabs: currentTabs.length, nonBlueTabTabs: nonBlueTabTabs.length, shouldCreateNewWindow });
+                    break;
+            }
+
+            console.log('✅ Window decision:', shouldCreateNewWindow ? 'NEW WINDOW' : 'CURRENT WINDOW');
+
+            // Feature 018: Browser Tab Groups Support
+            // When tabGroupRestoreMode is 'browserGroups', we:
+            // 1. Open all tabs normally (existing behavior)
+            // 2. Collect tab IDs in createdTabIds array
+            // 3. Use chrome.tabs.group() to create native tab group
+            // 4. Use chrome.tabGroups.update() to set group title
+            // 5. Handle errors gracefully (tabs still open if grouping fails)
+            let createdTabIds: number[] = [];
+
+            let targetWindowId: number | undefined;
+
+            if (shouldCreateNewWindow) {
+                // Create new window with tabs (same for both modes)
+                if (group.tabs.length > 0) {
+                    const newWindow = await chrome.windows.create({
+                        url: group.tabs[0].url,
+                        focused: true
+                    });
+
+                    targetWindowId = newWindow.id;
+                    console.log('📌 Created new window ID:', targetWindowId);
+
+                    if (newWindow.tabs && newWindow.tabs[0].id) {
+                        createdTabIds.push(newWindow.tabs[0].id);
+                    }
+
+                    // Add remaining tabs to the new window
+                    for (let i = 1; i < group.tabs.length; i++) {
+                        const newTab = await chrome.tabs.create({
+                            url: group.tabs[i].url,
+                            windowId: newWindow.id,
+                            active: false
+                        });
+                        if (newTab.id) {
+                            createdTabIds.push(newTab.id);
+                        }
+                    }
+                }
+            } else {
+                // Add tabs to current window
+                for (const tab of group.tabs) {
+                    const newTab = await chrome.tabs.create({ url: tab.url, active: false });
+                    if (newTab.id) {
+                        createdTabIds.push(newTab.id);
+                    }
+                }
+            }
+
+            // Feature 018: Create browser tab group if mode is 'browserGroups'
+            // Only attempt grouping if user opted-in and we have tabs to group
+            if (tabGroupRestoreMode === 'browserGroups' && createdTabIds.length > 0) {
+                try {
+                    console.log(`Attempting to create tab group: "${group.name}" with ${createdTabIds.length} tabs`);
+                    console.log('Tab IDs to group:', createdTabIds);
+
+                    // Small delay to ensure tabs are fully created
+                    await new Promise(resolve => setTimeout(resolve, 150));
+
+                    // If tabs are in a new window, make sure that window is focused
+                    // This prevents Chrome from moving tabs to the active window during grouping
+                    if (targetWindowId) {
+                        console.log('🎯 Ensuring target window is focused before grouping...');
+                        await chrome.windows.update(targetWindowId, { focused: true });
+                        // Small delay after focus
+                        await new Promise(resolve => setTimeout(resolve, 100));
+                    }
+
+                    // Create the group
+                    const groupId = await chrome.tabs.group({
+                        tabIds: createdTabIds
+                    });
+
+                    // Set the group's title to match the BlueTab group name
+                    await chrome.tabGroups.update(groupId, {
+                        title: group.name
+                    });
+
+                    console.log(`✅ Successfully created browser tab group: ${group.name} (ID: ${groupId})`);
+                } catch (groupError) {
+                    // Graceful degradation: If grouping fails, tabs are still open
+                    // This can happen if Chrome Tab Groups API is unavailable or if there's a browser issue
+                    const errorMessage = (groupError as Error).message;
+                    const errorStack = (groupError as Error).stack;
+                    console.error('Failed to create tab group:', {
+                        groupName: group.name,
+                        tabCount: createdTabIds.length,
+                        tabIds: createdTabIds,
+                        error: errorMessage,
+                        stack: errorStack
+                    });
+
+                    // Inform user that tabs are restored but not grouped
+                    ToastManager.getInstance().warning(
+                        `Tabs restored but grouping failed. ${createdTabIds.length} tabs opened as normal tabs.`
+                    );
+                }
+            }
+
+            // Handle restore behavior (remove from list or keep in list)
+            const restoreBehavior = settings.restoreBehavior || 'removeFromList';
+            if (restoreBehavior === 'removeFromList') {
+                // Remove the group from the list
+                const updatedGroups = groups.filter(g => g.id !== group.id);
+                await Storage.set('groups', updatedGroups);
+                setGroups(updatedGroups);
+                ToastManager.getInstance().success(`Restored ${group.tabs.length} tabs from "${group.name}" and removed from list`);
+            } else {
+                ToastManager.getInstance().success(`Restored ${group.tabs.length} tabs from "${group.name}"`);
+            }
+        } catch (error) {
+            ToastManager.getInstance().error('Failed to restore tabs: ' + (error as Error).message);
+        }
+    };
+
+    const toggleGroupLock = async (groupId: string) => {
+        try {
+            const updatedGroups = groups.map(g =>
+                g.id === groupId ? { ...g, locked: !g.locked } : g
+            );
+            await Storage.set('groups', updatedGroups);
+            setGroups(updatedGroups);
+
+            const group = updatedGroups.find(g => g.id === groupId);
+            if (group) {
+                ToastManager.getInstance().success(
+                    group.locked ? `"${group.name}" locked` : `"${group.name}" unlocked`
+                );
+            }
+            setOpenMenuId(null);
+        } catch (error) {
+            ToastManager.getInstance().error('Failed to toggle lock: ' + (error as Error).message);
+        }
+    };
+
+    const showDeleteGroupModal = (groupId: string) => {
+        // Check if group is locked
+        const group = groups.find(g => g.id === groupId);
+        if (group?.locked) {
+            ToastManager.getInstance().warning('Cannot delete locked group. Unlock it first.');
+            return;
+        }
+
+        setDeleteModalType('group');
+        setDeleteTarget(groupId);
+        setShowDeleteModal(true);
+        setOpenMenuId(null);
+    };
+
+    const deleteGroup = async (groupId: string) => {
+        try {
+            const updatedGroups = groups.filter(g => g.id !== groupId);
+            await Storage.set('groups', updatedGroups);
+            setGroups(updatedGroups);
+
+            // Remove the group's collapsed state
+            try {
+                await removeGroupState(groupId);
+
+                // Update local state immediately
+                const newCollapsedState = new Map(collapsedGroups);
+                newCollapsedState.delete(groupId);
+                setCollapsedGroups(newCollapsedState);
+            } catch (stateError) {
+                console.error('Failed to remove group state:', stateError);
+                // Non-critical error, don't interrupt the main operation
+            }
+
+            ToastManager.getInstance().success('Group deleted successfully');
+        } catch (error) {
+            ToastManager.getInstance().error('Failed to delete group: ' + (error as Error).message);
+        }
+    };
+
+    const startEdit = (group: TabGroup) => {
+        setEditingId(group.id);
+        setEditName(group.name);
+    };
+
+    const saveEdit = async () => {
+        if (!editingId || !editName.trim()) return;
+
+        try {
+            const updatedGroups = groups.map(g =>
+                g.id === editingId
+                    ? { ...g, name: editName.trim(), modified: Date.now() }
+                    : g
+            );
+
+            await Storage.set('groups', updatedGroups);
+            setGroups(updatedGroups);
+
+            setEditingId(null);
+            setEditName('');
+        } catch (error) {
+            ToastManager.getInstance().error('Failed to save group name: ' + (error as Error).message);
+        }
+    };
+
+    const cancelEdit = () => {
+        setEditingId(null);
+        setEditName('');
+    };
+
+    const exportData = async () => {
+        try {
+            const data = {
+                groups,
+                tags,
+                settings,
+                collapsedGroups: Object.fromEntries(collapsedGroups),
+                exportedAt: Date.now(),
+                version: '1.0.0'
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `bluetab-backup-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            ToastManager.getInstance().success('Enhanced backup exported with persistent state data');
+        } catch (error) {
+            console.error('Failed to export enhanced data:', error);
+            ToastManager.getInstance().error('Failed to export backup: ' + (error as Error).message);
+        }
+    };
+
+    const exportAsHTML = async () => {
+        try {
+            const exportDate = new Date().toISOString();
+            const totalTabs = groups.reduce((sum, group) => sum + group.tabs.length, 0);
+
+            const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlueTab Export - ${new Date().toLocaleDateString()}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .header .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .group {
+            margin-bottom: 2rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .group:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .group-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .group-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .group-meta {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        .tabs-list {
+            list-style: none;
+        }
+
+        .tab-item {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #f3f4f6;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: background-color 0.2s ease;
+        }
+
+        .tab-item:last-child {
+            border-bottom: none;
+        }
+
+        .tab-item:hover {
+            background-color: #f9fafb;
+        }
+
+        .tab-favicon {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .tab-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .tab-title {
+            font-weight: 500;
+            color: #1f2937;
+            margin-bottom: 0.25rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .tab-url {
+            font-size: 0.875rem;
+            color: #6b7280;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .tab-url a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .tab-url a:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            background: #f9fafb;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .empty-group {
+            padding: 2rem;
+            text-align: center;
+            color: #9ca3af;
+            font-style: italic;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-right: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 1.75rem;
+            }
+
+            .stats {
+                gap: 1rem;
+            }
+
+            .stat-value {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔵 BlueTab Export</h1>
+            <p class="subtitle">Tab Groups Backup - ${new Date().toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            })}</p>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value">${groups.length}</div>
+                    <div class="stat-label">Groups</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">${totalTabs}</div>
+                    <div class="stat-label">Total Tabs</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">${tags.length}</div>
+                    <div class="stat-label">Tags</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            ${groups.map((group) => {
+                const groupTags = (group.tags || []).map(tagId => tags.find(t => t.id === tagId)).filter(Boolean);
+                return `
+                <div class="group">
+                    <div class="group-header">
+                        <div>
+                            <div class="group-title">${escapeHtml(group.name)}</div>
+                            ${groupTags.length > 0 ? `
+                                <div style="margin-top: 0.5rem;">
+                                    ${groupTags.map(tag => `
+                                        <span class="tag" style="background-color: ${tag.color}20; color: ${tag.color};">
+                                            ${escapeHtml(tag.name)}
+                                        </span>
+                                    `).join('')}
+                                </div>
+                            ` : ''}
+                        </div>
+                        <div class="group-meta">
+                            ${group.tabs.length} tab${group.tabs.length !== 1 ? 's' : ''} •
+                            Created ${new Date(group.created).toLocaleDateString()}
+                            ${group.pinned ? ' • 📌 Pinned' : ''}
+                        </div>
+                    </div>
+                    ${group.tabs.length > 0 ? `
+                        <ul class="tabs-list">
+                            ${group.tabs.map(tab => `
+                                <li class="tab-item">
+                                    ${tab.favicon
+                                        ? `<img src="${escapeHtml(tab.favicon)}" alt="" class="tab-favicon" onerror="this.style.display='none'">`
+                                        : '<div class="tab-favicon">🔗</div>'
+                                    }
+                                    <div class="tab-info">
+                                        <div class="tab-title">${escapeHtml(tab.title || 'Untitled')}</div>
+                                        <div class="tab-url"><a href="${escapeHtml(tab.url)}" target="_blank">${escapeHtml(tab.url)}</a></div>
+                                    </div>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    ` : `
+                        <div class="empty-group">No tabs in this group</div>
+                    `}
+                </div>
+            `}).join('')}
+        </div>
+
+        <div class="footer">
+            <p>Exported from BlueTab - Chrome Extension</p>
+            <p>Export Date: ${new Date(exportDate).toLocaleString()}</p>
+            <p>${groups.length} groups • ${totalTabs} tabs • ${tags.length} tags</p>
+        </div>
+    </div>
+</body>
+</html>`;
+
+            const blob = new Blob([html], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `bluetab-export-${new Date().toISOString().split('T')[0]}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            ToastManager.getInstance().success('HTML export completed successfully');
+        } catch (error) {
+            console.error('Failed to export as HTML:', error);
+            ToastManager.getInstance().error('Failed to export HTML: ' + (error as Error).message);
+        }
+    };
+
+    // Helper function to escape HTML special characters
+    const escapeHtml = (text: string): string => {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    };
+
+    const importData = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            try {
+                const data = JSON.parse(e.target?.result as string);
+
+                if (!data.groups || !Array.isArray(data.groups)) {
+                    ToastManager.getInstance().error('Invalid backup file: missing groups data');
+                    return;
+                }
+
+                // Import groups
+                const safeGroups = data.groups.map((group: TabGroup) => ({
+                    ...group,
+                    id: crypto.randomUUID(),
+                    tabs: group.tabs.map(tab => ({
+                        ...tab,
+                        id: crypto.randomUUID()
+                    })),
+                    modified: Date.now()
+                }));
+
+                const importedGroups = [...groups, ...safeGroups];
+                await Storage.set('groups', importedGroups);
+                setGroups(importedGroups);
+
+                // Import tags if available
+                if (data.tags && Array.isArray(data.tags)) {
+                    const safeTags = data.tags.map((tag: Tag) => ({
+                        ...tag,
+                        id: crypto.randomUUID(),
+                        created: Date.now()
+                    }));
+                    const importedTags = [...tags, ...safeTags];
+                    await Storage.set('tags', importedTags);
+                    setTags(importedTags);
+                }
+
+                // Import settings if available (merge with current)
+                if (data.settings && typeof data.settings === 'object') {
+                    const mergedSettings = { ...settings, ...data.settings };
+                    await Storage.set('settings', mergedSettings);
+                    setSettings(mergedSettings);
+                }
+
+                // Import collapsed states if available
+                const collapsedData = data.persistentState?.collapsedGroups || data.collapsedGroups;
+                if (collapsedData) {
+                    try {
+                        // Map the imported collapsed states to new group IDs
+                        const originalToNewIdMap = new Map<string, string>();
+                        data.groups.forEach((originalGroup: TabGroup, index: number) => {
+                            originalToNewIdMap.set(originalGroup.id, safeGroups[index].id);
+                        });
+
+                        // Create new state map with updated group IDs
+                        const newStates = new Map<string, boolean>();
+                        for (const [originalGroupId, collapsed] of Object.entries(collapsedData)) {
+                            const newGroupId = originalToNewIdMap.get(originalGroupId);
+                            if (newGroupId) {
+                                newStates.set(newGroupId, collapsed as boolean);
+                            }
+                        }
+
+                        // Apply the imported states
+                        if (newStates.size > 0) {
+                            await saveMultipleStates(newStates);
+
+                            // Update UI state
+                            const currentStates = await loadCollapsedStates();
+                            setCollapsedGroups(currentStates);
+                        }
+
+                        console.log(`Imported collapsed states for ${newStates.size} groups`);
+                    } catch (stateError) {
+                        console.error('Failed to import collapsed states:', stateError);
+                        ToastManager.getInstance().warning('Groups imported but collapsed states could not be restored');
+                    }
+                }
+
+                ToastManager.getInstance().success(`Imported ${data.groups.length} groups successfully!`);
+
+            } catch (error) {
+                console.error('Import failed:', error);
+                ToastManager.getInstance().error('Invalid backup file format!');
+            }
+        };
+        reader.readAsText(file);
+        event.target.value = '';
+    };
+
+    const clearAllData = async () => {
+        if (confirm('Delete ALL groups and tabs permanently? This cannot be undone!')) {
+            try {
+                await Storage.set('groups', []);
+                setGroups([]);
+            } catch (error) {
+                ToastManager.getInstance().error('Failed to clear data: ' + (error as Error).message);
+            }
+        }
+    };
+
+    const filteredAndSortedGroups = (() => {
+        // First filter
+        const filtered = groups.filter(group => {
+            if (search === '') return true;
+
+            const searchLower = search.toLowerCase();
+
+            // Text search in group name and tabs
+            const matchesText = group.name.toLowerCase().includes(searchLower) ||
+                group.tabs.some(tab =>
+                    tab.title.toLowerCase().includes(searchLower) ||
+                    tab.url.toLowerCase().includes(searchLower)
+                );
+
+            // Tag search
+            const matchesTag = group.tags && group.tags.some(tagId => {
+                const tag = tags.find(t => t.id === tagId);
+                return tag && tag.name.toLowerCase().includes(searchLower);
+            });
+
+            return matchesText || matchesTag;
+        });
+
+        // Then sort
+        return sortGroupsWithPinning(filtered, currentSortOrder);
+    })();
+
+    const openTab = async (url: string, tabId: string, groupId: string) => {
+        try {
+            chrome.tabs.create({ url });
+
+            // Handle restore behavior for individual tabs
+            const storedSettings = await Storage.get<Settings>('settings');
+            const defaultSettings = getDefaultSettings();
+            const mergedSettings = { ...defaultSettings, ...storedSettings };
+
+            const restoreBehavior = mergedSettings.restoreBehavior || 'removeFromList';
+            if (restoreBehavior === 'removeFromList') {
+                // Remove the tab from its group
+                const updatedGroups = groups.map(group => {
+                    if (group.id === groupId) {
+                        const updatedTabs = group.tabs.filter(tab => tab.id !== tabId);
+                        return { ...group, tabs: updatedTabs, modified: Date.now() };
+                    }
+                    return group;
+                }).filter(group => group.tabs.length > 0); // Remove empty groups
+
+                await Storage.set('groups', updatedGroups);
+                setGroups(updatedGroups);
+            }
+        } catch (error) {
+            ToastManager.getInstance().error('Failed to open tab: ' + (error as Error).message);
+        }
+    };
+
+    const createTag = async () => {
+        const error = TagManager.validateTagName(newTagName, tags);
+        if (error) {
+            ToastManager.getInstance().error(error);
+            return;
+        }
+
+        try {
+            const newTag = TagManager.createTag(newTagName, newTagColor);
+            const updatedTags = [...tags, newTag];
+            await Storage.set('tags', updatedTags);
+            setTags(updatedTags);
+            setNewTagName('');
+            setNewTagColor(TAG_COLORS[0]);
+        } catch (error) {
+            ToastManager.getInstance().error('Failed to create tag: ' + (error as Error).message);
+        }
+    };
+
+    const showDeleteTagModal = (tagId: string) => {
+        setDeleteModalType('tag');
+        setDeleteTarget(tagId);
+        setShowDeleteModal(true);
+    };
+
+    const deleteTag = async (tagId: string) => {
+        try {
+            const updatedTags = tags.filter(tag => tag.id !== tagId);
+            const updatedGroups = groups.map(group => ({
+                ...group,
+                tags: (group.tags || []).filter(id => id !== tagId),
+                tabs: group.tabs.map(tab => ({
+                    ...tab,
+                    tags: (tab.tags || []).filter(id => id !== tagId)
+                }))
+            }));
+
+            await Storage.set('tags', updatedTags);
+            await Storage.set('groups', updatedGroups);
+            setTags(updatedTags);
+            setGroups(updatedGroups);
+            ToastManager.getInstance().success('Tag deleted successfully');
+        } catch (error) {
+            ToastManager.getInstance().error('Failed to delete tag: ' + (error as Error).message);
+        }
+    };
+
+    const addTagToGroup = async (groupId: string, tagId: string) => {
+        try {
+            const updatedGroups = groups.map(group =>
+                group.id === groupId ? TagManager.addTagToGroup(group, tagId) : group
+            );
+
+            await Storage.set('groups', updatedGroups);
+            setGroups(updatedGroups);
+        } catch (error) {
+            ToastManager.getInstance().error('Failed to add tag: ' + (error as Error).message);
+        }
+    };
+
+    const removeTagFromGroup = async (groupId: string, tagId: string) => {
+        try {
+            const updatedGroups = groups.map(group =>
+                group.id === groupId ? TagManager.removeTagFromGroup(group, tagId) : group
+            );
+
+            await Storage.set('groups', updatedGroups);
+            setGroups(updatedGroups);
+        } catch (error) {
+            ToastManager.getInstance().error('Failed to remove tag: ' + (error as Error).message);
+        }
+    };
+
+    const toggleGroupSelection = (groupId: string) => {
+        const newSelection = new Set(selectedGroups);
+        if (newSelection.has(groupId)) {
+            newSelection.delete(groupId);
+        } else {
+            newSelection.add(groupId);
+        }
+        setSelectedGroups(newSelection);
+    };
+
+    const selectAllGroups = () => {
+        setSelectedGroups(new Set(filteredAndSortedGroups.map(g => g.id)));
+    };
+
+    const clearSelection = () => {
+        setSelectedGroups(new Set());
+        setBulkMode(false);
+    };
+
+    const bulkAddTag = async (tagId: string) => {
+        try {
+            const updatedGroups = groups.map(group =>
+                selectedGroups.has(group.id) ? TagManager.addTagToGroup(group, tagId) : group
+            );
+
+            await Storage.set('groups', updatedGroups);
+            setGroups(updatedGroups);
+        } catch (error) {
+            ToastManager.getInstance().error('Failed to add tags: ' + (error as Error).message);
+        }
+    };
+
+    const bulkRemoveTag = async (tagId: string) => {
+        try {
+            const updatedGroups = groups.map(group =>
+                selectedGroups.has(group.id) ? TagManager.removeTagFromGroup(group, tagId) : group
+            );
+
+            await Storage.set('groups', updatedGroups);
+            setGroups(updatedGroups);
+        } catch (error) {
+            ToastManager.getInstance().error('Failed to remove tags: ' + (error as Error).message);
+        }
+    };
+
+    const showDeleteSelectedModal = () => {
+        // Check if any selected groups are locked
+        const lockedGroups = groups.filter(g => selectedGroups.has(g.id) && g.locked);
+        if (lockedGroups.length > 0) {
+            ToastManager.getInstance().warning(
+                `Cannot delete ${lockedGroups.length} locked group${lockedGroups.length > 1 ? 's' : ''}. Unlock them first.`
+            );
+            return;
+        }
+
+        setDeleteModalType('selected');
+        setDeleteTarget(`${selectedGroups.size}`);
+        setShowDeleteModal(true);
+    };
+
+    const bulkDeleteGroups = async () => {
+        try {
+            // Filter out locked groups from deletion
+            const groupsToDelete = groups.filter(g => selectedGroups.has(g.id) && !g.locked);
+            const lockedCount = Array.from(selectedGroups).filter(id =>
+                groups.find(g => g.id === id)?.locked
+            ).length;
+
+            const updatedGroups = groups.filter(group => !selectedGroups.has(group.id) || group.locked);
+            await Storage.set('groups', updatedGroups);
+            setGroups(updatedGroups);
+            clearSelection();
+
+            if (lockedCount > 0) {
+                ToastManager.getInstance().warning(
+                    `Deleted ${groupsToDelete.length} groups. ${lockedCount} locked group${lockedCount > 1 ? 's' : ''} skipped.`
+                );
+            } else {
+                ToastManager.getInstance().success(`${groupsToDelete.length} groups deleted successfully`);
+            }
+        } catch (error) {
+            ToastManager.getInstance().error('Failed to delete groups: ' + (error as Error).message);
+        }
+    };
+
+    const changeSortOrder = async (newSortOrder: SortOrder) => {
+        try {
+            const updatedSettings = { ...settings, sortOrder: newSortOrder };
+            await Storage.set('settings', updatedSettings);
+            setSettings(updatedSettings);
+            setCurrentSortOrder(newSortOrder);
+        } catch (error) {
+            ToastManager.getInstance().error('Failed to save sort preference: ' + (error as Error).message);
+        }
+    };
+
+    const handleThemeChange = async (newTheme: 'light' | 'dark' | 'system') => {
+        try {
+            const updatedSettings = { ...settings, theme: newTheme };
+            await Storage.set('settings', updatedSettings);
+            setSettings(updatedSettings);
+        } catch (error) {
+            ToastManager.getInstance().error('Failed to save theme preference: ' + (error as Error).message);
+        }
+    };
+
+    const openTagModal = (groupId: string) => {
+        setTagModalGroupId(groupId);
+        setShowTagModal(true);
+        setOpenMenuId(null);
+    };
+
+    const showArchiveModal = (groupId: string) => {
+        setSelectedGroupForArchive(groupId);
+        archiveModal.openModal();
+        setOpenMenuId(null);
+    };
+
+    /**
+     * Copies all tab URLs and titles from a group to the clipboard
+     * Format: URL | Title (one per line)
+     * @param groupId - The ID of the group to copy links from
+     */
+    const handleCopyGroupLinks = async (groupId: string) => {
+        try {
+            // Check clipboard API availability
+            if (!navigator.clipboard || !navigator.clipboard.writeText) {
+                ToastManager.getInstance().error('Clipboard API not available in this browser');
+                console.error('Clipboard API not supported');
+                return;
+            }
+
+            const group = groups.find(g => g.id === groupId);
+            if (!group || group.tabs.length === 0) {
+                ToastManager.getInstance().warning('No tabs to copy');
+                return;
+            }
+
+            // Format: URL | Title (handle edge cases)
+            const linksText = group.tabs
+                .map(tab => {
+                    const url = tab.url || '';
+                    const title = tab.title || 'Untitled';
+                    return `${url} | ${title}`;
+                })
+                .join('\n');
+
+            await navigator.clipboard.writeText(linksText);
+            ToastManager.getInstance().success(`Copied ${group.tabs.length} links to clipboard`);
+        } catch (error) {
+            console.error('Failed to copy links:', error);
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+
+            // Handle specific errors
+            if (error instanceof DOMException && error.name === 'NotAllowedError') {
+                ToastManager.getInstance().error('Permission denied. Please allow clipboard access.');
+            } else {
+                ToastManager.getInstance().error('Failed to copy links to clipboard');
+            }
+        }
+    };
+
+    const handleArchiveGroup = async (options: ArchiveOptions) => {
+        try {
+            console.log('Archiving groups:', options);
+
+            // Import ArchiveService
+            const { ArchiveService } = await import('../services/archive-service');
+
+            // Get the groups to archive
+            const groupsToArchive = groups.filter(g => options.groupIds.includes(g.id));
+
+            // Archive each group using ArchiveService
+            const archiveResults = [];
+            for (const group of groupsToArchive) {
+                const archiveOptions = {
+                    groupId: group.id,
+                    reason: options.reason,
+                    password: options.passwordProtected ? options.password : undefined,
+                    passwordHint: options.passwordProtected ? options.passwordHint : undefined,
+                    createBackup: options.createBackup
+                };
+
+                const result = await ArchiveService.createArchive(group, archiveOptions);
+                archiveResults.push(result);
+
+                if (!result.success) {
+                    throw new Error(result.error || `Failed to archive group "${group.name}"`);
+                }
+            }
+
+            // Remove archived groups from the active list only after successful archiving
+            const updatedGroups = groups.filter(g => !options.groupIds.includes(g.id));
+            await Storage.set('groups', updatedGroups);
+            setGroups(updatedGroups);
+
+            // Show success message and close modal - toast z-index will handle visibility
+            const warnings = archiveResults.flatMap(r => r.warnings || []);
+            ToastManager.getInstance().success(
+                `Successfully archived ${options.groupIds.length} group(s)${warnings.length > 0 ? ` (${warnings.length} warnings)` : ''}`
+            );
+
+            // Close immediately
+            archiveModal.closeModal();
+            setSelectedGroupForArchive(null);
+
+            // Log warnings if any
+            if (warnings.length > 0) {
+                console.warn('Archive warnings:', warnings);
+            }
+
+        } catch (error) {
+            console.error('Failed to archive group:', error);
+            ToastManager.getInstance().error('Failed to archive group: ' + (error as Error).message);
+            throw error; // Re-throw to let the modal handle the error display
+        }
+    };
+
+    const handleTabDragStart = (e: React.DragEvent, tab: TabItem, sourceGroupId: string) => {
+        e.stopPropagation();
+        setDraggedTab({ tab, sourceGroupId });
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', '');
+    };
+
+    const handleTabDragEnd = (e: React.DragEvent) => {
+        e.stopPropagation();
+        setDraggedTab(null);
+        setDragOverGroupId(null);
+    };
+
+    const handleGroupDragEnter = (e: React.DragEvent, targetGroupId: string) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (draggedTab && draggedTab.sourceGroupId !== targetGroupId) {
+            setDragOverGroupId(targetGroupId);
+        }
+    };
+
+    const handleGroupDragOver = (e: React.DragEvent, targetGroupId: string) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Check if target group is locked
+        const targetGroup = groups.find(g => g.id === targetGroupId);
+        if (targetGroup?.locked) {
+            e.dataTransfer.dropEffect = 'none';
+            return;
+        }
+
+        if (draggedTab && draggedTab.sourceGroupId !== targetGroupId) {
+            e.dataTransfer.dropEffect = 'move';
+            setDragOverGroupId(targetGroupId);
+        }
+    };
+
+    const handleGroupDragLeave = (e: React.DragEvent) => {
+        e.stopPropagation();
+        const currentTarget = e.currentTarget as HTMLElement;
+        const related = e.relatedTarget as Node | null;
+        if (related && currentTarget.contains(related)) {
+            return;
+        }
+        setDragOverGroupId(null);
+    };
+
+    const handleGroupDrop = async (e: React.DragEvent, targetGroupId: string) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Check if target group is locked
+        const targetGroup = groups.find(g => g.id === targetGroupId);
+        if (targetGroup?.locked) {
+            ToastManager.getInstance().warning('Cannot move tabs to locked group');
+            setDragOverGroupId(null);
+            return;
+        }
+
+        if (!draggedTab || draggedTab.sourceGroupId === targetGroupId) {
+            setDragOverGroupId(null);
+            return;
+        }
+
+        try {
+            const updatedGroups = groups.map(group => {
+                if (group.id === draggedTab.sourceGroupId) {
+                    // Remove tab from source group
+                    return {
+                        ...group,
+                        tabs: group.tabs.filter(tab => tab.id !== draggedTab.tab.id),
+                        modified: Date.now()
+                    };
+                } else if (group.id === targetGroupId) {
+                    // Add tab to target group
+                    return {
+                        ...group,
+                        tabs: [...group.tabs, { ...draggedTab.tab, groupId: targetGroupId }],
+                        modified: Date.now()
+                    };
+                }
+                return group;
+            }).filter(group => group.tabs.length > 0); // Remove empty groups
+
+            await Storage.set('groups', updatedGroups);
+            setGroups(updatedGroups);
+            ToastManager.getInstance().success(`Moved tab to "${groups.find(g => g.id === targetGroupId)?.name}"`);
+        } catch (error) {
+            ToastManager.getInstance().error('Failed to move tab: ' + (error as Error).message);
+        }
+
+        setDraggedTab(null);
+        setDragOverGroupId(null);
+    };
+
+    const handleDeleteConfirm = async () => {
+        setShowDeleteModal(false);
+
+        if (deleteModalType === 'group' && deleteTarget) {
+            const group = groups.find(g => g.id === deleteTarget);
+            // If the group is pinned, unpin it first
+            if (group && pinManagement.isPinned(group.id)) {
+                await pinManagement.togglePin(group.id);
+            }
+            await deleteGroup(deleteTarget);
+        } else if (deleteModalType === 'selected') {
+            await bulkDeleteGroups();
+        } else if (deleteModalType === 'tag' && deleteTarget) {
+            await deleteTag(deleteTarget);
+        }
+
+        setDeleteTarget(null);
+    };
+
+    const handleDeleteCancel = () => {
+        setShowDeleteModal(false);
+        setDeleteTarget(null);
+    };
+
+    return (
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+            {/* Header */}
+            <div className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 options-header-spacing">
+                <div className="flex flex-col xl:flex-row items-stretch xl:items-center gap-2 xl:gap-3 py-2 xl:py-3">
+                    {/* Left: Logo and Stats */}
+                    <div className="flex items-center justify-between xl:justify-start gap-4 xl:gap-6 flex-shrink-0 xl:flex-grow-0 w-full xl:w-auto">
+                        <Logo size="splash" />
+                        <span className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                            {stats.totalGroups} groups • {stats.totalTabs} tabs
+                        </span>
+                    </div>
+
+                    {/* Middle: Layout Toggle and Search Input */}
+                    <div className="flex flex-1 items-center gap-2">
+                        {/* Layout Toggle */}
+                        <div className="flex items-center gap-1 flex-shrink-0">
+                            <button
+                                onClick={() => setLayoutMode('grid')}
+                                className={`p-2 rounded transition-colors ${
+                                    layoutMode === 'grid'
+                                        ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300'
+                                        : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+                                }`}
+                                title="Grid Layout"
+                            >
+                                <i className="fas fa-th"></i>
+                            </button>
+                            <button
+                                onClick={() => setLayoutMode('masonry')}
+                                className={`p-2 rounded transition-colors ${
+                                    layoutMode === 'masonry'
+                                        ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300'
+                                        : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+                                }`}
+                                title="Masonry Layout"
+                            >
+                                <i className="fas fa-grip-vertical"></i>
+                            </button>
+                        </div>
+
+                        <div className="flex-1 xl:ml-8 xl:mr-8">
+                            <InputGroup>
+                                <InputGroupInput
+                                    type="text"
+                                    placeholder="Search groups, tabs, or tags..."
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                    className="text-sm"
+                                />
+                                <InputGroupAddon align="inline-end">
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <button className="flex items-center gap-1 text-xs font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors px-2">
+                                                {SORT_OPTIONS.find(opt => opt.value === currentSortOrder)?.label || 'Sort'}
+                                                <ChevronDown className="size-3" />
+                                            </button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent align="end">
+                                            {SORT_OPTIONS.map(option => (
+                                                <DropdownMenuItem
+                                                    key={option.value}
+                                                    onClick={() => changeSortOrder(option.value as SortOrder)}
+                                                >
+                                                    {option.label}
+                                                </DropdownMenuItem>
+                                            ))}
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                </InputGroupAddon>
+                            </InputGroup>
+                        </div>
+
+                        {/* Mobile/Tablet: Icon-only action buttons */}
+                        <div className="flex xl:hidden gap-2 flex-shrink-0">
+                            <Button
+                                onClick={saveAllTabs}
+                                size="sm"
+                                className="px-3"
+                                style={{ backgroundColor: '#2950D5', borderColor: '#2950D5' }}
+                                title="Save Current Tabs"
+                            >
+                                <i className="far fa-window-restore"></i>
+                            </Button>
+
+                            <Button
+                                onClick={() => setBulkMode(!bulkMode)}
+                                variant="outline"
+                                size="sm"
+                                className="px-3"
+                                title="Edit"
+                            >
+                                <i className={`fas ${bulkMode ? 'fa-times' : 'fa-edit'}`}></i>
+                            </Button>
+
+                            <Button
+                                onClick={() => window.location.href = chrome.runtime.getURL('src/settings/index.html')}
+                                variant="outline"
+                                size="sm"
+                                className="px-3"
+                                title="Settings"
+                            >
+                                <i className="fas fa-cog"></i>
+                            </Button>
+                        </div>
+                    </div>
+
+                    {/* Right: Action Buttons (Desktop only) */}
+                    <div className="hidden xl:flex flex-row gap-3">
+                        <Button
+                            onClick={saveAllTabs}
+                            size="sm"
+                            className="whitespace-nowrap text-sm"
+                            style={{ backgroundColor: '#2950D5' }}
+                        >
+                            <i className="far fa-window-restore mr-1.5"></i>
+                            Save Current Tabs
+                        </Button>
+
+                        <Button
+                            onClick={() => setBulkMode(!bulkMode)}
+                            variant="outline"
+                            size="sm"
+                            className="whitespace-nowrap text-sm"
+                        >
+                            <i className={`fas ${bulkMode ? 'fa-times' : 'fa-edit'} mr-1.5`}></i>
+                            Edit
+                        </Button>
+
+                        <Button
+                            onClick={() => window.location.href = chrome.runtime.getURL('src/settings/index.html')}
+                            variant="outline"
+                            size="sm"
+                            className="whitespace-nowrap text-sm"
+                        >
+                            <i className="fas fa-cog mr-1.5"></i>
+                            Settings
+                        </Button>
+                    </div>
+                </div>
+            </div>
+
+
+
+            {/* Bulk Actions */}
+            {bulkMode && (
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                    <div className="bg-blue-50 dark:bg-slate-800/50 border border-blue-200 dark:border-slate-700 rounded-lg p-4">
+                        <div className="flex items-center justify-between mb-3">
+                            <div className="flex gap-2">
+                                <button
+                                    onClick={selectAllGroups}
+                                    className="px-3 py-1 bg-blue-600 dark:bg-blue-700 text-white rounded text-sm hover:bg-blue-700 dark:hover:bg-blue-800 flex items-center gap-2"
+                                >
+                                    <i className="fas fa-check-square"></i>
+                                    Select All
+                                </button>
+                                <button
+                                    onClick={clearSelection}
+                                    className="px-3 py-1 bg-gray-500 dark:bg-gray-600 text-white rounded text-sm hover:bg-gray-600 dark:hover:bg-gray-700 flex items-center gap-2"
+                                >
+                                    <i className="fas fa-square"></i>
+                                    Clear ({selectedGroups.size} selected)
+                                </button>
+                            </div>
+
+                            {selectedGroups.size > 0 && (
+                                <button
+                                    onClick={showDeleteSelectedModal}
+                                    className="px-3 py-1 bg-red-600 dark:bg-red-700 text-white rounded text-sm hover:bg-red-700 dark:hover:bg-red-800 flex items-center gap-2"
+                                >
+                                    <i className="fas fa-trash"></i>
+                                    Delete Selected
+                                </button>
+                            )}
+                        </div>
+
+                        {selectedGroups.size > 0 && (
+                            <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700 shadow-sm">
+                                <div className="flex items-center gap-3 mb-3">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                                        <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Tag Operations</h4>
+                                    </div>
+                                    <div className="text-xs text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-full">
+                                        {selectedGroups.size} group{selectedGroups.size !== 1 ? 's' : ''} selected
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    <div className="relative">
+                                        <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            <i className="fas fa-plus text-green-500 mr-1"></i>
+                                            Add Tag to Selected
+                                        </label>
+                                        <div className="custom-select-container green">
+                                            <select
+                                                onChange={(e) => {
+                                                    if (e.target.value) {
+                                                        bulkAddTag(e.target.value);
+                                                        e.target.value = '';
+                                                    }
+                                                }}
+                                                className="custom-select custom-select-green"
+                                                defaultValue=""
+                                            >
+                                                <option value="" disabled>Choose a tag to add...</option>
+                                                {tags.map(tag => (
+                                                    <option key={tag.id} value={tag.id}>{tag.name}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div className="relative">
+                                        <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                            <i className="fas fa-minus text-red-500 mr-1"></i>
+                                            Remove Tag from Selected
+                                        </label>
+                                        <div className="custom-select-container red">
+                                            <select
+                                                onChange={(e) => {
+                                                    if (e.target.value) {
+                                                        bulkRemoveTag(e.target.value);
+                                                        e.target.value = '';
+                                                    }
+                                                }}
+                                                className="custom-select custom-select-red"
+                                                defaultValue=""
+                                            >
+                                                <option value="" disabled>Choose a tag to remove...</option>
+                                                {tags.map(tag => (
+                                                    <option key={tag.id} value={tag.id}>{tag.name}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+
+            {/* Groups List */}
+            <div className={`mx-auto py-4 sm:py-6 ${layoutMode === 'masonry' ? 'px-4 sm:px-6 lg:px-8 xl:px-16 2xl:px-24' : 'max-w-7xl px-4 sm:px-6 lg:px-8'}`}>
+                {layoutMode === 'masonry' ? (
+                    <ResponsiveMasonry columnsCountBreakPoints={{0: 1, 640: 2, 960: 3, 1280: 4, 1600: 5, 1920: 6}}>
+                        <Masonry gutter="1.5rem">
+                            {filteredAndSortedGroups.length === 0 ? (
+                                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-8 text-center border border-gray-200 dark:border-gray-700">
+                                    <p className="text-gray-500 dark:text-gray-400">No groups found. Save some tabs to get started!</p>
+                                </div>
+                            ) : (
+                                filteredAndSortedGroups.map(group => (
+                            <MasonryGroupCard
+                                key={group.id}
+                                group={group}
+                                tags={tags}
+                                isPinned={pinManagement.isPinned(group.id)}
+                                isSelected={selectedGroups.has(group.id)}
+                                isDragOver={dragOverGroupId === group.id}
+                                bulkMode={bulkMode}
+                                isCollapsed={collapsedGroups.get(group.id) || false}
+                                onTogglePin={() => pinManagement.togglePin(group.id)}
+                                onToggleSelect={() => toggleGroupSelection(group.id)}
+                                onToggleCollapse={() => toggleCollapse(group.id)}
+                                onOpenTab={(url, tabId) => openTab(url, tabId, group.id)}
+                                onDeleteTab={(tabId) => {
+                                    const updatedGroup = { ...group, tabs: group.tabs.filter(t => t.id !== tabId) };
+                                    if (updatedGroup.tabs.length === 0) {
+                                        setGroups(groups.filter(g => g.id !== group.id));
+                                    } else {
+                                        setGroups(groups.map(g => g.id === group.id ? updatedGroup : g));
+                                    }
+                                    Storage.saveGroups(groups.filter(g => g.id !== group.id || updatedGroup.tabs.length > 0).map(g => g.id === group.id ? updatedGroup : g));
+                                }}
+                                onCopyLink={(url) => {
+                                    navigator.clipboard.writeText(url);
+                                    ToastManager.getInstance().success('Link copied to clipboard');
+                                }}
+                                onDragEnter={(e) => handleGroupDragEnter(e, group.id)}
+                                onDragOver={(e) => handleGroupDragOver(e, group.id)}
+                                onDragLeave={handleGroupDragLeave}
+                                onDrop={(e) => handleGroupDrop(e, group.id)}
+                                onTabDragStart={(e, tab) => handleTabDragStart(e, tab, group.id)}
+                                onTabDragEnd={handleTabDragEnd}
+                                onOpenMenu={() => setOpenMenuId(openMenuId === group.id ? null : group.id)}
+                                isMenuOpen={openMenuId === group.id}
+                                onRestoreGroup={() => restoreGroup(group)}
+                                menuContent={
+                                    <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl z-40">
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                if (!group.locked) {
+                                                    openTagModal(group.id);
+                                                }
+                                            }}
+                                            disabled={group.locked}
+                                            className={`w-full text-left px-4 py-2 text-sm flex items-center gap-2 ${
+                                                group.locked
+                                                    ? 'text-gray-400 dark:text-gray-600 cursor-not-allowed opacity-50'
+                                                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                                            }`}
+                                            title={group.locked ? 'Unlock group to manage tags' : ''}
+                                        >
+                                            <i className="fas fa-tags"></i>
+                                            Manage Tags
+                                        </button>
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                if (!group.locked) {
+                                                    showArchiveModal(group.id);
+                                                    setOpenMenuId(null);
+                                                }
+                                            }}
+                                            disabled={group.locked}
+                                            className={`w-full text-left px-4 py-2 text-sm flex items-center gap-2 ${
+                                                group.locked
+                                                    ? 'text-gray-400 dark:text-gray-600 cursor-not-allowed opacity-50'
+                                                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                                            }`}
+                                            title={group.locked ? 'Unlock group to archive' : ''}
+                                        >
+                                            <i className="fas fa-archive"></i>
+                                            Archive Group
+                                        </button>
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                toggleGroupLock(group.id);
+                                            }}
+                                            className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2"
+                                        >
+                                            <i className={`fas ${group.locked ? 'fa-unlock' : 'fa-lock'}`}></i>
+                                            {group.locked ? 'Unlock Group' : 'Lock Group'}
+                                        </button>
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleCopyGroupLinks(group.id);
+                                                setOpenMenuId(null);
+                                            }}
+                                            className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2"
+                                            aria-label="Copy all links from group"
+                                            title="Copy all tab URLs and titles to clipboard"
+                                        >
+                                            <i className="fas fa-copy"></i>
+                                            Copy Links
+                                        </button>
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                if (!group.locked) {
+                                                    showDeleteGroupModal(group.id);
+                                                    setOpenMenuId(null);
+                                                }
+                                            }}
+                                            disabled={group.locked}
+                                            className={`w-full text-left px-4 py-2 text-sm flex items-center gap-2 ${
+                                                group.locked
+                                                    ? 'text-gray-400 dark:text-gray-600 cursor-not-allowed opacity-50'
+                                                    : 'text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20'
+                                            }`}
+                                            title={group.locked ? 'Unlock group to delete' : ''}
+                                        >
+                                            <i className="fas fa-trash"></i>
+                                            Delete Group
+                                        </button>
+                                    </div>
+                                }
+                            />
+                        ))
+                            )}
+                        </Masonry>
+                    </ResponsiveMasonry>
+                ) : (
+                    <div className="space-y-3 sm:space-y-4">
+                        {filteredAndSortedGroups.length === 0 ? (
+                            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-8 text-center border border-gray-200 dark:border-gray-700">
+                                <p className="text-gray-500 dark:text-gray-400">No groups found. Save some tabs to get started!</p>
+                            </div>
+                        ) : (
+                            filteredAndSortedGroups.map(group => (
+                            <MasonryGroupCard
+                                key={group.id}
+                                group={group}
+                                tags={tags}
+                                isPinned={pinManagement.isPinned(group.id)}
+                                isSelected={selectedGroups.has(group.id)}
+                                isDragOver={dragOverGroupId === group.id}
+                                bulkMode={bulkMode}
+                                isCollapsed={collapsedGroups.get(group.id) || false}
+                                editingId={editingId}
+                                editName={editName}
+                                tabLayout="grid"
+                                onTogglePin={() => pinManagement.togglePin(group.id)}
+                                onToggleSelect={() => toggleGroupSelection(group.id)}
+                                onToggleCollapse={() => toggleCollapse(group.id)}
+                                onOpenTab={(url, tabId) => openTab(url, tabId, group.id)}
+                                onDeleteTab={(tabId) => {
+                                    const updatedGroup = { ...group, tabs: group.tabs.filter(t => t.id !== tabId) };
+                                    if (updatedGroup.tabs.length === 0) {
+                                        setGroups(groups.filter(g => g.id !== group.id));
+                                    } else {
+                                        setGroups(groups.map(g => g.id === group.id ? updatedGroup : g));
+                                    }
+                                    Storage.saveGroups(groups.filter(g => g.id !== group.id || updatedGroup.tabs.length > 0).map(g => g.id === group.id ? updatedGroup : g));
+                                }}
+                                onCopyLink={(url) => {
+                                    navigator.clipboard.writeText(url);
+                                    ToastManager.getInstance().success('Link copied to clipboard');
+                                }}
+                                onDragEnter={(e) => handleGroupDragEnter(e, group.id)}
+                                onDragOver={(e) => handleGroupDragOver(e, group.id)}
+                                onDragLeave={handleGroupDragLeave}
+                                onDrop={(e) => handleGroupDrop(e, group.id)}
+                                onTabDragStart={(e, tab) => handleTabDragStart(e, tab, group.id)}
+                                onTabDragEnd={handleTabDragEnd}
+                                onOpenMenu={() => setOpenMenuId(openMenuId === group.id ? null : group.id)}
+                                isMenuOpen={openMenuId === group.id}
+                                onRestoreGroup={() => restoreGroup(group)}
+                                onStartEdit={() => startEdit(group)}
+                                onSaveEdit={saveEdit}
+                                onCancelEdit={cancelEdit}
+                                onEditNameChange={(value) => setEditName(value)}
+                                menuContent={
+                                    <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl z-40">
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                if (!group.locked) {
+                                                    openTagModal(group.id);
+                                                }
+                                            }}
+                                            disabled={group.locked}
+                                            className={`w-full text-left px-4 py-2 text-sm flex items-center gap-2 ${
+                                                group.locked
+                                                    ? 'text-gray-400 dark:text-gray-600 cursor-not-allowed opacity-50'
+                                                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                                            }`}
+                                            title={group.locked ? 'Unlock group to manage tags' : ''}
+                                        >
+                                            <i className="fas fa-tags"></i>
+                                            Manage Tags
+                                        </button>
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                if (!group.locked) {
+                                                    showArchiveModal(group.id);
+                                                    setOpenMenuId(null);
+                                                }
+                                            }}
+                                            disabled={group.locked}
+                                            className={`w-full text-left px-4 py-2 text-sm flex items-center gap-2 ${
+                                                group.locked
+                                                    ? 'text-gray-400 dark:text-gray-600 cursor-not-allowed opacity-50'
+                                                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                                            }`}
+                                            title={group.locked ? 'Unlock group to archive' : ''}
+                                        >
+                                            <i className="fas fa-archive"></i>
+                                            Archive Group
+                                        </button>
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                toggleGroupLock(group.id);
+                                            }}
+                                            className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2"
+                                        >
+                                            <i className={`fas ${group.locked ? 'fa-unlock' : 'fa-lock'}`}></i>
+                                            {group.locked ? 'Unlock Group' : 'Lock Group'}
+                                        </button>
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleCopyGroupLinks(group.id);
+                                                setOpenMenuId(null);
+                                            }}
+                                            className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2"
+                                            aria-label="Copy all links from group"
+                                            title="Copy all tab URLs and titles to clipboard"
+                                        >
+                                            <i className="fas fa-copy"></i>
+                                            Copy Links
+                                        </button>
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                if (!group.locked) {
+                                                    showDeleteGroupModal(group.id);
+                                                    setOpenMenuId(null);
+                                                }
+                                            }}
+                                            disabled={group.locked}
+                                            className={`w-full text-left px-4 py-2 text-sm flex items-center gap-2 ${
+                                                group.locked
+                                                    ? 'text-gray-400 dark:text-gray-600 cursor-not-allowed opacity-50'
+                                                    : 'text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20'
+                                            }`}
+                                            title={group.locked ? 'Unlock group to delete' : ''}
+                                        >
+                                            <i className="fas fa-trash"></i>
+                                            Delete Group
+                                        </button>
+                                    </div>
+                                }
+                            />
+                        ))
+                            )}
+                    </div>
+                )}
+            </div>
+                            <div
+                                key={group.id}
+                                className={`bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 sm:p-5 lg:p-6 border border-gray-200 dark:border-gray-700 transition-all duration-200 ${bulkMode && selectedGroups.has(group.id) ? 'ring-2 ring-blue-500 dark:ring-blue-400' : ''} ${bulkMode ? 'cursor-pointer' : ''} ${dragOverGroupId === group.id ? 'ring-2 ring-green-500 dark:ring-green-400 bg-green-50 dark:bg-green-900/20' : ''} ${pinManagement.isPinned(group.id) ? 'group-pinned' : ''}`}
+                                onClick={bulkMode ? () => toggleGroupSelection(group.id) : undefined}
+                                onDragEnter={(e) => handleGroupDragEnter(e, group.id)}
+                                onDragOver={(e) => handleGroupDragOver(e, group.id)}
+                                onDragLeave={handleGroupDragLeave}
+                                onDrop={(e) => handleGroupDrop(e, group.id)}
+                            >
+                                <div className="flex justify-between items-center mb-4">
+                                    {bulkMode && (
+                                        <label className="custom-checkbox-container mr-3" onClick={(e) => e.stopPropagation()}>
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedGroups.has(group.id)}
+                                                onChange={() => toggleGroupSelection(group.id)}
+                                            />
+                                            <div className="custom-checkbox-button"></div>
+                                        </label>
+                                    )}
+                                    {editingId === group.id ? (
+                                        <div className="flex-1 flex items-center gap-2">
+                                            <Input
+                                                type="text"
+                                                value={editName}
+                                                onChange={(e) => setEditName(e.target.value)}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') saveEdit();
+                                                    if (e.key === 'Escape') cancelEdit();
+                                                }}
+                                                placeholder="Enter group name..."
+                                                autoFocus
+                                                className="flex-1"
+                                            />
+                                            <Button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    saveEdit();
+                                                }}
+                                                size="sm"
+                                                className="bg-green-600 hover:bg-green-700"
+                                            >
+                                                Save
+                                            </Button>
+                                            <Button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    cancelEdit();
+                                                }}
+                                                size="sm"
+                                                variant="outline"
+                                            >
+                                                Cancel
+                                            </Button>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <div className="flex items-center gap-3 flex-1">
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        toggleCollapse(group.id);
+                                                    }}
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === 'Enter' || e.key === ' ') {
+                                                            e.preventDefault();
+                                                            e.stopPropagation();
+                                                            toggleCollapse(group.id);
+                                                        }
+                                                    }}
+                                                    className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                                                    title={collapsedGroups.get(group.id) ? "Expand group" : "Collapse group"}
+                                                    aria-expanded={!collapsedGroups.get(group.id)}
+                                                    aria-controls={`group-tabs-${group.id}`}
+                                                    aria-label={`${collapsedGroups.get(group.id) ? 'Expand' : 'Collapse'} group ${group.name} with ${group.tabs.length} tabs`}
+                                                >
+                                                    <i className={`fas fa-chevron-${collapsedGroups.get(group.id) ? 'right' : 'down'} text-sm text-gray-500 dark:text-gray-400 transition-transform duration-200`}></i>
+                                                </button>
+                                                <div className="flex-1">
+                                                    <h3
+                                                        className="text-lg font-semibold text-gray-900 dark:text-gray-100 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 flex items-center gap-2"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            if (!group.locked) {
+                                                                startEdit(group);
+                                                            }
+                                                        }}
+                                                        title={group.locked ? "Locked - Unlock to rename" : "Click to rename"}
+                                                    >
+                                                        {group.name}
+                                                        {group.locked && (
+                                                            <i className="fas fa-lock text-yellow-500 text-sm" title="This group is locked"></i>
+                                                        )}
+                                                        {collapsedGroups.get(group.id) && (
+                                                            <span className="text-sm text-gray-500 dark:text-gray-400 ml-2 font-normal">
+                                                                ({group.tabs.length} tabs)
+                                                            </span>
+                                                        )}
+                                                    </h3>
+                                                <div className="space-y-1">
+                                                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                                                        {group.tabs.length} tabs • Created {new Date(group.created).toLocaleString()}
+                                                    </p>
+
+                                                    {/* Group Tags */}
+                                                    <div className="flex flex-wrap gap-1">
+                                                        {TagManager.getTagsByIds(group.tags || [], tags).map(tag => (
+                                                            <span
+                                                                key={tag.id}
+                                                                className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs text-white"
+                                                                style={{ backgroundColor: tag.color }}
+                                                            >
+                                                                {tag.name}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                                </div>
+                                            </div>
+                                            <div className="flex flex-wrap gap-2 sm:gap-3 items-center">
+                                                <PinButton
+                                                    groupId={group.id}
+                                                    isPinned={pinManagement.isPinned(group.id)}
+                                                    onToggle={pinManagement.togglePin}
+                                                    size="medium"
+                                                />
+                                                <Button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        if (!group.locked) {
+                                                            restoreGroup(group);
+                                                        }
+                                                    }}
+                                                    disabled={group.locked}
+                                                    size="sm"
+                                                    className={`whitespace-nowrap ${
+                                                        group.locked
+                                                            ? 'bg-gray-400 dark:bg-gray-600 text-gray-200 dark:text-gray-400 cursor-not-allowed opacity-50'
+                                                            : 'bg-green-600 dark:bg-green-700 text-white hover:bg-green-700 dark:hover:bg-green-800'
+                                                    }`}
+                                                    title={group.locked ? 'Unlock group to restore tabs' : 'Restore all tabs to browser'}
+                                                >
+                                                    <i className="fas fa-external-link-alt mr-2"></i>
+                                                    Restore All
+                                                </Button>
+
+                                                {/* Three-dot menu */}
+                                                <div className="relative">
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setOpenMenuId(openMenuId === group.id ? null : group.id);
+                                                        }}
+                                                        className="min-h-[44px] min-w-[44px] sm:min-h-[36px] sm:min-w-[36px] flex items-center justify-center text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full"
+                                                    >
+                                                        <i className="fas fa-ellipsis-v"></i>
+                                                    </button>
+
+                                                    {openMenuId === group.id && (
+                                                        <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-10">
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    if (!group.locked) {
+                                                                        openTagModal(group.id);
+                                                                    }
+                                                                }}
+                                                                disabled={group.locked}
+                                                                className={`w-full text-left px-4 py-2 text-sm flex items-center gap-2 ${
+                                                                    group.locked
+                                                                        ? 'text-gray-400 dark:text-gray-600 cursor-not-allowed opacity-50'
+                                                                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                                                                }`}
+                                                                title={group.locked ? 'Unlock group to manage tags' : ''}
+                                                            >
+                                                                <i className="fas fa-tags"></i>
+                                                                Manage Tags
+                                                            </button>
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    if (!group.locked) {
+                                                                        showArchiveModal(group.id);
+                                                                        setOpenMenuId(null);
+                                                                    }
+                                                                }}
+                                                                disabled={group.locked}
+                                                                className={`w-full text-left px-4 py-2 text-sm flex items-center gap-2 ${
+                                                                    group.locked
+                                                                        ? 'text-gray-400 dark:text-gray-600 cursor-not-allowed opacity-50'
+                                                                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                                                                }`}
+                                                                title={group.locked ? 'Unlock group to archive' : ''}
+                                                            >
+                                                                <i className="fas fa-archive"></i>
+                                                                Archive Group
+                                                            </button>
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    toggleGroupLock(group.id);
+                                                                }}
+                                                                className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2"
+                                                            >
+                                                                <i className={`fas ${group.locked ? 'fa-unlock' : 'fa-lock'}`}></i>
+                                                                {group.locked ? 'Unlock Group' : 'Lock Group'}
+                                                            </button>
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    handleCopyGroupLinks(group.id);
+                                                                    setOpenMenuId(null);
+                                                                }}
+                                                                className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2"
+                                                                aria-label="Copy all links from group"
+                                                                title="Copy all tab URLs and titles to clipboard"
+                                                            >
+                                                                <i className="fas fa-copy"></i>
+                                                                Copy Links
+                                                            </button>
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    if (!group.locked) {
+                                                                        showDeleteGroupModal(group.id);
+                                                                        setOpenMenuId(null);
+                                                                    }
+                                                                }}
+                                                                disabled={group.locked}
+                                                                className={`w-full text-left px-4 py-2 text-sm flex items-center gap-2 ${
+                                                                    group.locked
+                                                                        ? 'text-gray-400 dark:text-gray-600 cursor-not-allowed opacity-50'
+                                                                        : 'text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20'
+                                                                }`}
+                                                                title={group.locked ? 'Unlock group to delete' : ''}
+                                                            >
+                                                                <i className="fas fa-trash"></i>
+                                                                Delete Group
+                                                            </button>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </>
+                                    )}
+                                </div>
+
+                                {/* Drop Zone Indicator */}
+                                {dragOverGroupId === group.id && !group.locked && (
+                                    <div className="mb-4 p-3 border-2 border-dashed border-green-400 dark:border-green-500 rounded-lg bg-green-50 dark:bg-green-900/20 text-center">
+                                        <p className="text-sm text-green-600 dark:text-green-400 font-medium">
+                                            <i className="fas fa-download mr-2"></i>
+                                            Drop tab here to move it to "{group.name}"
+                                        </p>
+                                    </div>
+                                )}
+
+                                {/* Tabs Grid */}
+                                <div
+                                    id={`group-tabs-${group.id}`}
+                                    className={`tab-list-container transition-all duration-300 ease-out ${
+                                        collapsedGroups.get(group.id) ? 'max-h-0 overflow-hidden' : ''
+                                    }`}
+                                    aria-hidden={collapsedGroups.get(group.id)}
+                                >
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                                        {group.tabs.map(tab => (
+                                        <div
+                                            key={tab.id}
+                                            draggable={!group.locked}
+                                            className={`flex items-center gap-3 p-3 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 transition-all duration-200 ${
+                                                group.locked
+                                                    ? 'opacity-60 cursor-not-allowed'
+                                                    : 'hover:bg-gray-100 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-600 cursor-pointer'
+                                            } ${draggedTab?.tab.id === tab.id ? 'opacity-50 scale-95' : ''}`}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                if (!group.locked) {
+                                                    openTab(tab.url, tab.id, group.id);
+                                                }
+                                            }}
+                                            onDragStart={(e) => {
+                                                if (!group.locked) {
+                                                    handleTabDragStart(e, tab, group.id);
+                                                } else {
+                                                    e.preventDefault();
+                                                }
+                                            }}
+                                            onDragEnd={handleTabDragEnd}
+                                            title={group.locked ? 'Unlock group to open tabs' : tab.url}
+                                        >
+                                            <img
+                                                src={tab.favicon || 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>'}
+                                                alt=""
+                                                className="w-4 h-4 flex-shrink-0"
+                                                onError={(e) => {
+                                                    e.currentTarget.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="gray"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>';
+                                                }}
+                                            />
+                                            <div className="flex-1 min-w-0">
+                                                <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                                                    {tab.title}
+                                                </p>
+                                                <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                                                    {tab.url}
+                                                </p>
+                                            </div>
+                                            <Button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    navigator.clipboard.writeText(tab.url);
+                                                    ToastManager.getInstance().success('Link copied to clipboard');
+                                                }}
+                                                size="sm"
+                                                variant="ghost"
+                                                className="h-6 w-6 p-0 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+                                                title="Copy link"
+                                            >
+                                                <i className="fas fa-copy text-xs"></i>
+                                            </Button>
+                                        </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                            )}
+                    </div>
+                )}
+            </div>
+
+            {/* Tag Management Modal */}
+            {showTagModal && tagModalGroupId && (
+                <div
+                    className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+                    onClick={() => setShowTagModal(false)}
+                >
+                    <div
+                        className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">Manage Tags</h2>
+
+                        {/* Create New Tag */}
+                        <div className="mb-6">
+                            <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Create New Tag</h4>
+                            <div className="space-y-3">
+                                <Input
+                                    type="text"
+                                    placeholder="Tag name"
+                                    value={newTagName}
+                                    onChange={(e) => setNewTagName(e.target.value)}
+                                    onKeyPress={(e) => e.key === 'Enter' && createTag()}
+                                />
+                                <div className="flex flex-wrap gap-2 justify-center">
+                                    {TAG_COLORS.map((color) => (
+                                        <button
+                                            key={color}
+                                            type="button"
+                                            onClick={() => setNewTagColor(color)}
+                                            className={`w-8 h-8 rounded-full border-2 transition-all duration-200 hover:scale-110 ${
+                                                newTagColor === color
+                                                    ? 'border-gray-800 dark:border-gray-200 shadow-lg scale-110'
+                                                    : 'border-gray-300 dark:border-gray-600'
+                                            }`}
+                                            style={{ backgroundColor: color }}
+                                            title={color}
+                                        />
+                                    ))}
+                                </div>
+                                <Button
+                                    onClick={createTag}
+                                    className="w-full"
+                                    style={{ backgroundColor: '#2950D5' }}
+                                >
+                                    <i className="fas fa-plus mr-2"></i>
+                                    Create Tag
+                                </Button>
+                            </div>
+                        </div>
+
+                        {/* Existing Tags */}
+                        <div className="mb-4">
+                            <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Assign Tags to Group</h4>
+                            <div className="space-y-2 max-h-60 overflow-y-auto">
+                                {tags.map(tag => {
+                                    const group = groups.find(g => g.id === tagModalGroupId);
+                                    const isAssigned = group?.tags?.includes(tag.id) || false;
+                                    const usage = TagManager.getTagUsageCount(tag.id, groups);
+
+                                    return (
+                                        <div
+                                            key={tag.id}
+                                            className="flex items-center justify-between p-3 border border-gray-200 dark:border-gray-700 rounded-lg"
+                                        >
+                                            <div className="flex items-center gap-3 flex-1 min-w-0">
+                                                <div
+                                                    className="w-4 h-4 rounded-full flex-shrink-0"
+                                                    style={{ backgroundColor: tag.color }}
+                                                />
+                                                <span className="font-medium text-gray-900 dark:text-gray-100 truncate">{tag.name}</span>
+                                                <span className="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0">
+                                                    ({usage.groups + usage.tabs})
+                                                </span>
+                                            </div>
+                                            <div className="flex items-center gap-2 flex-shrink-0">
+                                                <Button
+                                                    onClick={() => {
+                                                        if (isAssigned) {
+                                                            removeTagFromGroup(tagModalGroupId, tag.id);
+                                                        } else {
+                                                            addTagToGroup(tagModalGroupId, tag.id);
+                                                        }
+                                                    }}
+                                                    size="sm"
+                                                    variant={isAssigned ? "default" : "outline"}
+                                                >
+                                                    {isAssigned ? 'Remove' : 'Add'}
+                                                </Button>
+                                                <Button
+                                                    onClick={() => deleteTag(tag.id)}
+                                                    size="sm"
+                                                    variant="ghost"
+                                                    className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
+                                                >
+                                                    <i className="fas fa-trash text-xs"></i>
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        <Button
+                            onClick={() => setShowTagModal(false)}
+                            className="w-full"
+                            variant="outline"
+                        >
+                            Done
+                        </Button>
+                    </div>
+                </div>
+            )}
+
+            {/* Floating Archive Access Button */}
+            <button
+                onClick={() => setIsArchiveModalOpen(true)}
+                className="fixed bottom-6 right-6 w-14 h-14 text-white rounded-full shadow-lg transition-all duration-200 hover:shadow-xl flex items-center justify-center z-50"
+                style={{ backgroundColor: '#2950D5' }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#1e3fa8'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#2950D5'}
+                title="Open Archives"
+            >
+                <i className="fas fa-archive text-xl"></i>
+            </button>
+
+            {/* Archive Browser Modal */}
+            <ArchiveModal
+                isOpen={isArchiveModalOpen}
+                onClose={() => setIsArchiveModalOpen(false)}
+            />
+
+            {/* Create Archive Modal */}
+            <CreateArchiveModal
+                isOpen={archiveModal.isOpen}
+                onClose={archiveModal.closeModal}
+                onArchive={handleArchiveGroup}
+                groups={groups}
+                selectedGroupIds={selectedGroupForArchive ? [selectedGroupForArchive] : []}
+            />
+
+            {/* Delete Confirmation Modal */}
+            <ConfirmModal
+                isOpen={showDeleteModal}
+                title={
+                    deleteModalType === 'group'
+                        ? 'Delete Group'
+                        : deleteModalType === 'selected'
+                        ? 'Delete Selected Groups'
+                        : 'Delete Tag'
+                }
+                message={
+                    deleteModalType === 'group'
+                        ? 'Are you sure you want to delete this group? All tabs in this group will be permanently removed.'
+                        : deleteModalType === 'selected'
+                        ? `Are you sure you want to delete ${selectedGroups.size} selected group(s)? All tabs in these groups will be permanently removed.`
+                        : 'Are you sure you want to delete this tag? It will be removed from all groups and tabs.'
+                }
+                confirmText="Delete"
+                cancelText="Cancel"
+                onConfirm={handleDeleteConfirm}
+                onCancel={handleDeleteCancel}
+                type="danger"
+            />
+        </div>
+    );
+}
+
+const rootElement = document.getElementById('root');
+if (rootElement) {
+    const root = createRoot(rootElement);
+    root.render(<TabManager />);
+}

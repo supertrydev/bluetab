@@ -1,0 +1,99 @@
+{
+  "manifest_version": 3,
+  "name": "BlueTab",
+  "version": "1.0.0",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAiPmRpQG8MwdX71QsM0R0NXFXYfRvESUmPb6HJRC4SdvkYurLcgD1b01u/90lyQ66kh0PdpV5CQRoaBHZzQjLTVI/D2QVrKioyr5soPH5kxFVVMu+X116Z9xGcpsa2uFdO8F74oHjGdWdDoBhSE/NTyCVvSXu+C9GIACpuG2gb+jnIP2JL9MNg8ui48Jt608fYnO/Z4vkPbLltnIqZfulELdM9B6HVPSpEmnPwnhD5VQYbBROiig0g8cCqQx4zPsXuYrTkPiBgABW545MM9+rHdr0WwG0ePJlFqqy7bz88SJfMnje+EViPuqL6FMo1YcFxq/PSap62iWnGzZPNdvCEwIDAQAB",
+  "description": "One-click tab management for Chrome",
+  "permissions": [
+    "tabs",
+    "tabGroups",
+    "storage",
+    "unlimitedStorage",
+    "commands",
+    "contextMenus",
+    "activeTab",
+    "windows",
+    "notifications",
+    "search",
+    "identity",
+    "alarms",
+    "sidePanel",
+    "bookmarks"
+  ],
+  "side_panel": {
+    "default_path": "src/sidepanel/index.html"
+  },
+  "host_permissions": [
+    "https://supertry.net/*",
+    "<all_urls>"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["src/content/floating-button.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["src/assets/*"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "omnibox": {
+    "keyword": "bt"
+  },
+  "background": {
+    "service_worker": "src/background/service-worker.js",
+    "type": "module"
+  },
+  "homepage_url": "https://supertry.net/bluetab",
+  "action": {
+    "default_icon": {
+      "16": "src/assets/icon16.png",
+      "32": "src/assets/icon32.png",
+      "48": "src/assets/icon48.png",
+      "64": "src/assets/icon48.png",
+      "128": "src/assets/icon128.png",
+      "256": "src/assets/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "src/assets/icon16.png",
+    "32": "src/assets/icon32.png",
+    "48": "src/assets/icon48.png",
+    "64": "src/assets/icon48.png",
+    "128": "src/assets/icon128.png",
+    "256": "src/assets/icon128.png"
+  },
+  "options_page": "src/options/index.html",
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Alt+T"
+      },
+      "description": "Activate extension"
+    },
+    "save-all-tabs": {
+      "suggested_key": {
+        "default": "Alt+S"
+      },
+      "description": "Save all tabs"
+    },
+    "restore-last-group": {
+      "suggested_key": {
+        "default": "Alt+R"
+      },
+      "description": "Restore last group"
+    },
+    "open-manager": {
+      "suggested_key": {
+        "default": "Alt+B"
+      },
+      "description": "Open BlueTab Manager"
+    }
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
+}

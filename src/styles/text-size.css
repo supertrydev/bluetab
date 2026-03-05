@@ -1,0 +1,44 @@
+/* Text Size Custom Properties for BlueTab Extension */
+:root {
+  /* Base text size options - user selectable */
+  --text-size-small: 12px;
+  --text-size-medium: 14px;
+  --text-size-large: 16px;
+
+  /* Current active text size - defaults to medium */
+  --text-size-base: var(--text-size-medium);
+
+  /* Derived text sizes using relative calculations */
+  --text-size-xs: calc(var(--text-size-base) * 0.75);   /* 9px, 10.5px, 12px */
+  --text-size-sm: calc(var(--text-size-base) * 0.875);  /* 10.5px, 12.25px, 14px */
+  --text-size-lg: calc(var(--text-size-base) * 1.125);  /* 13.5px, 15.75px, 18px */
+  --text-size-xl: calc(var(--text-size-base) * 1.25);   /* 15px, 17.5px, 20px */
+  --text-size-2xl: calc(var(--text-size-base) * 1.5);   /* 18px, 21px, 24px */
+
+  /* Line height adjustments for better readability */
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+}
+
+/* Utility classes for consistent text sizing */
+.text-size-xs { font-size: var(--text-size-xs); }
+.text-size-sm { font-size: var(--text-size-sm); }
+.text-size-base { font-size: var(--text-size-base); }
+.text-size-lg { font-size: var(--text-size-lg); }
+.text-size-xl { font-size: var(--text-size-xl); }
+.text-size-2xl { font-size: var(--text-size-2xl); }
+
+/* Applied to ensure all text respects the base size */
+body {
+  font-size: var(--text-size-base);
+  line-height: var(--line-height-normal);
+}
+
+/* Headings with relative sizing */
+h1 { font-size: var(--text-size-2xl); }
+h2 { font-size: var(--text-size-xl); }
+h3 { font-size: var(--text-size-lg); }
+h4 { font-size: var(--text-size-base); }
+h5 { font-size: var(--text-size-sm); }
+h6 { font-size: var(--text-size-xs); }

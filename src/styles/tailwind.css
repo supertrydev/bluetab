@@ -1,0 +1,102 @@
+/**
+ * BlueTab Main Stylesheet
+ * 
+ * Import order:
+ * 1. Design tokens (CSS variables) - SINGLE SOURCE OF TRUTH
+ * 2. Tailwind base/components/utilities
+ * 3. Base styles (reset, global)
+ * 4. Responsive adjustments
+ */
+
+/* Design Tokens - must be first, defines all colors */
+@import './tokens/index.css';
+
+/* FontAwesome Icons */
+@import '@fortawesome/fontawesome-free/css/all.min.css';
+
+/* Tailwind */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base styles - reset and global element styles */
+@import './base.css';
+
+/* Responsive adjustments */
+@import './responsive/base.css';
+@import './responsive/typography.css';
+
+/* ============================================
+   TRANSPARENT SCROLLBAR - for modals and overlays
+   ============================================ */
+.scrollbar-transparent::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.scrollbar-transparent::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.scrollbar-transparent::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 9999px;
+}
+
+.scrollbar-transparent:hover::-webkit-scrollbar-thumb {
+    background: var(--border);
+}
+
+.scrollbar-transparent::-webkit-scrollbar-thumb:hover {
+    background: var(--highlight);
+}
+
+/* Firefox scrollbar */
+.scrollbar-transparent {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+}
+
+.scrollbar-transparent:hover {
+    scrollbar-color: var(--border) transparent;
+}
+
+/*---break---
+ */
+
+@layer base {
+  :root {
+        /* Light mode - matches bg-1: hsl(220 15% 99%) */
+        --sidebar-background: 220 15% 99%;
+        --sidebar-foreground: 220 10% 30%;
+        --sidebar-primary: 224.3 76.3% 48%;
+        --sidebar-primary-foreground: 0 0% 100%;
+        --sidebar-accent: 220 15% 95%;
+        --sidebar-accent-foreground: 220 10% 20%;
+        --sidebar-border: 220 13% 91%;
+        --sidebar-ring: 217.2 91.2% 59.8%;
+    }
+  .dark {
+        /* Dark mode - matches bg-1: hsl(220 14% 10%) */
+        --sidebar-background: 220 14% 10%;
+        --sidebar-foreground: 220 10% 90%;
+        --sidebar-primary: 224.3 76.3% 48%;
+        --sidebar-primary-foreground: 0 0% 100%;
+        --sidebar-accent: 220 14% 14%;
+        --sidebar-accent-foreground: 220 10% 90%;
+        --sidebar-border: 220 14% 14%;
+        --sidebar-ring: 217.2 91.2% 59.8%;
+    }
+}
+
+/*---break---
+ */
+
+@layer base {
+  * {
+    @apply border-border;
+    }
+  body {
+    @apply bg-background text-foreground;
+    }
+}

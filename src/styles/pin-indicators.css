@@ -1,0 +1,225 @@
+/* Pin indicator styles for tab group pinning system */
+
+/* Pinned group visual distinction */
+.group-pinned {
+    border-left: 15px solid #2950d5;
+    position: relative;
+    transition: all 0.3s ease-in-out;
+}
+
+.dark .group-pinned {
+    border-left-color: #2950d5;
+}
+
+/* Pin icon styling */
+.pin-icon {
+    color: var(--pin-icon-color, #3b82f6);
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pin-icon:hover {
+    color: var(--pin-icon-hover, #1d4ed8);
+    transform: scale(1.1);
+}
+
+.pin-icon:active {
+    transform: scale(0.95);
+}
+
+.dark .pin-icon {
+    color: var(--pin-icon-dark, #60a5fa);
+}
+
+.dark .pin-icon:hover {
+    color: var(--pin-icon-hover-dark, #93c5fd);
+}
+
+/* Pinned state - slight rotation for visual feedback */
+.pin-icon.pinned {
+    transform: rotate(45deg);
+    color: var(--pin-icon-pinned, #1d4ed8);
+}
+
+.pin-icon.pinned:hover {
+    transform: rotate(45deg) scale(1.1);
+}
+
+.dark .pin-icon.pinned {
+    color: var(--pin-icon-pinned-dark, #93c5fd);
+}
+
+/* Loading state */
+.pin-icon.loading {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.pin-icon.loading:hover {
+    transform: none;
+}
+
+/* Pin section separator */
+.pinned-section-separator {
+    border-bottom: 1px solid var(--separator-color, #e5e7eb);
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.dark .pinned-section-separator {
+    border-bottom-color: var(--separator-dark, #374151);
+}
+
+/* Pinned section header */
+.pinned-section-header {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--header-text, #6b7280);
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    margin-bottom: 0.5rem;
+    padding: 0 0.75rem;
+}
+
+.dark .pinned-section-header {
+    color: var(--header-text-dark, #9ca3af);
+}
+
+/* Pin badge indicator */
+.pin-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    color: var(--badge-text, #3b82f6);
+    background-color: var(--badge-bg, #eff6ff);
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+}
+
+.dark .pin-badge {
+    color: var(--badge-text-dark, #60a5fa);
+    background-color: var(--badge-bg-dark, #1e3a8a);
+}
+
+/* Animation for pin state changes */
+.pin-animation-enter {
+    animation: pinSlideIn 0.3s ease-out;
+}
+
+.pin-animation-exit {
+    animation: pinSlideOut 0.3s ease-in;
+}
+
+@keyframes pinSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pinSlideOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+/* Hover effects for pinned groups - darker shade of blue */
+.group-pinned:hover {
+    border-left-color: #2563eb;
+}
+
+.dark .group-pinned:hover {
+    border-left-color: #3b82f6;
+}
+
+/* Pin count indicator */
+.pin-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.25rem;
+    height: 1.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: white;
+    background-color: var(--pin-count-bg, #3b82f6);
+    border-radius: 0.625rem;
+    padding: 0 0.25rem;
+}
+
+.dark .pin-count {
+    background-color: var(--pin-count-bg-dark, #60a5fa);
+    color: var(--pin-count-text-dark, #1e293b);
+}
+
+/* Accessibility enhancements */
+.pin-icon:focus {
+    outline: 2px solid var(--focus-ring, #3b82f6);
+    outline-offset: 2px;
+    border-radius: 0.25rem;
+}
+
+.dark .pin-icon:focus {
+    outline-color: var(--focus-ring-dark, #60a5fa);
+}
+
+/* High contrast support */
+@media (prefers-contrast: high) {
+    .group-pinned {
+        border-left-width: 4px;
+        border-left-color: #000;
+    }
+
+    .dark .group-pinned {
+        border-left-color: #fff;
+    }
+
+    .pin-icon {
+        color: #000;
+    }
+
+    .dark .pin-icon {
+        color: #fff;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+
+    .pin-icon,
+    .pin-animation-enter,
+    .pin-animation-exit {
+        transition: none;
+        animation: none;
+    }
+}
+
+/* Mobile touch targets */
+@media (max-width: 768px) {
+    .pin-icon {
+        min-width: 44px;
+        min-height: 44px;
+        padding: 0.5rem;
+    }
+
+    .pin-badge {
+        font-size: 0.875rem;
+        padding: 0.25rem 0.5rem;
+    }
+}

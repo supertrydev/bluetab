@@ -1,0 +1,89 @@
+/* Options Page Custom Layout - Feature 020 */
+
+/* Header with large side margins on desktop */
+.options-header-spacing {
+  padding-left: 1rem;
+  padding-right: 1rem;
+  min-height: 60px; /* Fixed navbar height - logo won't expand it */
+}
+
+/* Center the inner flex container */
+.options-header-spacing > div {
+  max-width: 1536px; /* Max container width */
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+
+/* Logo constraint in navbar - Bootstrap best practice */
+.options-header-spacing .logo-container {
+  height: 56px; /* Fixed height matching navbar proportion */
+  width: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.options-header-spacing .logo-image {
+  height: 144px; /* Bigger for mobile/tablet */
+  width: auto;
+  object-fit: contain; /* Maintain aspect ratio */
+  object-position: center;
+}
+
+/* Desktop can have even bigger logo */
+@media (min-width: 1024px) {
+  .options-header-spacing .logo-image {
+    height: 100px;
+  }
+}
+
+/* Tablet and up - Progressive enhancement */
+@media (min-width: 640px) {
+  .options-header-spacing {
+    padding-left: 3rem;
+    padding-right: 3rem;
+    min-height: 64px;
+  }
+
+  .options-header-spacing .logo-container {
+    height: 60px;
+  }
+
+  .options-header-spacing .logo-image {
+    height: 100px;
+  }
+}
+
+/* Desktop - Optimal navbar logo ratio */
+@media (min-width: 1024px) {
+  .options-header-spacing {
+    padding-left: 6rem;
+    padding-right: 6rem;
+    min-height: 68px;
+  }
+
+  .options-header-spacing .logo-container {
+    height: 64px;
+  }
+
+  .options-header-spacing .logo-image {
+    height: 144px;
+  }
+}
+
+/* Large Desktop */
+@media (min-width: 1280px) {
+  .options-header-spacing {
+    padding-left: 8rem;
+    padding-right: 8rem;
+  }
+}
+
+/* Extra Large Desktop */
+@media (min-width: 1536px) {
+  .options-header-spacing {
+    padding-left: 12rem;
+    padding-right: 12rem;
+  }
+}

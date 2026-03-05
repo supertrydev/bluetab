@@ -1,0 +1,127 @@
+/* Navbar Module - Feature 006 */
+/* Main entry point for all navbar-related styles */
+
+/* Import order matters for CSS cascade */
+
+/* 1. Base spacing system */
+@import './spacing.css';
+
+/* 2. Logo styles and sizing */
+@import './logo.css';
+
+/* 3. Touch interaction targets */
+@import './touch-targets.css';
+
+/* 4. Visual hierarchy and typography */
+@import './hierarchy.css';
+
+/* 5. Responsive layout system */
+@import './responsive.css';
+
+/* Navbar module utilities and overrides */
+.navbar-module {
+  /* Namespace for navbar-specific styles */
+  --navbar-module-version: '1.0.0';
+}
+
+/* Module-specific resets */
+.navbar-reset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+  box-sizing: border-box;
+}
+
+/* Common navbar patterns */
+.navbar-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navbar-flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar-flex-start {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.navbar-flex-end {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* Utility classes for common navbar needs */
+.navbar-truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.navbar-no-select {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.navbar-smooth {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Debug utilities (removed in production) */
+.navbar-debug {
+  outline: 1px dashed #ef4444;
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.navbar-debug::before {
+  content: 'DEBUG';
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #ef4444;
+  color: white;
+  font-size: 10px;
+  padding: 2px 4px;
+  font-family: monospace;
+}
+
+/* Print-specific navbar styles */
+@media print {
+  .navbar-no-print {
+    display: none !important;
+  }
+
+  .navbar-print-only {
+    display: block !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .navbar-button-responsive,
+  .navbar-primary-action,
+  .navbar-secondary-action {
+    border: 2px solid currentColor;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .navbar-smooth,
+  .hierarchy-animate-primary,
+  .hierarchy-animate-secondary,
+  .hierarchy-animate-tertiary {
+    transition: none;
+  }
+}

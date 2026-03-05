@@ -1,0 +1,236 @@
+/* Touch-Friendly Interaction Areas - Feature 006 */
+/* 44px minimum touch targets for mobile accessibility */
+
+:root {
+  /* Touch target standards */
+  --touch-target-min: 44px;      /* Apple/Google minimum standard */
+  --touch-target-comfortable: 48px; /* Comfortable touch area */
+  --touch-target-generous: 52px;    /* Generous touch area */
+
+  /* Spacing for touch targets */
+  --touch-spacing-min: 8px;      /* Minimum spacing between targets */
+  --touch-spacing-comfortable: 12px; /* Comfortable spacing */
+}
+
+/* Base touch target class */
+.touch-target {
+  min-height: var(--touch-target-min);
+  min-width: var(--touch-target-min);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  /* Ensure adequate spacing */
+  margin: calc(var(--touch-spacing-min) / 2) 0;
+}
+
+/* Touch target sizes */
+.touch-target-comfortable {
+  min-height: var(--touch-target-comfortable);
+  min-width: var(--touch-target-comfortable);
+}
+
+.touch-target-generous {
+  min-height: var(--touch-target-generous);
+  min-width: var(--touch-target-generous);
+}
+
+/* Button-specific touch targets */
+.navbar-button-touch {
+  min-height: var(--touch-target-min);
+  padding: 12px 16px;
+  margin: 6px 0;
+  /* Ensure text is centered */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* Full-width buttons maintain height but use container width */
+.navbar-button-touch.w-full {
+  width: 100%;
+  min-width: auto; /* Override min-width for full-width buttons */
+}
+
+/* Input touch targets */
+.input-touch {
+  min-height: var(--touch-target-min);
+  padding: 12px 16px;
+  font-size: 16px; /* Prevent zoom on iOS */
+}
+
+/* Search input specific */
+.search-touch {
+  min-height: var(--touch-target-min);
+  padding: 12px 16px;
+  font-size: 16px;
+  border-radius: 8px;
+}
+
+/* Icon button touch targets */
+.icon-button-touch {
+  min-height: var(--touch-target-min);
+  min-width: var(--touch-target-min);
+  padding: 10px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Small action buttons in groups */
+.action-button-touch {
+  min-height: var(--touch-target-min);
+  min-width: 60px; /* Minimum width for small buttons */
+  padding: 10px 12px;
+  font-size: 12px;
+  border-radius: 4px;
+}
+
+/* Touch target spacing utilities */
+.touch-spacing {
+  margin: var(--touch-spacing-min) 0;
+}
+
+.touch-spacing-comfortable {
+  margin: var(--touch-spacing-comfortable) 0;
+}
+
+/* Touch target groups */
+.touch-group {
+  display: flex;
+  gap: var(--touch-spacing-min);
+  align-items: center;
+}
+
+.touch-group-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: var(--touch-spacing-min);
+}
+
+/* Focus states for touch devices */
+.touch-target:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Active states for touch feedback */
+.touch-target:active {
+  transform: scale(0.98);
+  transition: transform 0.1s ease-out;
+}
+
+/* Disable hover effects on touch devices */
+@media (hover: none) {
+  .touch-target:hover {
+    /* Remove hover effects on touch devices */
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+/* Enhanced hover for mouse devices */
+@media (hover: hover) {
+  .touch-target:hover {
+    transition: all 0.2s ease-in-out;
+  }
+
+  .navbar-button-touch:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .dark .navbar-button-touch:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* Touch ripple effect for better feedback */
+.touch-ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.touch-ripple::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease-out, height 0.3s ease-out;
+}
+
+.touch-ripple:active::before {
+  width: 100px;
+  height: 100px;
+}
+
+/* Accessibility improvements for touch */
+.touch-target[aria-label] {
+  /* Ensure adequate space for screen readers */
+  position: relative;
+}
+
+/* Touch target indicators for development */
+.touch-debug .touch-target {
+  border: 1px dashed #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.touch-debug .touch-target::after {
+  content: attr(data-size, '44px');
+  position: absolute;
+  top: -20px;
+  left: 0;
+  font-size: 10px;
+  color: #ef4444;
+  background: white;
+  padding: 2px 4px;
+  border-radius: 2px;
+  font-family: monospace;
+}
+
+/* Responsive touch target adjustments */
+@media (min-width: 768px) {
+  :root {
+    /* Slightly smaller targets on larger screens with precise input */
+    --touch-target-min: 40px;
+    --touch-target-comfortable: 44px;
+  }
+
+  /* Mouse-optimized buttons */
+  .navbar-button-touch {
+    min-height: 40px;
+    padding: 10px 16px;
+  }
+}
+
+/* Landscape mobile adjustments */
+@media (orientation: landscape) and (max-height: 500px) {
+  :root {
+    /* Reduce touch targets in landscape to fit more content */
+    --touch-target-min: 40px;
+    --touch-spacing-min: 6px;
+  }
+}
+
+/* Large screen optimizations */
+@media (min-width: 1024px) {
+  .touch-target {
+    /* Traditional desktop sizing */
+    min-height: 36px;
+    min-width: auto;
+  }
+
+  .navbar-button-touch {
+    min-height: 36px;
+    padding: 8px 16px;
+  }
+}

@@ -1,0 +1,222 @@
+/* Logo Standardization - Feature 006 */
+/* Size standards and responsive logo system */
+
+:root {
+  /* Professional Logo System - Context-based sizing */
+  --logo-size-navbar: 32px;
+  /* Compact navigation bars */
+  --logo-size-header: 56px;
+  /* Page headers, settings */
+  --logo-size-splash: 140px;
+  /* Splash screens, about pages */
+  --logo-size-popup: 140px;
+  /* Extension popup */
+  --logo-size-hero: 180px;
+  /* Hero sections, landing */
+  --logo-size-brand: 240px;
+  /* Brand showcase, marketing */
+}
+
+/* Logo size classes */
+.logo-navbar {
+  height: var(--logo-size-navbar);
+  width: auto;
+  max-width: 100%;
+}
+
+.logo-header {
+  height: var(--logo-size-header);
+  width: auto;
+  max-width: 100%;
+}
+
+.logo-splash {
+  height: var(--logo-size-splash);
+  width: auto;
+  max-width: 100%;
+}
+
+.logo-popup {
+  height: var(--logo-size-popup);
+  width: auto;
+  max-width: 100%;
+}
+
+.logo-hero {
+  height: var(--logo-size-hero);
+  width: auto;
+  max-width: 100%;
+}
+
+.logo-brand {
+  height: var(--logo-size-brand);
+  width: auto;
+  max-width: 100%;
+}
+
+/* Logo container with proper spacing */
+.logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: var(--navbar-spacing-md, 12px);
+  flex-shrink: 0;
+  /* Prevent logo from shrinking */
+  align-self: center;
+  /* Ensure vertical centering in flex parent */
+}
+
+/* Logo aspect ratio preservation */
+.logo-image {
+  object-fit: contain;
+  object-position: center;
+  display: block;
+}
+
+/* Dark mode variants */
+.logo-light {
+  display: block;
+}
+
+.logo-dark {
+  display: none;
+}
+
+.dark .logo-light {
+  display: none;
+}
+
+.dark .logo-dark {
+  display: block;
+}
+
+/* Responsive logo sizing - Progressive enhancement */
+@media (min-width: 480px) {
+  :root {
+    --logo-size-navbar: 36px;
+    --logo-size-header: 64px;
+    --logo-size-splash: 160px;
+  }
+}
+
+@media (min-width: 768px) {
+  :root {
+    --logo-size-navbar: 40px;
+    --logo-size-header: 72px;
+    --logo-size-splash: 180px;
+    --logo-size-hero: 220px;
+    --logo-size-brand: 280px;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --logo-size-header: 80px;
+    --logo-size-splash: 200px;
+    --logo-size-hero: 240px;
+  }
+}
+
+/* Logo clear space enforcement */
+.logo-with-clearspace {
+  padding: var(--navbar-spacing-sm, 8px);
+}
+
+.logo-with-clearspace.comfortable {
+  padding: var(--navbar-spacing-md, 12px);
+}
+
+.logo-with-clearspace.generous {
+  padding: var(--navbar-spacing-lg, 16px);
+}
+
+/* Logo loading and error states */
+.logo-loading {
+  background: linear-gradient(90deg, #f0f0f0 25%, transparent 37%, #f0f0f0 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+.dark .logo-loading {
+  background: linear-gradient(90deg, #374151 25%, transparent 37%, #374151 63%);
+  background-size: 400% 100%;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.logo-error {
+  background-color: #f3f4f6;
+  border: 2px dashed #d1d5db;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  font-size: 12px;
+  text-align: center;
+}
+
+.dark .logo-error {
+  background-color: #374151;
+  border-color: #4b5563;
+  color: #9ca3af;
+}
+
+/* Accessibility improvements */
+.logo-image[alt] {
+  /* Ensure alt text is properly positioned if image fails */
+  font-size: 12px;
+  text-align: center;
+  color: #6b7280;
+}
+
+/* Logo focus states for keyboard navigation */
+.logo-link:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.logo-link:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Logo animation for enhanced UX */
+.logo-animated {
+  transition: transform 0.2s ease-in-out;
+}
+
+.logo-animated:hover {
+  transform: scale(1.05);
+}
+
+.logo-animated:active {
+  transform: scale(0.95);
+}
+
+/* Logo positioning utilities */
+.logo-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-left {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.logo-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}

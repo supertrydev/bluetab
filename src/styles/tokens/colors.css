@@ -1,0 +1,108 @@
+/**
+ * BlueTab Design Tokens - Colors
+ * 
+ * Philosophy: 3-layer surfaces + 3-level text contrast
+ * Based on: DesignPromptsBook "The Easy Way to Pick UI Colors"
+ */
+
+:root {
+  /* ============================================
+     SURFACES - 3 Layer System
+     bg-0: deepest (page background)
+     bg-1: elevated (cards, panels)
+     bg-2: raised (hover states, tooltips)
+     ============================================ */
+  --bg-0: hsl(220 15% 6%);
+  --bg-1: hsl(220 14% 10%);
+  --bg-2: hsl(220 13% 14%);
+
+  /* ============================================
+     TEXT - 3 Contrast Levels
+     strong: headings, primary content
+     default: body text
+     muted: secondary, meta info
+     ============================================ */
+  --text-strong: hsl(220 10% 94%);
+  --text: hsl(220 10% 75%);
+  --text-muted: hsl(220 10% 55%);
+
+  /* ============================================
+     BORDERS & HIGHLIGHTS
+     ============================================ */
+  --border: hsl(220 12% 20%);
+  --border-subtle: hsl(220 12% 16%);
+  --highlight: hsl(220 12% 25%);
+  --tab-border-color: rgba(87, 87, 87, 0.5);
+
+  /* ============================================
+     BRAND - Blue (BlueTab identity)
+     ============================================ */
+  --primary: hsl(226.4, 67.72%, 49.8%);
+  --primary-hover: hsl(215 90% 60%);
+  --primary-active: hsl(215 90% 50%);
+  --primary-muted: hsl(215 50% 20%);
+
+  /* ============================================
+     SEMANTIC COLORS
+     ============================================ */
+  --success: hsl(142 70% 45%);
+  --success-muted: hsl(142 40% 15%);
+
+  --warning: hsl(38 90% 50%);
+  --warning-muted: hsl(38 50% 15%);
+
+  --danger: hsl(0 80% 55%);
+  --danger-muted: hsl(0 50% 15%);
+
+  --info: hsl(200 80% 50%);
+  --info-muted: hsl(200 50% 15%);
+
+  /* ============================================
+     SHADCN COMPATIBILITY ALIASES
+     Maps old shadcn vars to new token system
+     ============================================ */
+  --background: var(--bg-0);
+  --foreground: var(--text);
+  --card: var(--bg-1);
+  --card-foreground: var(--text-strong);
+  --popover: var(--bg-1);
+  --popover-foreground: var(--text-strong);
+  --muted: var(--bg-2);
+  --muted-foreground: var(--text-muted);
+  --accent: var(--highlight);
+  --accent-foreground: var(--text-strong);
+  --destructive: var(--danger);
+  --destructive-foreground: var(--text-strong);
+  --secondary: var(--bg-2);
+  --secondary-foreground: var(--text-strong);
+  --input: var(--border);
+  --ring: var(--primary);
+  --radius: 0.5rem;
+}
+
+/* ============================================
+   LIGHT MODE OVERRIDES
+   Using data-theme for explicit control
+   ============================================ */
+[data-theme="light"],
+html:not(.dark) {
+  --bg-0: hsl(220 15% 97%);
+  --bg-1: hsl(220 15% 99%);
+  --bg-2: hsl(0 0% 100%);
+
+  --text-strong: hsl(220 15% 10%);
+  --text: hsl(220 10% 35%);
+  --text-muted: hsl(220 8% 55%);
+
+  --border: hsl(220 12% 88%);
+  --border-subtle: hsl(220 12% 92%);
+  --highlight: hsl(220 12% 95%);
+  --tab-border-color: #c7c7c7b3;
+
+  /* Semantic muted states for light mode */
+  --primary-muted: hsl(215 80% 95%);
+  --success-muted: hsl(142 60% 95%);
+  --warning-muted: hsl(38 80% 95%);
+  --danger-muted: hsl(0 70% 95%);
+  --info-muted: hsl(200 70% 95%);
+}

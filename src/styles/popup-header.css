@@ -1,0 +1,35 @@
+/* Popup Header Styles - Feature 007 */
+/* Centered logo header for professional appearance */
+
+.popup-header-centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 0 8px 0;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 16px;
+}
+
+.dark .popup-header-centered {
+  border-bottom-color: #374151;
+}
+
+/* Enhanced spacing for popup header */
+.popup-header-centered .logo-container {
+  margin-right: 0; /* Remove default right margin for centered layout */
+}
+
+/* Responsive popup header */
+@media (max-width: 320px) {
+  .popup-header-centered {
+    padding: 12px 0 6px 0;
+    margin-bottom: 12px;
+  }
+}
+
+@media (min-width: 480px) {
+  .popup-header-centered {
+    padding: 20px 0 12px 0;
+    margin-bottom: 20px;
+  }
+}
