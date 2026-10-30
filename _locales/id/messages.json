@@ -1,0 +1,26 @@
+{
+  "appName": {
+    "message": "Bluetab: Pengelola Tab"
+  },
+  "appDescription": {
+    "message": "Simpan semua tab sekali klik, temukan halaman tersimpan dengan cepat, dan lihat lebih sedikit tab. Pengelola tab gratis dan privat."
+  },
+  "commandActivate": {
+    "message": "Aktifkan ekstensi"
+  },
+  "commandSaveAllTabs": {
+    "message": "Simpan semua tab"
+  },
+  "commandSaveCurrentTab": {
+    "message": "Simpan halaman saat ini"
+  },
+  "commandRestoreLastGroup": {
+    "message": "Pulihkan grup terakhir"
+  },
+  "commandOpenManager": {
+    "message": "Buka Pengelola Bluetab"
+  },
+  "commandBrainDump": {
+    "message": "Simpan ide ke Kotak Masuk Brain Dump"
+  }
+}

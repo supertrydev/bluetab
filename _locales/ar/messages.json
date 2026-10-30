@@ -1,0 +1,26 @@
+{
+  "appName": {
+    "message": "Bluetab: مدير علامات التبويب"
+  },
+  "appDescription": {
+    "message": "احفظ علامات التبويب بنقرة واحدة، واعثر على صفحاتك المحفوظة بسرعة، وأبق عددًا أقل منها أمامك. مدير علامات تبويب مجاني يحترم خصوصيتك."
+  },
+  "commandActivate": {
+    "message": "تفعيل الإضافة"
+  },
+  "commandSaveAllTabs": {
+    "message": "حفظ جميع علامات التبويب"
+  },
+  "commandSaveCurrentTab": {
+    "message": "حفظ الصفحة الحالية"
+  },
+  "commandRestoreLastGroup": {
+    "message": "استعادة آخر مجموعة"
+  },
+  "commandOpenManager": {
+    "message": "فتح مدير Bluetab"
+  },
+  "commandBrainDump": {
+    "message": "احفظ فكرة في صندوق وارد Brain Dump"
+  }
+}

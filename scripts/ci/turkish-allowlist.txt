@@ -1,0 +1,37 @@
+# Positive allowlist for intentional Turkish content in user-facing source.
+#
+# Format: one git pathspec per line. Comment lines begin with '#'; blank
+# lines are ignored. Each entry is appended to `git grep` as `:!<path>`
+# to exclude it from the PROCESS-02 Turkish-character scan.
+#
+# Default: empty. No files in src/** should contain Turkish characters.
+# Add a path here ONLY when a file legitimately needs Turkish content AND
+# you've confirmed it is not part of the rendered UI copy.
+
+# Phase 5 AI — intentional Turkish trigger word ("düzenle") in the AI system
+# prompt teaching the model to recognize Turkish phrasing for smart_organize.
+# This is an LLM prompt payload, not rendered UI copy.
+src/services/ai-service.ts
+
+# Phase 10 offline-reading — Turkish-language developer comment in test file.
+# The comment is a developer note, not rendered UI copy.
+src/services/offline-reading-service.test.ts
+
+# Phase 13 SnapshotConsentModal contract test — Turkish characters appear
+# inside a regex literal that ASSERTS the production component contains
+# none of them (PROCESS-02 defensive guard). The regex itself is test
+# infrastructure, not rendered copy.
+src/settings/components/__tests__/SnapshotConsentModal.test.tsx
+
+# Phase 13 TrustWarningModal contract test — same pattern as
+# SnapshotConsentModal: Turkish characters inside a regex literal
+# that ASSERTS the component contains none of them (PROCESS-02 guard).
+src/settings/components/__tests__/TrustWarningModal.test.tsx
+
+# Localization quality/parity tests intentionally assert reviewed Turkish
+# translations. These fixtures are never bundled as rendered UI source.
+src/components/ThemeToggle.i18n.test.tsx
+src/i18n/brazilian-portuguese-copy-quality.test.ts
+src/i18n/resource-parity.test.ts
+src/i18n/turkish-copy-quality.test.ts
+src/utils/integration-labels.test.ts

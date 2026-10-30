@@ -1,0 +1,1622 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Turkish product copy quality keeps every migrated English literal unchanged and records its Turkish counterpart 1`] = `
+{
+  "components.a11y.breadcrumb": {
+    "english": "breadcrumb",
+    "turkish": "içerik yolu",
+  },
+  "components.a11y.mobileSidebar": {
+    "english": "Displays the mobile sidebar.",
+    "turkish": "Mobil kenar çubuğunu gösterir.",
+  },
+  "components.a11y.sidebar": {
+    "english": "Sidebar",
+    "turkish": "Kenar Çubuğu",
+  },
+  "components.a11y.toggleSidebar": {
+    "english": "Toggle Sidebar",
+    "turkish": "Kenar Çubuğunu Aç/Kapat",
+  },
+  "components.account.subtitle": {
+    "english": "Manage your account and subscription",
+    "turkish": "Hesabını ve aboneliğini yönet",
+  },
+  "components.actionBar.viewFlow": {
+    "english": "View Flow",
+    "turkish": "Flow’u Görüntüle",
+  },
+  "components.archive.deleteConfirmAction": {
+    "english": "Are you sure you want to permanently delete this archive? This action cannot be undone.",
+    "turkish": "Bu arşivi kalıcı olarak silmek istediğine emin misin? Bu işlem geri alınamaz.",
+  },
+  "components.archive.deleteDescription": {
+    "english": "Permanently delete this archived group from Bluetab.",
+    "turkish": "Arşivlenmiş bu grubu Bluetab’den kalıcı olarak sil.",
+  },
+  "components.archive.deleteFailed": {
+    "english": "Failed to delete archive",
+    "turkish": "Arşiv silinemedi",
+  },
+  "components.archive.deleteFinalConfirm": {
+    "english": "Final confirmation: This will permanently delete the archive. Continue?",
+    "turkish": "Son onay: Arşiv kalıcı olarak silinecek. Devam edilsin mi?",
+  },
+  "components.archive.deleteSuccess": {
+    "english": "Archive deleted successfully",
+    "turkish": "Arşiv başarıyla silindi",
+  },
+  "components.archive.deleting": {
+    "english": "Deleting...",
+    "turkish": "Siliniyor...",
+  },
+  "components.archive.encryptedDelete": {
+    "english": "This archive is encrypted. Enter the password to delete it.",
+    "turkish": "Bu arşiv şifreli. Silmek için parolayı gir.",
+  },
+  "components.archive.encryptedRestore": {
+    "english": "This archive is encrypted. Enter the password to restore it.",
+    "turkish": "Bu arşiv şifreli. Geri yüklemek için parolayı gir.",
+  },
+  "components.archive.hint": {
+    "english": "Hint:",
+    "turkish": "İpucu:",
+  },
+  "components.archive.permanentConfirm": {
+    "english": ""{{name}}" will be permanently deleted. This action cannot be undone.",
+    "turkish": ""{{name}}" kalıcı olarak silinecek. Bu işlem geri alınamaz.",
+  },
+  "components.archive.permanentDeletion": {
+    "english": "Permanent Deletion",
+    "turkish": "Kalıcı Silme",
+  },
+  "components.archive.protectedArchive": {
+    "english": "Protected Archive",
+    "turkish": "Korumalı Arşiv",
+  },
+  "components.archive.restoreConfirm": {
+    "english": "This will restore "{{name}}" to your active groups.",
+    "turkish": ""{{name}}" etkin gruplarına geri yüklenecek.",
+  },
+  "components.archive.restoreConfirmAction": {
+    "english": "Are you sure you want to restore this archive?",
+    "turkish": "Bu arşivi geri yüklemek istediğine emin misin?",
+  },
+  "components.archive.restoreDescription": {
+    "english": "Restore this archived group back into your active groups.",
+    "turkish": "Arşivlenmiş bu grubu etkin gruplarına geri yükle.",
+  },
+  "components.archive.restoreFailed": {
+    "english": "Failed to restore archive",
+    "turkish": "Arşiv geri yüklenemedi",
+  },
+  "components.archive.restoreFailedSentence": {
+    "english": "Failed to restore archive.",
+    "turkish": "Arşiv geri yüklenemedi.",
+  },
+  "components.archive.restoreFailedWithMessage": {
+    "english": "Failed to restore archive: {{message}}",
+    "turkish": "Arşiv geri yüklenemedi: {{message}}",
+  },
+  "components.archive.restored": {
+    "english": "Restored "{{name}}" to active groups",
+    "turkish": ""{{name}}" aktif gruplara geri yüklendi",
+  },
+  "components.archive.searchPlaceholder": {
+    "english": "Search archives...",
+    "turkish": "Arşivlerde ara...",
+  },
+  "components.backupStatus.bookmarkPermissionRequired": {
+    "english": "Bookmark permission is required to import browser bookmarks.",
+    "turkish": "Tarayıcı yer imlerini içe aktarmak için yer imi izni gerekli.",
+  },
+  "components.backupStatus.bookmarksUnavailable": {
+    "english": "Could not access browser bookmarks.",
+    "turkish": "Tarayıcı yer imlerine erişilemedi.",
+  },
+  "components.backupStatus.clearComplete": {
+    "english": "All data cleared successfully!",
+    "turkish": "Tüm veriler başarıyla temizlendi!",
+  },
+  "components.backupStatus.clearFailed": {
+    "english": "Failed to clear data: {{message}}",
+    "turkish": "Veriler temizlenemedi: {{message}}",
+  },
+  "components.backupStatus.exportComplete": {
+    "english": "Complete backup exported",
+    "turkish": "Tam yedek dışa aktarıldı",
+  },
+  "components.backupStatus.exportFailed": {
+    "english": "Failed to export: {{message}}",
+    "turkish": "Dışa aktarma başarısız: {{message}}",
+  },
+  "components.backupStatus.fileReadFailed": {
+    "english": "Could not read this file.",
+    "turkish": "Bu dosya okunamadı.",
+  },
+  "components.backupStatus.htmlComplete": {
+    "english": "HTML export completed successfully",
+    "turkish": "HTML başarıyla dışa aktarıldı",
+  },
+  "components.backupStatus.htmlFailed": {
+    "english": "Failed to export HTML: {{message}}",
+    "turkish": "HTML dışa aktarılamadı: {{message}}",
+  },
+  "components.backupStatus.loadingBookmarks": {
+    "english": "Loading browser bookmarks...",
+    "turkish": "Tarayıcı yer imleri yükleniyor...",
+  },
+  "components.backupStatus.skippedDuplicate_one": {
+    "english": "Skipped {{count}} duplicate URL.",
+    "turkish": "{{count}} yinelenen URL atlandı.",
+  },
+  "components.backupStatus.skippedDuplicate_other": {
+    "english": "Skipped {{count}} duplicate URLs.",
+    "turkish": "{{count}} yinelenen URL atlandı.",
+  },
+  "components.backupStatus.skippedInvalid_one": {
+    "english": "Skipped {{count}} invalid row.",
+    "turkish": "{{count}} geçersiz satır atlandı.",
+  },
+  "components.backupStatus.skippedInvalid_other": {
+    "english": "Skipped {{count}} invalid rows.",
+    "turkish": "{{count}} geçersiz satır atlandı.",
+  },
+  "components.backupStatus.title": {
+    "english": "Backup",
+    "turkish": "Yedekleme",
+  },
+  "components.backupStatus.unsupported": {
+    "english": "Unsupported",
+    "turkish": "Desteklenmiyor",
+  },
+  "components.bluetConnection.connect": {
+    "english": "Connect to Bluet",
+    "turkish": "Bluet’e bağlan",
+  },
+  "components.bluetConnection.connected": {
+    "english": "Connected to Bluet!",
+    "turkish": "Bluet’e bağlandı!",
+  },
+  "components.bluetConnection.connectedAs": {
+    "english": "Connected as @{{username}}",
+    "turkish": "@{{username}} olarak bağlı",
+  },
+  "components.bluetConnection.disconnect": {
+    "english": "Disconnect",
+    "turkish": "Bağlantıyı kes",
+  },
+  "components.bluetConnection.disconnectConfirmAction": {
+    "english": "Disconnect and delete pages",
+    "turkish": "Bağlantıyı kes ve sayfaları sil",
+  },
+  "components.bluetConnection.disconnectConfirmMessage": {
+    "english": "This deletes every page you shared from Bluetab on bluet.in and disconnects Bluetab on all your devices.",
+    "turkish": "Bluetab’den paylaştığın tüm sayfalar bluet.in’den silinir ve Bluetab tüm cihazlarında Bluet’ten ayrılır.",
+  },
+  "components.bluetConnection.disconnectConfirmTitle": {
+    "english": "Disconnect from Bluet?",
+    "turkish": "Bluet bağlantısı kesilsin mi?",
+  },
+  "components.bluetConnection.disconnected": {
+    "english": "Disconnected from Bluet",
+    "turkish": "Bluet bağlantısı kesildi",
+  },
+  "components.bluetConnection.errors.bluetabProRequired": {
+    "english": "Sharing to Bluet needs an active Bluetab Pro subscription.",
+    "turkish": "Bluet’e paylaşmak için etkin bir Bluetab Pro aboneliği gerekir.",
+  },
+  "components.bluetConnection.errors.invalidPayload": {
+    "english": "Bluet could not read this share.",
+    "turkish": "Bluet bu paylaşımı okuyamadı.",
+  },
+  "components.bluetConnection.errors.invalidToken": {
+    "english": "Bluet did not accept this token. Copy it again from the Bluet page.",
+    "turkish": "Bluet bu tokenı kabul etmedi. Bluet sayfasından yeniden kopyala.",
+  },
+  "components.bluetConnection.errors.limitExceeded": {
+    "english": "You reached your Bluet page or link limit.",
+    "turkish": "Bluet sayfa veya bağlantı sınırına ulaştın.",
+  },
+  "components.bluetConnection.errors.linkedElsewhere": {
+    "english": "Your Bluetab Pro is linked to another Bluet account. Disconnect and connect this account again.",
+    "turkish": "Bluetab Pro’n başka bir Bluet hesabına bağlı. Bağlantıyı kesip bu hesabı yeniden bağla.",
+  },
+  "components.bluetConnection.errors.network": {
+    "english": "Could not reach Bluet. Check your connection and try again.",
+    "turkish": "Bluet’e ulaşılamadı. Bağlantını kontrol edip yeniden dene.",
+  },
+  "components.bluetConnection.errors.notConnected": {
+    "english": "Connect Bluet first.",
+    "turkish": "Önce Bluet’e bağlan.",
+  },
+  "components.bluetConnection.errors.nothingToShare": {
+    "english": "Nothing to share: add at least one web page tab.",
+    "turkish": "Paylaşılacak bir şey yok: en az bir web sayfası sekmesi ekle.",
+  },
+  "components.bluetConnection.errors.payloadTooLarge": {
+    "english": "This share is too large for Bluet. Split it into smaller groups.",
+    "turkish": "Bu paylaşım Bluet için çok büyük. Daha küçük gruplara böl.",
+  },
+  "components.bluetConnection.errors.rateLimited": {
+    "english": "Too many requests. Try again in a minute.",
+    "turkish": "Çok fazla istek gönderildi. Bir dakika sonra yeniden dene.",
+  },
+  "components.bluetConnection.errors.revoked": {
+    "english": "This Bluet connection was disconnected. Connect again.",
+    "turkish": "Bu Bluet bağlantısı kesildi. Yeniden bağlan.",
+  },
+  "components.bluetConnection.errors.serverError": {
+    "english": "Bluet had a problem. Try again later.",
+    "turkish": "Bluet’te bir sorun oluştu. Daha sonra yeniden dene.",
+  },
+  "components.bluetConnection.errors.sessionExpired": {
+    "english": "Your Bluet connection expired. Connect again.",
+    "turkish": "Bluet bağlantının süresi doldu. Yeniden bağlan.",
+  },
+  "components.bluetConnection.errors.subscriptionRequired": {
+    "english": "Bluet Pro is required. It is included with Bluetab Pro: connect Bluet from Bluetab.",
+    "turkish": "Bluet Pro gerekli. Bluetab Pro’ya dahildir: Bluet’e Bluetab’den bağlan.",
+  },
+  "components.bluetConnection.errors.tokenExpired": {
+    "english": "This token has expired. Get a new one from the Bluet page.",
+    "turkish": "Bu tokenın süresi doldu. Bluet sayfasından yenisini al.",
+  },
+  "components.bluetConnection.includedWithBluetabPro": {
+    "english": "Bluet Pro included with your Bluetab Pro",
+    "turkish": "Bluet Pro, Bluetab Pro aboneliğine dahil",
+  },
+  "components.bluetConnection.invalidToken": {
+    "english": "Invalid token",
+    "turkish": "Geçersiz token",
+  },
+  "components.bluetConnection.links_one": {
+    "english": "{{count}} link",
+    "turkish": "{{count}} bağlantı",
+  },
+  "components.bluetConnection.links_other": {
+    "english": "{{count}} links",
+    "turkish": "{{count}} bağlantı",
+  },
+  "components.bluetConnection.noAccess": {
+    "english": "Sharing is paused: Bluet could not confirm an active Bluetab Pro subscription. Sharing to Bluet is part of Bluetab Pro.",
+    "turkish": "Paylaşım duraklatıldı: Bluet etkin bir Bluetab Pro aboneliği doğrulayamadı. Bluet’e paylaşım Bluetab Pro’ya dahildir.",
+  },
+  "components.bluetConnection.pasteToken": {
+    "english": "Paste your bridge token",
+    "turkish": "Köprü tokenını yapıştır",
+  },
+  "components.bluetConnection.shareDescription": {
+    "english": "Share your tab groups as Bluet pages",
+    "turkish": "Sekme gruplarını Bluet sayfaları olarak paylaş",
+  },
+  "components.bluetConnection.sharedPages_one": {
+    "english": "{{count}} shared page",
+    "turkish": "{{count}} paylaşılan sayfa",
+  },
+  "components.bluetConnection.sharedPages_other": {
+    "english": "{{count}} shared pages",
+    "turkish": "{{count}} paylaşılan sayfa",
+  },
+  "components.bluetConnection.skippedTabs_one": {
+    "english": "{{count}} tab was not shared (browser pages, private addresses or over the limit).",
+    "turkish": "{{count}} sekme paylaşılmadı (tarayıcı sayfaları, özel adresler veya sınırı aşanlar).",
+  },
+  "components.bluetConnection.skippedTabs_other": {
+    "english": "{{count}} tabs were not shared (browser pages, private addresses or over the limit).",
+    "turkish": "{{count}} sekme paylaşılmadı (tarayıcı sayfaları, özel adresler veya sınırı aşanlar).",
+  },
+  "components.bluetConnection.title": {
+    "english": "Bluet Connection",
+    "turkish": "Bluet Bağlantısı",
+  },
+  "components.bluetConnection.tokenHelp": {
+    "english": "Copy the token from the Bluet page and paste it below.",
+    "turkish": "Tokenı Bluet sayfasından kopyalayıp aşağıya yapıştır.",
+  },
+  "components.brainDumpPanel.added": {
+    "english": "Added to Dump.",
+    "turkish": "Dump'a eklendi.",
+  },
+  "components.brainDumpPanel.deleteFailed": {
+    "english": "Could not delete. Please try again.",
+    "turkish": "Silinemedi. Lütfen tekrar dene.",
+  },
+  "components.brainDumpPanel.entryAria": {
+    "english": "Brain Dump entry",
+    "turkish": "Brain Dump girdisi",
+  },
+  "components.brainDumpPanel.noLink": {
+    "english": "This entry has no link to save.",
+    "turkish": "Bu girdinin kaydedilecek bir bağlantısı yok.",
+  },
+  "components.brainDumpPanel.saveEditFailed": {
+    "english": "Could not save the edit. Please try again.",
+    "turkish": "Düzenleme kaydedilemedi. Lütfen tekrar dene.",
+  },
+  "components.brainDumpPanel.saveGroupFailed": {
+    "english": "Could not save the group. Please try again.",
+    "turkish": "Grup kaydedilemedi. Lütfen tekrar dene.",
+  },
+  "components.brainDumpPanel.savedAsGroup": {
+    "english": "Saved as group: {{name}}",
+    "turkish": "Grup olarak kaydedildi: {{name}}",
+  },
+  "components.confirmModal.confirm": {
+    "english": "Confirm",
+    "turkish": "Onayla",
+  },
+  "components.confirmation.allow": {
+    "english": "Allow",
+    "turkish": "İzin ver",
+  },
+  "components.confirmation.allowed": {
+    "english": "Allowed",
+    "turkish": "İzin verildi",
+  },
+  "components.confirmation.alwaysAllowIntegrations": {
+    "english": "Always allow app actions",
+    "turkish": "Uygulama işlemlerine hep izin ver",
+  },
+  "components.confirmation.cancelled": {
+    "english": "Cancelled.",
+    "turkish": "İptal edildi.",
+  },
+  "components.confirmation.closeTabs": {
+    "english": "Close tabs",
+    "turkish": "Sekmeleri kapat",
+  },
+  "components.confirmation.closeTabsQuestion_one": {
+    "english": "Close {{count}} tab?",
+    "turkish": "{{count}} sekme kapatılsın mı?",
+  },
+  "components.confirmation.closeTabsQuestion_other": {
+    "english": "Close {{count}} tabs?",
+    "turkish": "{{count}} sekme kapatılsın mı?",
+  },
+  "components.confirmation.closedTabs_one": {
+    "english": "Closed {{count}} tab.",
+    "turkish": "{{count}} sekme kapatıldı.",
+  },
+  "components.confirmation.closedTabs_other": {
+    "english": "Closed {{count}} tabs.",
+    "turkish": "{{count}} sekme kapatıldı.",
+  },
+  "components.confirmation.deleteGroup": {
+    "english": "Delete group",
+    "turkish": "Grubu sil",
+  },
+  "components.confirmation.deleteNamed": {
+    "english": "Delete "{{name}}"?",
+    "turkish": ""{{name}}" silinsin mi?",
+  },
+  "components.confirmation.deleteNotesQuestion_one": {
+    "english": "Delete {{count}} Brain Dump note?",
+    "turkish": "{{count}} Brain Dump notu silinsin mi?",
+  },
+  "components.confirmation.deleteNotesQuestion_other": {
+    "english": "Delete {{count}} Brain Dump notes?",
+    "turkish": "{{count}} Brain Dump notu silinsin mi?",
+  },
+  "components.confirmation.deleteNotes_one": {
+    "english": "Delete {{count}} note",
+    "turkish": "{{count}} notu sil",
+  },
+  "components.confirmation.deleteNotes_other": {
+    "english": "Delete {{count}} notes",
+    "turkish": "{{count}} notu sil",
+  },
+  "components.confirmation.deleteProject": {
+    "english": "Delete project",
+    "turkish": "Projeyi sil",
+  },
+  "components.confirmation.deleteProjectsQuestion_one": {
+    "english": "Delete {{count}} project?",
+    "turkish": "{{count}} proje silinsin mi?",
+  },
+  "components.confirmation.deleteProjectsQuestion_other": {
+    "english": "Delete {{count}} projects?",
+    "turkish": "{{count}} proje silinsin mi?",
+  },
+  "components.confirmation.deleteProjects_one": {
+    "english": "Delete {{count}} project",
+    "turkish": "{{count}} projeyi sil",
+  },
+  "components.confirmation.deleteProjects_other": {
+    "english": "Delete {{count}} projects",
+    "turkish": "{{count}} projeyi sil",
+  },
+  "components.confirmation.fallbackTab": {
+    "english": "Tab {{id}}",
+    "turkish": "Sekme {{id}}",
+  },
+  "components.confirmation.groupDeleted": {
+    "english": "Group deleted.",
+    "turkish": "Grup silindi.",
+  },
+  "components.confirmation.groupsUnassigned_one": {
+    "english": "{{count}} group will be unassigned",
+    "turkish": "{{count}} grubun proje ataması kaldırılacak",
+  },
+  "components.confirmation.groupsUnassigned_other": {
+    "english": "{{count}} groups will be unassigned",
+    "turkish": "{{count}} grubun proje ataması kaldırılacak",
+  },
+  "components.confirmation.integrationActionQuestion": {
+    "english": "Run this in {{name}}?",
+    "turkish": "Bu işlem {{name}} üzerinde yapılsın mı?",
+  },
+  "components.confirmation.integrationDetails.channel": {
+    "english": "Channel: {{channel}}",
+    "turkish": "Kanal: {{channel}}",
+  },
+  "components.confirmation.integrationDetails.defaultChannel": {
+    "english": "Channel: the default channel in Settings",
+    "turkish": "Kanal: Ayarlar'daki varsayılan kanal",
+  },
+  "components.confirmation.integrationDetails.publicGist": {
+    "english": "Public: anyone can see this gist",
+    "turkish": "Herkese açık: Bu gist'i herkes görebilir",
+  },
+  "components.confirmation.namedDeleted": {
+    "english": ""{{name}}" deleted.",
+    "turkish": ""{{name}}" silindi.",
+  },
+  "components.confirmation.noGroupsAssigned": {
+    "english": "No groups assigned",
+    "turkish": "Atanmış grup yok",
+  },
+  "components.confirmation.notesDeleted_one": {
+    "english": "{{count}} note deleted.",
+    "turkish": "{{count}} not silindi.",
+  },
+  "components.confirmation.notesDeleted_other": {
+    "english": "{{count}} notes deleted.",
+    "turkish": "{{count}} not silindi.",
+  },
+  "components.confirmation.projectsDeleted_one": {
+    "english": "{{count}} project deleted.",
+    "turkish": "{{count}} proje silindi.",
+  },
+  "components.confirmation.projectsDeleted_other": {
+    "english": "{{count}} projects deleted.",
+    "turkish": "{{count}} proje silindi.",
+  },
+  "components.deleteConfirm.bluetMany": {
+    "english": "{{count}} of these groups are shared on Bluet. Deleting them will break the public links.",
+    "turkish": "Bu grupların {{count}} tanesi Bluet üzerinde paylaşılıyor. Silinirlerse herkese açık bağlantılar çalışmaz.",
+  },
+  "components.deleteConfirm.bluetOne": {
+    "english": "This group is shared on Bluet. Deleting it will break the public link.",
+    "turkish": "Bu grup Bluet üzerinde paylaşılıyor. Silinirse herkese açık bağlantı çalışmaz.",
+  },
+  "components.deleteConfirm.groupMessage": {
+    "english": "Are you sure you want to delete this group? All tabs in this group will be permanently removed.",
+    "turkish": "Bu grubu silmek istediğinden emin misin? Gruptaki tüm sekmeler kalıcı olarak kaldırılacak.",
+  },
+  "components.deleteConfirm.selectedMessage": {
+    "english": "Are you sure you want to delete {{count}} selected group(s)? All tabs in these groups will be permanently removed.",
+    "turkish": "Seçili {{count}} grubu silmek istediğinden emin misin? Bu gruplardaki tüm sekmeler kalıcı olarak kaldırılacak.",
+  },
+  "components.deleteConfirm.selectedTitle": {
+    "english": "Delete Selected Groups",
+    "turkish": "Seçili Grupları Sil",
+  },
+  "components.deleteConfirm.tagMessage": {
+    "english": "Are you sure you want to delete this tag? It will be removed from all groups and tabs.",
+    "turkish": "Bu etiketi silmek istediğinden emin misin? Etiket tüm gruplardan ve sekmelerden kaldırılacak.",
+  },
+  "components.deleteConfirm.tagTitle": {
+    "english": "Delete Tag",
+    "turkish": "Etiketi Sil",
+  },
+  "components.feeds.documentTitle": {
+    "english": "Bluetab Feeds",
+    "turkish": "Bluetab Akışları",
+  },
+  "components.floatingButton.hide": {
+    "english": "Hide floating button (reappears on page reload)",
+    "turkish": "Yüzen düğmeyi gizle (sayfa yeniden yüklendiğinde tekrar görünür)",
+  },
+  "components.floatingButton.matchingDump": {
+    "english": "Save this tab (matching Dump found for this site)",
+    "turkish": "Bu sekmeyi kaydet (bu site için eşleşen Dump bulundu)",
+  },
+  "components.floatingButton.relatedDumpBubble": {
+    "english": "Brain Dump note for this page",
+    "turkish": "Bu sayfa için Brain Dump notu",
+  },
+  "components.floatingButton.relatedDumpMore": {
+    "english": "+{{n}} more",
+    "turkish": "+{{n}} not daha",
+  },
+  "components.floatingButton.relatedDumpOpen": {
+    "english": "Open in Brain Dump",
+    "turkish": "Brain Dump'ta aç",
+  },
+  "components.floatingButton.saveAllOtherTabs": {
+    "english": "Save all other tabs",
+    "turkish": "Diğer tüm sekmeleri kaydet",
+  },
+  "components.floatingButton.saveTabsLeft": {
+    "english": "Save tabs to the left",
+    "turkish": "Sekmeleri sola kaydet",
+  },
+  "components.floatingButton.saveTabsRight": {
+    "english": "Save tabs to the right",
+    "turkish": "Sekmeleri sağa kaydet",
+  },
+  "components.floatingButton.saveThisTab": {
+    "english": "Save this tab (hold for all tabs)",
+    "turkish": "Bu sekmeyi kaydet (tüm sekmeler için basılı tutun)",
+  },
+  "components.floatingButton.summarizePage": {
+    "english": "Summarize page to Dump",
+    "turkish": "Sayfayı Dump'a özetle",
+  },
+  "components.floatingButton.summarizeProblem": {
+    "english": "Couldn't summarize this page. Try again in a moment.",
+    "turkish": "Bu sayfa özetlenemedi. Biraz sonra tekrar deneyin.",
+  },
+  "components.groupInfo.created": {
+    "english": "Created",
+    "turkish": "Oluşturulma",
+  },
+  "components.groupInfo.dates": {
+    "english": "Dates",
+    "turkish": "Tarihler",
+  },
+  "components.groupInfo.daysAgo": {
+    "english": "{{count}}d ago",
+    "turkish": "{{count}} gün önce",
+  },
+  "components.groupInfo.groupId": {
+    "english": "Group ID",
+    "turkish": "Grup kimliği",
+  },
+  "components.groupInfo.lastAccessed": {
+    "english": "Last accessed",
+    "turkish": "Son erişim",
+  },
+  "components.groupInfo.lastModified": {
+    "english": "Last modified",
+    "turkish": "Son değişiklik",
+  },
+  "components.groupInfo.locked": {
+    "english": "Locked",
+    "turkish": "Kilitli",
+  },
+  "components.groupInfo.minutesAgo": {
+    "english": "{{count}}m ago",
+    "turkish": "{{count}} dk önce",
+  },
+  "components.groupInfo.monthsAgo": {
+    "english": "{{count}}mo ago",
+    "turkish": "{{count}} ay önce",
+  },
+  "components.groupInfo.no": {
+    "english": "No",
+    "turkish": "Hayır",
+  },
+  "components.groupInfo.notes": {
+    "english": "Notes",
+    "turkish": "Notlar",
+  },
+  "components.groupInfo.organization": {
+    "english": "Organization",
+    "turkish": "Düzenleme",
+  },
+  "components.groupInfo.pinned": {
+    "english": "Pinned",
+    "turkish": "Sabitlenmiş",
+  },
+  "components.groupInfo.pinnedAt": {
+    "english": "Pinned at",
+    "turkish": "Sabitleme zamanı",
+  },
+  "components.groupInfo.project": {
+    "english": "Project",
+    "turkish": "Proje",
+  },
+  "components.groupInfo.restoreCount": {
+    "english": "Restore count",
+    "turkish": "Geri yükleme sayısı",
+  },
+  "components.groupInfo.stats": {
+    "english": "Stats",
+    "turkish": "İstatistikler",
+  },
+  "components.groupInfo.support": {
+    "english": "Support",
+    "turkish": "Destek",
+  },
+  "components.groupInfo.tab_one": {
+    "english": "{{count}} tab",
+    "turkish": "{{count}} sekme",
+  },
+  "components.groupInfo.tab_other": {
+    "english": "{{count}} tabs",
+    "turkish": "{{count}} sekme",
+  },
+  "components.groupInfo.tags": {
+    "english": "Tags",
+    "turkish": "Etiketler",
+  },
+  "components.groupInfo.time_one": {
+    "english": "{{count}} time",
+    "turkish": "{{count}} kez",
+  },
+  "components.groupInfo.time_other": {
+    "english": "{{count}} times",
+    "turkish": "{{count}} kez",
+  },
+  "components.groupInfo.yes": {
+    "english": "Yes",
+    "turkish": "Evet",
+  },
+  "components.groupsPanel.stopProviderConfirm": {
+    "english": "Stop mirroring this group to {{integration}}?
+
+This will delete all {{integration}} items created for this group.",
+    "turkish": "Bu grubun {{integration}} ile yansıtılması durdurulsun mu?
+
+Bu işlem, bu grup için oluşturulan tüm {{integration}} öğelerini silecek.",
+  },
+  "components.groupsPanel.stopProviderSuccess": {
+    "english": "Stopped mirroring to {{integration}} and deleted items",
+    "turkish": "{{integration}} yansıtması durduruldu ve öğeler silindi",
+  },
+  "components.integrationErrors.invalidAsanaToken": {
+    "english": "No valid Asana token found",
+    "turkish": "Geçerli Asana tokenı bulunamadı",
+  },
+  "components.integrationErrors.invalidGithubToken": {
+    "english": "No valid GitHub token",
+    "turkish": "Geçerli GitHub tokenı yok",
+  },
+  "components.integrationErrors.invalidGitlabToken": {
+    "english": "No valid GitLab token found",
+    "turkish": "Geçerli GitLab tokenı bulunamadı",
+  },
+  "components.integrationErrors.invalidGoogleCalendarToken": {
+    "english": "No valid Google Calendar token",
+    "turkish": "Geçerli Google Calendar tokenı yok",
+  },
+  "components.integrationErrors.invalidJiraToken": {
+    "english": "No valid Jira token found",
+    "turkish": "Geçerli Jira tokenı bulunamadı",
+  },
+  "components.integrationErrors.invalidLinearToken": {
+    "english": "No valid Linear token found",
+    "turkish": "Geçerli Linear tokenı bulunamadı",
+  },
+  "components.integrationErrors.invalidOutlookCalendarToken": {
+    "english": "No valid Outlook Calendar token",
+    "turkish": "Geçerli Outlook Calendar tokenı yok",
+  },
+  "components.integrationErrors.invalidSlackToken": {
+    "english": "No valid Slack token",
+    "turkish": "Geçerli Slack tokenı yok",
+  },
+  "components.integrationErrors.invalidTodoistToken": {
+    "english": "No valid Todoist token found",
+    "turkish": "Geçerli Todoist tokenı bulunamadı",
+  },
+  "components.integrationErrors.invalidTrelloToken": {
+    "english": "No valid Trello token",
+    "turkish": "Geçerli Trello tokenı yok",
+  },
+  "components.integrationErrors.loadCalendars": {
+    "english": "Failed to load calendars",
+    "turkish": "Takvimler yüklenemedi",
+  },
+  "components.integrationErrors.loadChannels": {
+    "english": "Failed to load channels",
+    "turkish": "Kanallar yüklenemedi",
+  },
+  "components.integrationErrors.loadGithubUser": {
+    "english": "Failed to load GitHub user",
+    "turkish": "GitHub kullanıcısı yüklenemedi",
+  },
+  "components.integrationErrors.loadLists": {
+    "english": "Failed to load lists",
+    "turkish": "Listeler yüklenemedi",
+  },
+  "components.integrationErrors.loadProjects": {
+    "english": "Failed to load projects",
+    "turkish": "Projeler yüklenemedi",
+  },
+  "components.integrationErrors.loadTeams": {
+    "english": "Failed to load teams",
+    "turkish": "Takımlar yüklenemedi",
+  },
+  "components.integrationErrors.missingAsanaWorkspace": {
+    "english": "Missing Asana workspace",
+    "turkish": "Asana çalışma alanı eksik",
+  },
+  "components.integrationErrors.missingJiraSite": {
+    "english": "No Jira site found for this Atlassian account",
+    "turkish": "Bu Atlassian hesabı için Jira sitesi bulunamadı",
+  },
+  "components.integrationTarget.asanaProject": {
+    "english": "Asana project ID",
+    "turkish": "Asana proje kimliği",
+  },
+  "components.integrationTarget.defaultIdentifier": {
+    "english": "Default destination identifier",
+    "turkish": "Varsayılan hedef tanımlayıcısı",
+  },
+  "components.integrationTarget.gitlabProject": {
+    "english": "GitLab project ID",
+    "turkish": "GitLab proje kimliği",
+  },
+  "components.integrationTarget.jiraProject": {
+    "english": "Jira project key",
+    "turkish": "Jira proje anahtarı",
+  },
+  "components.integrationTarget.linearTeam": {
+    "english": "Linear team ID",
+    "turkish": "Linear takım kimliği",
+  },
+  "components.integrationTarget.notionDatabase": {
+    "english": "Notion database ID",
+    "turkish": "Notion veritabanı kimliği",
+  },
+  "components.integrationTarget.primaryCalendar": {
+    "english": "Primary calendar",
+    "turkish": "Birincil takvim",
+  },
+  "components.integrationTarget.slackChannel": {
+    "english": "Slack channel ID",
+    "turkish": "Slack kanal kimliği",
+  },
+  "components.integrationTarget.todoistProject": {
+    "english": "Todoist project ID",
+    "turkish": "Todoist proje kimliği",
+  },
+  "components.integrationTarget.trelloList": {
+    "english": "Trello list ID",
+    "turkish": "Trello liste kimliği",
+  },
+  "components.integrations.reauth": {
+    "english": "Your {{name}} ({{account}}) connection needs to be re-authorized.",
+    "turkish": "{{name}} ({{account}}) bağlantının yeniden yetkilendirilmesi gerekiyor.",
+  },
+  "components.integrations.syncSetupConfirm": {
+    "english": "Set up Sync",
+    "turkish": "Senkronizasyonu Kur",
+  },
+  "components.integrations.syncSetupDescription": {
+    "english": "Bluetab encrypts integration connections on this device. Complete Sync setup once to continue.",
+    "turkish": "Bluetab entegrasyon bağlantılarını bu cihazda şifreler. Devam etmek için Senkronizasyon kurulumunu bir kez tamamla.",
+  },
+  "components.integrations.syncSetupTitle": {
+    "english": "Set up Sync to connect integrations",
+    "turkish": "Entegrasyonları bağlamak için Senkronizasyonu kur",
+  },
+  "components.linearMirror.connect": {
+    "english": "Connect Linear account to enable mirroring",
+    "turkish": "Yansıtmayı etkinleştirmek için Linear hesabını bağla",
+  },
+  "components.linearMirror.connectFirst": {
+    "english": "Please connect a Linear account first",
+    "turkish": "Önce bir Linear hesabı bağla",
+  },
+  "components.linearMirror.error": {
+    "english": "Sync error",
+    "turkish": "Senkronizasyon hatası",
+  },
+  "components.linearMirror.paused": {
+    "english": "Paused",
+    "turkish": "Duraklatıldı",
+  },
+  "components.linearMirror.start": {
+    "english": "Mirror to Linear",
+    "turkish": "Linear’a yansıt",
+  },
+  "components.linearMirror.startFailedBare": {
+    "english": "Failed to start mirroring",
+    "turkish": "Yansıtma başlatılamadı",
+  },
+  "components.linearMirror.stop": {
+    "english": "Stop mirroring",
+    "turkish": "Yansıtmayı durdur",
+  },
+  "components.linearMirror.stopFailedBare": {
+    "english": "Failed to stop mirroring",
+    "turkish": "Yansıtma durdurulamadı",
+  },
+  "components.linearMirror.stopSuccess": {
+    "english": "Stopped mirroring "{{name}}" to Linear",
+    "turkish": ""{{name}}" grubu Linear’a yansıtılmayı durdurdu",
+  },
+  "components.linearMirror.synced": {
+    "english": "Synced • {{count}} issues",
+    "turkish": "Senkronize • {{count}} issue",
+  },
+  "components.linearMirror.unknown": {
+    "english": "Unknown",
+    "turkish": "Bilinmiyor",
+  },
+  "components.linearMirror.unknownError": {
+    "english": "Unknown error",
+    "turkish": "Bilinmeyen hata",
+  },
+  "components.masonry.clickRename": {
+    "english": "Click to rename",
+    "turkish": "Yeniden adlandırmak için tıkla",
+  },
+  "components.masonry.editNotes": {
+    "english": "Click to edit notes",
+    "turkish": "Notları düzenlemek için tıkla",
+  },
+  "components.masonry.extractionRetry": {
+    "english": "Extraction {{reason}}. Click to retry.",
+    "turkish": "Çıkarma hatası: {{reason}}. Yeniden denemek için tıkla.",
+  },
+  "components.masonry.hasReminder": {
+    "english": "Has reminder",
+    "turkish": "Hatırlatıcı var",
+  },
+  "components.masonry.lockedRename": {
+    "english": "Locked - Unlock to rename",
+    "turkish": "Kilitli - yeniden adlandırmak için kilidi aç",
+  },
+  "components.masonry.moreTabs": {
+    "english": "+{{count}} more tabs",
+    "turkish": "+{{count}} sekme daha",
+  },
+  "components.masonry.restoreTabs": {
+    "english": "Restore all tabs to browser",
+    "turkish": "Tüm sekmeleri tarayıcıya geri yükle",
+  },
+  "components.masonry.savedOffline": {
+    "english": "Saved for offline",
+    "turkish": "Çevrimdışı kullanım için kaydedildi",
+  },
+  "components.masonry.savingOffline": {
+    "english": "Saving for offline",
+    "turkish": "Çevrimdışı kullanım için kaydediliyor",
+  },
+  "components.masonry.unlockRestore": {
+    "english": "Unlock group to restore tabs",
+    "turkish": "Sekmeleri geri yüklemek için grubun kilidini aç",
+  },
+  "components.navigation.help": {
+    "english": "Help",
+    "turkish": "Yardım",
+  },
+  "components.navigation.wrapped": {
+    "english": "Wrapped",
+    "turkish": "Wrapped",
+  },
+  "components.newGroupModal.colorLabel": {
+    "english": "Color",
+    "turkish": "Renk",
+  },
+  "components.newGroupModal.create": {
+    "english": "Create Group",
+    "turkish": "Grup Oluştur",
+  },
+  "components.newGroupModal.creating": {
+    "english": "Creating...",
+    "turkish": "Oluşturuluyor...",
+  },
+  "components.newGroupModal.defaultName": {
+    "english": "New Group",
+    "turkish": "Yeni Grup",
+  },
+  "components.newGroupModal.description_one": {
+    "english": "{{count}} tab will be grouped",
+    "turkish": "{{count}} sekme gruplanacak",
+  },
+  "components.newGroupModal.description_other": {
+    "english": "{{count}} tabs will be grouped",
+    "turkish": "{{count}} sekme gruplanacak",
+  },
+  "components.newGroupModal.moreTabs": {
+    "english": "+{{count}} more",
+    "turkish": "+{{count}} tane daha",
+  },
+  "components.newGroupModal.nameLabel": {
+    "english": "Group Name",
+    "turkish": "Grup Adı",
+  },
+  "components.newGroupModal.namePlaceholder": {
+    "english": "Enter group name...",
+    "turkish": "Grup adını gir...",
+  },
+  "components.newGroupModal.selectedTabs": {
+    "english": "Selected Tabs",
+    "turkish": "Seçili Sekmeler",
+  },
+  "components.newGroupModal.title": {
+    "english": "Create New Group",
+    "turkish": "Yeni Grup Oluştur",
+  },
+  "components.notionPagePicker.cancel": {
+    "english": "Cancel",
+    "turkish": "İptal",
+  },
+  "components.notionPagePicker.confirm": {
+    "english": "Create mirror database",
+    "turkish": "Ayna veritabanını oluştur",
+  },
+  "components.notionPagePicker.creating": {
+    "english": "Creating...",
+    "turkish": "Oluşturuluyor...",
+  },
+  "components.notionPagePicker.databaseName": {
+    "english": "Database name",
+    "turkish": "Veritabanı adı",
+  },
+  "components.notionPagePicker.databasePlaceholder": {
+    "english": "My group",
+    "turkish": "Grubum",
+  },
+  "components.notionPagePicker.description": {
+    "english": "Pick a Notion page. Bluetab will create a database under it and keep this group in sync.",
+    "turkish": "Bir Notion sayfası seç. Bluetab bunun altında bir veritabanı oluşturur ve bu grubu senkron tutar.",
+  },
+  "components.notionPagePicker.loadError": {
+    "english": "Could not load Notion pages",
+    "turkish": "Notion sayfaları yüklenemedi",
+  },
+  "components.notionPagePicker.loadingPages": {
+    "english": "Loading pages...",
+    "turkish": "Sayfalar yükleniyor...",
+  },
+  "components.notionPagePicker.noPages": {
+    "english": "No accessible Notion pages found. Open Notion -> Settings -> Integrations -> Bluetab -> Edit pages.",
+    "turkish": "Erişilebilir Notion sayfası bulunamadı. Notion -> Settings -> Integrations -> Bluetab -> Edit pages yolunu aç.",
+  },
+  "components.notionPagePicker.parentPage": {
+    "english": "Parent page",
+    "turkish": "Üst sayfa",
+  },
+  "components.notionPagePicker.selectPage": {
+    "english": "Select a page...",
+    "turkish": "Bir sayfa seç...",
+  },
+  "components.notionPagePicker.title": {
+    "english": "Mirror to Notion",
+    "turkish": "Notion'a Aynala",
+  },
+  "components.notionPagePicker.untitled": {
+    "english": "Untitled",
+    "turkish": "Adsız",
+  },
+  "components.omnibox.groupDescription": {
+    "english": "<dim>Group:</dim> <match>{{name}}</match> <dim>({{count}} tabs)</dim>",
+    "turkish": "<dim>Grup:</dim> <match>{{name}}</match> <dim>({{count}} sekme)</dim>",
+  },
+  "components.omnibox.tabDescription": {
+    "english": "<dim>Tab:</dim> <match>{{title}}</match> <dim>- {{url}}</dim>",
+    "turkish": "<dim>Sekme:</dim> <match>{{title}}</match> <dim>- {{url}}</dim>",
+  },
+  "components.opml.readFailed": {
+    "english": "Failed to read file",
+    "turkish": "Dosya okunamadı",
+  },
+  "components.pinButton.pin": {
+    "english": "Pin group",
+    "turkish": "Grubu sabitle",
+  },
+  "components.pinButton.unpin": {
+    "english": "Unpin group",
+    "turkish": "Grubun sabitlemesini kaldır",
+  },
+  "components.pomodoroStatus.sessionActive": {
+    "english": "Session active:",
+    "turkish": "Etkin oturum:",
+  },
+  "components.restoreModal.exampleTab1": {
+    "english": "Example Tab 1",
+    "turkish": "Örnek Sekme 1",
+  },
+  "components.restoreModal.exampleTab2": {
+    "english": "Example Tab 2",
+    "turkish": "Örnek Sekme 2",
+  },
+  "components.serviceIcon.integration": {
+    "english": "Integration",
+    "turkish": "Entegrasyon",
+  },
+  "components.sync.active": {
+    "english": "Your tabs sync automatically across devices",
+    "turkish": "Sekmelerin cihazlar arasında otomatik olarak senkronize edilir",
+  },
+  "components.sync.added": {
+    "english": "Added {{time}}",
+    "turkish": "Eklendi: {{time}}",
+  },
+  "components.sync.connectDescription": {
+    "english": "Connect this device to your encrypted sync account.",
+    "turkish": "Bu cihazı şifreli senkronizasyon hesabına bağla.",
+  },
+  "components.sync.connectDevice": {
+    "english": "Connect this device",
+    "turkish": "Bu cihazı bağla",
+  },
+  "components.sync.connectDeviceTitle": {
+    "english": "Connect This Device",
+    "turkish": "Bu Cihazı Bağla",
+  },
+  "components.sync.connectPrompt": {
+    "english": "Connect this device with your sync password",
+    "turkish": "Bu cihazı senkronizasyon parolanla bağla",
+  },
+  "components.sync.daysAgo": {
+    "english": "{{count}}d ago",
+    "turkish": "{{count}} gün önce",
+  },
+  "components.sync.deviceLimit": {
+    "english": "Device limit reached. Remove an old device to connect this one.",
+    "turkish": "Cihaz sınırına ulaşıldı. Bunu bağlamak için eski bir cihazı kaldır.",
+  },
+  "components.sync.devices": {
+    "english": "Your Devices ({{label}})",
+    "turkish": "Cihazların ({{label}})",
+  },
+  "components.sync.disable": {
+    "english": "Disable sync",
+    "turkish": "Senkronizasyonu devre dışı bırak",
+  },
+  "components.sync.disconnectConfirm": {
+    "english": "Disconnect this device from sync? Your local Bluetab data will stay here, but this browser will stop syncing until you connect it again.",
+    "turkish": "Bu cihazın senkronizasyon bağlantısı kesilsin mi? Yerel Bluetab verilerin burada kalır ancak bu tarayıcı yeniden bağlanana kadar senkronizasyon durur.",
+  },
+  "components.sync.disconnectDevice": {
+    "english": "Disconnect this device",
+    "turkish": "Bu cihazın bağlantısını kes",
+  },
+  "components.sync.disconnectDeviceFailed": {
+    "english": "Failed to disconnect this device",
+    "turkish": "Bu cihazın bağlantısı kesilemedi",
+  },
+  "components.sync.disconnecting": {
+    "english": "Disconnecting...",
+    "turkish": "Bağlantı kesiliyor...",
+  },
+  "components.sync.enable": {
+    "english": "Enable sync",
+    "turkish": "Senkronizasyonu etkinleştir",
+  },
+  "components.sync.encryptedExists": {
+    "english": "Encrypted cloud sync data exists. Restore it with your sync password or start fresh.",
+    "turkish": "Şifreli bulut senkronizasyon verisi var. Parolanla geri yükle veya yeni bir senkronizasyon başlat.",
+  },
+  "components.sync.enterPassword": {
+    "english": "Enter sync password",
+    "turkish": "Senkronizasyon parolasını gir",
+  },
+  "components.sync.exclusions": {
+    "english": "Sync exclusions",
+    "turkish": "Senkronizasyon kapsamı dışında",
+  },
+  "components.sync.exclusionsItems.aiDescription": {
+    "english": "AI chat history, active thread selection, allowance cache, proposal caches, and scan caches are device-local.",
+    "turkish": "AI sohbet geçmişi, etkin konuşma seçimi, kullanım hakkı önbelleği, öneri ve tarama önbellekleri cihaza özeldir.",
+  },
+  "components.sync.exclusionsItems.aiTitle": {
+    "english": "AI conversations and local caches",
+    "turkish": "AI konuşmaları ve yerel önbellekler",
+  },
+  "components.sync.exclusionsItems.archiveDescription": {
+    "english": "Long-term archives, encrypted archive payloads, and saved offline articles are not copied between devices.",
+    "turkish": "Uzun süreli arşivler, şifreli arşiv verileri ve çevrimdışı makaleler cihazlar arasında kopyalanmaz.",
+  },
+  "components.sync.exclusionsItems.archiveTitle": {
+    "english": "Archive storage and offline readings",
+    "turkish": "Arşiv depolaması ve çevrimdışı okumalar",
+  },
+  "components.sync.exclusionsItems.browserDescription": {
+    "english": "Site access, history permission, onboarding flags, sidebar position, sync queues, and device setup metadata are per-device.",
+    "turkish": "Site erişimi, geçmiş izni, ilk kullanım işaretleri, kenar çubuğu konumu, senkronizasyon kuyrukları ve cihaz kurulum bilgileri cihaza özeldir.",
+  },
+  "components.sync.exclusionsItems.browserTitle": {
+    "english": "Browser permissions and local UI state",
+    "turkish": "Tarayıcı izinleri ve yerel arayüz durumu",
+  },
+  "components.sync.exclusionsItems.integrationsDescription": {
+    "english": "OAuth tokens, reconnect flags, provider sessions, and integration account credentials stay on the device.",
+    "turkish": "OAuth tokenları, yeniden bağlanma işaretleri, sağlayıcı oturumları ve entegrasyon hesap bilgileri cihazda kalır.",
+  },
+  "components.sync.exclusionsItems.integrationsTitle": {
+    "english": "Integration tokens and account sessions",
+    "turkish": "Entegrasyon tokenları ve hesap oturumları",
+  },
+  "components.sync.exclusionsItems.rssDescription": {
+    "english": "Notification preferences sync, but feed URLs, fetched articles, read/starred state, and cached reader content stay local.",
+    "turkish": "Bildirim tercihleri senkronize edilir; feed URL’leri, alınan makaleler, okundu/yıldızlı durumu ve önbellekteki içerik yerel kalır.",
+  },
+  "components.sync.exclusionsItems.rssTitle": {
+    "english": "RSS feed subscriptions and article cache",
+    "turkish": "RSS abonelikleri ve makale önbelleği",
+  },
+  "components.sync.exclusionsItems.runtimeDescription": {
+    "english": "Active Pomodoro/Focus sessions, Pomodoro history, statistics, Wrapped snapshots, and session backup snapshots stay local.",
+    "turkish": "Etkin Pomodoro/Odak oturumları, Pomodoro geçmişi, istatistikler, Wrapped özetleri ve oturum yedekleri yerel kalır.",
+  },
+  "components.sync.exclusionsItems.runtimeTitle": {
+    "english": "Runtime history and temporary state",
+    "turkish": "Çalışma geçmişi ve geçici durum",
+  },
+  "components.sync.getStateFailed": {
+    "english": "Failed to get sync state",
+    "turkish": "Senkronizasyon durumu alınamadı",
+  },
+  "components.sync.joinDescription": {
+    "english": "Your sync account has devices already. Connect this browser to join them.",
+    "turkish": "Senkronizasyon hesabında zaten cihazlar var. Bu tarayıcıyı onlara katılmak için bağla.",
+  },
+  "components.sync.justNow": {
+    "english": "Just now",
+    "turkish": "Az önce",
+  },
+  "components.sync.lastActive": {
+    "english": "Last active: {{time}}",
+    "turkish": "Son etkinlik: {{time}}",
+  },
+  "components.sync.loadingDevices": {
+    "english": "Loading devices...",
+    "turkish": "Cihazlar yükleniyor...",
+  },
+  "components.sync.minutesAgo": {
+    "english": "{{count}}m ago",
+    "turkish": "{{count}} dk önce",
+  },
+  "components.sync.never": {
+    "english": "Never",
+    "turkish": "Hiçbir zaman",
+  },
+  "components.sync.notActive": {
+    "english": "Sync Not Active",
+    "turkish": "Senkronizasyon Etkin Değil",
+  },
+  "components.sync.notSyncedDescription": {
+    "english": "These areas are intentionally device-local for privacy, browser-permission, storage-size, or runtime-safety reasons.",
+    "turkish": "Bu alanlar gizlilik, tarayıcı izni, depolama boyutu veya çalışma zamanı güvenliği nedeniyle yalnızca bu cihazda tutulur.",
+  },
+  "components.sync.notSyncedTitle": {
+    "english": "Not synced by Cloud Sync",
+    "turkish": "Bulut Senkronizasyonuna dahil olmayanlar",
+  },
+  "components.sync.paused": {
+    "english": "Sync is paused — no changes will be sent or received",
+    "turkish": "Senkronizasyon duraklatıldı — değişiklikler gönderilmeyecek veya alınmayacak",
+  },
+  "components.sync.proDescription": {
+    "english": "Connect multiple devices, keep your groups in sync automatically, and restore access with your sync password whenever you sign in on a new browser.",
+    "turkish": "Birden fazla cihaz bağla, gruplarını otomatik olarak senkronize tut ve yeni bir tarayıcıda oturum açtığında senkronizasyon parolanla erişimi geri yükle.",
+  },
+  "components.sync.proTitle": {
+    "english": "Cloud Sync is a Bluetab Pro feature",
+    "turkish": "Bulut Senkronizasyonu bir Bluetab Pro özelliğidir",
+  },
+  "components.sync.removeConfirm": {
+    "english": "Remove this device from sync?",
+    "turkish": "Bu cihaz senkronizasyondan kaldırılsın mı?",
+  },
+  "components.sync.removeDevice": {
+    "english": "Remove device",
+    "turkish": "Cihazı kaldır",
+  },
+  "components.sync.removeDeviceFailed": {
+    "english": "Failed to remove device",
+    "turkish": "Cihaz kaldırılamadı",
+  },
+  "components.sync.removeNamedDevice": {
+    "english": "Remove {{name}}",
+    "turkish": "{{name}} cihazını kaldır",
+  },
+  "components.sync.restoreAccess": {
+    "english": "Restore Sync Access",
+    "turkish": "Senkronizasyon Erişimini Geri Yükle",
+  },
+  "components.sync.restoreDescription": {
+    "english": "This browser still knows your sync account, but it needs your sync password again before it can decrypt or sync changes.",
+    "turkish": "Bu tarayıcı senkronizasyon hesabını biliyor ancak değişikliklerin şifresini çözmek veya eşitlemek için parolana yeniden ihtiyaç duyuyor.",
+  },
+  "components.sync.restoreFailed": {
+    "english": "Restore failed",
+    "turkish": "Geri yükleme başarısız",
+  },
+  "components.sync.restorePrompt": {
+    "english": "Enter your sync password again on this device to resume sync",
+    "turkish": "Senkronizasyonu sürdürmek için bu cihazda parolanı yeniden gir",
+  },
+  "components.sync.setup.createPassword": {
+    "english": "Create Sync Password",
+    "turkish": "Senkronizasyon Parolası Oluştur",
+  },
+  "components.sync.setup.createPasswordPlaceholder": {
+    "english": "Create a strong password",
+    "turkish": "Güçlü bir parola oluştur",
+  },
+  "components.sync.setup.description": {
+    "english": "Sync your tabs across devices with end-to-end encryption.",
+    "turkish": "Sekmelerini uçtan uca şifrelemeyle cihazlar arasında senkronize et.",
+  },
+  "components.sync.setup.deviceName": {
+    "english": "Device Name (optional)",
+    "turkish": "Cihaz Adı (isteğe bağlı)",
+  },
+  "components.sync.setup.devicePlaceholder": {
+    "english": "e.g., Work Laptop, Home Desktop",
+    "turkish": "ör. İş Dizüstü Bilgisayarı, Ev Bilgisayarı",
+  },
+  "components.sync.setup.encryptedDescription": {
+    "english": "Your data is encrypted on your device. We can never see your tabs.",
+    "turkish": "Verilerin cihazında şifrelenir. Sekmelerini asla göremeyiz.",
+  },
+  "components.sync.setup.encryptedTitle": {
+    "english": "End-to-End Encrypted",
+    "turkish": "Uçtan Uca Şifreli",
+  },
+  "components.sync.setup.existingPassword": {
+    "english": "Existing Sync Password",
+    "turkish": "Mevcut Senkronizasyon Parolası",
+  },
+  "components.sync.setup.existingPasswordPlaceholder": {
+    "english": "Enter your sync password",
+    "turkish": "Senkronizasyon parolanı gir",
+  },
+  "components.sync.setup.freshDescription": {
+    "english": "Use this only after removing all sync devices. It replaces old encrypted cloud sync data, but keeps local Bluetab data on this browser.",
+    "turkish": "Bunu yalnızca tüm senkronizasyon cihazlarını kaldırdıktan sonra kullan. Eski şifreli bulut verisinin yerine geçer ancak bu tarayıcıdaki yerel Bluetab verilerini korur.",
+  },
+  "components.sync.setup.freshTitle": {
+    "english": "Start fresh sync instead",
+    "turkish": "Yeni bir senkronizasyon başlat",
+  },
+  "components.sync.setup.freshWarning": {
+    "english": "This will ask Supertry to clear old encrypted cloud sync data before connecting this browser with a new sync password.",
+    "turkish": "Supertry’dan eski şifreli bulut senkronizasyon verisini temizlemesini isteyecek ve bu tarayıcıyı yeni bir parolayla bağlayacak.",
+  },
+  "components.sync.setup.keyDescription": {
+    "english": "Only you can decrypt your data. Don't forget your password!",
+    "turkish": "Verilerinin şifresini yalnızca sen çözebilirsin. Parolanı unutma!",
+  },
+  "components.sync.setup.keyTitle": {
+    "english": "Your Password, Your Key",
+    "turkish": "Parolan, Anahtarın",
+  },
+  "components.sync.setup.passwordHelp": {
+    "english": "This password encrypts your data. It's different from your account password.",
+    "turkish": "Bu parola verilerini şifreler. Hesap parolandan farklıdır.",
+  },
+  "components.sync.setup.passwordLength": {
+    "english": "Password must be at least 8 characters",
+    "turkish": "Parola en az 8 karakter olmalı",
+  },
+  "components.sync.setup.passwordMismatch": {
+    "english": "Passwords do not match",
+    "turkish": "Parolalar eşleşmiyor",
+  },
+  "components.sync.setup.realtimeDescription": {
+    "english": "Changes sync instantly across all your devices.",
+    "turkish": "Değişiklikler tüm cihazlarında anında senkronize edilir.",
+  },
+  "components.sync.setup.realtimeTitle": {
+    "english": "Real-Time Sync",
+    "turkish": "Gerçek Zamanlı Senkronizasyon",
+  },
+  "components.sync.setup.restoreDescription": {
+    "english": "Enter the existing sync encryption password from your first synced device. This is not your Supertry account password.",
+    "turkish": "İlk senkronize cihazındaki mevcut şifreleme parolasını gir. Bu, Supertry hesap parolan değildir.",
+  },
+  "components.sync.setup.restoreTitle": {
+    "english": "Restore Sync",
+    "turkish": "Senkronizasyonu Geri Yükle",
+  },
+  "components.sync.setup.restoreWarning": {
+    "english": "Use the same sync password from the original setup. If you never created a sync password or cannot remember it, we cannot recover it.",
+    "turkish": "İlk kurulumdaki parolayı kullan. Hiç parola oluşturmadıysan veya parolanı hatırlamıyorsan onu kurtaramayız.",
+  },
+  "components.sync.setup.restoring": {
+    "english": "Restoring...",
+    "turkish": "Geri yükleniyor...",
+  },
+  "components.sync.setup.settingUp": {
+    "english": "Setting up...",
+    "turkish": "Kuruluyor...",
+  },
+  "components.sync.setup.startFresh": {
+    "english": "Start Fresh Sync",
+    "turkish": "Yeni Senkronizasyon Başlat",
+  },
+  "components.sync.setup.startingFresh": {
+    "english": "Starting fresh...",
+    "turkish": "Yeni senkronizasyon başlatılıyor...",
+  },
+  "components.sync.setup.title": {
+    "english": "Set Up Sync",
+    "turkish": "Senkronizasyonu Kur",
+  },
+  "components.sync.setupFailed": {
+    "english": "Setup failed",
+    "turkish": "Kurulum başarısız",
+  },
+  "components.sync.syncFailed": {
+    "english": "Sync failed",
+    "turkish": "Senkronizasyon başarısız",
+  },
+  "components.sync.syncSetupFailed": {
+    "english": "Sync setup failed",
+    "turkish": "Senkronizasyon kurulumu başarısız",
+  },
+  "components.sync.tagline": {
+    "english": "Sync your tabs securely across devices with end-to-end encryption.",
+    "turkish": "Sekmelerini uçtan uca şifrelemeyle cihazlar arasında güvenle senkronize et.",
+  },
+  "components.sync.thisDevice": {
+    "english": "This device",
+    "turkish": "Bu cihaz",
+  },
+  "components.sync.toggleFailed": {
+    "english": "Failed to toggle sync",
+    "turkish": "Senkronizasyon durumu değiştirilemedi",
+  },
+  "components.sync.unknown": {
+    "english": "Unknown",
+    "turkish": "Bilinmiyor",
+  },
+  "components.sync.unknownDevice": {
+    "english": "Unknown Device",
+    "turkish": "Bilinmeyen Cihaz",
+  },
+  "components.syncStatus.connecting": {
+    "english": "Connecting",
+    "turkish": "Bağlanıyor",
+  },
+  "components.syncStatus.connectingDescription": {
+    "english": "Establishing connection...",
+    "turkish": "Bağlantı kuruluyor...",
+  },
+  "components.syncStatus.disconnected": {
+    "english": "Disconnected",
+    "turkish": "Bağlantı kesildi",
+  },
+  "components.syncStatus.disconnectedDescription": {
+    "english": "Sync not active",
+    "turkish": "Senkronizasyon etkin değil",
+  },
+  "components.syncStatus.error": {
+    "english": "Error",
+    "turkish": "Hata",
+  },
+  "components.syncStatus.errorDescription": {
+    "english": "Sync error occurred",
+    "turkish": "Senkronizasyon hatası oluştu",
+  },
+  "components.syncStatus.offline": {
+    "english": "Offline",
+    "turkish": "Çevrimdışı",
+  },
+  "components.syncStatus.offlineDescription": {
+    "english": "No internet connection. Changes will sync when online.",
+    "turkish": "İnternet bağlantısı yok. Değişiklikler çevrimiçi olunca senkronize edilecek.",
+  },
+  "components.syncStatus.pending": {
+    "english": " ({{count}} pending)",
+    "turkish": " ({{count}} bekliyor)",
+  },
+  "components.syncStatus.restoreRequired": {
+    "english": "Restore Required",
+    "turkish": "Geri Yükleme Gerekli",
+  },
+  "components.syncStatus.restoreRequiredDescription": {
+    "english": "Enter your sync password on this device to resume syncing.",
+    "turkish": "Senkronizasyona devam etmek için bu cihazda senkronizasyon parolanı gir.",
+  },
+  "components.syncStatus.synced": {
+    "english": "Synced",
+    "turkish": "Senkronize",
+  },
+  "components.syncStatus.syncedDescription": {
+    "english": "Real-time sync active",
+    "turkish": "Gerçek zamanlı senkronizasyon etkin",
+  },
+  "components.syncStatus.syncing": {
+    "english": "Syncing",
+    "turkish": "Senkronize ediliyor",
+  },
+  "components.syncStatus.syncingDescription": {
+    "english": "Syncing changes...",
+    "turkish": "Değişiklikler senkronize ediliyor...",
+  },
+  "components.tabSelection.clearSelection": {
+    "english": "Clear selection (ESC)",
+    "turkish": "Seçimi temizle (ESC)",
+  },
+  "components.tabSelection.copyLinks": {
+    "english": "Copy links",
+    "turkish": "Bağlantıları kopyala",
+  },
+  "components.tabSelection.deleteSelected": {
+    "english": "Delete selected",
+    "turkish": "Seçilenleri sil",
+  },
+  "components.tabSelection.selected_one": {
+    "english": "{{count}} tab selected",
+    "turkish": "{{count}} sekme seçili",
+  },
+  "components.tabSelection.selected_other": {
+    "english": "{{count}} tabs selected",
+    "turkish": "{{count}} sekme seçili",
+  },
+  "components.teamSwitcher.tabManager": {
+    "english": "Tab Manager",
+    "turkish": "Sekme Yöneticisi",
+  },
+  "components.teams.host": {
+    "english": "Host",
+    "turkish": "Oturum sahibi",
+  },
+  "components.teams.offline": {
+    "english": "Offline",
+    "turkish": "Çevrimdışı",
+  },
+  "components.teams.online": {
+    "english": "Online",
+    "turkish": "Çevrimiçi",
+  },
+  "components.teams.tab_one": {
+    "english": "{{count}} tab",
+    "turkish": "{{count}} sekme",
+  },
+  "components.teams.tab_other": {
+    "english": "{{count}} tabs",
+    "turkish": "{{count}} sekme",
+  },
+  "components.themeToggle.switchToDarkMode": {
+    "english": "Switch to dark mode",
+    "turkish": "Koyu moda geç",
+  },
+  "components.themeToggle.switchToLightMode": {
+    "english": "Switch to light mode",
+    "turkish": "Açık moda geç",
+  },
+  "components.wrapped.cardCopied": {
+    "english": "Wrapped card copied to clipboard!",
+    "turkish": "Wrapped kartı panoya kopyalandı!",
+  },
+  "components.wrapped.cardCopyFailed": {
+    "english": "Failed to copy card to clipboard.",
+    "turkish": "Wrapped kartı panoya kopyalanamadı.",
+  },
+  "components.wrapped.comparisonImpressive": {
+    "english": "Impressively productive. Your future self thanks you.",
+    "turkish": "Etkileyici bir üretkenlik. Gelecekteki sen sana teşekkür ediyor.",
+  },
+  "components.wrapped.comparisonLifetime": {
+    "english": "That's more tabs than most people open in a lifetime.",
+    "turkish": "Bu, çoğu kişinin ömrü boyunca açtığından daha fazla sekme.",
+  },
+  "components.wrapped.comparisonQuality": {
+    "english": "Quality over quantity. Every save counted.",
+    "turkish": "Nicelikten önce nitelik. Her kayıt değerliydi.",
+  },
+  "components.wrapped.comparisonSteady": {
+    "english": "Steady and consistent. That's how it's done.",
+    "turkish": "İstikrarlı ve tutarlı. İşte böyle yapılır.",
+  },
+  "components.wrapped.continue": {
+    "english": "Tap anywhere to continue",
+    "turkish": "Devam etmek için herhangi bir yere dokun",
+  },
+  "components.wrapped.explorer": {
+    "english": "The Explorer",
+    "turkish": "Kaşif",
+  },
+  "components.wrapped.explorerDescription": {
+    "english": "You're just getting started. Your title awaits next year.",
+    "turkish": "Daha yeni başlıyorsun. Unvanın gelecek yıl seni bekliyor.",
+  },
+  "components.wrapped.focusHours": {
+    "english": "focus hours",
+    "turkish": "odak saati",
+  },
+  "components.wrapped.focusHoursUntracked": {
+    "english": "focus hours (not yet tracked)",
+    "turkish": "odak saati (henüz izlenmiyor)",
+  },
+  "components.wrapped.groupsCreated": {
+    "english": "groups created",
+    "turkish": "oluşturulan grup",
+  },
+  "components.wrapped.inBluetab": {
+    "english": "in Bluetab",
+    "turkish": "yılın",
+  },
+  "components.wrapped.intro": {
+    "english": "Let's see what you've been up to",
+    "turkish": "Neler yaptığına bakalım",
+  },
+  "components.wrapped.longestStreak_one": {
+    "english": "Longest streak: {{count}} day",
+    "turkish": "En uzun seri: {{count}} gün",
+  },
+  "components.wrapped.longestStreak_other": {
+    "english": "Longest streak: {{count}} days",
+    "turkish": "En uzun seri: {{count}} gün",
+  },
+  "components.wrapped.noPomodoros": {
+    "english": "No Pomodoros yet -- try one!",
+    "turkish": "Henüz Pomodoro yok -- bir tane dene!",
+  },
+  "components.wrapped.noSiteData": {
+    "english": "No site data recorded this year.",
+    "turkish": "Bu yıl için site verisi kaydedilmedi.",
+  },
+  "components.wrapped.pomodoroSessions": {
+    "english": "Pomodoro sessions",
+    "turkish": "Pomodoro oturumları",
+  },
+  "components.wrapped.productivity": {
+    "english": "Your productivity",
+    "turkish": "Üretkenliğin",
+  },
+  "components.wrapped.rank1": {
+    "english": "1st",
+    "turkish": "1.",
+  },
+  "components.wrapped.rank2": {
+    "english": "2nd",
+    "turkish": "2.",
+  },
+  "components.wrapped.rank3": {
+    "english": "3rd",
+    "turkish": "3.",
+  },
+  "components.wrapped.rank4": {
+    "english": "4th",
+    "turkish": "4.",
+  },
+  "components.wrapped.rank5": {
+    "english": "5th",
+    "turkish": "5.",
+  },
+  "components.wrapped.remindersSet": {
+    "english": "reminders set",
+    "turkish": "ayarlanan hatırlatıcı",
+  },
+  "components.wrapped.thisYear": {
+    "english": "This year you saved",
+    "turkish": "Bu yıl kaydettiklerin",
+  },
+  "components.wrapped.topSites": {
+    "english": "Your Top Sites",
+    "turkish": "En Çok Ziyaret Ettiğin Siteler",
+  },
+  "components.wrapped.topSitesSubtitle": {
+    "english": "Where you actually spent time",
+    "turkish": "Zamanını gerçekte nerede geçirdin",
+  },
+  "components.wrapped.your": {
+    "english": "Your",
+    "turkish": "Bluetab",
+  },
+  "sidepanel.teamsPreSession.connectToHost": {
+    "english": "Connect to internet to access Teams",
+    "turkish": "Teams'e erişmek için internete bağlan",
+  },
+  "sidepanel.teamsPreSession.premiumHost": {
+    "english": "Teams is a premium feature",
+    "turkish": "Teams premium bir özelliktir",
+  },
+  "sidepanel.teamsPreSession.signInToHost": {
+    "english": "Sign in to access Teams",
+    "turkish": "Teams'e erişmek için giriş yap",
+  },
+  "sidepanel.teamsPreSession.upgradeToHost": {
+    "english": "Upgrade to Pro to unlock Teams",
+    "turkish": "Teams'in kilidini açmak için Pro'ya yükselt",
+  },
+  "sidepanel.teamsSession.noGroupsSharedYet": {
+    "english": "No groups shared yet",
+    "turkish": "Henüz paylaşılan grup yok",
+  },
+}
+`;

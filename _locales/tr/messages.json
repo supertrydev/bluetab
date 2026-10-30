@@ -1,0 +1,26 @@
+{
+  "appName": {
+    "message": "Bluetab: Sekme Yöneticisi"
+  },
+  "appDescription": {
+    "message": "Tüm sekmeleri tek tıkla kaydet, kayıtlı sayfaları hızla bul, ekranda daha az sekme gör. Ücretsiz, gizlilik odaklı sekme yöneticisi."
+  },
+  "commandActivate": {
+    "message": "Uzantıyı etkinleştir"
+  },
+  "commandSaveAllTabs": {
+    "message": "Tüm sekmeleri kaydet"
+  },
+  "commandSaveCurrentTab": {
+    "message": "Geçerli sayfayı kaydet"
+  },
+  "commandRestoreLastGroup": {
+    "message": "Son grubu geri yükle"
+  },
+  "commandOpenManager": {
+    "message": "Bluetab yöneticisini aç"
+  },
+  "commandBrainDump": {
+    "message": "Bir düşünceyi Brain Dump gelen kutusuna kaydet"
+  }
+}

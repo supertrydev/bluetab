@@ -1,0 +1,362 @@
+/* Visual Hierarchy - Feature 006 */
+/* Primary, secondary, and tertiary element importance levels */
+
+:root {
+  /* Typography hierarchy */
+  --text-primary-size: 18px;
+  --text-secondary-size: 14px;
+  --text-tertiary-size: 12px;
+  --text-caption-size: 11px;
+
+  /* Font weights */
+  --weight-primary: 600;    /* Semibold for main elements */
+  --weight-secondary: 500;  /* Medium for secondary elements */
+  --weight-tertiary: 400;   /* Normal for tertiary elements */
+  --weight-caption: 400;    /* Normal for captions */
+
+  /* Color hierarchy (light mode) */
+  --color-primary: #1f2937;     /* Primary text/elements */
+  --color-secondary: #4b5563;   /* Secondary text/elements */
+  --color-tertiary: #6b7280;    /* Tertiary text/elements */
+  --color-caption: #9ca3af;     /* Caption/helper text */
+
+  /* Color hierarchy (dark mode) */
+  --color-primary-dark: #f9fafb;
+  --color-secondary-dark: #d1d5db;
+  --color-tertiary-dark: #9ca3af;
+  --color-caption-dark: #6b7280;
+
+  /* Button hierarchy */
+  --button-primary-bg: #3b82f6;
+  --button-primary-hover: #2563eb;
+  --button-secondary-bg: #6366f1;
+  --button-secondary-hover: #4f46e5;
+  --button-tertiary-bg: #e5e7eb;
+  --button-tertiary-hover: #d1d5db;
+
+  /* Button hierarchy (dark mode) */
+  --button-primary-bg-dark: #3b82f6;
+  --button-primary-hover-dark: #60a5fa;
+  --button-secondary-bg-dark: #6366f1;
+  --button-secondary-hover-dark: #818cf8;
+  --button-tertiary-bg-dark: #374151;
+  --button-tertiary-hover-dark: #4b5563;
+
+  /* Elevation levels */
+  --elevation-primary: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --elevation-secondary: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --elevation-tertiary: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+/* Primary Elements - Highest importance */
+.hierarchy-primary {
+  font-size: var(--text-primary-size);
+  font-weight: var(--weight-primary);
+  color: var(--color-primary);
+  line-height: 1.4;
+}
+
+.dark .hierarchy-primary {
+  color: var(--color-primary-dark);
+}
+
+/* Primary buttons */
+.button-primary {
+  background-color: var(--button-primary-bg);
+  color: white;
+  font-weight: var(--weight-secondary);
+  font-size: var(--text-secondary-size);
+  box-shadow: var(--elevation-primary);
+  border: none;
+  border-radius: 6px;
+  transition: all 0.2s ease-in-out;
+}
+
+.button-primary:hover {
+  background-color: var(--button-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--elevation-primary);
+}
+
+.dark .button-primary {
+  background-color: var(--button-primary-bg-dark);
+}
+
+.dark .button-primary:hover {
+  background-color: var(--button-primary-hover-dark);
+}
+
+/* Secondary Elements - Medium importance */
+.hierarchy-secondary {
+  font-size: var(--text-secondary-size);
+  font-weight: var(--weight-secondary);
+  color: var(--color-secondary);
+  line-height: 1.5;
+}
+
+.dark .hierarchy-secondary {
+  color: var(--color-secondary-dark);
+}
+
+/* Secondary buttons */
+.button-secondary {
+  background-color: var(--button-secondary-bg);
+  color: white;
+  font-weight: var(--weight-secondary);
+  font-size: var(--text-secondary-size);
+  box-shadow: var(--elevation-secondary);
+  border: none;
+  border-radius: 6px;
+  transition: all 0.2s ease-in-out;
+}
+
+.button-secondary:hover {
+  background-color: var(--button-secondary-hover);
+  box-shadow: var(--elevation-primary);
+}
+
+.dark .button-secondary {
+  background-color: var(--button-secondary-bg-dark);
+}
+
+.dark .button-secondary:hover {
+  background-color: var(--button-secondary-hover-dark);
+}
+
+/* Tertiary Elements - Lower importance */
+.hierarchy-tertiary {
+  font-size: var(--text-tertiary-size);
+  font-weight: var(--weight-tertiary);
+  color: var(--color-tertiary);
+  line-height: 1.5;
+}
+
+.dark .hierarchy-tertiary {
+  color: var(--color-tertiary-dark);
+}
+
+/* Tertiary buttons */
+.button-tertiary {
+  background-color: var(--button-tertiary-bg);
+  color: var(--color-primary);
+  font-weight: var(--weight-tertiary);
+  font-size: var(--text-tertiary-size);
+  box-shadow: var(--elevation-tertiary);
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  transition: all 0.2s ease-in-out;
+}
+
+.button-tertiary:hover {
+  background-color: var(--button-tertiary-hover);
+  border-color: #9ca3af;
+}
+
+.dark .button-tertiary {
+  background-color: var(--button-tertiary-bg-dark);
+  color: var(--color-primary-dark);
+  border-color: #4b5563;
+}
+
+.dark .button-tertiary:hover {
+  background-color: var(--button-tertiary-hover-dark);
+  border-color: #6b7280;
+}
+
+/* Caption/Helper text */
+.hierarchy-caption {
+  font-size: var(--text-caption-size);
+  font-weight: var(--weight-caption);
+  color: var(--color-caption);
+  line-height: 1.4;
+}
+
+.dark .hierarchy-caption {
+  color: var(--color-caption-dark);
+}
+
+/* Navbar specific hierarchy */
+.navbar-brand {
+  /* Logo and brand name - highest priority */
+  @apply hierarchy-primary;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.navbar-primary-action {
+  /* Main call-to-action button */
+  @apply button-primary;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 14px 20px;
+}
+
+.navbar-secondary-action {
+  /* Secondary action buttons */
+  @apply button-secondary;
+  font-size: 14px;
+  padding: 12px 16px;
+}
+
+.navbar-utility-action {
+  /* Utility/settings buttons */
+  @apply button-tertiary;
+  font-size: 13px;
+  padding: 8px 12px;
+}
+
+.navbar-search {
+  /* Search input with medium priority */
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--color-secondary);
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s ease-in-out;
+}
+
+.navbar-search:focus {
+  color: var(--color-primary);
+  background: white;
+  border-color: var(--button-primary-bg);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.dark .navbar-search {
+  color: var(--color-secondary-dark);
+  background: #374151;
+  border-color: #4b5563;
+}
+
+.dark .navbar-search:focus {
+  color: var(--color-primary-dark);
+  background: #1f2937;
+  border-color: var(--button-primary-bg-dark);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* Visual flow and grouping */
+.hierarchy-group-primary {
+  /* Primary content groups */
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: var(--elevation-secondary);
+  padding: var(--navbar-spacing-lg, 16px);
+}
+
+.dark .hierarchy-group-primary {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+.hierarchy-group-secondary {
+  /* Secondary content groups */
+  background: #f9fafb;
+  border: 1px solid #f3f4f6;
+  border-radius: 6px;
+  padding: var(--navbar-spacing-md, 12px);
+}
+
+.dark .hierarchy-group-secondary {
+  background: #374151;
+  border-color: #4b5563;
+}
+
+/* Icon hierarchy */
+.icon-primary {
+  width: 20px;
+  height: 20px;
+  color: var(--color-primary);
+}
+
+.icon-secondary {
+  width: 16px;
+  height: 16px;
+  color: var(--color-secondary);
+}
+
+.icon-tertiary {
+  width: 14px;
+  height: 14px;
+  color: var(--color-tertiary);
+}
+
+.dark .icon-primary { color: var(--color-primary-dark); }
+.dark .icon-secondary { color: var(--color-secondary-dark); }
+.dark .icon-tertiary { color: var(--color-tertiary-dark); }
+
+/* Focus hierarchy for accessibility */
+.hierarchy-focus-primary:focus {
+  outline: 2px solid var(--button-primary-bg);
+  outline-offset: 2px;
+}
+
+.hierarchy-focus-secondary:focus {
+  outline: 1px solid var(--button-secondary-bg);
+  outline-offset: 1px;
+}
+
+.hierarchy-focus-tertiary:focus {
+  outline: 1px dotted var(--color-tertiary);
+  outline-offset: 1px;
+}
+
+/* Responsive hierarchy adjustments */
+@media (max-width: 479px) {
+  :root {
+    /* Reduce hierarchy differences on small screens */
+    --text-primary-size: 16px;
+    --text-secondary-size: 14px;
+    --text-tertiary-size: 12px;
+  }
+
+  .navbar-brand {
+    font-size: 18px;
+  }
+
+  .navbar-primary-action {
+    font-size: 15px;
+    padding: 12px 16px;
+  }
+}
+
+@media (min-width: 768px) {
+  :root {
+    /* Enhanced hierarchy on larger screens */
+    --text-primary-size: 20px;
+    --text-secondary-size: 16px;
+    --text-tertiary-size: 14px;
+  }
+
+  .navbar-brand {
+    font-size: 22px;
+  }
+
+  .navbar-primary-action {
+    font-size: 17px;
+    padding: 16px 24px;
+  }
+}
+
+/* Animation hierarchy */
+.hierarchy-animate-primary {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hierarchy-animate-secondary {
+  transition: all 0.2s ease-in-out;
+}
+
+.hierarchy-animate-tertiary {
+  transition: all 0.15s ease-out;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .hierarchy-animate-primary,
+  .hierarchy-animate-secondary,
+  .hierarchy-animate-tertiary {
+    transition: none;
+  }
+}

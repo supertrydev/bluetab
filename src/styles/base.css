@@ -1,0 +1,338 @@
+/**
+ * BlueTab Base Styles
+ * 
+ * CSS reset and global element styles
+ * Uses design tokens for all values
+ */
+
+/* ============================================
+   RESET
+   ============================================ */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+body {
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    font-weight: var(--font-normal);
+    line-height: var(--leading-normal);
+    color: var(--text);
+    background-color: var(--bg-0);
+    min-height: 100vh;
+}
+
+/* ============================================
+   TYPOGRAPHY
+   ============================================ */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-sans);
+    font-weight: var(--font-semibold);
+    line-height: var(--leading-tight);
+    color: var(--text-strong);
+    letter-spacing: var(--tracking-tight);
+}
+
+h1 {
+    font-size: var(--text-xl);
+}
+
+h2 {
+    font-size: var(--text-lg);
+}
+
+h3 {
+    font-size: var(--text-base);
+    font-weight: var(--font-medium);
+}
+
+h4,
+h5,
+h6 {
+    font-size: var(--text-sm);
+}
+
+p {
+    line-height: var(--leading-relaxed);
+    color: var(--text);
+}
+
+small {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+}
+
+a {
+    color: var(--primary);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+a:hover {
+    color: var(--primary-hover);
+}
+
+/* ============================================
+   FOCUS STATES
+   ============================================ */
+:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+/* Remove default focus for mouse users */
+:focus:not(:focus-visible) {
+    outline: none;
+}
+
+/* ============================================
+   INTERACTIVE ELEMENTS
+   ============================================
+ *
+ * NOTE (post-ship iteration round 2, 2026-04-18): The prior reset
+ * included `button { border: none; background: none; }` which looks
+ * harmless but clashes with Tailwind's utility classes. Specifically:
+ *   - `button` element selector (0,0,0,1) overrides the Tailwind
+ *     preflight `*, ::before, ::after { border-style: solid; }` which
+ *     has universal-selector specificity (0,0,0,0). With `border: none`
+ *     setting `border-style: none`, any `<button className="border
+ *     border-border ...">` rendered with NO visible border — the
+ *     Tailwind `.border` utility only sets `border-width: 1px`, not
+ *     `border-style`, so style stays `none` and the border is invisible.
+ *   - `background: none` is shorthand that can interact badly with
+ *     Tailwind's `bg-*` utilities depending on source-order. Tailwind's
+ *     preflight already sets `button { background-color: transparent }`
+ *     which achieves the "no browser-default button chrome" intent
+ *     without the shorthand side-effects.
+ *
+ * The regression was masked until `c4dcf07` because base.css was silently
+ * dropped from the bundle along with simplify.css. Once the @import
+ * order was fixed, base.css started shipping — bringing this latent
+ * clash with it. See the Phase 9 Plan 09-04 SUMMARY "Post-ship iteration
+ * round 2" section for the full chain. */
+button,
+input,
+select,
+textarea {
+    font-family: inherit;
+    font-size: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* ============================================
+   SETTINGS RANGE SLIDERS
+   Native range inputs need pseudo-element styling; the input background alone
+   does not reliably paint the track in Chromium/WebKit.
+   ============================================ */
+.settings-range {
+    --settings-range-track: var(--highlight);
+    --settings-range-thumb: var(--primary);
+
+    width: 100%;
+    height: 1.25rem;
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+    accent-color: var(--primary);
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.settings-range:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+.settings-range::-webkit-slider-runnable-track {
+    height: 0.375rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    background: var(--settings-range-track);
+}
+
+.settings-range::-webkit-slider-thumb {
+    width: 0.875rem;
+    height: 0.875rem;
+    margin-top: -0.3125rem;
+    border: 2px solid var(--bg-0);
+    border-radius: var(--radius-full);
+    background: var(--settings-range-thumb);
+    box-shadow: 0 2px 8px hsla(226, 68%, 50%, 0.35);
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.settings-range:focus-visible::-webkit-slider-thumb {
+    box-shadow:
+        0 0 0 3px hsla(226, 68%, 50%, 0.25),
+        0 2px 8px hsla(226, 68%, 50%, 0.35);
+}
+
+.settings-range::-moz-range-track {
+    height: 0.375rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    background: var(--settings-range-track);
+}
+
+.settings-range::-moz-range-progress {
+    height: 0.375rem;
+    border-radius: var(--radius-full);
+    background: var(--primary);
+}
+
+.settings-range::-moz-range-thumb {
+    width: 0.875rem;
+    height: 0.875rem;
+    border: 2px solid var(--bg-0);
+    border-radius: var(--radius-full);
+    background: var(--settings-range-thumb);
+    box-shadow: 0 2px 8px hsla(226, 68%, 50%, 0.35);
+}
+
+.settings-range:focus-visible::-moz-range-thumb {
+    box-shadow:
+        0 0 0 3px hsla(226, 68%, 50%, 0.25),
+        0 2px 8px hsla(226, 68%, 50%, 0.35);
+}
+
+/* ============================================
+   SELECTION
+   ============================================ */
+::selection {
+    background-color: var(--primary);
+    color: white;
+}
+
+/* ============================================
+   SCROLLBAR (Webkit)
+   ============================================ */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-1);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--highlight);
+}
+
+/* Transparent Scrollbar - for modals and overlays */
+.scrollbar-transparent::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.scrollbar-transparent::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.scrollbar-transparent::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: var(--radius-full);
+    transition: background 0.2s ease;
+}
+
+.scrollbar-transparent:hover::-webkit-scrollbar-thumb {
+    background: var(--border);
+}
+
+.scrollbar-transparent::-webkit-scrollbar-thumb:hover {
+    background: var(--highlight);
+}
+
+/* Firefox scrollbar */
+.scrollbar-transparent {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+}
+
+.scrollbar-transparent:hover {
+    scrollbar-color: var(--border) transparent;
+}
+
+/* ============================================
+   TAB CROSSFADE -- Radix data-state transitions
+   Per locked decision: 150ms out, 200ms in (50ms delay)
+   Uses CSS instead of Framer Motion (simpler, per RESEARCH.md recommendation)
+   ============================================ */
+[data-radix-tabs-content][data-state="inactive"] {
+    opacity: 0;
+    transition: opacity 150ms ease;
+    pointer-events: none;
+}
+[data-radix-tabs-content][data-state="active"] {
+    opacity: 1;
+    transition: opacity 200ms ease 50ms;
+}
+
+/* ============================================
+   HOVER LIFT -- interactive card micro-interaction
+   Per locked decision: translateY(-1px) + shadow increase, 300ms ease-out
+   Apply via `hover-lift` class on interactive elements
+   ============================================ */
+@layer utilities {
+    .hover-lift {
+        transition: transform 300ms ease-out, box-shadow 300ms ease-out;
+    }
+    .hover-lift:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-lg);
+    }
+}
+
+/* Dark mode hover-lift override: use a blue-tinted glow so the effect is visible */
+.dark .hover-lift:hover,
+[data-theme="dark"] .hover-lift:hover {
+    box-shadow:
+        0 4px 24px hsla(226, 60%, 50%, 0.20),
+        0 1px 4px hsla(220, 40%, 10%, 0.25),
+        inset 0 1px 0 hsla(0, 0%, 100%, 0.04);
+}
+
+/* ============================================
+   UTILITIES
+   ============================================ */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}

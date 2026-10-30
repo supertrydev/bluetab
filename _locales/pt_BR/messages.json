@@ -1,0 +1,26 @@
+{
+  "appName": {
+    "message": "Bluetab: Gerenciador de abas"
+  },
+  "appDescription": {
+    "message": "Salve todas as abas com um clique, encontre páginas salvas rápido e veja menos abas abertas. Gerenciador de abas grátis e privado."
+  },
+  "commandActivate": {
+    "message": "Ativar a extensão"
+  },
+  "commandSaveAllTabs": {
+    "message": "Salvar todas as abas"
+  },
+  "commandSaveCurrentTab": {
+    "message": "Salvar a página atual"
+  },
+  "commandRestoreLastGroup": {
+    "message": "Restaurar o último grupo"
+  },
+  "commandOpenManager": {
+    "message": "Abrir o gerenciador do Bluetab"
+  },
+  "commandBrainDump": {
+    "message": "Salvar uma ideia na caixa de entrada do Brain Dump"
+  }
+}

@@ -1,0 +1,50 @@
+Bluetab
+Copyright (C) 2025-2026 Supertry LLC
+
+The Bluetab source code is licensed under the GNU Affero General Public
+License, version 3 (see LICENSE). The files listed below are NOT covered by
+that license.
+
+-------------------------------------------------------------------------------
+Notification sounds (src/assets/sounds/)
+-------------------------------------------------------------------------------
+
+These sound effects come from Pixabay (https://pixabay.com) and are used
+under the Pixabay Content License:
+https://pixabay.com/service/license-summary/
+
+The Pixabay Content License allows use inside a software product. It does not
+allow selling or redistributing the sound files on their own, unchanged, as
+standalone files. If you fork Bluetab, either keep them inside your product or
+replace them.
+
+File in Bluetab         Original Pixabay file                                  Artist
+---------------------   ----------------------------------------------------   ------------
+blip.mp3                dragon-studio-notification-sound-effect-372475.mp3     Dragon Studio
+crystal.mp3             dragon-studio-notification-ping-372479.mp3             Dragon Studio
+ping.mp3                dragon-studio-new-notification-3-398649.mp3            Dragon Studio
+breeze.mp3              universfield-new-notification-057-494255.mp3           Universfield
+drop.mp3                universfield-new-notification-05-352453.mp3            Universfield
+gentle-bell.mp3         universfield-new-notification-022-370046.mp3           Universfield
+level-up.mp3            universfield-level-up-191997.mp3                       Universfield
+ripple.mp3              universfield-new-notification-010-352755.mp3           Universfield
+shimmer.mp3             universfield-new-notification-026-380249.mp3           Universfield
+soft-chime.mp3          universfield-new-notification-08-352461.mp3            Universfield
+
+The number at the end of each original file name is its Pixabay ID.
+
+-------------------------------------------------------------------------------
+Name and logo
+-------------------------------------------------------------------------------
+
+"Bluetab" and the Bluetab logo (src/assets/icon*.png and other logo images)
+are trademarks of Supertry LLC and are not licensed under the AGPL. See
+TRADEMARKS.md.
+
+-------------------------------------------------------------------------------
+Third-party libraries
+-------------------------------------------------------------------------------
+
+Third-party npm packages are listed in package.json and package-lock.json and
+keep their own licenses. They are installed from npm at build time and are
+not stored in this repository.

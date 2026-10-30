@@ -1,0 +1,65 @@
+/**
+ * Assistant UI Theme Bridge
+ *
+ * Maps BlueTab design tokens to @assistant-ui/react-ui CSS variables.
+ * The --aui-* vars expect raw HSL values without hsl() wrapper.
+ *
+ * Visual overrides are in aui-overrides.css (loaded after Tailwind).
+ */
+
+/* Import assistant-ui component styles */
+@import "@assistant-ui/react-ui/styles/tailwindcss/base-components.css";
+@import "@assistant-ui/react-ui/styles/tailwindcss/thread.css";
+
+/* ============================================
+   Dark mode (default) — maps to BlueTab tokens
+   ============================================ */
+:root {
+  --aui-background: 220 15% 6%;
+  --aui-foreground: 220 10% 75%;
+  --aui-card: 220 14% 10%;
+  --aui-card-foreground: 220 10% 94%;
+  --aui-popover: 220 14% 10%;
+  --aui-popover-foreground: 220 10% 94%;
+  --aui-primary: 226.4 67.72% 49.8%;
+  --aui-primary-foreground: 0 0% 100%;
+  --aui-secondary: 220 13% 14%;
+  --aui-secondary-foreground: 220 10% 94%;
+  --aui-muted: 220 13% 14%;
+  --aui-muted-foreground: 220 10% 55%;
+  --aui-accent: 220 12% 25%;
+  --aui-accent-foreground: 220 10% 94%;
+  --aui-destructive: 0 80% 55%;
+  --aui-destructive-foreground: 220 10% 94%;
+  --aui-border: 220 12% 20%;
+  --aui-input: 220 12% 20%;
+  --aui-ring: 226.4 67.72% 49.8%;
+  --aui-radius: 0.5rem;
+  --aui-thread-max-width: 100%;
+}
+
+/* ============================================
+   Light mode
+   ============================================ */
+[data-theme="light"],
+html:not(.dark) {
+  --aui-background: 220 15% 97%;
+  --aui-foreground: 220 10% 35%;
+  --aui-card: 220 15% 99%;
+  --aui-card-foreground: 220 15% 10%;
+  --aui-popover: 220 15% 99%;
+  --aui-popover-foreground: 220 15% 10%;
+  --aui-primary: 226.4 67.72% 49.8%;
+  --aui-primary-foreground: 0 0% 100%;
+  --aui-secondary: 0 0% 100%;
+  --aui-secondary-foreground: 220 15% 10%;
+  --aui-muted: 0 0% 100%;
+  --aui-muted-foreground: 220 8% 55%;
+  --aui-accent: 220 12% 95%;
+  --aui-accent-foreground: 220 15% 10%;
+  --aui-destructive: 0 80% 55%;
+  --aui-destructive-foreground: 220 15% 10%;
+  --aui-border: 220 12% 88%;
+  --aui-input: 220 12% 88%;
+  --aui-ring: 226.4 67.72% 49.8%;
+}

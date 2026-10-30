@@ -1,0 +1,60 @@
+/*
+ * Simplify Mode — ADHD-16 / ADHD-17 / ADHD-18
+ *
+ * Driven by two data attributes on <html>, set by the useSimplifyMode
+ * hook (src/hooks/useSimplifyMode.ts) once per entry point:
+ *
+ *   html[data-simplify="true"]              — master + simplify sub-toggle
+ *   html[data-simplify-aggressive="true"]   — additional opt-in sub-flag
+ *
+ * Scoping by <html> attribute rather than a React provider keeps every
+ * Bluetab surface (sidepanel, newtab, popup, options, settings) in sync
+ * without per-component plumbing.
+ *
+ * Class conventions:
+ *   .bt-decor          — decorative-only element; hidden under Default Simplify
+ *   .bt-aggressive-hide — options-shell metadata; hover-reveals under Aggressive
+ *   .bt-group-row     — parent marker that acts as the hover target
+ *
+ * The `!important` rules below are deliberate — they override utility-class
+ * `display` settings on the decorative elements we mark. Affordance
+ * elements (buttons, menus, inputs) must NEVER carry these classes; the
+ * Babel-AST contract test in useSimplifyMode.test.ts enforces this at
+ * build-time (ADHD-17).
+ */
+
+/* -------- Default Simplify — decorative hides -------- */
+
+html[data-simplify="true"] .bt-decor {
+    display: none !important;
+}
+
+/* -------- Aggressive — Options-shell group rows only -------- */
+
+html[data-simplify-aggressive="true"] .bt-aggressive-hide {
+    opacity: 0;
+    transition: opacity 0.18s ease-out;
+}
+
+html[data-simplify-aggressive="true"] .bt-group-row:hover .bt-aggressive-hide,
+html[data-simplify-aggressive="true"] .bt-group-row:focus-within .bt-aggressive-hide {
+    opacity: 1;
+}
+
+/* -------- ADHD-18: prefers-reduced-motion honored unconditionally --------
+ *
+ * Independent of Simplify toggles — if the user's OS says "reduce motion",
+ * Bluetab respects that regardless of ADHD Mode state. This block lives
+ * OUTSIDE any data-simplify selector on purpose (ADHD-18 contract).
+ */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

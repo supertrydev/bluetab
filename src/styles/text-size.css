@@ -1,0 +1,25 @@
+/* Runtime text-size scaling for the extension UI.
+ *
+ * This layer overrides the canonical `--text-*` typography tokens so Tailwind
+ * utilities (`text-xs`, `text-base`, `text-2xl`, etc.) and base styles all
+ * scale from the same source of truth.
+ */
+:root {
+  --text-scale-small: 0.875;
+  --text-scale-medium: 1;
+  --text-scale-large: 1.125;
+  --text-scale-factor: var(--text-scale-medium);
+
+  --text-tiny: calc(0.5625rem * var(--text-scale-factor));   /* 9px */
+  --text-micro: calc(0.625rem * var(--text-scale-factor));   /* 10px */
+  --text-caption: calc(0.6875rem * var(--text-scale-factor)); /* 11px */
+  --text-xs: calc(0.75rem * var(--text-scale-factor));       /* 12px */
+  --text-label: calc(0.8125rem * var(--text-scale-factor));  /* 13px */
+  --text-sm: calc(0.875rem * var(--text-scale-factor));      /* 14px */
+  --text-base: calc(1rem * var(--text-scale-factor));        /* 16px */
+  --text-lg: calc(1.125rem * var(--text-scale-factor));      /* 18px */
+  --text-xl: calc(1.5rem * var(--text-scale-factor));        /* 24px */
+  --text-2xl: calc(1.5rem * var(--text-scale-factor));       /* 24px */
+  --text-3xl: calc(1.875rem * var(--text-scale-factor));     /* 30px */
+  --text-4xl: calc(2.25rem * var(--text-scale-factor));      /* 36px */
+}

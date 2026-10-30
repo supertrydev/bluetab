@@ -1,0 +1,97 @@
+[
+  {
+    "description": "Basic token param stripped",
+    "input": "https://example.com/page?token=abc123&page=1",
+    "expected": "https://example.com/page?token=%5BREDACTED%5D&page=1"
+  },
+  {
+    "description": "access_token variant",
+    "input": "https://api.example.com/callback?access_token=xyz789&state=ok",
+    "expected": "https://api.example.com/callback?access_token=%5BREDACTED%5D&state=ok"
+  },
+  {
+    "description": "refresh_token variant",
+    "input": "https://auth.example.com/renew?refresh_token=rt_456",
+    "expected": "https://auth.example.com/renew?refresh_token=%5BREDACTED%5D"
+  },
+  {
+    "description": "session param",
+    "input": "https://example.com/?session=s123&view=list",
+    "expected": "https://example.com/?session=%5BREDACTED%5D&view=list"
+  },
+  {
+    "description": "session_id variant",
+    "input": "https://example.com/?session_id=sid456&tab=home",
+    "expected": "https://example.com/?session_id=%5BREDACTED%5D&tab=home"
+  },
+  {
+    "description": "password param",
+    "input": "https://example.com/login?user=bob&password=hunter2",
+    "expected": "https://example.com/login?user=bob&password=%5BREDACTED%5D"
+  },
+  {
+    "description": "api_key variant",
+    "input": "https://api.example.com/data?api_key=k_abc&format=json",
+    "expected": "https://api.example.com/data?api_key=%5BREDACTED%5D&format=json"
+  },
+  {
+    "description": "auth param",
+    "input": "https://example.com/api?auth=bearer_xyz&limit=10",
+    "expected": "https://example.com/api?auth=%5BREDACTED%5D&limit=10"
+  },
+  {
+    "description": "code param (OAuth callback)",
+    "input": "https://example.com/callback?code=auth_code_123&state=csrf_ok",
+    "expected": "https://example.com/callback?code=%5BREDACTED%5D&state=csrf_ok"
+  },
+  {
+    "description": "Case insensitive (TOKEN uppercase)",
+    "input": "https://example.com/?TOKEN=abc&page=2",
+    "expected": "https://example.com/?TOKEN=%5BREDACTED%5D&page=2"
+  },
+  {
+    "description": "Multiple sensitive params in one URL",
+    "input": "https://example.com/?token=a&session=b&key=c&safe=keep",
+    "expected": "https://example.com/?token=%5BREDACTED%5D&session=%5BREDACTED%5D&key=%5BREDACTED%5D&safe=keep"
+  },
+  {
+    "description": "No sensitive params — unchanged",
+    "input": "https://example.com/page?utm_source=twitter&page=5&sort=date",
+    "expected": "https://example.com/page?utm_source=twitter&page=5&sort=date"
+  },
+  {
+    "description": "No query params — unchanged",
+    "input": "https://example.com/some/path",
+    "expected": "https://example.com/some/path"
+  },
+  {
+    "description": "Fragment preserved, sensitive param stripped",
+    "input": "https://example.com/page?token=abc#section2",
+    "expected": "https://example.com/page?token=%5BREDACTED%5D#section2"
+  },
+  {
+    "description": "Path segments NOT mangled (path contains 'token')",
+    "input": "https://example.com/token/refresh/page?safe=yes",
+    "expected": "https://example.com/token/refresh/page?safe=yes"
+  },
+  {
+    "description": "jwt param",
+    "input": "https://example.com/verify?jwt=eyJhbG&user=me",
+    "expected": "https://example.com/verify?jwt=%5BREDACTED%5D&user=me"
+  },
+  {
+    "description": "csrf param",
+    "input": "https://example.com/form?csrf=tok_999&action=submit",
+    "expected": "https://example.com/form?csrf=%5BREDACTED%5D&action=submit"
+  },
+  {
+    "description": "secret param",
+    "input": "https://example.com/webhook?secret=shh123&event=push",
+    "expected": "https://example.com/webhook?secret=%5BREDACTED%5D&event=push"
+  },
+  {
+    "description": "Malformed URL returned unchanged",
+    "input": "not-a-valid-url",
+    "expected": "not-a-valid-url"
+  }
+]

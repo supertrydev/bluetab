@@ -1,0 +1,26 @@
+{
+  "appName": {
+    "message": "Bluetab: Gestor de pestañas"
+  },
+  "appDescription": {
+    "message": "Guarda todas las pestañas en un clic, encuentra lo guardado al instante y ve menos pestañas a la vez. Gestor de pestañas gratis."
+  },
+  "commandActivate": {
+    "message": "Activar la extensión"
+  },
+  "commandSaveAllTabs": {
+    "message": "Guardar todas las pestañas"
+  },
+  "commandSaveCurrentTab": {
+    "message": "Guardar la página actual"
+  },
+  "commandRestoreLastGroup": {
+    "message": "Restaurar el último grupo"
+  },
+  "commandOpenManager": {
+    "message": "Abrir el administrador de Bluetab"
+  },
+  "commandBrainDump": {
+    "message": "Guardar una idea en la bandeja de Brain Dump"
+  }
+}

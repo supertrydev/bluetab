@@ -1,0 +1,26 @@
+{
+  "appName": {
+    "message": "Bluetab: Tab Manager"
+  },
+  "appDescription": {
+    "message": "Save every open tab in one click, find saved pages fast, and keep fewer tabs in sight. A free, private tab manager for Chrome."
+  },
+  "commandActivate": {
+    "message": "Activate extension"
+  },
+  "commandSaveAllTabs": {
+    "message": "Save all tabs"
+  },
+  "commandSaveCurrentTab": {
+    "message": "Save the current page"
+  },
+  "commandRestoreLastGroup": {
+    "message": "Restore last group"
+  },
+  "commandOpenManager": {
+    "message": "Open Bluetab Manager"
+  },
+  "commandBrainDump": {
+    "message": "Capture a thought to Brain Dump Inbox"
+  }
+}
