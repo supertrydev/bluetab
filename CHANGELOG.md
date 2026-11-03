@@ -3,10 +3,20 @@
 All notable changes to Bluetab. Versions are the same in the Chrome Web Store
 and Firefox Add-ons.
 
-## 1.0.3 for Firefox (unreleased)
+## 1.0.4
 
-First Firefox build, from the same codebase as Chrome (git tag `v1.0.3-firefox`).
+Security update, and the first release for Firefox. Same version in both stores.
 
+**Security**
+- Updated DOMPurify to 3.4.17, which fixes several sanitizer bypasses. Bluetab
+  uses DOMPurify to clean page content before AI summaries.
+- Updated Zod, the AI SDK, nanoid, PostCSS and other dependencies with
+  published security advisories. `npm audit` reports no known
+  vulnerabilities, in shipped code or in the build tools.
+- Build tools: Vite 7 (was 4), ESLint 9 (was 8) with typescript-eslint 8.
+  Removed the shadcn CLI from the project dependencies (run it with `npx`).
+
+**Firefox (first release)**
 - Firefox 140 or later (desktop). The side panel is a Firefox sidebar; the
   toolbar button opens and closes it.
 - Signing in asks for Firefox's built-in data collection consent first.
