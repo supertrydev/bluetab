@@ -1556,6 +1556,14 @@
         "featureButton": "Suggest a Feature"
       },
       "changelog": {
+        "v1_0_5_1": "Now available for Firefox (version 140 or later)",
+        "v1_0_5_2": "Sync and Teams no longer put your sign-in token in web addresses",
+        "v1_0_5_3": "Security updates for page cleaning and other built-in libraries",
+        "v1_0_5_4": "Settings → About shows the installed version",
+        "v1_0_3_1": "Import keeps OneTab titles and reads Session Buddy exports",
+        "v1_0_3_2": "Name each device when a browser joins sync",
+        "v1_0_3_3": "Bluetab AI shows what it sends before the first request and asks before acting in connected apps",
+        "v1_0_3_4": "The Help page lists the support email address",
         "v1_0_0_1": "AI group organizer and page-to-Dump summaries",
         "v1_0_0_2": "Brain Dump improvements, including selected-text capture and linked-page indicators",
         "v1_0_0_3": "MCP server access for external AI clients",

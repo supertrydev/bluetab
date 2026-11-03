@@ -1556,6 +1556,14 @@
         "featureButton": "Sugerir um recurso"
       },
       "changelog": {
+        "v1_0_5_1": "Agora disponível para Firefox (versão 140 ou posterior)",
+        "v1_0_5_2": "A sincronização e o Teams não colocam mais seu token de sessão nos endereços web",
+        "v1_0_5_3": "Atualizações de segurança para a limpeza de páginas e outras bibliotecas integradas",
+        "v1_0_5_4": "Configurações → Sobre mostra a versão instalada",
+        "v1_0_3_1": "A importação mantém os títulos do OneTab e lê exportações do Session Buddy",
+        "v1_0_3_2": "Dê um nome a cada dispositivo quando um navegador entra na sincronização",
+        "v1_0_3_3": "O Bluetab AI mostra o que envia antes da primeira solicitação e pergunta antes de agir em apps conectados",
+        "v1_0_3_4": "A página de ajuda mostra o e-mail de suporte",
         "v1_0_0_1": "Organizador de grupos com IA e resumos de páginas para o Dump",
         "v1_0_0_2": "Melhorias no Brain Dump, incluindo captura de texto selecionado e indicadores de páginas vinculadas",
         "v1_0_0_3": "Acesso ao servidor MCP para clientes externos de IA",

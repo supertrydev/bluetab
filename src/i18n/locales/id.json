@@ -1556,6 +1556,14 @@
         "featureButton": "Sarankan Fitur"
       },
       "changelog": {
+        "v1_0_5_1": "Kini tersedia untuk Firefox (versi 140 atau lebih baru)",
+        "v1_0_5_2": "Sinkronisasi dan Teams tidak lagi menaruh token sesi Anda di alamat web",
+        "v1_0_5_3": "Pembaruan keamanan untuk pembersihan halaman dan pustaka bawaan lainnya",
+        "v1_0_5_4": "Pengaturan → Tentang kini menampilkan versi yang terpasang",
+        "v1_0_3_1": "Impor mempertahankan judul OneTab dan membaca ekspor Session Buddy",
+        "v1_0_3_2": "Beri nama setiap perangkat saat browser bergabung ke sinkronisasi",
+        "v1_0_3_3": "Bluetab AI menampilkan apa yang dikirim sebelum permintaan pertama dan meminta konfirmasi sebelum bertindak di aplikasi yang terhubung",
+        "v1_0_3_4": "Halaman bantuan menampilkan alamat email dukungan",
         "v1_0_0_1": "Pengelola grup AI dan ringkasan halaman ke Dump",
         "v1_0_0_2": "Peningkatan Brain Dump, termasuk penyimpanan teks terpilih dan indikator halaman tertaut",
         "v1_0_0_3": "Akses server MCP untuk klien AI eksternal",

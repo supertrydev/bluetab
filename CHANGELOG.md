@@ -3,9 +3,27 @@
 All notable changes to Bluetab. Versions are the same in the Chrome Web Store
 and Firefox Add-ons.
 
+## 1.0.5
+
+The first release for Firefox, and the next Chrome Web Store update after
+1.0.3. It includes everything in 1.0.4 (below), which was not published to the
+stores.
+
+**Security**
+- Teams no longer puts your session token in the WebSocket URL
+  (`/ws/teams/<code>?token=…`). The token travels as a WebSocket subprotocol
+  (`bluetab.v1, bluetab.auth.<base64url>`); the server answers with
+  `bluetab.v1` only. Needs the Teams server from supertry.net with
+  subprotocol support (older servers reject 1.0.5 Teams connections).
+
+**Fixes**
+- Settings → About shows the installed version (it showed 1.0.3).
+- The Help page changelog lists 1.0.3 and 1.0.5.
+
 ## 1.0.4
 
-Security update, and the first release for Firefox. Same version in both stores.
+Security update (git tag `v1.0.4`, not published to the stores; shipped as part
+of 1.0.5).
 
 **Security**
 - Sync no longer puts your session token in the event stream URL

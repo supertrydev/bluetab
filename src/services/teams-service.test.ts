@@ -72,7 +72,10 @@ function simulateWsClose(ws: WebSocket, code: number, reason = ''): void {
 
 // Capture the global WebSocket mock set by jest-setup ONCE before any test
 // modifies it.  afterEach restores this reference so tests stay isolated.
-const OriginalWebSocket = (global as Record<string, unknown>).WebSocket as new (url: string) => WebSocket
+const OriginalWebSocket = (global as Record<string, unknown>).WebSocket as new (
+    url: string,
+    protocols?: string | string[]
+) => WebSocket
 
 // eslint-disable-next-line prefer-const
 let wsInstances: WebSocket[] = []
@@ -86,8 +89,11 @@ beforeEach(() => {
     // Track WS instances by wrapping the original MockWebSocket
     wsInstances = []
     ;(global as Record<string, unknown>).WebSocket = class TrackingMockWS extends (OriginalWebSocket as unknown as typeof WebSocket) {
-        constructor(url: string) {
-            super(url)
+        readonly requestedProtocols: string | string[] | undefined
+
+        constructor(url: string, protocols?: string | string[]) {
+            super(url, protocols)
+            this.requestedProtocols = protocols
             wsInstances.push(this)
         }
     }
@@ -218,15 +224,31 @@ describe('joinSession', () => {
         expect(result).toEqual({ success: false, error: 'Sign in to join a session' })
     })
 
-    it('opens WebSocket to correct URL', async () => {
+    it('keeps the bearer token out of the URL and sends it as a base64url auth protocol', async () => {
         mockGetAccessToken.mockResolvedValue('test-token')
 
         TeamsService.joinSession('ROOM12345')
         await Promise.resolve()
 
-        const ws = wsInstances[0]
+        const ws = wsInstances[0] as WebSocket & { requestedProtocols?: string | string[] }
         expect(ws).toBeDefined()
-        expect(ws.url).toBe('wss://supertry.net/ws/teams/ROOM12345?token=test-token')
+        expect(ws.url).toBe('wss://supertry.net/ws/teams/ROOM12345')
+        expect(ws.requestedProtocols).toEqual([
+            'bluetab.v1',
+            'bluetab.auth.dGVzdC10b2tlbg',
+        ])
+    })
+
+    it('does not log the bearer token or full WebSocket URL', async () => {
+        const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {})
+        mockGetAccessToken.mockResolvedValue('sensitive-token')
+
+        TeamsService.joinSession('ROOM12345')
+        await Promise.resolve()
+
+        const output = logSpy.mock.calls.flat().join(' ')
+        expect(output).not.toContain('sensitive-token')
+        expect(output).not.toContain('wss://supertry.net/ws/teams/ROOM12345')
     })
 
     it('updates state with session data and participants on SESSION_JOINED', async () => {

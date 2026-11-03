@@ -35,7 +35,7 @@ describe('Settings RTL and bidi contract', () => {
     expect(source.match(/absolute end-2/g)).toHaveLength(2);
     expect(source.match(/dir="auto"/g)).toHaveLength(2);
     expect(source).toContain("position={direction === 'rtl' ? 'bottom-left' : 'bottom-right'}");
-    expect(source).toContain("version: isolateBidi('1.0.3', 'ltr')");
+    expect(source).toContain("version: isolateBidi(chrome.runtime.getManifest().version, 'ltr')");
   });
 
   it('isolates provider, account, workspace, project, and channel labels', () => {

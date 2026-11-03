@@ -537,15 +537,27 @@ function stopHeartbeat(): void {
     }
 }
 
+/**
+ * Browsers cannot send an Authorization header on a WebSocket upgrade, so the
+ * session token travels as a subprotocol (never in the URL, where proxy logs
+ * could record it): `bluetab.v1, bluetab.auth.<base64url(token)>`. The server
+ * answers with `bluetab.v1` only. Same format as the Cloud teams-ws contract.
+ */
+function encodeTeamsAuthProtocol(token: string): string {
+    const bytes = new TextEncoder().encode(token)
+    let binary = ''
+    for (const byte of bytes) binary += String.fromCharCode(byte)
+    return `bluetab.auth.${btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')}`
+}
+
 function connect(code: string, token: string, _role: string): void {
-    const url = `${config.supertry.wsUrl}/ws/teams/${code}?token=${token}`
-    // Never log the token. TODO: move it out of the URL once the Teams
-    // WebSocket server accepts it in the Sec-WebSocket-Protocol header.
-    console.log(`${LOG_PREFIX} Connecting to ${config.supertry.wsUrl}/ws/teams/${code}`)
+    const url = `${config.supertry.wsUrl}/ws/teams/${code}`
+    // Never log the token or the full URL.
+    console.log(`${LOG_PREFIX} Connecting to Teams WebSocket`)
 
     setConnectionState('connecting')
 
-    ws = new WebSocket(url)
+    ws = new WebSocket(url, ['bluetab.v1', encodeTeamsAuthProtocol(token)])
 
     ws.onopen = () => {
         console.log(`${LOG_PREFIX} WebSocket connected`)

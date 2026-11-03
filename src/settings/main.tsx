@@ -352,7 +352,7 @@ function SettingsPage() {
                             <Logo size="splash" className="flex-shrink-0" />
                             <div>
                                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                                    {t('common.version', { version: isolateBidi('1.0.3', 'ltr') })}
+                                    {t('common.version', { version: isolateBidi(chrome.runtime.getManifest().version, 'ltr') })}
                                 </p>
                                 <p className="text-sm text-gray-600 dark:text-gray-300 mt-2 max-w-md">
                                     {t('settings.aboutDescription')}

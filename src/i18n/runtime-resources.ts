@@ -1696,6 +1696,14 @@ export const AR_RESOURCES = {
         "featureButton": "\u0627\u0642\u062a\u0631\u0627\u062d \u0645\u064a\u0632\u0629"
       },
       "changelog": {
+        "v1_0_5_1": "\u0645\u062a\u0627\u062d \u0627\u0644\u0622\u0646 \u0639\u0644\u0649 Firefox (\u0627\u0644\u0625\u0635\u062f\u0627\u0631 140 \u0623\u0648 \u0623\u062d\u062f\u062b)",
+        "v1_0_5_2": "\u0644\u0645 \u062a\u0639\u062f \u0627\u0644\u0645\u0632\u0627\u0645\u0646\u0629 \u0648Teams \u062a\u0636\u0639 \u0631\u0645\u0632 \u062c\u0644\u0633\u062a\u0643 \u0641\u064a \u0639\u0646\u0627\u0648\u064a\u0646 \u0627\u0644\u0648\u064a\u0628",
+        "v1_0_5_3": "\u062a\u062d\u062f\u064a\u062b\u0627\u062a \u0623\u0645\u0627\u0646 \u0644\u062a\u0646\u0638\u064a\u0641 \u0627\u0644\u0635\u0641\u062d\u0627\u062a \u0648\u0627\u0644\u0645\u0643\u062a\u0628\u0627\u062a \u0627\u0644\u0645\u062f\u0645\u062c\u0629 \u0627\u0644\u0623\u062e\u0631\u0649",
+        "v1_0_5_4": "\u064a\u0639\u0631\u0636 \u0642\u0633\u0645 \u00ab\u062d\u0648\u0644\u00bb \u0641\u064a \u0627\u0644\u0625\u0639\u062f\u0627\u062f\u0627\u062a \u0627\u0644\u0625\u0635\u062f\u0627\u0631 \u0627\u0644\u0645\u062b\u0628\u062a",
+        "v1_0_3_1": "\u064a\u062d\u0627\u0641\u0638 \u0627\u0644\u0627\u0633\u062a\u064a\u0631\u0627\u062f \u0639\u0644\u0649 \u0639\u0646\u0627\u0648\u064a\u0646 OneTab \u0648\u064a\u0642\u0631\u0623 \u0645\u0644\u0641\u0627\u062a \u062a\u0635\u062f\u064a\u0631 Session Buddy",
+        "v1_0_3_2": "\u0633\u0645\u0650\u0651 \u0643\u0644 \u062c\u0647\u0627\u0632 \u0639\u0646\u062f \u0627\u0646\u0636\u0645\u0627\u0645 \u0645\u062a\u0635\u0641\u062d \u0625\u0644\u0649 \u0627\u0644\u0645\u0632\u0627\u0645\u0646\u0629",
+        "v1_0_3_3": "\u064a\u0639\u0631\u0636 Bluetab AI \u0645\u0627 \u064a\u0631\u0633\u0644\u0647 \u0642\u0628\u0644 \u0623\u0648\u0644 \u0637\u0644\u0628\u060c \u0648\u064a\u0633\u0623\u0644 \u0642\u0628\u0644 \u062a\u0646\u0641\u064a\u0630 \u0623\u064a \u0625\u062c\u0631\u0627\u0621 \u0641\u064a \u0627\u0644\u062a\u0637\u0628\u064a\u0642\u0627\u062a \u0627\u0644\u0645\u062a\u0635\u0644\u0629",
+        "v1_0_3_4": "\u062a\u0639\u0631\u0636 \u0635\u0641\u062d\u0629 \u0627\u0644\u0645\u0633\u0627\u0639\u062f\u0629 \u0639\u0646\u0648\u0627\u0646 \u0627\u0644\u0628\u0631\u064a\u062f \u0627\u0644\u0625\u0644\u0643\u062a\u0631\u0648\u0646\u064a \u0644\u0644\u062f\u0639\u0645",
         "v1_0_0_1": "\u0645\u0646\u0638\u0651\u0645 \u0645\u062c\u0645\u0648\u0639\u0627\u062a \u0628\u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064a \u0648\u0645\u0644\u062e\u0635\u0627\u062a \u0645\u0646 \u0627\u0644\u0635\u0641\u062d\u0629 \u0625\u0644\u0649 Dump",
         "v1_0_0_2": "\u062a\u062d\u0633\u064a\u0646\u0627\u062a Brain Dump\u060c \u0628\u0645\u0627 \u0641\u064a\u0647\u0627 \u0627\u0644\u062a\u0642\u0627\u0637 \u0627\u0644\u0646\u0635 \u0627\u0644\u0645\u062d\u062f\u062f \u0648\u0645\u0624\u0634\u0631\u0627\u062a \u0627\u0644\u0635\u0641\u062d\u0627\u062a \u0627\u0644\u0645\u0631\u062a\u0628\u0637\u0629",
         "v1_0_0_3": "\u0648\u0635\u0648\u0644 \u062e\u0627\u062f\u0645 MCP \u0644\u0639\u0645\u0644\u0627\u0621 \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064a \u0627\u0644\u062e\u0627\u0631\u062c\u064a\u064a\u0646",
@@ -5147,6 +5155,14 @@ export const EN_RESOURCES = {
         "featureButton": "Suggest a Feature"
       },
       "changelog": {
+        "v1_0_5_1": "Now available for Firefox (version 140 or later)",
+        "v1_0_5_2": "Sync and Teams no longer put your sign-in token in web addresses",
+        "v1_0_5_3": "Security updates for page cleaning and other built-in libraries",
+        "v1_0_5_4": "Settings \u2192 About shows the installed version",
+        "v1_0_3_1": "Import keeps OneTab titles and reads Session Buddy exports",
+        "v1_0_3_2": "Name each device when a browser joins sync",
+        "v1_0_3_3": "Bluetab AI shows what it sends before the first request and asks before acting in connected apps",
+        "v1_0_3_4": "The Help page lists the support email address",
         "v1_0_0_1": "AI group organizer and page-to-Dump summaries",
         "v1_0_0_2": "Brain Dump improvements, including selected-text capture and linked-page indicators",
         "v1_0_0_3": "MCP server access for external AI clients",
@@ -8386,6 +8402,14 @@ export const ES_RESOURCES = {
         "featureButton": "Sugerir una funci\u00f3n"
       },
       "changelog": {
+        "v1_0_5_1": "Ahora disponible para Firefox (versi\u00f3n 140 o posterior)",
+        "v1_0_5_2": "La sincronizaci\u00f3n y Teams ya no incluyen tu token de sesi\u00f3n en las direcciones web",
+        "v1_0_5_3": "Actualizaciones de seguridad para la limpieza de p\u00e1ginas y otras bibliotecas integradas",
+        "v1_0_5_4": "Ajustes \u2192 Acerca de muestra la versi\u00f3n instalada",
+        "v1_0_3_1": "La importaci\u00f3n conserva los t\u00edtulos de OneTab y lee las exportaciones de Session Buddy",
+        "v1_0_3_2": "Pon nombre a cada dispositivo cuando un navegador se une a la sincronizaci\u00f3n",
+        "v1_0_3_3": "Bluetab AI muestra lo que env\u00eda antes de la primera solicitud y pregunta antes de actuar en las apps conectadas",
+        "v1_0_3_4": "La p\u00e1gina de ayuda muestra el correo de soporte",
         "v1_0_0_1": "Organizador de grupos con IA y res\u00famenes de p\u00e1ginas en Dump",
         "v1_0_0_2": "Mejoras de Brain Dump, incluida la captura de texto seleccionado y los indicadores de p\u00e1ginas vinculadas",
         "v1_0_0_3": "Acceso al servidor MCP para clientes de IA externos",
@@ -11625,6 +11649,14 @@ export const ID_RESOURCES = {
         "featureButton": "Sarankan Fitur"
       },
       "changelog": {
+        "v1_0_5_1": "Kini tersedia untuk Firefox (versi 140 atau lebih baru)",
+        "v1_0_5_2": "Sinkronisasi dan Teams tidak lagi menaruh token sesi Anda di alamat web",
+        "v1_0_5_3": "Pembaruan keamanan untuk pembersihan halaman dan pustaka bawaan lainnya",
+        "v1_0_5_4": "Pengaturan \u2192 Tentang kini menampilkan versi yang terpasang",
+        "v1_0_3_1": "Impor mempertahankan judul OneTab dan membaca ekspor Session Buddy",
+        "v1_0_3_2": "Beri nama setiap perangkat saat browser bergabung ke sinkronisasi",
+        "v1_0_3_3": "Bluetab AI menampilkan apa yang dikirim sebelum permintaan pertama dan meminta konfirmasi sebelum bertindak di aplikasi yang terhubung",
+        "v1_0_3_4": "Halaman bantuan menampilkan alamat email dukungan",
         "v1_0_0_1": "Pengelola grup AI dan ringkasan halaman ke Dump",
         "v1_0_0_2": "Peningkatan Brain Dump, termasuk penyimpanan teks terpilih dan indikator halaman tertaut",
         "v1_0_0_3": "Akses server MCP untuk klien AI eksternal",
@@ -14864,6 +14896,14 @@ export const PT_BR_RESOURCES = {
         "featureButton": "Sugerir um recurso"
       },
       "changelog": {
+        "v1_0_5_1": "Agora dispon\u00edvel para Firefox (vers\u00e3o 140 ou posterior)",
+        "v1_0_5_2": "A sincroniza\u00e7\u00e3o e o Teams n\u00e3o colocam mais seu token de sess\u00e3o nos endere\u00e7os web",
+        "v1_0_5_3": "Atualiza\u00e7\u00f5es de seguran\u00e7a para a limpeza de p\u00e1ginas e outras bibliotecas integradas",
+        "v1_0_5_4": "Configura\u00e7\u00f5es \u2192 Sobre mostra a vers\u00e3o instalada",
+        "v1_0_3_1": "A importa\u00e7\u00e3o mant\u00e9m os t\u00edtulos do OneTab e l\u00ea exporta\u00e7\u00f5es do Session Buddy",
+        "v1_0_3_2": "D\u00ea um nome a cada dispositivo quando um navegador entra na sincroniza\u00e7\u00e3o",
+        "v1_0_3_3": "O Bluetab AI mostra o que envia antes da primeira solicita\u00e7\u00e3o e pergunta antes de agir em apps conectados",
+        "v1_0_3_4": "A p\u00e1gina de ajuda mostra o e-mail de suporte",
         "v1_0_0_1": "Organizador de grupos com IA e resumos de p\u00e1ginas para o Dump",
         "v1_0_0_2": "Melhorias no Brain Dump, incluindo captura de texto selecionado e indicadores de p\u00e1ginas vinculadas",
         "v1_0_0_3": "Acesso ao servidor MCP para clientes externos de IA",
@@ -18103,6 +18143,14 @@ export const TR_RESOURCES = {
         "featureButton": "\u00d6zellik \u00d6ner"
       },
       "changelog": {
+        "v1_0_5_1": "Art\u0131k Firefox'ta da kullan\u0131labilir (s\u00fcr\u00fcm 140 veya \u00fcst\u00fc)",
+        "v1_0_5_2": "Senkronizasyon ve Teams, oturum anahtar\u0131n\u0131 art\u0131k web adreslerinde g\u00f6ndermiyor",
+        "v1_0_5_3": "Sayfa temizleme ve di\u011fer yerle\u015fik k\u00fct\u00fcphaneler i\u00e7in g\u00fcvenlik g\u00fcncellemeleri",
+        "v1_0_5_4": "Ayarlar \u2192 Hakk\u0131nda art\u0131k y\u00fckl\u00fc s\u00fcr\u00fcm\u00fc g\u00f6steriyor",
+        "v1_0_3_1": "\u0130\u00e7e aktarma OneTab ba\u015fl\u0131klar\u0131n\u0131 koruyor ve Session Buddy d\u0131\u015fa aktar\u0131mlar\u0131n\u0131 okuyor",
+        "v1_0_3_2": "Bir taray\u0131c\u0131 senkronizasyona kat\u0131ld\u0131\u011f\u0131nda cihaza ad verebilirsin",
+        "v1_0_3_3": "Bluetab AI ilk istekten \u00f6nce ne g\u00f6nderdi\u011fini g\u00f6steriyor ve ba\u011fl\u0131 uygulamalarda i\u015flem yapmadan \u00f6nce soruyor",
+        "v1_0_3_4": "Yard\u0131m sayfas\u0131nda destek e-posta adresi yer al\u0131yor",
         "v1_0_0_1": "AI grup d\u00fczenleyici ve sayfadan Dump'a \u00f6zetler",
         "v1_0_0_2": "Se\u00e7ili metin yakalama ve ba\u011fl\u0131 sayfa g\u00f6stergeleri dahil Brain Dump iyile\u015ftirmeleri",
         "v1_0_0_3": "Harici AI istemcileri i\u00e7in MCP sunucu eri\u015fimi",

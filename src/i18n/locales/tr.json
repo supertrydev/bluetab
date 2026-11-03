@@ -1556,6 +1556,14 @@
         "featureButton": "Özellik Öner"
       },
       "changelog": {
+        "v1_0_5_1": "Artık Firefox'ta da kullanılabilir (sürüm 140 veya üstü)",
+        "v1_0_5_2": "Senkronizasyon ve Teams, oturum anahtarını artık web adreslerinde göndermiyor",
+        "v1_0_5_3": "Sayfa temizleme ve diğer yerleşik kütüphaneler için güvenlik güncellemeleri",
+        "v1_0_5_4": "Ayarlar → Hakkında artık yüklü sürümü gösteriyor",
+        "v1_0_3_1": "İçe aktarma OneTab başlıklarını koruyor ve Session Buddy dışa aktarımlarını okuyor",
+        "v1_0_3_2": "Bir tarayıcı senkronizasyona katıldığında cihaza ad verebilirsin",
+        "v1_0_3_3": "Bluetab AI ilk istekten önce ne gönderdiğini gösteriyor ve bağlı uygulamalarda işlem yapmadan önce soruyor",
+        "v1_0_3_4": "Yardım sayfasında destek e-posta adresi yer alıyor",
         "v1_0_0_1": "AI grup düzenleyici ve sayfadan Dump'a özetler",
         "v1_0_0_2": "Seçili metin yakalama ve bağlı sayfa göstergeleri dahil Brain Dump iyileştirmeleri",
         "v1_0_0_3": "Harici AI istemcileri için MCP sunucu erişimi",
