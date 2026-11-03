@@ -8,6 +8,9 @@ and Firefox Add-ons.
 Security update, and the first release for Firefox. Same version in both stores.
 
 **Security**
+- Sync no longer puts your session token in the event stream URL
+  (`/api/sync/events?token=…`), where server and proxy logs could record it.
+  The token now travels only in the `Authorization` header.
 - Updated DOMPurify to 3.4.17, which fixes several sanitizer bypasses. Bluetab
   uses DOMPurify to clean page content before AI summaries.
 - Updated Zod, the AI SDK, nanoid, PostCSS and other dependencies with

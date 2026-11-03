@@ -10,7 +10,8 @@
  *       - Connection state tracking
  *       - Event callbacks for sync notifications
  *
- * HOW: Uses EventSource for SSE (real-time notifications).
+ * HOW: Uses a fetch response stream for SSE so authentication stays in the
+ *      Authorization header and never appears in URLs or proxy logs.
  *      Uses fetch for REST calls (push/pull).
  *      Implements exponential backoff for reconnection.
  *
@@ -54,7 +55,7 @@ const DEFAULT_CONFIG = {
 // ============================================================================
 
 let config = { ...DEFAULT_CONFIG }
-let eventSource: EventSource | null = null
+let eventStreamAbort: AbortController | null = null
 let connectionState: ConnectionState = 'disconnected'
 let reconnectAttempts = 0
 let reconnectTimer: ReturnType<typeof setTimeout> | null = null
@@ -89,7 +90,7 @@ export function setDeviceId(id: string): void {
  * Connect to the SSE endpoint for real-time notifications.
  */
 export async function connect(): Promise<boolean> {
-  if (eventSource && connectionState === 'connected') {
+  if (eventStreamAbort && connectionState === 'connected') {
     return true
   }
 
@@ -102,65 +103,86 @@ export async function connect(): Promise<boolean> {
 
   updateConnectionState('connecting')
 
-  return new Promise((resolve) => {
-    try {
-      // Build SSE URL with auth token as query param
-      // Note: EventSource doesn't support custom headers, so we use query param
-      const url = new URL(`${config.apiBaseUrl}/api/sync/events`)
-      url.searchParams.set('token', token)
-      if (deviceId) {
-        url.searchParams.set('deviceId', deviceId)
+  const controller = new AbortController()
+  eventStreamAbort?.abort()
+  eventStreamAbort = controller
+  try {
+    const url = new URL(`${config.apiBaseUrl}/api/sync/events`)
+    if (deviceId) url.searchParams.set('deviceId', deviceId)
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        Accept: 'text/event-stream',
+        Authorization: `Bearer ${token}`,
+      },
+      cache: 'no-store',
+      signal: controller.signal,
+    })
+    if (!response.ok || !response.body) throw new Error('SSE unavailable')
+
+    console.log('[SyncTransport] SSE connected')
+    reconnectAttempts = 0
+    updateConnectionState('connected')
+    void consumeEventStream(response.body, controller.signal).finally(() => {
+      if (eventStreamAbort !== controller) return
+      eventStreamAbort = null
+      if (!controller.signal.aborted) {
+        updateConnectionState('disconnected')
+        scheduleReconnect()
       }
-
-      eventSource = new EventSource(url.toString())
-
-      eventSource.onopen = () => {
-        console.log('[SyncTransport] SSE connected')
-        reconnectAttempts = 0
-        updateConnectionState('connected')
-        resolve(true)
-      }
-
-      eventSource.onmessage = (event) => {
-        try {
-          const data = JSON.parse(event.data) as SyncSSEEventData
-          notifyEventCallbacks(data)
-        } catch (error) {
-          console.error('[SyncTransport] Failed to parse SSE event:', error)
-        }
-      }
-
-      // Named SSE events (event: mcp-replay) don't trigger onmessage —
-      // they require an explicit addEventListener per event type.
-      eventSource.addEventListener('mcp-replay', (event) => {
-        try {
-          const data = JSON.parse((event as MessageEvent).data) as SyncSSEEventData
-          notifyEventCallbacks(data)
-        } catch (error) {
-          console.error('[SyncTransport] Failed to parse mcp-replay event:', error)
-        }
-      })
-
-      eventSource.onerror = (error) => {
-        console.error('[SyncTransport] SSE error:', error)
-
-        if (eventSource?.readyState === EventSource.CLOSED) {
-          updateConnectionState('disconnected')
-          eventSource = null
-          scheduleReconnect()
-        } else {
-          updateConnectionState('error')
-        }
-
-        resolve(false)
-      }
-
-    } catch (error) {
-      console.error('[SyncTransport] Failed to create EventSource:', error)
+    })
+    return true
+  } catch {
+    if (eventStreamAbort === controller) eventStreamAbort = null
+    if (!controller.signal.aborted) {
+      console.error('[SyncTransport] SSE connection failed')
       updateConnectionState('error')
-      resolve(false)
+      // Same as the former EventSource behaviour: retry with backoff.
+      scheduleReconnect()
     }
-  })
+    return false
+  }
+}
+
+function dispatchSSEBlock(block: string): void {
+  const data = block
+    .split('\n')
+    .filter((line) => line.startsWith('data:'))
+    .map((line) => line.slice(5).trimStart())
+    .join('\n')
+  if (!data) return
+  try {
+    notifyEventCallbacks(JSON.parse(data) as SyncSSEEventData)
+  } catch {
+    console.error('[SyncTransport] Dropped malformed SSE event')
+  }
+}
+
+async function consumeEventStream(
+  stream: ReadableStream<Uint8Array>,
+  signal: AbortSignal,
+): Promise<void> {
+  const reader = stream.getReader()
+  const decoder = new TextDecoder()
+  let buffered = ''
+  try {
+    while (!signal.aborted) {
+      const { done, value } = await reader.read()
+      if (done) break
+      buffered += decoder.decode(value, { stream: true }).replace(/\r\n/g, '\n')
+      if (buffered.length > 256 * 1024) throw new Error('SSE buffer exceeded')
+      let boundary = buffered.indexOf('\n\n')
+      while (boundary >= 0) {
+        dispatchSSEBlock(buffered.slice(0, boundary))
+        buffered = buffered.slice(boundary + 2)
+        boundary = buffered.indexOf('\n\n')
+      }
+    }
+  } catch {
+    if (!signal.aborted) console.error('[SyncTransport] SSE stream failed')
+  } finally {
+    await reader.cancel().catch(() => {})
+  }
 }
 
 /**
@@ -172,10 +194,8 @@ export function disconnect(): void {
     reconnectTimer = null
   }
 
-  if (eventSource) {
-    eventSource.close()
-    eventSource = null
-  }
+  eventStreamAbort?.abort()
+  eventStreamAbort = null
 
   reconnectAttempts = 0
   updateConnectionState('disconnected')

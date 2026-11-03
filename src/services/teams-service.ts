@@ -539,7 +539,9 @@ function stopHeartbeat(): void {
 
 function connect(code: string, token: string, _role: string): void {
     const url = `${config.supertry.wsUrl}/ws/teams/${code}?token=${token}`
-    console.log(`${LOG_PREFIX} Connecting to ${url}`)
+    // Never log the token. TODO: move it out of the URL once the Teams
+    // WebSocket server accepts it in the Sec-WebSocket-Protocol header.
+    console.log(`${LOG_PREFIX} Connecting to ${config.supertry.wsUrl}/ws/teams/${code}`)
 
     setConnectionState('connecting')
 
