@@ -3,7 +3,7 @@
     "message": "Bluetab: Tab Manager"
   },
   "appDescription": {
-    "message": "Save every open tab in one click, find saved pages fast, and keep fewer tabs in sight. A free, private tab manager for Chrome."
+    "message": "Save every open tab in one click, find saved pages fast, and keep fewer tabs in sight. A free, private tab manager."
   },
   "commandActivate": {
     "message": "Activate extension"
