@@ -558,8 +558,9 @@ export function BackupSettings({ settings, groups, onSettingsChange, onGroupsCha
         setBookmarkLoading(true);
         setBookmarkError(null);
         try {
-            const hasPermission = await chrome.permissions.contains({ permissions: ['bookmarks'] });
-            const granted = hasPermission || await chrome.permissions.request({ permissions: ['bookmarks'] });
+            // Request first (no awaited contains): Firefox only allows the
+            // prompt during user input. Already granted → resolves true.
+            const granted = await chrome.permissions.request({ permissions: ['bookmarks'] });
             if (!granted) {
                 setBookmarkError(t('components.backupStatus.bookmarkPermissionRequired'));
                 setBookmarkTree(null);

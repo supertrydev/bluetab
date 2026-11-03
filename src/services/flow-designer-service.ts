@@ -15,6 +15,7 @@
  * PROCESS-03: Does NOT modify FlowStorageService or FlowService — only calls existing API.
  */
 
+import { isBrowserInternalUrl } from '@/platform/extension-platform';
 import { z } from 'zod';
 import { Storage } from '../utils/storage';
 import { config } from '../config/config';
@@ -118,11 +119,7 @@ export class FlowDesignerService {
         const openTabs = allTabs
             .filter((tab) => {
                 const url = tab.url || '';
-                return (
-                    !url.startsWith('chrome://') &&
-                    !url.startsWith('edge://') &&
-                    !url.startsWith('chrome-extension://')
-                );
+                return !isBrowserInternalUrl(url);
             })
             .map((tab) => ({ url: tab.url || '', title: tab.title || '' }));
 

@@ -26,6 +26,7 @@
  *       Does not render for Free users — FocusSettings routes Free users to upgrade page.
  */
 
+import { siteFaviconUrl } from '@/platform/extension-platform';
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { isolateBidi } from '@/i18n/bidi';
@@ -97,7 +98,7 @@ interface CandidateCardProps {
 function CandidateCard({ candidate, selected, onToggle }: CandidateCardProps) {
   const { t } = useTranslation();
   const { domain, rationale, aggregate } = candidate;
-  const faviconUrl = `chrome-extension://${chrome.runtime.id}/_favicon/?pageUrl=https://${domain}&size=16`;
+  const faviconUrl = siteFaviconUrl(`https://${domain}`, 16);
 
   return (
     <div

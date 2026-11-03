@@ -43,6 +43,8 @@
  *           may reject combinations the runtime considers invalid.
  */
 
+import { IS_FIREFOX } from '@/platform/browser-target';
+
 const LOG_PREFIX = '[BlueTab][OffscreenManager]';
 
 const OFFSCREEN_URL = 'src/background/offscreen.html';
@@ -117,6 +119,8 @@ function sameSet(
  * Safe to call concurrently — calls serialize through `setupLock`.
  */
 export async function ensureReason(reason: chrome.offscreen.Reason): Promise<void> {
+  // Firefox has no offscreen documents; DOM work runs in place (offscreen-bridge).
+  if (IS_FIREFOX) return;
   return withLock(async () => {
     activeReasons.add(reason);
 
@@ -178,6 +182,7 @@ export async function ensureReason(reason: chrome.offscreen.Reason): Promise<voi
  * what is currently needed.
  */
 export async function releaseReason(reason: chrome.offscreen.Reason): Promise<void> {
+  if (IS_FIREFOX) return;
   return withLock(async () => {
     if (!activeReasons.has(reason)) return;
     activeReasons.delete(reason);

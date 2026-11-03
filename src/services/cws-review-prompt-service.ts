@@ -1,3 +1,4 @@
+import { storeReviewUrl } from '@/platform/extension-platform';
 import { Storage } from '@/utils/storage';
 import { StatsService } from './stats-service';
 
@@ -25,7 +26,7 @@ const SNOOZE_MS = 30 * 24 * 60 * 60 * 1000;
 
 export class CWSReviewPromptService {
   static buildReviewUrl(extensionId = chrome.runtime.id): string {
-    return `https://chromewebstore.google.com/detail/${extensionId}/reviews`;
+    return storeReviewUrl(extensionId);
   }
 
   static async recordImportCompleted(tabCount: number, now = Date.now()): Promise<void> {

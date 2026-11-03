@@ -18,6 +18,7 @@
  *       Does not handle notification routing -- that is service-worker.ts.
  */
 
+import { previewNotificationSound } from '@/platform/extension-platform';
 import { useState, useEffect } from 'react';
 import { Bell, Trash2, Play } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
@@ -55,16 +56,7 @@ function getSoundOptions(t: (key: string) => string): { value: NotificationSound
 }
 
 async function previewSound(sound: NotificationSound): Promise<void> {
-  try {
-    await chrome.offscreen.createDocument({
-      url: chrome.runtime.getURL('src/background/offscreen.html'),
-      reasons: [chrome.offscreen.Reason.AUDIO_PLAYBACK],
-      justification: 'Previewing reminder notification sound',
-    }).catch(() => {});
-    await chrome.runtime.sendMessage({ type: 'PLAY_NOTIFICATION_DING', sound });
-  } catch {
-    // Offscreen API not available in this context
-  }
+  await previewNotificationSound(sound, 'Previewing reminder notification sound');
 }
 
 export function ReminderSettings() {

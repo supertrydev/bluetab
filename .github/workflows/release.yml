@@ -1,0 +1,96 @@
+name: Release
+
+# Push a tag on main: vX.Y.Z (both stores) or vX.Y.Z-firefox (Firefox-only
+# source state). Builds the store packages and opens a DRAFT GitHub release.
+# Store submission stays manual: upload the same files from the draft to the
+# Chrome Web Store and Firefox Add-ons, then publish the release.
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Package and draft release
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Tag matches manifest version
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          VERSION="${TAG%%-*}"
+          MANIFEST="$(node -p "require('./manifest.json').version")"
+          PACKAGE="$(node -p "require('./package.json').version")"
+          if [ "$VERSION" != "$MANIFEST" ] || [ "$VERSION" != "$PACKAGE" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match manifest.json ($MANIFEST) / package.json ($PACKAGE)"
+            exit 1
+          fi
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+
+      - name: Checks
+        run: |
+          npm run ci:turkish
+          npm run ci:forbidden-words
+          npm run lint
+          npm run type-check
+          npm test -- --runInBand
+
+      - name: Chrome package
+        run: npm run package:cws
+
+      - name: Firefox packages (add-on + reviewer source)
+        run: npm run package:amo
+
+      - name: Checksums
+        run: |
+          cd release
+          sha256sum bluetab-*.zip > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+
+      - name: Release notes from CHANGELOG.md
+        run: |
+          if [ "${GITHUB_REF_NAME%-firefox}" != "$GITHUB_REF_NAME" ]; then
+            HEADING="## $VERSION for Firefox"
+          else
+            HEADING="## $VERSION"
+          fi
+          awk -v h="$HEADING" '
+            index($0, "## ") == 1 { if (found) exit; if ($0 == h || index($0, h " (") == 1) { found = 1; next } }
+            found { print }
+          ' CHANGELOG.md > release-notes.md
+          {
+            echo ""
+            echo "**Install from the stores:** [Chrome Web Store](https://chromewebstore.google.com/detail/hddffdgifegmcilhcnamabcamdbpogdb) · [Firefox Add-ons](https://addons.mozilla.org/firefox/addon/bluetab/)"
+            echo ""
+            echo "The zip files are the exact packages uploaded to the stores. Firefox only installs add-ons signed by Mozilla, so install Firefox builds from Firefox Add-ons."
+          } >> release-notes.md
+          cat release-notes.md
+
+      - name: Draft GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" --draft \
+            --title "Bluetab $GITHUB_REF_NAME" \
+            --notes-file release-notes.md \
+            "release/bluetab-$VERSION-chrome.zip#Chrome Web Store package" \
+            "release/bluetab-$VERSION-firefox.zip#Firefox Add-ons package (install from Firefox Add-ons)" \
+            "release/bluetab-$VERSION-source.zip#Source code for Firefox reviewers" \
+            "release/SHA256SUMS.txt#SHA256SUMS.txt"

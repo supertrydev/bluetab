@@ -38,17 +38,13 @@ export async function ensureFeedHostAccess(urls: string[]): Promise<boolean> {
   const origins = getFeedHostPermissionOrigins(urls);
   if (origins.length === 0) return true;
 
-  if (typeof chrome === 'undefined' || !chrome.permissions?.contains) {
+  if (typeof chrome === 'undefined' || !chrome.permissions?.request) {
     return false;
   }
 
-  const alreadyGranted = await chrome.permissions.contains({ origins });
-  if (alreadyGranted) return true;
-
-  if (!chrome.permissions?.request) {
-    return false;
-  }
-
+  // Request directly, with no awaited contains() first: Firefox only allows
+  // permissions.request during user input, and an earlier await ends it.
+  // Chrome resolves true without a prompt when access is already granted.
   return chrome.permissions.request({ origins });
 }
 

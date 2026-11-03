@@ -1,3 +1,4 @@
+import { previewNotificationSound } from '@/platform/extension-platform';
 import { useState, useEffect } from 'react';
 import { Rss, Play, Plus, Trash2, Filter, Archive } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
@@ -34,17 +35,7 @@ function getSoundOptions(t: (key: string) => string): { value: NotificationSound
 
 /** Preview a sound via the offscreen document (same mechanism as service worker). */
 async function previewSound(sound: NotificationSound): Promise<void> {
-  try {
-    await chrome.offscreen.createDocument({
-      url: chrome.runtime.getURL('src/background/offscreen.html'),
-      reasons: [chrome.offscreen.Reason.AUDIO_PLAYBACK],
-      justification: 'Previewing notification sound',
-    }).catch(() => {});
-
-    await chrome.runtime.sendMessage({ type: 'PLAY_NOTIFICATION_DING', sound });
-  } catch {
-    // Offscreen API not available in this context
-  }
+  await previewNotificationSound(sound, 'Previewing notification sound');
 }
 
 export function RSSNotificationSettings() {

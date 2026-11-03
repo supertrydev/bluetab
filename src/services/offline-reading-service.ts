@@ -49,6 +49,7 @@
  *       Does not implement the extraction dispatch / retry queue — Wave 2.
  */
 
+import { sendOffscreenMessage } from '@/platform/offscreen-bridge';
 import { openDB, type DBSchema, type IDBPDatabase } from 'idb';
 import type {
   OfflineArticle,
@@ -333,11 +334,10 @@ function maybeFinalizeBatch(b: BatchState): void {
 
 async function extractOnceViaOffscreen(job: ExtractionJob): Promise<OfflineExtractionResult> {
   await ensureOffscreenForReason('DOM_PARSER');
-  const result = await chrome.runtime.sendMessage({
+  return sendOffscreenMessage<OfflineExtractionResult>({
     type: 'EXTRACT_OFFLINE_ARTICLE',
     url: job.url,
   });
-  return result as OfflineExtractionResult;
 }
 
 async function extractViaBackgroundTab(job: ExtractionJob): Promise<OfflineExtractionResult> {
@@ -383,12 +383,11 @@ async function extractViaBackgroundTab(job: ExtractionJob): Promise<OfflineExtra
       };
     }
     await ensureOffscreenForReason('DOM_PARSER');
-    const parsed = await chrome.runtime.sendMessage({
+    return await sendOffscreenMessage<OfflineExtractionResult>({
       type: 'EXTRACT_OFFLINE_ARTICLE',
       url: job.url,
       html,
     });
-    return parsed as OfflineExtractionResult;
   } catch (err) {
     return { success: false, failureBucket: 'network_error', error: String(err) };
   } finally {

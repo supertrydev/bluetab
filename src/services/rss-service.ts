@@ -23,6 +23,7 @@
  *       Does not manage the RSS_REFRESH alarm lifecycle (handled by service-worker).
  */
 
+import { siteFaviconUrl } from '@/platform/extension-platform';
 import { XMLParser } from 'fast-xml-parser';
 import { Storage } from '@/utils/storage';
 import { RingBuffer } from '@/utils/ring-buffer';
@@ -85,11 +86,7 @@ function escapeXml(str: string): string {
 }
 
 function getFaviconUrl(siteUrl: string): string {
-  return (
-    chrome.runtime.getURL(
-      '_favicon/?pageUrl=' + encodeURIComponent(siteUrl) + '&size=32',
-    )
-  );
+  return siteFaviconUrl(siteUrl, 32);
 }
 
 function isPrivateHostname(hostname: string): boolean {

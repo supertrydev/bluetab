@@ -25,6 +25,7 @@
  *       logic directly (returns snapshot data for the caller to handle).
  */
 
+import { isBrowserInternalUrl } from '@/platform/extension-platform';
 import { ALARM_NAMES } from '@/config/alarms';
 import { Storage } from '@/utils/storage';
 import { RingBuffer } from '@/utils/ring-buffer';
@@ -66,8 +67,7 @@ export class BackupService {
         .filter(
           (t: chrome.tabs.Tab) =>
             t.url &&
-            !t.url.startsWith('chrome://') &&
-            !t.url.startsWith('chrome-extension://'),
+            !isBrowserInternalUrl(t.url),
         )
         .map((t: chrome.tabs.Tab) => ({
           url: t.url!,

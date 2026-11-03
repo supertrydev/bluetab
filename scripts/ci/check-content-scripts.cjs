@@ -8,10 +8,12 @@
 const fs = require('fs');
 const path = require('path');
 
-const dir = path.resolve(__dirname, '../../dist/src/content');
+// Build folder: dist (Chrome, default) or dist-firefox (`npm run build:firefox`).
+const outDir = process.argv[2] || 'dist';
+const dir = path.resolve(__dirname, '../..', outDir, 'src/content');
 const files = fs.existsSync(dir) ? fs.readdirSync(dir).filter((name) => name.endsWith('.js')) : [];
 if (files.length === 0) {
-  console.error('CONTENT-SCRIPTS: no built content scripts found in dist/src/content');
+  console.error(`CONTENT-SCRIPTS: no built content scripts found in ${outDir}/src/content`);
   process.exit(1);
 }
 

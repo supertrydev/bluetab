@@ -75,6 +75,14 @@ import { KillSwitchService } from '../services/kill-switch-service';
 import { VisibleTabLimitService, isHiddenGroupTitle, onHiddenGroupUserExpanded } from '../services/visible-tab-limit-service';
 import { HardFocusService, HARD_FOCUS_STATE_KEY } from '../services/hard-focus-service';
 import { ensureReason as ensureOffscreenReason } from '../services/offscreen-manager';
+import { IS_FIREFOX } from '../platform/browser-target';
+import {
+    configureToolbarOpensSidePanel,
+    isBrowserNewTabUrl,
+    openSidePanel,
+    playBundledSound,
+    RESTRICTED_STORE_HOSTS,
+} from '../platform/extension-platform';
 import { LinearAutoSyncService } from '../services/linear-auto-sync';
 import { TodoistAutoSyncService } from '../services/todoist-auto-sync';
 import { SlackAutoSyncService } from '../services/slack-auto-sync';
@@ -279,6 +287,11 @@ async function notifyFloatingButtonUrlChange(tabId: number, pageUrl: string): Pr
  * runtime reason (Plan 13-02 SPIKE — WORKERS or IFRAME_SCRIPTING).
  */
 async function playNotificationDing(sound = 'ping'): Promise<void> {
+    if (IS_FIREFOX) {
+        // Firefox background is an event page with DOM access: no offscreen document.
+        playBundledSound(sound);
+        return;
+    }
     try {
         await ensureOffscreenReason(chrome.offscreen.Reason.AUDIO_PLAYBACK);
         await chrome.runtime.sendMessage({ type: 'PLAY_NOTIFICATION_DING', sound });
@@ -525,7 +538,12 @@ async function enforceHardFocusOnUrlChange(tabId: number, nextUrl?: string): Pro
 
     const blockedPageBase = chrome.runtime.getURL('src/blocked/index.html');
     if (nextUrl.startsWith(blockedPageBase)) return;
-    if (nextUrl.startsWith('chrome-extension://') || nextUrl.startsWith('chrome://')) return;
+    if (
+        nextUrl.startsWith('chrome-extension://') ||
+        nextUrl.startsWith('chrome://') ||
+        nextUrl.startsWith('moz-extension://') ||
+        nextUrl.startsWith('about:')
+    ) return;
     if (!isHttpUrl(nextUrl)) return;
 
     const state = await Storage.get<HardFocusState>(HARD_FOCUS_STATE_KEY);
@@ -997,7 +1015,8 @@ chrome.storage.local.onChanged.addListener((changes) => {
 });
 
 // Handle notification button clicks (Snooze / Dismiss)
-chrome.notifications.onButtonClicked.addListener(async (notificationId, buttonIndex) => {
+// Firefox has no notification buttons (the event is missing there).
+chrome.notifications.onButtonClicked?.addListener(async (notificationId, buttonIndex) => {
     try {
         if (notificationId.startsWith('pomodoro-')) {
             // Pomodoro notifications are informational; just clear
@@ -1048,8 +1067,20 @@ chrome.notifications.onClicked.addListener(async (notificationId) => {
 });
 
 // Toggle side panel when extension icon is clicked (open if closed, close if open)
-chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true })
-    .catch((error) => console.error('[BlueTab] Failed to set panel behavior:', error));
+configureToolbarOpensSidePanel();
+
+// Firefox has no offscreen document. Settings pages and other extension
+// pages send these messages to the background, which has DOM access there.
+if (IS_FIREFOX) {
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+        if (sender.id && sender.id !== chrome.runtime.id) return false;
+        if (message?.type !== 'PLAY_NOTIFICATION_DING' && message?.type !== 'EXTRACT_OFFLINE_ARTICLE') return false;
+        void import('./offscreen-handlers')
+            .then(({ handleOffscreenMessage }) => handleOffscreenMessage(message))
+            .then(sendResponse);
+        return true;
+    });
+}
 
 // Handle messages from popup and other extension pages
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -1259,7 +1290,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             sendResponse({ success: false });
             return false;
         }
-        chrome.sidePanel.open(openOptions)
+        openSidePanel(openOptions)
             .then(() => sendResponse({ success: true }))
             .catch((error: unknown) => {
                 console.warn('[BlueTab][FloatingButton] Could not open side panel:', error);
@@ -1506,9 +1537,11 @@ chrome.tabs.onCreated.addListener(async (tab) => {
 
     // Check multiple URL patterns that indicate a new tab
     // IMPORTANT: Don't intercept extension pages or other valid URLs
-    const isNewTab = tab.pendingUrl === 'chrome://newtab/' ||
-        tab.url === 'chrome://newtab/' ||
-        (tab.url === 'about:blank' && !tab.pendingUrl);
+    // Firefox has no pendingUrl: every tab (also links opened in a new tab)
+    // starts as about:blank there, so only about:newtab/about:home count.
+    const isNewTab = isBrowserNewTabUrl(tab.pendingUrl) ||
+        isBrowserNewTabUrl(tab.url) ||
+        (!IS_FIREFOX && tab.url === 'about:blank' && !tab.pendingUrl);
 
     if (tab.id && isNewTab) {
         const bluetabUrl = chrome.runtime.getURL('src/newtab/index.html');
@@ -1523,8 +1556,8 @@ chrome.tabs.onCreated.addListener(async (tab) => {
 // Phase 9 — Brain Dump restricted-page URL set. Matches chrome://,
 // chrome-extension://, view-source:, and the Chrome Web Store. These tabs
 // cannot have content scripts injected; the shortcut falls back to a toast.
-const BRAIN_DUMP_RESTRICTED_URL_RE = /^(chrome|chrome-extension|edge|about|view-source):/i;
-const BRAIN_DUMP_RESTRICTED_HOSTS = new Set(['chromewebstore.google.com']);
+const BRAIN_DUMP_RESTRICTED_URL_RE = /^(chrome|chrome-extension|edge|about|view-source|moz-extension|resource):/i;
+const BRAIN_DUMP_RESTRICTED_HOSTS = RESTRICTED_STORE_HOSTS;
 
 function isBrainDumpRestricted(url: string | undefined): boolean {
     if (!url) return true;

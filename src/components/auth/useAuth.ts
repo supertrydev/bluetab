@@ -8,6 +8,7 @@
  * HOW: Wraps AuthService and AuthState for React lifecycle.
  */
 
+import { requestAccountDataConsent } from '@/platform/extension-platform'
 import { useState, useEffect, useCallback } from 'react'
 import { AuthService } from '../../services/auth-service'
 import * as AuthState from '../../utils/auth-state'
@@ -67,6 +68,15 @@ export function useAuth(): UseAuthReturn {
     }, [loadAuthState])
 
     const login = useCallback(async (email: string, password: string) => {
+        // Firefox: built-in data collection consent, requested synchronously
+        // inside the submit event (no await before it). Always true in Chrome.
+        const consented = await requestAccountDataConsent()
+        if (!consented) {
+            return {
+                success: false,
+                error: 'Signing in needs your permission to send account and sync data to Supertry. Allow it in the Firefox prompt to continue.',
+            }
+        }
         setIsLoading(true)
         try {
             const result = await AuthService.login(email, password)

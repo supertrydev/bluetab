@@ -319,7 +319,9 @@ export class FocusService {
       id: FOCUS_RULE_ID_START + index,
       priority: 1,
       action: {
-        type: chrome.declarativeNetRequest.RuleActionType.REDIRECT as chrome.declarativeNetRequest.RuleActionType,
+        // String literals, not chrome.declarativeNetRequest enums: Firefox does
+        // not expose the enum objects (undefined → TypeError).
+        type: 'redirect' as chrome.declarativeNetRequest.RuleActionType,
         redirect: {
           regexSubstitution: `${chrome.runtime.getURL(
             `${BLOCK_PAGE_PATH}?domain=${encodeURIComponent(domain)}`,
@@ -329,7 +331,7 @@ export class FocusService {
       condition: {
         regexFilter: buildFocusDomainRegex(domain),
         resourceTypes: [
-          chrome.declarativeNetRequest.ResourceType.MAIN_FRAME as chrome.declarativeNetRequest.ResourceType,
+          'main_frame' as chrome.declarativeNetRequest.ResourceType,
         ],
       },
     }));

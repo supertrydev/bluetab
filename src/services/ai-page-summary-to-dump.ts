@@ -1,3 +1,4 @@
+import { sendOffscreenMessage } from '@/platform/offscreen-bridge'
 import { config } from '@/config/config'
 import { AIAllowanceService } from '@/services/ai-allowance-service'
 import {
@@ -104,11 +105,11 @@ export class AIPageSummaryService {
 
     await ensureOffscreenReason('DOM_PARSER' as chrome.offscreen.Reason)
     try {
-      const extraction = await chrome.runtime.sendMessage({
+      const extraction = await sendOffscreenMessage<OfflineExtractionResult>({
         type: 'EXTRACT_OFFLINE_ARTICLE',
         url: input.url,
         html: input.html,
-      }) as OfflineExtractionResult
+      })
 
       if (!extraction?.success) {
         throw mapExtractionFailure(extraction?.failureBucket, extraction?.error)

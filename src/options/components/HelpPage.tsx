@@ -1,3 +1,4 @@
+import { openShortcutSettings, SHORTCUTS_SETTINGS_LABEL } from '@/platform/extension-platform';
 import React, { useState } from 'react';
 import * as Tabs from '@radix-ui/react-tabs';
 import { ChevronDown, BookOpen, ExternalLink, HelpCircle, Keyboard, Mail } from 'lucide-react';
@@ -67,7 +68,7 @@ const FAQ_ITEMS = [
 ];
 
 // Keyboard shortcuts data
-const SHORTCUTS_SETTINGS_URL = 'chrome://extensions/shortcuts';
+const SHORTCUTS_SETTINGS_URL = SHORTCUTS_SETTINGS_LABEL;
 const SHORTCUTS = [
   { keys: ['Alt', 'T'], actionKey: 'options.helpPage.shortcutActions.openBluetab' },
   { keys: ['Alt', 'S'], actionKey: 'options.helpPage.shortcutActions.saveAllTabs' },
@@ -237,10 +238,10 @@ export function HelpPage({ sidebarTrigger }: HelpPageProps) {
                     path: isolateBidi(SHORTCUTS_SETTINGS_URL, 'ltr'),
                   })}
                 </p>
-                {/* chrome:// pages cannot be opened from an <a href>; tabs.create is allowed. */}
+                {/* chrome:// pages cannot be opened from an <a href>; see openShortcutSettings. */}
                 <button
                   type="button"
-                  onClick={() => { chrome.tabs.create({ url: SHORTCUTS_SETTINGS_URL }); }}
+                  onClick={openShortcutSettings}
                   className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <Keyboard className="h-4 w-4" />

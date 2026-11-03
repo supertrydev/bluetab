@@ -27,6 +27,7 @@
  *       Does not handle notification button click routing (service-worker.ts).
  */
 
+import { IS_FIREFOX } from '@/platform/browser-target';
 import { ALARM_NAMES } from '@/config/alarms';
 import { initI18n, t as translate } from '@/i18n';
 import { Storage } from '@/utils/storage';
@@ -158,6 +159,8 @@ export class ReminderService {
       : `${reminder.targetName} — click to open tabs`;
 
     try {
+      // Firefox notifications have no buttons: go straight to the plain one.
+      if (IS_FIREFOX) throw new Error('Notification buttons unsupported');
       // Try creating notification with action buttons
       await chrome.notifications.create(notificationId, {
         type: 'basic',
