@@ -35,6 +35,7 @@ import type {
 } from '@/types/productivity';
 import { POMODORO_PRESETS } from '@/types/productivity';
 import { ADHDService } from './adhd-service';
+import { StatsService } from './stats-service';
 import {
   computeBreakMinutes,
   FLOWTIME_BREAK_PROPOSAL_KEY,
@@ -599,7 +600,6 @@ export class PomodoroService {
     await Storage.set('pomodoroHistory', updatedHistory);
 
     // Record focus minutes in StatsService (mode-agnostic daily aggregate)
-    const { StatsService } = await import('./stats-service');
     await StatsService.recordFocusMinutes(workMinutes, 'flowtime');
 
     // NEW (Plan 12-04): Write transient break proposal to storage so PomodoroBar

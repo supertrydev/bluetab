@@ -13,6 +13,9 @@ and Firefox Add-ons.
 - Chrome and Firefox add-on ZIPs use a stable file order and timestamps.
 - Sync requires a sync password on every device. Devices using legacy sync
   can disconnect and start fresh from Sync settings while keeping local data.
+- Pro integrations no longer fail when an expired token is refreshed from a
+  background action (for example a right-click send). The service worker
+  loads no code through dynamic import, and the build checks it.
 
 ## 1.0.5
 

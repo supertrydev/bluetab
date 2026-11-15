@@ -33,6 +33,7 @@ import type { IntegrationId } from './integrations/registry';
 import { getRegistryEntry, INTEGRATION_IDS } from './integrations/registry';
 import { getAccessToken } from '../utils/auth-state';
 import { AuthService } from './auth-service';
+import { config } from '../config/config';
 import { createCloudConnectionCredential, deleteCloudConnection } from './integrations/cloud-operation-client';
 
 const TOKENS_KEY = 'integration_tokens';
@@ -414,7 +415,6 @@ async function refreshBundle(bundle: TokenBundle): Promise<TokenBundle> {
     } else if (entry.auth_type === 'oauth_pkce_via_supertry') {
       console.log(`[TokenStorage] Using Supertry bridge refresh`);
       // Supertry bridge refresh — ensure Supertry session token is fresh first
-      const { config } = await import('../config/config');
       await AuthService.refreshTokenIfNeeded();
       const supertryToken = await getAccessToken();
       if (!supertryToken) {
