@@ -95,7 +95,7 @@ async function ensureCryptoKeyAvailable(): Promise<void> {
     throw new Error('Reconnect sync with a sync password before connecting integrations.');
   }
 
-  const iterations = deviceInfo.iterations || 100000;
+  const iterations = deviceInfo.iterations || 600000;
   if (!getEncryptionConfig()) {
     initializeEncryption({ keySalt: deviceInfo.keySalt, iterations, keySource: 'user-password' });
   }

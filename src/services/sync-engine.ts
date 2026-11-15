@@ -425,7 +425,7 @@ export async function initialize(opts?: Partial<SyncEngineOptions>): Promise<voi
         clearCachedKey()
         restoreRequired = true
       } else {
-        const iterations = deviceInfo.iterations || 100000
+        const iterations = deviceInfo.iterations || 600000
         initializeEncryption({ keySalt: deviceInfo.keySalt, iterations, keySource: 'user-password' })
         restoreRequired = !(await autoRestoreKeyFromSession(deviceInfo.keySalt, iterations))
       }
@@ -768,7 +768,7 @@ export async function restoreSync(
     }
 
     // Derive key with stored salt
-    const keyDerived = await deriveSyncKey(password, deviceInfo.keySalt, deviceInfo.iterations || 100000)
+    const keyDerived = await deriveSyncKey(password, deviceInfo.keySalt, deviceInfo.iterations || 600000)
     if (!keyDerived) {
       return { success: false, error: 'Invalid password.' }
     }

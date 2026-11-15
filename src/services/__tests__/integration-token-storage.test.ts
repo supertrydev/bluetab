@@ -136,6 +136,14 @@ describe('isIntegrationEncryptionReady', () => {
 
     await expect(isIntegrationEncryptionReady()).resolves.toBe(true);
   });
+
+  it('derives with 600000 iterations when an older password device has no iteration count', async () => {
+    localStore.syncDeviceInfo = { keySalt: 'configured-salt', keySource: 'user-password' };
+    mockAutoRestoreKeyFromSession.mockResolvedValue(true);
+
+    await expect(isIntegrationEncryptionReady()).resolves.toBe(true);
+    expect(mockAutoRestoreKeyFromSession).toHaveBeenCalledWith('configured-salt', 600000);
+  });
 });
 
 describe('addAccount', () => {
