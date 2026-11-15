@@ -1555,6 +1555,12 @@
         "featureButton": "Sugerir um recurso"
       },
       "changelog": {
+        "v1_0_6_1": "A introdução abre o painel lateral quando o apresenta",
+        "v1_0_6_2": "Criar grupos de abas ficou mais confiável, inclusive no Opera (o Opera precisa de pelo menos duas abas por grupo)",
+        "v1_0_6_3": "Conecte o Bluetab ao ChatGPT pelo diretório de apps do ChatGPT",
+        "v1_0_6_4": "A sincronização exige uma senha de sincronização em cada dispositivo. Dispositivos com a configuração antiga podem recomeçar e manter seus dados locais",
+        "v1_0_6_5": "Enviar para apps conectados não falha mais quando o login precisa ser renovado em segundo plano",
+        "v1_0_6_6": "A Ajuda abre diretamente os formulários de bugs e pedidos de recursos no GitHub",
         "v1_0_5_1": "Agora disponível para Firefox (versão 140 ou posterior)",
         "v1_0_5_2": "A sincronização e o Teams não colocam mais seu token de sessão nos endereços web",
         "v1_0_5_3": "Atualizações de segurança para a limpeza de páginas e outras bibliotecas integradas",

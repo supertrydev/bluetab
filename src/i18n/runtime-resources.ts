@@ -1695,6 +1695,12 @@ export const AR_RESOURCES = {
         "featureButton": "\u0627\u0642\u062a\u0631\u0627\u062d \u0645\u064a\u0632\u0629"
       },
       "changelog": {
+        "v1_0_6_1": "\u062a\u0641\u062a\u062d \u062c\u0648\u0644\u0629 \u0627\u0644\u062a\u0639\u0631\u064a\u0641 \u0627\u0644\u0644\u0648\u062d\u0629 \u0627\u0644\u062c\u0627\u0646\u0628\u064a\u0629 \u0639\u0646\u062f \u0634\u0631\u062d\u0647\u0627",
+        "v1_0_6_2": "\u0623\u0635\u0628\u062d \u0625\u0646\u0634\u0627\u0621 \u0645\u062c\u0645\u0648\u0639\u0627\u062a \u0639\u0644\u0627\u0645\u0627\u062a \u0627\u0644\u062a\u0628\u0648\u064a\u0628 \u0623\u0643\u062b\u0631 \u0645\u0648\u062b\u0648\u0642\u064a\u0629\u060c \u0628\u0645\u0627 \u0641\u064a \u0630\u0644\u0643 \u0641\u064a Opera (\u064a\u062d\u062a\u0627\u062c Opera \u0625\u0644\u0649 \u0639\u0644\u0627\u0645\u062a\u064a \u062a\u0628\u0648\u064a\u0628 \u0639\u0644\u0649 \u0627\u0644\u0623\u0642\u0644 \u0644\u0643\u0644 \u0645\u062c\u0645\u0648\u0639\u0629)",
+        "v1_0_6_3": "\u0627\u0631\u0628\u0637 Bluetab \u0628\u0640 ChatGPT \u0645\u0646 \u062f\u0644\u064a\u0644 \u062a\u0637\u0628\u064a\u0642\u0627\u062a ChatGPT",
+        "v1_0_6_4": "\u062a\u062a\u0637\u0644\u0628 \u0627\u0644\u0645\u0632\u0627\u0645\u0646\u0629 \u0643\u0644\u0645\u0629 \u0645\u0631\u0648\u0631 \u0644\u0644\u0645\u0632\u0627\u0645\u0646\u0629 \u0639\u0644\u0649 \u0643\u0644 \u062c\u0647\u0627\u0632. \u064a\u0645\u0643\u0646 \u0644\u0644\u0623\u062c\u0647\u0632\u0629 \u0627\u0644\u062a\u064a \u062a\u0633\u062a\u062e\u062f\u0645 \u0625\u0639\u062f\u0627\u062f \u0627\u0644\u0645\u0632\u0627\u0645\u0646\u0629 \u0627\u0644\u0642\u062f\u064a\u0645 \u0627\u0644\u0628\u062f\u0621 \u0645\u0646 \u062c\u062f\u064a\u062f \u0645\u0639 \u0627\u0644\u0627\u062d\u062a\u0641\u0627\u0638 \u0628\u0628\u064a\u0627\u0646\u0627\u062a\u0647\u0627 \u0627\u0644\u0645\u062d\u0644\u064a\u0629",
+        "v1_0_6_5": "\u0644\u0645 \u064a\u0639\u062f \u0627\u0644\u0625\u0631\u0633\u0627\u0644 \u0625\u0644\u0649 \u0627\u0644\u062a\u0637\u0628\u064a\u0642\u0627\u062a \u0627\u0644\u0645\u062a\u0635\u0644\u0629 \u064a\u0641\u0634\u0644 \u0639\u0646\u062f\u0645\u0627 \u064a\u0644\u0632\u0645 \u062a\u062c\u062f\u064a\u062f \u062a\u0633\u062c\u064a\u0644 \u0627\u0644\u062f\u062e\u0648\u0644 \u0641\u064a \u0627\u0644\u062e\u0644\u0641\u064a\u0629",
+        "v1_0_6_6": "\u062a\u0641\u062a\u062d \u0635\u0641\u062d\u0629 \u0627\u0644\u0645\u0633\u0627\u0639\u062f\u0629 \u0646\u0645\u0627\u0630\u062c \u0627\u0644\u0625\u0628\u0644\u0627\u063a \u0639\u0646 \u0627\u0644\u0623\u062e\u0637\u0627\u0621 \u0648\u0637\u0644\u0628 \u0627\u0644\u0645\u064a\u0632\u0627\u062a \u0639\u0644\u0649 GitHub \u0645\u0628\u0627\u0634\u0631\u0629",
         "v1_0_5_1": "\u0645\u062a\u0627\u062d \u0627\u0644\u0622\u0646 \u0639\u0644\u0649 Firefox (\u0627\u0644\u0625\u0635\u062f\u0627\u0631 140 \u0623\u0648 \u0623\u062d\u062f\u062b)",
         "v1_0_5_2": "\u0644\u0645 \u062a\u0639\u062f \u0627\u0644\u0645\u0632\u0627\u0645\u0646\u0629 \u0648Teams \u062a\u0636\u0639 \u0631\u0645\u0632 \u062c\u0644\u0633\u062a\u0643 \u0641\u064a \u0639\u0646\u0627\u0648\u064a\u0646 \u0627\u0644\u0648\u064a\u0628",
         "v1_0_5_3": "\u062a\u062d\u062f\u064a\u062b\u0627\u062a \u0623\u0645\u0627\u0646 \u0644\u062a\u0646\u0638\u064a\u0641 \u0627\u0644\u0635\u0641\u062d\u0627\u062a \u0648\u0627\u0644\u0645\u0643\u062a\u0628\u0627\u062a \u0627\u0644\u0645\u062f\u0645\u062c\u0629 \u0627\u0644\u0623\u062e\u0631\u0649",
@@ -5156,6 +5162,12 @@ export const EN_RESOURCES = {
         "featureButton": "Suggest a Feature"
       },
       "changelog": {
+        "v1_0_6_1": "Onboarding opens the side panel when it introduces it",
+        "v1_0_6_2": "Creating tab groups is more reliable, including in Opera (Opera needs at least two tabs per group)",
+        "v1_0_6_3": "Connect Bluetab to ChatGPT from the ChatGPT app directory",
+        "v1_0_6_4": "Sync needs a sync password on every device. Devices on the old sync setup can start fresh and keep their local data",
+        "v1_0_6_5": "Sending to connected apps no longer fails when their sign-in has to be renewed in the background",
+        "v1_0_6_6": "Help opens the GitHub bug and feature request forms directly",
         "v1_0_5_1": "Now available for Firefox (version 140 or later)",
         "v1_0_5_2": "Sync and Teams no longer put your sign-in token in web addresses",
         "v1_0_5_3": "Security updates for page cleaning and other built-in libraries",
@@ -8405,6 +8417,12 @@ export const ES_RESOURCES = {
         "featureButton": "Sugerir una funci\u00f3n"
       },
       "changelog": {
+        "v1_0_6_1": "La introducci\u00f3n abre el panel lateral cuando lo presenta",
+        "v1_0_6_2": "Crear grupos de pesta\u00f1as es m\u00e1s fiable, tambi\u00e9n en Opera (Opera necesita al menos dos pesta\u00f1as por grupo)",
+        "v1_0_6_3": "Conecta Bluetab a ChatGPT desde el directorio de apps de ChatGPT",
+        "v1_0_6_4": "La sincronizaci\u00f3n requiere una contrase\u00f1a de sincronizaci\u00f3n en cada dispositivo. Los dispositivos con la configuraci\u00f3n antigua pueden empezar de cero y conservar sus datos locales",
+        "v1_0_6_5": "Enviar a apps conectadas ya no falla cuando su inicio de sesi\u00f3n debe renovarse en segundo plano",
+        "v1_0_6_6": "Ayuda abre directamente los formularios de errores y solicitudes de funciones en GitHub",
         "v1_0_5_1": "Ahora disponible para Firefox (versi\u00f3n 140 o posterior)",
         "v1_0_5_2": "La sincronizaci\u00f3n y Teams ya no incluyen tu token de sesi\u00f3n en las direcciones web",
         "v1_0_5_3": "Actualizaciones de seguridad para la limpieza de p\u00e1ginas y otras bibliotecas integradas",
@@ -11654,6 +11672,12 @@ export const ID_RESOURCES = {
         "featureButton": "Sarankan Fitur"
       },
       "changelog": {
+        "v1_0_6_1": "Tur pengenalan membuka panel samping saat memperkenalkannya",
+        "v1_0_6_2": "Membuat grup tab kini lebih andal, termasuk di Opera (Opera memerlukan minimal dua tab per grup)",
+        "v1_0_6_3": "Hubungkan Bluetab ke ChatGPT dari direktori aplikasi ChatGPT",
+        "v1_0_6_4": "Sinkronisasi memerlukan kata sandi sinkronisasi di setiap perangkat. Perangkat dengan pengaturan sinkronisasi lama dapat memulai dari awal dan tetap menyimpan data lokalnya",
+        "v1_0_6_5": "Mengirim ke aplikasi yang terhubung tidak lagi gagal saat login-nya perlu diperbarui di latar belakang",
+        "v1_0_6_6": "Bantuan langsung membuka formulir laporan bug dan permintaan fitur di GitHub",
         "v1_0_5_1": "Kini tersedia untuk Firefox (versi 140 atau lebih baru)",
         "v1_0_5_2": "Sinkronisasi dan Teams tidak lagi menaruh token sesi Anda di alamat web",
         "v1_0_5_3": "Pembaruan keamanan untuk pembersihan halaman dan pustaka bawaan lainnya",
@@ -14903,6 +14927,12 @@ export const PT_BR_RESOURCES = {
         "featureButton": "Sugerir um recurso"
       },
       "changelog": {
+        "v1_0_6_1": "A introdu\u00e7\u00e3o abre o painel lateral quando o apresenta",
+        "v1_0_6_2": "Criar grupos de abas ficou mais confi\u00e1vel, inclusive no Opera (o Opera precisa de pelo menos duas abas por grupo)",
+        "v1_0_6_3": "Conecte o Bluetab ao ChatGPT pelo diret\u00f3rio de apps do ChatGPT",
+        "v1_0_6_4": "A sincroniza\u00e7\u00e3o exige uma senha de sincroniza\u00e7\u00e3o em cada dispositivo. Dispositivos com a configura\u00e7\u00e3o antiga podem recome\u00e7ar e manter seus dados locais",
+        "v1_0_6_5": "Enviar para apps conectados n\u00e3o falha mais quando o login precisa ser renovado em segundo plano",
+        "v1_0_6_6": "A Ajuda abre diretamente os formul\u00e1rios de bugs e pedidos de recursos no GitHub",
         "v1_0_5_1": "Agora dispon\u00edvel para Firefox (vers\u00e3o 140 ou posterior)",
         "v1_0_5_2": "A sincroniza\u00e7\u00e3o e o Teams n\u00e3o colocam mais seu token de sess\u00e3o nos endere\u00e7os web",
         "v1_0_5_3": "Atualiza\u00e7\u00f5es de seguran\u00e7a para a limpeza de p\u00e1ginas e outras bibliotecas integradas",
@@ -18152,6 +18182,12 @@ export const TR_RESOURCES = {
         "featureButton": "\u00d6zellik \u00d6ner"
       },
       "changelog": {
+        "v1_0_6_1": "Tan\u0131t\u0131m turu, yan paneli anlat\u0131rken paneli a\u00e7\u0131yor",
+        "v1_0_6_2": "Sekme grubu olu\u015fturmak, Opera dahil daha g\u00fcvenilir (Opera'da bir grup i\u00e7in en az iki sekme gerekir)",
+        "v1_0_6_3": "Bluetab'\u0131 ChatGPT uygulama dizininden ChatGPT'ye ba\u011flayabilirsin",
+        "v1_0_6_4": "Senkronizasyon her cihazda bir senkronizasyon parolas\u0131 istiyor. Eski senkronizasyon kurulumundaki cihazlar yerel verilerini koruyarak yeniden ba\u015flayabilir",
+        "v1_0_6_5": "Ba\u011fl\u0131 uygulamalara g\u00f6nderim, oturumun arka planda yenilenmesi gerekti\u011finde art\u0131k ba\u015far\u0131s\u0131z olmuyor",
+        "v1_0_6_6": "Yard\u0131m sayfas\u0131 GitHub hata bildirimi ve \u00f6zellik iste\u011fi formlar\u0131n\u0131 do\u011frudan a\u00e7\u0131yor",
         "v1_0_5_1": "Art\u0131k Firefox'ta da kullan\u0131labilir (s\u00fcr\u00fcm 140 veya \u00fcst\u00fc)",
         "v1_0_5_2": "Senkronizasyon ve Teams, oturum anahtar\u0131n\u0131 art\u0131k web adreslerinde g\u00f6ndermiyor",
         "v1_0_5_3": "Sayfa temizleme ve di\u011fer yerle\u015fik k\u00fct\u00fcphaneler i\u00e7in g\u00fcvenlik g\u00fcncellemeleri",

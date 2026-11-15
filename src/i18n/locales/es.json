@@ -1555,6 +1555,12 @@
         "featureButton": "Sugerir una función"
       },
       "changelog": {
+        "v1_0_6_1": "La introducción abre el panel lateral cuando lo presenta",
+        "v1_0_6_2": "Crear grupos de pestañas es más fiable, también en Opera (Opera necesita al menos dos pestañas por grupo)",
+        "v1_0_6_3": "Conecta Bluetab a ChatGPT desde el directorio de apps de ChatGPT",
+        "v1_0_6_4": "La sincronización requiere una contraseña de sincronización en cada dispositivo. Los dispositivos con la configuración antigua pueden empezar de cero y conservar sus datos locales",
+        "v1_0_6_5": "Enviar a apps conectadas ya no falla cuando su inicio de sesión debe renovarse en segundo plano",
+        "v1_0_6_6": "Ayuda abre directamente los formularios de errores y solicitudes de funciones en GitHub",
         "v1_0_5_1": "Ahora disponible para Firefox (versión 140 o posterior)",
         "v1_0_5_2": "La sincronización y Teams ya no incluyen tu token de sesión en las direcciones web",
         "v1_0_5_3": "Actualizaciones de seguridad para la limpieza de páginas y otras bibliotecas integradas",

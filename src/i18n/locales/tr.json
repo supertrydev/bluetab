@@ -1555,6 +1555,12 @@
         "featureButton": "Özellik Öner"
       },
       "changelog": {
+        "v1_0_6_1": "Tanıtım turu, yan paneli anlatırken paneli açıyor",
+        "v1_0_6_2": "Sekme grubu oluşturmak, Opera dahil daha güvenilir (Opera'da bir grup için en az iki sekme gerekir)",
+        "v1_0_6_3": "Bluetab'ı ChatGPT uygulama dizininden ChatGPT'ye bağlayabilirsin",
+        "v1_0_6_4": "Senkronizasyon her cihazda bir senkronizasyon parolası istiyor. Eski senkronizasyon kurulumundaki cihazlar yerel verilerini koruyarak yeniden başlayabilir",
+        "v1_0_6_5": "Bağlı uygulamalara gönderim, oturumun arka planda yenilenmesi gerektiğinde artık başarısız olmuyor",
+        "v1_0_6_6": "Yardım sayfası GitHub hata bildirimi ve özellik isteği formlarını doğrudan açıyor",
         "v1_0_5_1": "Artık Firefox'ta da kullanılabilir (sürüm 140 veya üstü)",
         "v1_0_5_2": "Senkronizasyon ve Teams, oturum anahtarını artık web adreslerinde göndermiyor",
         "v1_0_5_3": "Sayfa temizleme ve diğer yerleşik kütüphaneler için güvenlik güncellemeleri",

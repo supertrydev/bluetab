@@ -1555,6 +1555,12 @@
         "featureButton": "Suggest a Feature"
       },
       "changelog": {
+        "v1_0_6_1": "Onboarding opens the side panel when it introduces it",
+        "v1_0_6_2": "Creating tab groups is more reliable, including in Opera (Opera needs at least two tabs per group)",
+        "v1_0_6_3": "Connect Bluetab to ChatGPT from the ChatGPT app directory",
+        "v1_0_6_4": "Sync needs a sync password on every device. Devices on the old sync setup can start fresh and keep their local data",
+        "v1_0_6_5": "Sending to connected apps no longer fails when their sign-in has to be renewed in the background",
+        "v1_0_6_6": "Help opens the GitHub bug and feature request forms directly",
         "v1_0_5_1": "Now available for Firefox (version 140 or later)",
         "v1_0_5_2": "Sync and Teams no longer put your sign-in token in web addresses",
         "v1_0_5_3": "Security updates for page cleaning and other built-in libraries",

@@ -79,6 +79,18 @@ const SHORTCUTS = [
 // Release notes (latest first)
 const CHANGELOG = [
   {
+    version: '1.0.6',
+    date: '2026-11',
+    changeKeys: [
+      'options.helpPage.changelog.v1_0_6_1',
+      'options.helpPage.changelog.v1_0_6_2',
+      'options.helpPage.changelog.v1_0_6_3',
+      'options.helpPage.changelog.v1_0_6_4',
+      'options.helpPage.changelog.v1_0_6_5',
+      'options.helpPage.changelog.v1_0_6_6',
+    ],
+  },
+  {
     version: '1.0.5',
     date: '2026-11',
     changeKeys: [

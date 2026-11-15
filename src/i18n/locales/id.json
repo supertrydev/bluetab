@@ -1555,6 +1555,12 @@
         "featureButton": "Sarankan Fitur"
       },
       "changelog": {
+        "v1_0_6_1": "Tur pengenalan membuka panel samping saat memperkenalkannya",
+        "v1_0_6_2": "Membuat grup tab kini lebih andal, termasuk di Opera (Opera memerlukan minimal dua tab per grup)",
+        "v1_0_6_3": "Hubungkan Bluetab ke ChatGPT dari direktori aplikasi ChatGPT",
+        "v1_0_6_4": "Sinkronisasi memerlukan kata sandi sinkronisasi di setiap perangkat. Perangkat dengan pengaturan sinkronisasi lama dapat memulai dari awal dan tetap menyimpan data lokalnya",
+        "v1_0_6_5": "Mengirim ke aplikasi yang terhubung tidak lagi gagal saat login-nya perlu diperbarui di latar belakang",
+        "v1_0_6_6": "Bantuan langsung membuka formulir laporan bug dan permintaan fitur di GitHub",
         "v1_0_5_1": "Kini tersedia untuk Firefox (versi 140 atau lebih baru)",
         "v1_0_5_2": "Sinkronisasi dan Teams tidak lagi menaruh token sesi Anda di alamat web",
         "v1_0_5_3": "Pembaruan keamanan untuk pembersihan halaman dan pustaka bawaan lainnya",
