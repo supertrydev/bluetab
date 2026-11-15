@@ -1,3 +1,4 @@
+import { createBrowserTabGroup, minimumBrowserGroupTabs } from '@/platform/create-browser-tab-group';
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { stagger } from 'framer-motion';
@@ -441,15 +442,22 @@ export function TabsPanel() {
     };
 
     const handleNewGroup = () => {
-        if (selectedTabIds.size > 0) {
-            setIsNewGroupModalOpen(true);
+        if (selectedTabIds.size === 0) return;
+        if (selectedTabIds.size < minimumBrowserGroupTabs()) {
+            toast.info(t('sidepanel.tabsPanel.operaGroupMinimum'));
+            return;
         }
+        setIsNewGroupModalOpen(true);
     };
 
     const handleCreateGroup = async (tabIds: number[], title: string, color: TabGroupColor) => {
-        await createGroup(tabIds, title, color);
+        if (await createGroup(tabIds, title, color) === null) {
+            toast.error(t('sidepanel.tabsPanel.createGroupFailed'));
+            return false;
+        }
         setSelectedTabIds(new Set());
         setIsSelectionMode(false);
+        return true;
     };
 
     const handleRenameGroup = async (groupId: number, title: string) => {
@@ -491,6 +499,7 @@ export function TabsPanel() {
             }
 
             // Create browser groups
+            let skippedSingleTabGroup = false;
             for (const [groupName, data] of groupMap) {
                 // Check if a browser group with this name already exists
                 const existingGroup = groups.find(
@@ -501,15 +510,18 @@ export function TabsPanel() {
                     // Add to existing browser group
                     await chrome.tabs.group({ tabIds: data.tabIds, groupId: existingGroup.id });
                 } else {
-                    // Create new browser group
-                    const groupId = await chrome.tabs.group({ tabIds: data.tabIds });
+                    if (data.tabIds.length < minimumBrowserGroupTabs()) {
+                        skippedSingleTabGroup = true;
+                        continue;
+                    }
                     const validColors: BrowserGroupColor[] = ['grey', 'blue', 'red', 'yellow', 'green', 'pink', 'purple', 'cyan', 'orange'];
                     const color = validColors.includes(data.color as BrowserGroupColor)
                         ? data.color as BrowserGroupColor
                         : 'blue';
-                    await chrome.tabGroups.update(groupId, { title: groupName, color });
+                    await createBrowserTabGroup({ tabIds: data.tabIds }, { title: groupName, color });
                 }
             }
+            if (skippedSingleTabGroup) toast.info(t('sidepanel.tabsPanel.operaGroupMinimum'));
         } catch (err) {
             console.error('[BlueTab] Organize failed:', err);
         }

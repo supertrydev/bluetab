@@ -40,6 +40,7 @@ import {
   MousePointerClick,
 } from 'lucide-react';
 import { Storage } from '@/utils/storage';
+import { openOnboardingSidePanel } from '@/platform/extension-platform';
 import { ThemeManager, type Theme } from '@/utils/theme';
 import {
   hasFloatingButtonHostAccess,
@@ -680,6 +681,9 @@ export function OnboardingWizard() {
     if (isLastStep) {
       handleComplete();
     } else {
+      if (steps[currentStep + 1].id === 'sidepanel') {
+        void openOnboardingSidePanel().catch(() => {});
+      }
       setCurrentStep((s) => s + 1);
     }
   };

@@ -28,6 +28,7 @@
  *       Does not manage tab broadcasting interval — that lives in Plan 03 UI layer.
  */
 
+import { createBrowserTabGroup, minimumBrowserGroupTabs } from '@/platform/create-browser-tab-group';
 import { canAccessFeature, getFeatureGateMessage } from '@/utils/feature-gate'
 import { getAccessToken } from '@/utils/auth-state'
 import { Storage } from '@/utils/storage'
@@ -182,7 +183,7 @@ function updateBadge(): void {
 // local browser, named "{displayName}'s Tabs". The group is kept in sync:
 // new URLs are opened, removed URLs are closed, existing ones are kept.
 
-const participantTabGroups = new Map<string, { groupId: number; tabMap: Map<string, number> }>()
+const participantTabGroups = new Map<string, { groupId: number | null; tabMap: Map<string, number> }>()
 
 const TAB_GROUP_COLORS: chrome.tabGroups.ColorEnum[] = ['blue', 'red', 'yellow', 'green', 'pink', 'purple', 'cyan', 'orange']
 let nextColorIdx = 0
@@ -193,58 +194,44 @@ async function syncParticipantBrowserGroup(
     tabs: SharedTab[]
 ): Promise<void> {
     try {
-        const existing = participantTabGroups.get(userId)
-        const wantedUrls = new Set(tabs.map((t) => t.url))
+        const entry = participantTabGroups.get(userId)
+            ?? { groupId: null, tabMap: new Map<string, number>() }
+        participantTabGroups.set(userId, entry)
 
-        if (existing) {
-            // Remove tabs no longer shared
-            for (const [url, tabId] of existing.tabMap) {
-                if (!wantedUrls.has(url)) {
-                    chrome.tabs.remove(tabId).catch(() => {})
-                    existing.tabMap.delete(url)
-                }
+        const wantedUrls = new Set(tabs.map((tab) => tab.url))
+        for (const [url, tabId] of entry.tabMap) {
+            if (!wantedUrls.has(url)) {
+                await chrome.tabs.remove(tabId).catch(() => {})
+                entry.tabMap.delete(url)
+            } else if (entry.groupId === null) {
+                // The group can be removed without closing its tabs.
+                const tab = await chrome.tabs.get(tabId).catch(() => undefined)
+                if (!tab || tab.url !== url) entry.tabMap.delete(url)
             }
+        }
 
-            // Add new tabs
-            const newUrls = tabs.filter((t) => !existing.tabMap.has(t.url))
-            if (newUrls.length > 0) {
-                const newTabIds: number[] = []
-                for (const t of newUrls) {
-                    const created = await chrome.tabs.create({ url: t.url, active: false })
-                    if (created.id) {
-                        existing.tabMap.set(t.url, created.id)
-                        newTabIds.push(created.id)
-                    }
-                }
-                if (newTabIds.length > 0) {
-                    await chrome.tabs.group({ tabIds: newTabIds, groupId: existing.groupId })
-                }
+        const newTabIds: number[] = []
+        for (const tab of tabs) {
+            if (entry.tabMap.has(tab.url)) continue
+            const created = await chrome.tabs.create({ url: tab.url, active: false })
+            if (created.id) {
+                entry.tabMap.set(tab.url, created.id)
+                newTabIds.push(created.id)
             }
+        }
 
-            // Collapse the group so it doesn't steal focus
-            await chrome.tabGroups.update(existing.groupId, { collapsed: false }).catch(() => {})
-        } else if (tabs.length > 0) {
-            // First time — create all tabs and group them
-            const tabIds: number[] = []
-            const tabMap = new Map<string, number>()
-            for (const t of tabs) {
-                const created = await chrome.tabs.create({ url: t.url, active: false })
-                if (created.id) {
-                    tabIds.push(created.id)
-                    tabMap.set(t.url, created.id)
-                }
+        if (entry.groupId !== null) {
+            if (newTabIds.length > 0) {
+                await chrome.tabs.group({ tabIds: newTabIds, groupId: entry.groupId })
             }
-            if (tabIds.length > 0) {
-                const groupId = await chrome.tabs.group({ tabIds })
-                const color = TAB_GROUP_COLORS[nextColorIdx % TAB_GROUP_COLORS.length]
-                nextColorIdx++
-                await chrome.tabGroups.update(groupId, {
-                    title: `${displayName}'s Tabs`,
-                    color,
-                    collapsed: false,
-                })
-                participantTabGroups.set(userId, { groupId, tabMap })
-            }
+            await chrome.tabGroups.update(entry.groupId, { collapsed: false }).catch(() => {})
+        } else if (entry.tabMap.size >= minimumBrowserGroupTabs()) {
+            const color = TAB_GROUP_COLORS[nextColorIdx++ % TAB_GROUP_COLORS.length]
+            entry.groupId = await createBrowserTabGroup({ tabIds: [...entry.tabMap.values()] }, {
+                title: `${displayName}'s Tabs`,
+                color,
+                collapsed: false,
+            })
         }
     } catch (err) {
         console.error(`${LOG_PREFIX} syncParticipantBrowserGroup error:`, err)
@@ -483,13 +470,21 @@ function scheduleBroadcastInternal(): void {
     tabBroadcastTimer = setTimeout(onTabBroadcastFired, TAB_BROADCAST_DEBOUNCE)
 }
 
+function onParticipantGroupRemoved(group: chrome.tabGroups.TabGroup): void {
+    for (const entry of participantTabGroups.values()) {
+        if (entry.groupId === group.id) entry.groupId = null
+    }
+}
+
 function attachTabListeners(): void {
+    chrome.tabGroups?.onRemoved?.addListener(onParticipantGroupRemoved)
     chrome.tabs.onCreated.addListener(onTabCreated)
     chrome.tabs.onRemoved.addListener(onTabRemoved)
     chrome.tabs.onUpdated.addListener(onTabUpdated)
 }
 
 function detachTabListeners(): void {
+    chrome.tabGroups?.onRemoved?.removeListener(onParticipantGroupRemoved)
     chrome.tabs.onCreated.removeListener(onTabCreated)
     chrome.tabs.onRemoved.removeListener(onTabRemoved)
     chrome.tabs.onUpdated.removeListener(onTabUpdated)

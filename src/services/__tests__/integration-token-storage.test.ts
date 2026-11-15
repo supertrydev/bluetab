@@ -17,7 +17,6 @@ import {
 import type { TokenBundle } from '../../types/integrations';
 import {
   autoRestoreKeyFromSession,
-  deriveKeyFromUserId,
   hasCachedKey,
 } from '../../services/sync-crypto';
 import {
@@ -38,7 +37,6 @@ jest.mock('../../services/sync-crypto', () => ({
   }),
   hasCachedKey: jest.fn(() => true),
   autoRestoreKeyFromSession: jest.fn(async () => true),
-  deriveKeyFromUserId: jest.fn(async () => true),
   initializeEncryption: jest.fn(),
   getEncryptionConfig: jest.fn(() => ({ keySalt: 'salt', iterations: 100000 })),
 }));
@@ -93,20 +91,17 @@ function makeBundle(overrides: Partial<TokenBundle> = {}): TokenBundle {
 describe('isIntegrationEncryptionReady', () => {
   const mockHasCachedKey = jest.mocked(hasCachedKey);
   const mockAutoRestoreKeyFromSession = jest.mocked(autoRestoreKeyFromSession);
-  const mockDeriveKeyFromUserId = jest.mocked(deriveKeyFromUserId);
 
   beforeEach(() => {
     for (const k of Object.keys(localStore)) delete localStore[k];
     jest.clearAllMocks();
     mockHasCachedKey.mockReturnValue(false);
     mockAutoRestoreKeyFromSession.mockResolvedValue(false);
-    mockDeriveKeyFromUserId.mockResolvedValue(false);
   });
 
   afterEach(() => {
     mockHasCachedKey.mockReturnValue(true);
     mockAutoRestoreKeyFromSession.mockResolvedValue(true);
-    mockDeriveKeyFromUserId.mockResolvedValue(true);
   });
 
   it('is unavailable before Sync creates keySalt', async () => {
@@ -121,6 +116,14 @@ describe('isIntegrationEncryptionReady', () => {
     };
 
     await expect(isIntegrationEncryptionReady()).resolves.toBe(false);
+  });
+
+  it('does not treat a legacy device or its recovery as integration-ready', async () => {
+    localStore.syncDeviceInfo = { keySalt: 'legacy-salt', userId: 'legacy-account' };
+    mockAutoRestoreKeyFromSession.mockResolvedValue(true);
+
+    await expect(isIntegrationEncryptionReady()).resolves.toBe(false);
+    expect(mockAutoRestoreKeyFromSession).not.toHaveBeenCalled();
   });
 
   it('is ready when the configured Sync key can be restored', async () => {

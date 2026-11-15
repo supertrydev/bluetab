@@ -342,7 +342,7 @@ export function HelpPage({ sidebarTrigger }: HelpPageProps) {
                     {t('options.helpPage.feedback.bugDescription')}
                   </p>
                   <a
-                    href="https://github.com/supertrydev/bluetab/issues"
+                    href="https://github.com/supertrydev/bluetab/issues/new?template=bug.yml"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm"
@@ -358,7 +358,7 @@ export function HelpPage({ sidebarTrigger }: HelpPageProps) {
                     {t('options.helpPage.feedback.featureDescription')}
                   </p>
                   <a
-                    href="https://github.com/supertrydev/bluetab/issues/new?labels=enhancement"
+                    href="https://github.com/supertrydev/bluetab/issues/new?template=feature.yml"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border bg-card hover:bg-muted transition-colors text-sm"

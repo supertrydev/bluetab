@@ -31,7 +31,7 @@ import {
   Trash2,
   Info,
 } from 'lucide-react'
-import type { LocalDeviceInfo } from '@/types/sync'
+import { isLegacySyncDevice, type LocalDeviceInfo } from '@/types/sync'
 import { useTranslation } from 'react-i18next'
 
 interface SyncSettingsProps {
@@ -121,10 +121,11 @@ export function SyncSettings({ className }: SyncSettingsProps) {
   const isConnected = state?.status === 'connected'
   const requiresPasswordRestore = state?.status === 'restore-required'
   const hasLocalDeviceInfo = deviceInfo !== null
+  const needsLegacyReconnect = deviceInfo !== null && isLegacySyncDevice(deviceInfo)
   const currentDeviceInList = hasLocalDeviceInfo && devices.some((device) =>
     device.deviceId === deviceInfo.deviceId || device.isCurrentDevice
   )
-  const needsDeviceConnection = requiresPasswordRestore || !hasLocalDeviceInfo || (devices.length > 0 && !currentDeviceInList)
+  const needsDeviceConnection = needsLegacyReconnect || requiresPasswordRestore || !hasLocalDeviceInfo || (devices.length > 0 && !currentDeviceInList)
   const isSetUp = !needsDeviceConnection
   const visibleDeviceCount = deviceCount || devices.length
   const deviceCountLabel = deviceLimit == null
@@ -271,7 +272,9 @@ export function SyncSettings({ className }: SyncSettingsProps) {
                     : devices.length > 0 ? t('components.sync.connectDeviceTitle') : t('components.sync.notActive')}
                 </h4>
                 <p className="text-sm text-text-muted mt-1">
-                  {requiresPasswordRestore
+                  {needsLegacyReconnect
+                    ? t('components.sync.legacyReconnect')
+                    : requiresPasswordRestore
                     ? t('components.sync.restoreDescription')
                     : devices.length > 0
                     ? t('components.sync.joinDescription')
@@ -285,14 +288,25 @@ export function SyncSettings({ className }: SyncSettingsProps) {
                 </p>
               )}
             </div>
-            <Button
-              type="button"
-              size="sm"
-              onClick={() => setSetupDialogOpen(true)}
-              disabled={deviceLimitReached}
-            >
-              {requiresPasswordRestore ? t('components.sync.enterPassword') : t('components.sync.connectDevice')}
-            </Button>
+            {needsLegacyReconnect ? (
+              <Button
+                type="button"
+                size="sm"
+                disabled={deletingDeviceId === deviceInfo.deviceId}
+                onClick={() => void handleDisconnectCurrentDevice(deviceInfo.deviceId)}
+              >
+                {t('components.sync.disconnectDevice')}
+              </Button>
+            ) : (
+              <Button
+                type="button"
+                size="sm"
+                onClick={() => setSetupDialogOpen(true)}
+                disabled={deviceLimitReached}
+              >
+                {requiresPasswordRestore ? t('components.sync.enterPassword') : t('components.sync.connectDevice')}
+              </Button>
+            )}
           </div>
         </div>
       )}

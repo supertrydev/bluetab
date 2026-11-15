@@ -24,6 +24,7 @@
  *       Does not handle payment — that is feature-gate.ts.
  */
 
+import { createBrowserTabGroup } from '@/platform/create-browser-tab-group';
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport, lastAssistantMessageIsCompleteWithToolCalls } from 'ai';
@@ -881,10 +882,9 @@ export function useAIChat(): UseAIChatReturn {
             }
 
             try {
-              const groupId = await chrome.tabs.group({ tabIds: validation.valid });
               const updateProps: chrome.tabGroups.UpdateProperties = { title: groupName };
               if (color) updateProps.color = color as chrome.tabGroups.ColorEnum;
-              await chrome.tabGroups.update(groupId, updateProps);
+              await createBrowserTabGroup({ tabIds: validation.valid }, updateProps);
               results.push({ groupName, tabCount: validation.valid.length, status: 'success' });
             } catch (err) {
               results.push({ groupName, tabCount: 0, status: String(err) });

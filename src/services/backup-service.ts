@@ -25,6 +25,7 @@
  *       logic directly (returns snapshot data for the caller to handle).
  */
 
+import { createBrowserTabGroup } from '@/platform/create-browser-tab-group';
 import { isBrowserInternalUrl } from '@/platform/extension-platform';
 import { ALARM_NAMES } from '@/config/alarms';
 import { Storage } from '@/utils/storage';
@@ -191,12 +192,10 @@ export class BackupService {
         const groupMeta = win.tabGroups.find((g) => g.id === oldGroupId);
         if (!groupMeta) continue;
 
-        const newGroupId = await chrome.tabs.group({
+        await createBrowserTabGroup({
           tabIds,
           createProperties: { windowId: newWindowId },
-        });
-
-        await chrome.tabGroups.update(newGroupId, {
+        }, {
           title: groupMeta.title,
           color: groupMeta.color,
           collapsed: groupMeta.collapsed,

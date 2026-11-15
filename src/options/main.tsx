@@ -1,3 +1,4 @@
+import { createBrowserTabGroup } from '@/platform/create-browser-tab-group';
 import { useState, useEffect, useMemo, useCallback, useTransition } from 'react';
 import { createRoot } from 'react-dom/client';
 import { AlertTriangle, Sparkles } from 'lucide-react';
@@ -783,8 +784,7 @@ function TabManagerContent({ groups, setGroups }: TabManagerContentProps) {
                         await chrome.windows.update(targetWindowId, { focused: true });
                         await new Promise(resolve => setTimeout(resolve, 100));
                     }
-                    const groupId = await chrome.tabs.group({ tabIds: createdTabIds });
-                    await chrome.tabGroups.update(groupId, { title: group.name });
+                    await createBrowserTabGroup({ tabIds: createdTabIds }, { title: group.name });
                 } catch (groupError) {
                     console.error('Failed to create tab group:', groupError);
                     ToastManager.getInstance().warning(translate('options.manager.restoreGroupingFailed', { count: createdTabIds.length }));

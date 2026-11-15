@@ -15,3 +15,15 @@ describe('MCPServerSection direct-enable contract', () => {
     expect(source).not.toContain('setConsentModalOpen(true)');
   });
 });
+
+describe('ChatGPT connection guide placement', () => {
+  it('keeps the directory link in the ChatGPT tab behind the Pro gate', () => {
+    const guide = fs.readFileSync(path.resolve(__dirname, '../mcp/McpConnectGuide.tsx'), 'utf-8');
+    const chatgptTab = guide.match(/<TabsContent value="chatgpt"[^>]*>([\s\S]*?)<\/TabsContent>/)?.[1];
+
+    expect(source).not.toContain('CHATGPT_DIRECTORY_URL');
+    expect(source.indexOf('if (!isPro)')).toBeLessThan(source.indexOf('<McpConnectGuide'));
+    expect(chatgptTab).toContain('href={CHATGPT_DIRECTORY_URL}');
+    expect(chatgptTab).not.toContain('chatgptNote');
+  });
+});

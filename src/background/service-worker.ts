@@ -72,7 +72,7 @@ import { BrainDumpService, skipsConfiguredRouting } from '../services/brain-dump
 import { getBrainDumpSiteMatchForUrl } from '../services/brain-dump-site-indicator';
 import { AIPageSummaryError, AIPageSummaryService } from '../services/ai-page-summary-to-dump';
 import { KillSwitchService } from '../services/kill-switch-service';
-import { VisibleTabLimitService, isHiddenGroupTitle, onHiddenGroupUserExpanded } from '../services/visible-tab-limit-service';
+import { VisibleTabLimitService, isHiddenGroupTitle, onHiddenGroupUserExpanded, forgetRemovedGroup } from '../services/visible-tab-limit-service';
 import { HardFocusService, HARD_FOCUS_STATE_KEY } from '../services/hard-focus-service';
 import { ensureReason as ensureOffscreenReason } from '../services/offscreen-manager';
 import { IS_FIREFOX } from '../platform/browser-target';
@@ -2250,6 +2250,7 @@ chrome.tabGroups.onUpdated.addListener(async (group) => {
 });
 
 chrome.tabGroups.onRemoved.addListener(async (group) => {
+    forgetRemovedGroup(group.id);
     try {
         const adhd = await ADHDService.getSettings();
         if (adhd.masterEnabled && adhd.visibleTabLimit?.enabled) {

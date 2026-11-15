@@ -3,6 +3,17 @@
 All notable changes to Bluetab. Versions are the same in the Chrome Web Store
 and Firefox Add-ons.
 
+## 1.0.6
+
+- The onboarding wizard opens the side panel as you reach its introduction.
+- Creating browser tab groups can recover if the browser changes the group ID.
+  Opera requires at least two tabs for a new browser group.
+- The Help page opens the GitHub bug and feature request forms directly.
+- The ChatGPT setup guide shows how to connect Bluetab from the ChatGPT directory.
+- Chrome and Firefox add-on ZIPs use a stable file order and timestamps.
+- Sync requires a sync password on every device. Devices using legacy sync
+  can disconnect and start fresh from Sync settings while keeping local data.
+
 ## 1.0.5
 
 The first release for Firefox, and the next Chrome Web Store update after

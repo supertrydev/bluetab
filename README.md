@@ -14,6 +14,8 @@ The free plan runs on your device. No account needed.
 [![CI](https://github.com/supertrydev/bluetab/actions/workflows/ci.yml/badge.svg)](https://github.com/supertrydev/bluetab/actions/workflows/ci.yml)
 [![License: AGPL v3](https://img.shields.io/badge/license-AGPL--3.0-blue)](LICENSE)
 
+[![mcptry](https://mcptry.com/badge/net.supertry/bluetab)](https://mcptry.com/servers/net.supertry/bluetab)
+
 **[Website](https://bluetab.in)** · **[Install](#install)** · **[Features](#features)** · **[Build from source](#build-from-source)** · **[Report a bug](https://github.com/supertrydev/bluetab/issues/new?template=bug.yml)**
 
 <img src=".github/assets/marquee.png" alt="Bluetab: save every tab, find it fast" width="100%" />

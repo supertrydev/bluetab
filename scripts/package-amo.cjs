@@ -19,6 +19,7 @@ const { execFileSync } = require('child_process');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
+const { writeReproducibleZip } = require('./reproducible-zip.cjs');
 
 const root = path.resolve(__dirname, '..');
 const dist = path.join(root, 'dist-firefox');
@@ -88,8 +89,7 @@ try {
     }
   };
   walk(staging);
-  fs.rmSync(addonZip, { force: true });
-  execFileSync('zip', ['-r', '-X', '-q', addonZip, '.'], { cwd: staging, stdio: 'inherit' });
+  writeReproducibleZip(root, staging, addonZip);
   const sizeMb = (fs.statSync(addonZip).size / (1024 * 1024)).toFixed(2);
   console.log(`PACKAGE OK: ${path.relative(root, addonZip)} (${sizeMb} MB, version ${manifest.version}${removed ? `, removed ${removed} stray files` : ''})`);
 } finally {
@@ -110,6 +110,7 @@ fs.rmSync(sourceZip, { force: true });
 execFileSync('git', ['archive', '--format=zip', `--prefix=bluetab-${manifest.version}-source/`, '-o', sourceZip, 'HEAD', '--', ...present], {
   cwd: root,
   stdio: 'inherit',
+  env: { ...process.env, TZ: 'UTC' },
 });
 const sourceMb = (fs.statSync(sourceZip).size / (1024 * 1024)).toFixed(2);
 console.log(`SOURCE OK: ${path.relative(root, sourceZip)} (${sourceMb} MB, commit ${git(['rev-parse', '--short', 'HEAD'])}${dirty ? ', DIRTY TREE: test only' : ''})`);

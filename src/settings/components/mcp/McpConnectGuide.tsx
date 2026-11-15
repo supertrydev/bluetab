@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CodeBlock } from './McpCode';
 import {
-  CHATGPT_SETTINGS_URL,
+  CHATGPT_DIRECTORY_URL,
   CLAUDE_CONNECTORS_URL,
   MCP_APPS,
   buildCursorInstallLink,
@@ -81,10 +81,9 @@ export function McpConnectGuide({ url }: { url: string }) {
       </TabsContent>
 
       <TabsContent value="chatgpt" className="space-y-3">
-        <Steps items={[t('settings.mcp.chatgptStep1'), t('settings.mcp.chatgptStep2'), t('settings.mcp.approveStep')]} />
-        <p className="text-xs text-muted-foreground">{t('settings.mcp.chatgptNote')}</p>
-        <a href={CHATGPT_SETTINGS_URL} target="_blank" rel="noopener noreferrer" className={LINK_BUTTON}>
-          {t('settings.mcp.openChatgpt')}
+        <Steps items={[t('settings.mcp.chatgptInstall'), t('settings.mcp.chatgptConnect')]} />
+        <a href={CHATGPT_DIRECTORY_URL} target="_blank" rel="noopener noreferrer" className={LINK_BUTTON}>
+          {t('settings.mcp.openBluetabInChatgpt')}
           <ExternalLink className="h-3 w-3 rtl:-scale-x-100" aria-hidden="true" />
         </a>
       </TabsContent>
