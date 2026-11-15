@@ -79,6 +79,18 @@ const SHORTCUTS = [
 // Release notes (latest first)
 const CHANGELOG = [
   {
+    version: '1.0.6',
+    date: '2026-11',
+    changeKeys: [
+      'options.helpPage.changelog.v1_0_6_1',
+      'options.helpPage.changelog.v1_0_6_2',
+      'options.helpPage.changelog.v1_0_6_3',
+      'options.helpPage.changelog.v1_0_6_4',
+      'options.helpPage.changelog.v1_0_6_5',
+      'options.helpPage.changelog.v1_0_6_6',
+    ],
+  },
+  {
     version: '1.0.5',
     date: '2026-11',
     changeKeys: [
@@ -342,7 +354,7 @@ export function HelpPage({ sidebarTrigger }: HelpPageProps) {
                     {t('options.helpPage.feedback.bugDescription')}
                   </p>
                   <a
-                    href="https://github.com/supertrydev/bluetab/issues"
+                    href="https://github.com/supertrydev/bluetab/issues/new?template=bug.yml"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm"
@@ -358,7 +370,7 @@ export function HelpPage({ sidebarTrigger }: HelpPageProps) {
                     {t('options.helpPage.feedback.featureDescription')}
                   </p>
                   <a
-                    href="https://github.com/supertrydev/bluetab/issues/new?labels=enhancement"
+                    href="https://github.com/supertrydev/bluetab/issues/new?template=feature.yml"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border bg-card hover:bg-muted transition-colors text-sm"

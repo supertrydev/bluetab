@@ -1,6 +1,6 @@
 {
     "name": "bluetab",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "private": true,
     "description": "Bluetab: a calm, private tab manager for Chrome and Firefox",
     "license": "AGPL-3.0-only",
@@ -15,7 +15,7 @@
     "type": "module",
     "scripts": {
         "dev": "vite build --mode development --watch",
-        "build": "vite build && node scripts/ci/check-content-scripts.cjs",
+        "build": "vite build && node scripts/ci/check-content-scripts.cjs && node scripts/ci/check-worker-imports.cjs",
         "package:cws": "npm run build && node scripts/package-cws.cjs",
         "build:firefox": "BLUETAB_BROWSER=firefox vite build && node scripts/ci/check-content-scripts.cjs dist-firefox",
         "lint:firefox": "web-ext lint --source-dir dist-firefox --self-hosted=false",

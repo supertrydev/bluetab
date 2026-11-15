@@ -72,7 +72,7 @@ export function configureToolbarOpensSidePanel(): void {
     });
     return;
   }
-  chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true })
+  chrome.sidePanel?.setPanelBehavior({ openPanelOnActionClick: true })
     .catch((error) => console.error('[BlueTab] Failed to set panel behavior:', error));
 }
 
@@ -94,6 +94,15 @@ export async function openSidePanel(options: { tabId: number } | { windowId: num
   } catch {
     await chrome.tabs.create({ url: chrome.runtime.getURL('src/sidepanel/index.html') });
   }
+}
+
+/** Open the browser UI directly during an onboarding click. */
+export async function openOnboardingSidePanel(): Promise<void> {
+  if (IS_FIREFOX) {
+    await firefoxApi().sidebarAction?.open();
+    return;
+  }
+  await chrome.sidePanel?.open({ windowId: chrome.windows.WINDOW_ID_CURRENT });
 }
 
 // ---------------------------------------------------------------------------

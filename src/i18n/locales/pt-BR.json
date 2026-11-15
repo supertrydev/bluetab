@@ -505,10 +505,9 @@
       "claudeStep1": "No Claude, abra Configurações > Conectores e escolha Adicionar conector personalizado.",
       "claudeStep2": "Dê o nome Bluetab, cole a URL do servidor, selecione Adicionar e depois Conectar.",
       "openClaude": "Abrir conectores do Claude",
-      "chatgptStep1": "No ChatGPT, abra Configurações > Apps > Configurações avançadas e ative o modo desenvolvedor.",
-      "chatgptStep2": "Selecione Criar, dê o nome Bluetab, cole a URL do servidor e escolha OAuth.",
-      "chatgptNote": "O modo desenvolvedor pode exigir um plano pago do ChatGPT.",
-      "openChatgpt": "Abrir configurações do ChatGPT",
+      "chatgptInstall": "Abra o Bluetab no ChatGPT e instale-o se for solicitado.",
+      "chatgptConnect": "Selecione Conectar, entre na Supertry e autorize o acesso.",
+      "openBluetabInChatgpt": "Abrir o Bluetab no ChatGPT",
       "cursorStep": "Selecione o botão e confirme no Cursor. Depois selecione Conectar ao lado do Bluetab nas configurações MCP do Cursor.",
       "addToCursor": "Adicionar ao Cursor",
       "vscodeStep": "Selecione o botão e confirme no VS Code. Inicie o servidor e entre quando o VS Code pedir.",
@@ -1556,6 +1555,12 @@
         "featureButton": "Sugerir um recurso"
       },
       "changelog": {
+        "v1_0_6_1": "A introdução abre o painel lateral quando o apresenta",
+        "v1_0_6_2": "Criar grupos de abas ficou mais confiável, inclusive no Opera (o Opera precisa de pelo menos duas abas por grupo)",
+        "v1_0_6_3": "Conecte o Bluetab ao ChatGPT pelo diretório de apps do ChatGPT",
+        "v1_0_6_4": "A sincronização exige uma senha de sincronização em cada dispositivo. Dispositivos com a configuração antiga podem recomeçar e manter seus dados locais",
+        "v1_0_6_5": "Enviar para apps conectados não falha mais quando o login precisa ser renovado em segundo plano",
+        "v1_0_6_6": "A Ajuda abre diretamente os formulários de bugs e pedidos de recursos no GitHub",
         "v1_0_5_1": "Agora disponível para Firefox (versão 140 ou posterior)",
         "v1_0_5_2": "A sincronização e o Teams não colocam mais seu token de sessão nos endereços web",
         "v1_0_5_3": "Atualizações de segurança para a limpeza de páginas e outras bibliotecas integradas",
@@ -2544,6 +2549,8 @@
       "convertToReminder": "Converter em lembrete"
     },
     "tabsPanel": {
+      "operaGroupMinimum": "Selecione pelo menos duas abas para criar um grupo no Opera.",
+      "createGroupFailed": "O navegador não conseguiu criar o grupo de abas. Tente novamente.",
       "searchAria": "Pesquisar abas",
       "noSuspendedInGroup": "Nenhuma aba suspensa neste grupo.",
       "noSuspendedInUngrouped": "Nenhuma aba suspensa em Sem grupo.",
@@ -2931,6 +2938,7 @@
       "connectPrompt": "Conecte este dispositivo com sua senha de sincronização",
       "enable": "Ativar sincronização",
       "disable": "Desativar sincronização",
+      "legacyReconnect": "Este dispositivo usava um método antigo de sincronização. Desconecte-o e desconecte os outros dispositivos sincronizados. Depois inicie uma nova sincronização e crie uma senha. Isso substitui o backup antigo na nuvem e mantém os dados locais. Reconecte as integrações que você usava.",
       "restoreAccess": "Restaurar acesso à sincronização",
       "connectDeviceTitle": "Conectar este dispositivo",
       "notActive": "Sincronização inativa",

@@ -505,10 +505,9 @@
       "claudeStep1": "Claude'da Ayarlar > Bağlayıcılar'ı açın ve Özel bağlayıcı ekle'yi seçin.",
       "claudeStep2": "Adını Bluetab koyun, sunucu URL'sini yapıştırın, Ekle'yi ve ardından Bağlan'ı seçin.",
       "openClaude": "Claude bağlayıcılarını aç",
-      "chatgptStep1": "ChatGPT'de Ayarlar > Uygulamalar > Gelişmiş ayarlar'ı açın ve Geliştirici modunu açın.",
-      "chatgptStep2": "Oluştur'u seçin, adını Bluetab koyun, sunucu URL'sini yapıştırın ve OAuth'u seçin.",
-      "chatgptNote": "Geliştirici modu ücretli bir ChatGPT planı gerektirebilir.",
-      "openChatgpt": "ChatGPT ayarlarını aç",
+      "chatgptInstall": "ChatGPT’de Bluetab’ı açın. Yükleme düğmesi görünürse yükleyin.",
+      "chatgptConnect": "Bağlan’ı seçin, Supertry hesabınıza giriş yapın ve erişimi onaylayın.",
+      "openBluetabInChatgpt": "Bluetab’ı ChatGPT’de aç",
       "cursorStep": "Düğmeyi seçin ve Cursor'da onaylayın. Ardından Cursor'ın MCP ayarlarında Bluetab'in yanındaki Bağlan'ı seçin.",
       "addToCursor": "Cursor'a ekle",
       "vscodeStep": "Düğmeyi seçin ve VS Code'da onaylayın. VS Code sorduğunda sunucuyu başlatıp giriş yapın.",
@@ -1556,6 +1555,12 @@
         "featureButton": "Özellik Öner"
       },
       "changelog": {
+        "v1_0_6_1": "Tanıtım turu, yan paneli anlatırken paneli açıyor",
+        "v1_0_6_2": "Sekme grubu oluşturmak, Opera dahil daha güvenilir (Opera'da bir grup için en az iki sekme gerekir)",
+        "v1_0_6_3": "Bluetab'ı ChatGPT uygulama dizininden ChatGPT'ye bağlayabilirsin",
+        "v1_0_6_4": "Senkronizasyon her cihazda bir senkronizasyon parolası istiyor. Eski senkronizasyon kurulumundaki cihazlar yerel verilerini koruyarak yeniden başlayabilir",
+        "v1_0_6_5": "Bağlı uygulamalara gönderim, oturumun arka planda yenilenmesi gerektiğinde artık başarısız olmuyor",
+        "v1_0_6_6": "Yardım sayfası GitHub hata bildirimi ve özellik isteği formlarını doğrudan açıyor",
         "v1_0_5_1": "Artık Firefox'ta da kullanılabilir (sürüm 140 veya üstü)",
         "v1_0_5_2": "Senkronizasyon ve Teams, oturum anahtarını artık web adreslerinde göndermiyor",
         "v1_0_5_3": "Sayfa temizleme ve diğer yerleşik kütüphaneler için güvenlik güncellemeleri",
@@ -2544,6 +2549,8 @@
       "convertToReminder": "Hatırlatıcıya çevir"
     },
     "tabsPanel": {
+      "operaGroupMinimum": "Opera’da grup oluşturmak için en az iki sekme seçin.",
+      "createGroupFailed": "Tarayıcı sekme grubunu oluşturamadı. Tekrar deneyin.",
       "searchAria": "Sekmeleri ara",
       "noSuspendedInGroup": "Bu grupta askıda sekme yok.",
       "noSuspendedInUngrouped": "Gruplanmamış bölümünde askıda sekme yok.",
@@ -2931,6 +2938,7 @@
       "connectPrompt": "Bu cihazı senkronizasyon parolanla bağla",
       "enable": "Senkronizasyonu etkinleştir",
       "disable": "Senkronizasyonu devre dışı bırak",
+      "legacyReconnect": "Bu cihaz eski senkronizasyon yöntemini kullanıyordu. Bu cihazın ve diğer senkronizasyon cihazlarının bağlantısını kesin. Ardından Yeni Senkronizasyon Başlat seçeneğiyle bir parola oluşturun. Bu işlem eski bulut yedeğini değiştirir. Yerel verileriniz bu cihazda kalır. Kullandığınız entegrasyonları yeniden bağlayın.",
       "restoreAccess": "Senkronizasyon Erişimini Geri Yükle",
       "connectDeviceTitle": "Bu Cihazı Bağla",
       "notActive": "Senkronizasyon Etkin Değil",

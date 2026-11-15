@@ -505,10 +505,9 @@
       "claudeStep1": "In Claude, open Settings > Connectors and choose Add custom connector.",
       "claudeStep2": "Name it Bluetab, paste the server URL, select Add and then Connect.",
       "openClaude": "Open Claude connectors",
-      "chatgptStep1": "In ChatGPT, open Settings > Apps > Advanced settings and turn on Developer mode.",
-      "chatgptStep2": "Select Create, name it Bluetab, paste the server URL and choose OAuth.",
-      "chatgptNote": "Developer mode may need a paid ChatGPT plan.",
-      "openChatgpt": "Open ChatGPT settings",
+      "chatgptInstall": "Open Bluetab in ChatGPT and install it if prompted.",
+      "chatgptConnect": "Select Connect, sign in to Supertry, and approve access.",
+      "openBluetabInChatgpt": "Open Bluetab in ChatGPT",
       "cursorStep": "Select the button and confirm in Cursor. Then select Connect next to Bluetab in Cursor's MCP settings.",
       "addToCursor": "Add to Cursor",
       "vscodeStep": "Select the button and confirm in VS Code. Start the server and sign in when VS Code asks.",
@@ -1556,6 +1555,12 @@
         "featureButton": "Suggest a Feature"
       },
       "changelog": {
+        "v1_0_6_1": "Onboarding opens the side panel when it introduces it",
+        "v1_0_6_2": "Creating tab groups is more reliable, including in Opera (Opera needs at least two tabs per group)",
+        "v1_0_6_3": "Connect Bluetab to ChatGPT from the ChatGPT app directory",
+        "v1_0_6_4": "Sync needs a sync password on every device. Devices on the old sync setup can start fresh and keep their local data",
+        "v1_0_6_5": "Sending to connected apps no longer fails when their sign-in has to be renewed in the background",
+        "v1_0_6_6": "Help opens the GitHub bug and feature request forms directly",
         "v1_0_5_1": "Now available for Firefox (version 140 or later)",
         "v1_0_5_2": "Sync and Teams no longer put your sign-in token in web addresses",
         "v1_0_5_3": "Security updates for page cleaning and other built-in libraries",
@@ -2544,6 +2549,8 @@
       "convertToReminder": "Convert to reminder"
     },
     "tabsPanel": {
+      "operaGroupMinimum": "Select at least two tabs to create a group in Opera.",
+      "createGroupFailed": "The browser couldn’t create the tab group. Try again.",
       "searchAria": "Search tabs",
       "noSuspendedInGroup": "No suspended tabs in this group.",
       "noSuspendedInUngrouped": "No suspended tabs in Ungrouped.",
@@ -2931,6 +2938,7 @@
       "connectPrompt": "Connect this device with your sync password",
       "enable": "Enable sync",
       "disable": "Disable sync",
+      "legacyReconnect": "This device used an older sync setup. Disconnect it and any other sync devices. Then choose Start Fresh Sync and create a sync password. This replaces the old cloud backup and keeps your data on this device. Reconnect any integrations you used.",
       "restoreAccess": "Restore Sync Access",
       "connectDeviceTitle": "Connect This Device",
       "notActive": "Sync Not Active",

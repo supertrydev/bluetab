@@ -52,7 +52,6 @@ jest.mock('./delta-tracker', () => ({
 
 jest.mock('./sync-crypto', () => ({
   deriveSyncKey: jest.fn().mockResolvedValue(true),
-  deriveKeyFromUserId: jest.fn().mockResolvedValue(false),
   hasCachedKey: jest.fn().mockReturnValue(false),
   clearCachedKey: jest.fn(),
   generateSalt: jest.fn().mockReturnValue('salt'),
@@ -85,6 +84,19 @@ describe('SyncEngine.initialize', () => {
     storageAtomicUpdateMock.mockResolvedValue(undefined);
     processStorageChangeMock.mockReset();
     onDeltasGeneratedMock.mockReturnValue(jest.fn());
+  });
+
+  it('blocks password restore on a legacy device without changing its registration', async () => {
+    storageGetMock.mockImplementation(async (key: string) => key === 'syncDeviceInfo'
+      ? { deviceId: 'legacy-device', userId: 'account', keySalt: 'legacy-salt' }
+      : null);
+
+    const { restoreSync } = await import('./sync-engine');
+    const { deriveSyncKey } = await import('./sync-crypto');
+
+    await expect(restoreSync('new-password')).resolves.toMatchObject({ success: false });
+    expect(deriveSyncKey).not.toHaveBeenCalled();
+    expect(storageRemoveMock).not.toHaveBeenCalled();
   });
 
   it('registers the storage listener before async device restore completes', async () => {

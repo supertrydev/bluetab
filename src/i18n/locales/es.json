@@ -505,10 +505,9 @@
       "claudeStep1": "En Claude, abre Configuración > Conectores y elige Añadir conector personalizado.",
       "claudeStep2": "Llámalo Bluetab, pega la URL del servidor, selecciona Añadir y luego Conectar.",
       "openClaude": "Abrir conectores de Claude",
-      "chatgptStep1": "En ChatGPT, abre Configuración > Apps > Configuración avanzada y activa el modo desarrollador.",
-      "chatgptStep2": "Selecciona Crear, llámalo Bluetab, pega la URL del servidor y elige OAuth.",
-      "chatgptNote": "El modo desarrollador puede requerir un plan de pago de ChatGPT.",
-      "openChatgpt": "Abrir configuración de ChatGPT",
+      "chatgptInstall": "Abre Bluetab en ChatGPT e instálalo si se te solicita.",
+      "chatgptConnect": "Selecciona Conectar, inicia sesión en Supertry y autoriza el acceso.",
+      "openBluetabInChatgpt": "Abrir Bluetab en ChatGPT",
       "cursorStep": "Selecciona el botón y confirma en Cursor. Luego selecciona Conectar junto a Bluetab en la configuración MCP de Cursor.",
       "addToCursor": "Añadir a Cursor",
       "vscodeStep": "Selecciona el botón y confirma en VS Code. Inicia el servidor e inicia sesión cuando VS Code lo pida.",
@@ -1556,6 +1555,12 @@
         "featureButton": "Sugerir una función"
       },
       "changelog": {
+        "v1_0_6_1": "La introducción abre el panel lateral cuando lo presenta",
+        "v1_0_6_2": "Crear grupos de pestañas es más fiable, también en Opera (Opera necesita al menos dos pestañas por grupo)",
+        "v1_0_6_3": "Conecta Bluetab a ChatGPT desde el directorio de apps de ChatGPT",
+        "v1_0_6_4": "La sincronización requiere una contraseña de sincronización en cada dispositivo. Los dispositivos con la configuración antigua pueden empezar de cero y conservar sus datos locales",
+        "v1_0_6_5": "Enviar a apps conectadas ya no falla cuando su inicio de sesión debe renovarse en segundo plano",
+        "v1_0_6_6": "Ayuda abre directamente los formularios de errores y solicitudes de funciones en GitHub",
         "v1_0_5_1": "Ahora disponible para Firefox (versión 140 o posterior)",
         "v1_0_5_2": "La sincronización y Teams ya no incluyen tu token de sesión en las direcciones web",
         "v1_0_5_3": "Actualizaciones de seguridad para la limpieza de páginas y otras bibliotecas integradas",
@@ -2544,6 +2549,8 @@
       "convertToReminder": "Convertir en recordatorio"
     },
     "tabsPanel": {
+      "operaGroupMinimum": "Selecciona al menos dos pestañas para crear un grupo en Opera.",
+      "createGroupFailed": "El navegador no pudo crear el grupo de pestañas. Inténtalo de nuevo.",
       "searchAria": "Buscar pestañas",
       "noSuspendedInGroup": "No hay pestañas suspendidas en este grupo.",
       "noSuspendedInUngrouped": "No hay pestañas suspendidas en Sin agrupar.",
@@ -2931,6 +2938,7 @@
       "connectPrompt": "Conecta este dispositivo con tu contraseña de sincronización",
       "enable": "Activar sincronización",
       "disable": "Desactivar sincronización",
+      "legacyReconnect": "Este dispositivo usaba un método de sincronización antiguo. Desconéctalo y desconecta los demás dispositivos sincronizados. Luego inicia una sincronización nueva y crea una contraseña. Esto reemplaza la copia antigua en la nube y conserva tus datos locales. Vuelve a conectar las integraciones que usabas.",
       "restoreAccess": "Recuperar acceso a la sincronización",
       "connectDeviceTitle": "Conectar este dispositivo",
       "notActive": "Sincronización inactiva",

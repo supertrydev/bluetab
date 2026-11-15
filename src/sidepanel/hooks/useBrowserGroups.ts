@@ -1,3 +1,4 @@
+import { createBrowserTabGroup } from '@/platform/create-browser-tab-group';
 import { useState, useEffect, useCallback, useRef } from 'react';
 
 // Chrome tab group colors
@@ -75,18 +76,11 @@ export function useBrowserGroups(): UseBrowserGroupsReturn {
         color: TabGroupColor = 'blue'
     ): Promise<number | null> => {
         try {
-            const groupId = await chrome.tabs.group({ tabIds });
-
-            if (title || color) {
-                await chrome.tabGroups.update(groupId, {
-                    title: title || '',
-                    color
-                });
-            }
+            const groupId = await createBrowserTabGroup({ tabIds }, { title: title || '', color });
 
             // Optimistic: add new group to local state immediately
             const currentWindow = await chrome.windows.getCurrent();
-            setGroups(prev => [...prev, {
+            setGroups(prev => [...prev.filter(group => group.id !== groupId), {
                 id: groupId,
                 title: title || '',
                 color,
@@ -95,7 +89,7 @@ export function useBrowserGroups(): UseBrowserGroupsReturn {
             }]);
             return groupId;
         } catch (err) {
-            setError((err as Error).message);
+            console.error('[Bluetab] Failed to create a browser group:', err);
             return null;
         }
     }, []);

@@ -14,6 +14,7 @@ import { getGroupColor } from '../hooks/useBrowserGroups';
 import { FlowStorageService } from '../../utils/flow-storage';
 import { getAuthState } from '../../utils/auth-state';
 import { cn } from '@/lib/utils';
+import { minimumBrowserGroupTabs } from '@/platform/create-browser-tab-group';
 import { useTranslation } from 'react-i18next';
 
 interface ActionBarProps {
@@ -65,6 +66,11 @@ export function ActionBar({
     };
 
     const hasSelection = selectedTabs.length > 0;
+    const newGroupLabel = hasSelection && selectedTabs.length < minimumBrowserGroupTabs()
+        ? t('sidepanel.tabsPanel.operaGroupMinimum')
+        : hasSelection
+            ? t('sidepanel.actionBar.createGroupWithTabs', { count: selectedTabs.length })
+            : t('sidepanel.actionBar.selectTabsFirst');
 
     return (
         <TooltipProvider delayDuration={300}>
@@ -93,6 +99,7 @@ export function ActionBar({
                             <TooltipTrigger asChild>
                                 <Button
                                     onClick={onNewGroup}
+                                    aria-label={newGroupLabel}
                                     size="sm"
                                     className="h-7 w-7 p-0"
                                     disabled={!hasSelection}
@@ -101,9 +108,7 @@ export function ActionBar({
                                 </Button>
                             </TooltipTrigger>
                             <TooltipContent>
-                                {hasSelection
-                                    ? t('sidepanel.actionBar.createGroupWithTabs', { count: selectedTabs.length })
-                                    : t('sidepanel.actionBar.selectTabsFirst')}
+                                {newGroupLabel}
                             </TooltipContent>
                         </Tooltip>
 

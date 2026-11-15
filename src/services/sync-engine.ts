@@ -34,7 +34,6 @@ import {
 } from './delta-tracker'
 import {
   deriveSyncKey,
-  deriveKeyFromUserId,
   hasCachedKey,
   clearCachedKey,
   generateSalt,
@@ -47,6 +46,7 @@ import {
 import { applyDeltas, applySnapshot, setLocalDeviceId, getLocalDeviceId } from './delta-applier'
 import {
   SYNCABLE_KEYS,
+  isLegacySyncDevice,
   type SyncStatus,
   type SyncEngineState,
   type SyncEngineOptions,
@@ -75,7 +75,6 @@ import { getDefaultDeviceName } from '../utils/device-name'
 
 interface AutoSetupResponse {
   success: boolean
-  userId?: string
   keySalt?: string
   currentSeq?: number
   isNewUser?: boolean
@@ -159,17 +158,11 @@ function isDeviceRegistrationError(status: number, error?: string): boolean {
   return status === 403 && typeof error === 'string' && error.includes('Device not registered')
 }
 
-function resolveKeySource(
-  deviceInfo: Pick<LocalDeviceInfo, 'keySource' | 'userId'> | null | undefined
-): 'user-password' | 'legacy-user-id' {
-  return deviceInfo?.keySource ?? (deviceInfo?.userId ? 'legacy-user-id' : 'user-password')
-}
-
 async function markRestoreRequired(
   message = 'Enter your sync password on this device to resume sync.'
 ): Promise<void> {
   const deviceInfo = await Storage.get<LocalDeviceInfo>(STORAGE_KEYS.DEVICE_INFO)
-  if (!deviceInfo || resolveKeySource(deviceInfo) !== 'user-password') {
+  if (!deviceInfo) {
     return
   }
 
@@ -428,22 +421,13 @@ export async function initialize(opts?: Partial<SyncEngineOptions>): Promise<voi
     deviceInfo = await Storage.get<LocalDeviceInfo>(STORAGE_KEYS.DEVICE_INFO)
     if (deviceInfo) {
       setLocalDeviceId(deviceInfo.deviceId)
-      const keySource = resolveKeySource(deviceInfo)
-      initializeEncryption({
-        keySalt: deviceInfo.keySalt,
-        iterations: deviceInfo.iterations || 100000,
-        keySource,
-      })
-
-      let keyRestored = await autoRestoreKeyFromSession(deviceInfo.keySalt)
-      if (!keyRestored && keySource === 'legacy-user-id') {
-        keyRestored = await deriveKeyFromUserId(deviceInfo.userId!, deviceInfo.keySalt, deviceInfo.iterations || 100000)
-      }
-      if (keyRestored) {
-        console.log('[SyncEngine] Key auto-restored from session')
-      } else if (keySource === 'user-password') {
+      if (isLegacySyncDevice(deviceInfo)) {
+        clearCachedKey()
         restoreRequired = true
-        console.warn('[SyncEngine] Sync password restore required for this device')
+      } else {
+        const iterations = deviceInfo.iterations || 600000
+        initializeEncryption({ keySalt: deviceInfo.keySalt, iterations, keySource: 'user-password' })
+        restoreRequired = !(await autoRestoreKeyFromSession(deviceInfo.keySalt, iterations))
       }
     }
 
@@ -491,6 +475,7 @@ export async function initialize(opts?: Partial<SyncEngineOptions>): Promise<voi
     return
   }
 
+  if (restoreRequired) console.warn('[SyncEngine] Sync password restore required for this device')
   await updateState(
     restoreRequired
       ? {
@@ -501,7 +486,6 @@ export async function initialize(opts?: Partial<SyncEngineOptions>): Promise<voi
   )
 
   // If no device info exists, wait for the user to create a sync password.
-  // Passwordless userId-derived setup is legacy-only and is not E2EE.
   if (!deviceInfo) {
     const token = await AuthState.getAccessToken()
     if (token) {
@@ -779,8 +763,12 @@ export async function restoreSync(
       return { success: false, error: 'No sync setup found. Please set up sync first.' }
     }
 
+    if (isLegacySyncDevice(deviceInfo)) {
+      return { success: false, error: 'Disconnect this legacy sync device and start fresh from Sync settings.' }
+    }
+
     // Derive key with stored salt
-    const keyDerived = await deriveSyncKey(password, deviceInfo.keySalt)
+    const keyDerived = await deriveSyncKey(password, deviceInfo.keySalt, deviceInfo.iterations || 600000)
     if (!keyDerived) {
       return { success: false, error: 'Invalid password.' }
     }
@@ -832,6 +820,11 @@ export async function autoSetup(
       }
     }
 
+    const existingDeviceInfo = await Storage.get<LocalDeviceInfo>(STORAGE_KEYS.DEVICE_INFO)
+    if (existingDeviceInfo && isLegacySyncDevice(existingDeviceInfo)) {
+      return { success: false, error: 'Disconnect this legacy sync device and start fresh from Sync settings.' }
+    }
+
     // Clear auth suspension on fresh setup attempt (user re-authenticated)
     authSuspended = false
     await updateState({ status: 'connecting' })
@@ -846,7 +839,6 @@ export async function autoSetup(
     // Check if we already have a device ID, otherwise generate one.
     // Also check pending ID from an interrupted previous setup to avoid
     // creating a new device on every service worker restart.
-    let existingDeviceInfo = await Storage.get<LocalDeviceInfo>(STORAGE_KEYS.DEVICE_INFO)
     const hadExistingLocalDeviceInfo = Boolean(existingDeviceInfo)
     const previousLastSeq = (await Storage.get<number>(STORAGE_KEYS.LAST_SEQ)) || 0
     const pendingDeviceId = await Storage.get<string>(STORAGE_KEYS.PENDING_DEVICE_ID)
@@ -896,6 +888,12 @@ export async function autoSetup(
       return { success: false, error: 'Failed to derive encryption key.' }
     }
 
+    if (resetCloudData) {
+      await withQueueLock(async () => {
+        await Storage.remove(STORAGE_KEYS.OUTBOUND_QUEUE)
+      })
+    }
+
     const shouldRestoreRemoteSnapshots = !data.isNewUser && data.isNewDevice && !hadExistingLocalDeviceInfo
     const shouldSeedBaseline = Boolean(
       data.isNewUser || resetCloudData || (hadExistingLocalDeviceInfo && data.isNewDevice)
@@ -943,7 +941,6 @@ export async function autoSetup(
       keySalt: data.keySalt!,
       lastSeq: initialLastSeq,
       setupAt: Date.now(),
-      userId: data.userId,
       keySource: 'user-password',
       iterations: 600000,
     }

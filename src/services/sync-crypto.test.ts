@@ -9,14 +9,14 @@
  *       They will be RED (failing) until Plan 01-03 wraps JSON.parse in try/catch
  *       and throws named errors (DELTA_PARSE_ERROR, SNAPSHOT_PARSE_ERROR).
  *
- * HOW:  Injects a cached sync key via deriveKeyFromUserId (mocked crypto) to bypass
+ * HOW:  Injects a cached sync key via deriveSyncKey (mocked crypto) to bypass
  *       the "No sync key cached" guard, then mocks subtle.decrypt to return invalid
  *       JSON bytes so the JSON.parse path is hit with corrupt data.
  *
  * NOTE: Will pass after Plan 01-03 applies INFRA-04 fix
  */
 
-import { decryptDelta, decryptSnapshot, deriveKeyFromUserId } from './sync-crypto';
+import { decryptDelta, decryptSnapshot, deriveSyncKey } from './sync-crypto';
 
 // Helper: encode a string to ArrayBuffer (simulates decrypted bytes)
 function encodeToBuffer(str: string): ArrayBuffer {
@@ -53,13 +53,13 @@ describe('sync-crypto JSON.parse error handling (INFRA-04)', () => {
       },
     };
 
-    // Mock chrome.storage.session for storeUserIdInSession
+    // Mock chrome.storage.session for storePasswordInSession
     (chrome.storage.session.set as jest.Mock).mockResolvedValue(undefined);
     (chrome.storage.session.get as jest.Mock).mockResolvedValue({});
 
-    // Inject a cached key by calling deriveKeyFromUserId with mocked crypto
+    // Inject a cached key by calling deriveSyncKey with mocked crypto
     // This populates the in-memory cachedKey so getCachedCryptoKey() succeeds
-    await deriveKeyFromUserId('test-user-id', btoa('test-salt-16byte'));
+    await deriveSyncKey('test-sync-password', btoa('test-salt-16byte'));
   });
 
   afterEach(() => {

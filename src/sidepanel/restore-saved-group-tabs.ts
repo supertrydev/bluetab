@@ -1,3 +1,4 @@
+import { createBrowserTabGroup } from '@/platform/create-browser-tab-group';
 import type { Settings, TabGroup } from '../types/models';
 
 export interface RestoreSidepanelGroupTabsApis {
@@ -6,8 +7,7 @@ export interface RestoreSidepanelGroupTabsApis {
     id?: number;
     tabs?: Array<{ id?: number }>;
   }>;
-  groupTabs: (options: { tabIds: number[] }) => Promise<number>;
-  updateTabGroup: (groupId: number, properties: { title: string }) => Promise<unknown>;
+  createGroup: (options: { tabIds: number[] }, properties: { title: string }) => Promise<number>;
 }
 
 interface RestoreSidepanelGroupTabsInput {
@@ -25,8 +25,7 @@ interface RestoreSidepanelGroupTabsResult {
 const chromeApis: RestoreSidepanelGroupTabsApis = {
   createTab: properties => chrome.tabs.create(properties),
   createWindow: data => chrome.windows.create(data),
-  groupTabs: options => chrome.tabs.group(options),
-  updateTabGroup: (groupId, properties) => chrome.tabGroups.update(groupId, properties),
+  createGroup: createBrowserTabGroup,
 };
 
 function shouldCreateNewWindow(
@@ -80,8 +79,7 @@ export async function restoreSidepanelGroupTabs({
 
   if (settings.tabGroupRestoreMode === 'browserGroups' && createdTabIds.length > 0) {
     try {
-      const browserGroupId = await apis.groupTabs({ tabIds: createdTabIds });
-      await apis.updateTabGroup(browserGroupId, { title: group.name });
+      await apis.createGroup({ tabIds: createdTabIds }, { title: group.name });
     } catch (groupingError) {
       return { createdTabIds, groupingError };
     }

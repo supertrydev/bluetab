@@ -38,7 +38,6 @@ const DEFAULT_ITERATIONS = CryptoService.DEFAULT_ITERATIONS
 const KEY_CACHE_TTL_MS = 24 * 60 * 60 * 1000 // 24 hours (longer since auto-derived)
 const SESSION_PASSWORD_KEY = 'syncPasswordSession'
 const SYNC_KEY_RECOVERY_KEY = 'syncKeyRecovery'
-const AUTO_SYNC_KEY_PREFIX = 'bluetab-sync-v1' // Prefix for auto key derivation
 const TRUSTED_CONTEXTS_ACCESS_LEVEL = 'TRUSTED_CONTEXTS'
 
 // ============================================================================
@@ -58,7 +57,7 @@ interface PersistedSyncKeyRecovery {
   iv: string
   keySalt: string
   iterations: number
-  keySource: 'user-password' | 'legacy-user-id'
+  keySource: 'user-password'
   updatedAt: number
 }
 
@@ -113,8 +112,7 @@ export async function clearPersistedSyncKeyRecovery(): Promise<void> {
 async function persistDerivedKeyRecovery(
   rawKey: ArrayBuffer,
   keySalt: string,
-  iterations: number,
-  keySource: 'user-password' | 'legacy-user-id'
+  iterations: number
 ): Promise<void> {
   const recoveryToken = await getRefreshToken()
   if (!recoveryToken) {
@@ -133,14 +131,14 @@ async function persistDerivedKeyRecovery(
     iv: wrapped.iv,
     keySalt,
     iterations,
-    keySource,
+    keySource: 'user-password',
     updatedAt: Date.now(),
   })
 }
 
 async function restoreDerivedKeyFromRecovery(expectedSalt: string): Promise<boolean> {
   const recovery = await getPersistedSyncKeyRecovery()
-  if (!recovery || recovery.keySalt !== expectedSalt) {
+  if (!recovery || recovery.keySource !== 'user-password' || recovery.keySalt !== expectedSalt) {
     return false
   }
 
@@ -186,7 +184,6 @@ const SESSION_USER_ID_KEY = 'syncUserIdSession'
 /**
  * Store the sync password in session storage.
  * This persists until the browser closes, surviving service worker restarts.
- * @deprecated Use storeUserIdInSession for auto-sync instead
  */
 export async function storePasswordInSession(password: string): Promise<void> {
   if (typeof chrome !== 'undefined' && chrome.storage?.session) {
@@ -196,7 +193,6 @@ export async function storePasswordInSession(password: string): Promise<void> {
 
 /**
  * Retrieve the sync password from session storage.
- * @deprecated Use getUserIdFromSession for auto-sync instead
  */
 export async function getPasswordFromSession(): Promise<string | null> {
   if (typeof chrome !== 'undefined' && chrome.storage?.session) {
@@ -208,41 +204,10 @@ export async function getPasswordFromSession(): Promise<string | null> {
 
 /**
  * Clear the sync password from session storage.
- * @deprecated Use clearUserIdFromSession for auto-sync instead
  */
 export async function clearPasswordFromSession(): Promise<void> {
   if (typeof chrome !== 'undefined' && chrome.storage?.session) {
     await chrome.storage.session.remove(SESSION_PASSWORD_KEY)
-  }
-}
-
-/**
- * Store the userId in session storage for auto key derivation.
- * This persists until the browser closes, surviving service worker restarts.
- */
-export async function storeUserIdInSession(userId: string): Promise<void> {
-  if (typeof chrome !== 'undefined' && chrome.storage?.session) {
-    await chrome.storage.session.set({ [SESSION_USER_ID_KEY]: userId })
-  }
-}
-
-/**
- * Retrieve the userId from session storage.
- */
-export async function getUserIdFromSession(): Promise<string | null> {
-  if (typeof chrome !== 'undefined' && chrome.storage?.session) {
-    const result = await chrome.storage.session.get(SESSION_USER_ID_KEY)
-    return result[SESSION_USER_ID_KEY] || null
-  }
-  return null
-}
-
-/**
- * Clear the userId from session storage.
- */
-export async function clearUserIdFromSession(): Promise<void> {
-  if (typeof chrome !== 'undefined' && chrome.storage?.session) {
-    await chrome.storage.session.remove(SESSION_USER_ID_KEY)
   }
 }
 
@@ -252,7 +217,9 @@ export async function clearUserIdFromSession(): Promise<void> {
  */
 export async function clearAllSyncSession(): Promise<void> {
   await clearPasswordFromSession()
-  await clearUserIdFromSession()
+  if (typeof chrome !== 'undefined' && chrome.storage?.session) {
+    await chrome.storage.session.remove(SESSION_USER_ID_KEY)
+  }
   await clearPersistedSyncKeyRecovery()
 }
 
@@ -262,12 +229,11 @@ export async function clearAllSyncSession(): Promise<void> {
  *
  * @param salt - The salt from device info
  * @returns True if key was restored successfully
- * @deprecated Use autoRestoreKeyFromUserId for auto-sync instead
  */
-export async function autoRestoreKeyFromSession(salt: string): Promise<boolean> {
+export async function autoRestoreKeyFromSession(salt: string, iterations = DEFAULT_ITERATIONS): Promise<boolean> {
   const password = await getPasswordFromSession()
   if (password) {
-    const success = await deriveSyncKey(password, salt)
+    const success = await deriveSyncKey(password, salt, iterations)
     if (success) {
       console.log('[SyncCrypto] Key auto-restored from session')
     }
@@ -325,7 +291,6 @@ export function getEncryptionConfig(): SyncEncryptionConfig | null {
  * @param salt - Base64-encoded salt (from config or newly generated)
  * @param iterations - PBKDF2 iterations (default: 100000)
  * @returns True if key was derived successfully
- * @deprecated Use deriveKeyFromUserId for auto-sync instead
  */
 export async function deriveSyncKey(
   password: string,
@@ -350,93 +315,13 @@ export async function deriveSyncKey(
 
     // Store password in session for auto-restore after service worker restart
     await storePasswordInSession(password)
-    await persistDerivedKeyRecovery(rawKey, salt, iterations, 'user-password')
+    await persistDerivedKeyRecovery(rawKey, salt, iterations)
 
     return true
   } catch (error) {
     console.error('[SyncCrypto] Key derivation failed:', error)
     return false
   }
-}
-
-/**
- * Derive and cache the sync encryption key automatically from userId.
- * This is the preferred method for auto-sync - no password needed.
- * All devices with the same userId + salt will derive the same key.
- *
- * @param userId - User's unique ID (from auth)
- * @param salt - Base64-encoded salt (from server, shared across all user's devices)
- * @param iterations - PBKDF2 iterations (default: 100000)
- * @returns True if key was derived successfully
- */
-export async function deriveKeyFromUserId(
-  userId: string,
-  salt: string,
-  iterations: number = DEFAULT_ITERATIONS
-): Promise<boolean> {
-  try {
-    // Create a deterministic "password" from userId + prefix
-    // This ensures all devices derive the same key without user input
-    const derivationInput = `${AUTO_SYNC_KEY_PREFIX}:${userId}`
-
-    const saltArray = base64ToUint8Array(salt)
-    const rawKey = await CryptoService.deriveKeyMaterial(derivationInput, saltArray, iterations)
-    const key = await CryptoService.importAesKey(rawKey)
-
-    cachedKey = {
-      key,
-      derivedAt: Date.now(),
-    }
-
-    encryptionConfig = {
-      keySalt: salt,
-      iterations,
-      keySource: 'legacy-user-id',
-    }
-
-    // Store userId in session for auto-restore after service worker restart
-    await storeUserIdInSession(userId)
-    await persistDerivedKeyRecovery(rawKey, salt, iterations, 'legacy-user-id')
-
-    console.log('[SyncCrypto] Key derived from userId')
-    return true
-  } catch (error) {
-    console.error('[SyncCrypto] Auto key derivation failed:', error)
-    return false
-  }
-}
-
-/**
- * Auto-restore the sync key from session storage or local storage using userId.
- * Call this on sync engine initialization.
- *
- * @param salt - The salt from user config
- * @param userIdFromDeviceInfo - Optional userId from local device info (fallback)
- * @returns True if key was restored successfully
- */
-export async function autoRestoreKeyFromUserId(
-  salt: string,
-  userIdFromDeviceInfo?: string
-): Promise<boolean> {
-  // Try session first (survives service worker restarts)
-  let userId = await getUserIdFromSession()
-
-  // Fall back to local device info (survives browser restarts)
-  if (!userId && userIdFromDeviceInfo) {
-    userId = userIdFromDeviceInfo
-    // Re-store in session for future use
-    await storeUserIdInSession(userId)
-  }
-
-  if (!userId) {
-    return false
-  }
-
-  const success = await deriveKeyFromUserId(userId, salt)
-  if (success) {
-    console.log('[SyncCrypto] Key auto-restored from userId')
-  }
-  return success
 }
 
 /**
@@ -708,6 +593,5 @@ export const _internal = {
   arrayBufferToBase64,
   base64ToArrayBuffer,
   base64ToUint8Array,
-  AUTO_SYNC_KEY_PREFIX,
   DEFAULT_ITERATIONS,
 }

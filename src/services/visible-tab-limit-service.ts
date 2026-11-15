@@ -56,6 +56,7 @@
  *       is unreliable across restarts (RESEARCH #3); reconcile rebuilds as needed.
  */
 
+import { createBrowserTabGroup, minimumBrowserGroupTabs } from '@/platform/create-browser-tab-group';
 import { ADHDService } from '@/services/adhd-service';
 import { Storage } from '@/utils/storage';
 
@@ -163,6 +164,10 @@ const userExpandedGroups = new Set<number>();
  */
 export function onHiddenGroupUserExpanded(groupId: number): void {
   userExpandedGroups.add(groupId);
+}
+
+export function forgetRemovedGroup(groupId: number): void {
+  userExpandedGroups.delete(groupId);
 }
 
 // ---------------------------------------------------------------------------
@@ -274,18 +279,13 @@ export class VisibleTabLimitService {
       }
 
       // Get or create the shadow group; pass the first tab ID for group creation.
-      const shadowGroupId = await VisibleTabLimitService.getOrCreateShadowGroup(
+      await VisibleTabLimitService.getOrCreateShadowGroup(
         shadowTitle,
         effectiveWindowId,
         tabIds[0],
         'grey' as chrome.tabGroups.ColorEnum,
+        tabIds.slice(1),
       );
-
-      // Move remaining overflow tabs into the shadow group.
-      const remaining = tabIds.slice(1);
-      if (remaining.length > 0) {
-        await chrome.tabs.group({ tabIds: remaining, groupId: shadowGroupId });
-      }
     }
 
     void visibleTabs; // suppress unused-var; used conceptually above
@@ -377,13 +377,18 @@ export class VisibleTabLimitService {
       if (match) {
         targetGroupId = match.id;
       } else {
-        // Original group is gone — recreate it.
-        // We need to first move the tab there, then set the group title/color.
-        const newGroupId = await chrome.tabs.group({
+        // Opera cannot recreate the original group with only this tab.
+        if (minimumBrowserGroupTabs() > 1) {
+          await chrome.tabs.ungroup([tabId]);
+          await deleteTabMeta(tabId);
+          return;
+        }
+
+        // Move the tab into a recreated group.
+        await createBrowserTabGroup({
           tabIds: [tabId],
           createProperties: { windowId },
-        });
-        await chrome.tabGroups.update(newGroupId, {
+        }, {
           title: meta.originalGroup.title,
           color: meta.originalGroup.color,
           collapsed: false,
@@ -509,17 +514,13 @@ export class VisibleTabLimitService {
       await writeTabMeta(evictTabId, { originalGroup: originalGroupMeta });
     }
 
-    const shadowGroupId = await VisibleTabLimitService.getOrCreateShadowGroup(
+    await VisibleTabLimitService.getOrCreateShadowGroup(
       shadowTitle,
       windowId,
       evictTabIds[0],
       'grey' as chrome.tabGroups.ColorEnum,
+      evictTabIds.slice(1),
     );
-
-    const remaining = evictTabIds.slice(1);
-    if (remaining.length > 0) {
-      await chrome.tabs.group({ tabIds: remaining, groupId: shadowGroupId });
-    }
   }
 
   /**
@@ -545,9 +546,8 @@ export class VisibleTabLimitService {
    * RESEARCH #5: reuse the first matching collapsed group if present;
    * create a new one (collapsed, with Bluetab-owned color) if not.
    *
-   * NOTE: The caller is responsible for moving ONLY the firstTabId into the
-   * group during creation. Additional tabs are moved by the caller after this
-   * method returns.
+   * Opera needs two tabs to create a group. An isolated overflow tab can
+   * still join an existing group, or stay visible until more tabs overflow.
    *
    * Color choice: 'grey' — neutral-quieted semantics. Grey signals that the
    * H:* group is a managed holding area, not a user category. Using the parent
@@ -559,31 +559,31 @@ export class VisibleTabLimitService {
     windowId: number,
     firstTabId: number,
     color: chrome.tabGroups.ColorEnum,
-  ): Promise<number> {
+    additionalTabIds: number[] = [],
+  ): Promise<number | undefined> {
     // RESEARCH #5: Query for existing matching-titled groups.
     const existing = await chrome.tabGroups.query({ title, windowId });
 
     // Reuse the first collapsed matching group that Bluetab manages.
     const reusable = existing.find((g) => g.collapsed === true);
     if (reusable) {
-      // Move the first tab into the existing group.
       await chrome.tabs.group({ tabIds: [firstTabId], groupId: reusable.id });
+      if (additionalTabIds.length > 0) {
+        await chrome.tabs.group({ tabIds: additionalTabIds, groupId: reusable.id });
+      }
       return reusable.id;
     }
 
-    // Create a new group with the first tab.
-    const groupId = await chrome.tabs.group({
-      tabIds: [firstTabId],
+    const minimum = minimumBrowserGroupTabs();
+    const tabIds = [firstTabId, ...additionalTabIds];
+    if (tabIds.length < minimum) return undefined;
+
+    const groupId = await createBrowserTabGroup({
+      tabIds: tabIds.slice(0, minimum),
       createProperties: { windowId },
-    });
-
-    // Set the shadow group's visual identity.
-    await chrome.tabGroups.update(groupId, {
-      title,
-      collapsed: true,
-      color,
-    });
-
+    }, { title, collapsed: true, color });
+    const remaining = tabIds.slice(minimum);
+    if (remaining.length > 0) await chrome.tabs.group({ tabIds: remaining, groupId });
     return groupId;
   }
 

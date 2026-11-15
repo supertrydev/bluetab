@@ -1158,6 +1158,10 @@ Bu işlem, bu grup için oluşturulan tüm {{integration}} öğelerini silecek."
     "english": "Last active: {{time}}",
     "turkish": "Son etkinlik: {{time}}",
   },
+  "components.sync.legacyReconnect": {
+    "english": "This device used an older sync setup. Disconnect it and any other sync devices. Then choose Start Fresh Sync and create a sync password. This replaces the old cloud backup and keeps your data on this device. Reconnect any integrations you used.",
+    "turkish": "Bu cihaz eski senkronizasyon yöntemini kullanıyordu. Bu cihazın ve diğer senkronizasyon cihazlarının bağlantısını kesin. Ardından Yeni Senkronizasyon Başlat seçeneğiyle bir parola oluşturun. Bu işlem eski bulut yedeğini değiştirir. Yerel verileriniz bu cihazda kalır. Kullandığınız entegrasyonları yeniden bağlayın.",
+  },
   "components.sync.loadingDevices": {
     "english": "Loading devices...",
     "turkish": "Cihazlar yükleniyor...",

@@ -25,7 +25,7 @@ export const MCP_APPS: Array<{ id: McpAppId; label: string }> = [
 ];
 
 export const CLAUDE_CONNECTORS_URL = 'https://claude.ai/settings/connectors';
-export const CHATGPT_SETTINGS_URL = 'https://chatgpt.com/#settings/Connectors';
+export const CHATGPT_DIRECTORY_URL = 'https://chatgpt.com/plugins/plugin_asdk_app_6ac3febc35308191a59d5bace8706914';
 
 const SERVER_NAME = 'bluetab';
 

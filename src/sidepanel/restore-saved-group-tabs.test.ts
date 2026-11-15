@@ -34,8 +34,7 @@ function createApis(): jest.Mocked<RestoreSidepanelGroupTabsApis> {
       .mockResolvedValueOnce({ id: 101 })
       .mockResolvedValueOnce({ id: 102 }),
     createWindow: jest.fn(),
-    groupTabs: jest.fn().mockResolvedValue(77),
-    updateTabGroup: jest.fn().mockResolvedValue(undefined),
+    createGroup: jest.fn().mockResolvedValue(77),
   };
 }
 
@@ -56,9 +55,8 @@ describe('restoreSidepanelGroupTabs', () => {
     expect(apis.createWindow).not.toHaveBeenCalled();
     expect(apis.createTab).toHaveBeenNthCalledWith(1, { url: 'https://react.dev' });
     expect(apis.createTab).toHaveBeenNthCalledWith(2, { url: 'https://typescriptlang.org' });
-    expect(apis.groupTabs).toHaveBeenCalledTimes(1);
-    expect(apis.groupTabs).toHaveBeenCalledWith({ tabIds: [101, 102] });
-    expect(apis.updateTabGroup).toHaveBeenCalledWith(77, { title: 'Frontend Research' });
+    expect(apis.createGroup).toHaveBeenCalledTimes(1);
+    expect(apis.createGroup).toHaveBeenCalledWith({ tabIds: [101, 102] }, { title: 'Frontend Research' });
     expect(result).toEqual({ createdTabIds: [101, 102] });
   });
 
@@ -75,8 +73,7 @@ describe('restoreSidepanelGroupTabs', () => {
       apis,
     });
 
-    expect(apis.groupTabs).not.toHaveBeenCalled();
-    expect(apis.updateTabGroup).not.toHaveBeenCalled();
+    expect(apis.createGroup).not.toHaveBeenCalled();
     expect(result).toEqual({ createdTabIds: [101, 102] });
   });
 
@@ -110,9 +107,8 @@ describe('restoreSidepanelGroupTabs', () => {
     expect(apis.createTab).toHaveBeenCalledTimes(2);
     expect(apis.createTab).toHaveBeenNthCalledWith(1, { url: 'https://typescriptlang.org', windowId: 9 });
     expect(apis.createTab).toHaveBeenNthCalledWith(2, { url: 'https://vite.dev', windowId: 9 });
-    expect(apis.groupTabs).toHaveBeenCalledTimes(1);
-    expect(apis.groupTabs).toHaveBeenCalledWith({ tabIds: [201, 202, 203] });
-    expect(apis.updateTabGroup).toHaveBeenCalledWith(77, { title: 'Frontend Research' });
+    expect(apis.createGroup).toHaveBeenCalledTimes(1);
+    expect(apis.createGroup).toHaveBeenCalledWith({ tabIds: [201, 202, 203] }, { title: 'Frontend Research' });
   }
 
   it('restores into a new window and groups every created tab in newWindow mode', async () => {

@@ -12,10 +12,10 @@
  *
  * Run through `npm run package:cws`, which builds first.
  */
-const { execFileSync } = require('child_process');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
+const { writeReproducibleZip } = require('./reproducible-zip.cjs');
 
 const root = path.resolve(__dirname, '..');
 const dist = path.join(root, 'dist');
@@ -51,8 +51,7 @@ try {
 
   fs.mkdirSync(releaseDir, { recursive: true });
   const output = path.join(releaseDir, `bluetab-${manifest.version}-chrome.zip`);
-  fs.rmSync(output, { force: true });
-  execFileSync('zip', ['-r', '-X', '-q', output, '.'], { cwd: staging, stdio: 'inherit' });
+  writeReproducibleZip(root, staging, output);
 
   const sizeMb = (fs.statSync(output).size / (1024 * 1024)).toFixed(2);
   console.log(`PACKAGE OK: ${path.relative(root, output)} (${sizeMb} MB, version ${manifest.version}, no manifest key${stray.length ? `, removed ${stray.length} stray files` : ''})`);

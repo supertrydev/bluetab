@@ -159,7 +159,7 @@ export interface SyncEncryptionConfig {
   /** Number of PBKDF2 iterations (new default: 600000) */
   iterations: number
   /** Source of the local sync key. user-password is the only E2EE source. */
-  keySource?: 'user-password' | 'legacy-user-id'
+  keySource?: 'user-password'
 }
 
 /**
@@ -229,6 +229,10 @@ export interface LocalDeviceInfo {
   keySource?: 'user-password' | 'legacy-user-id'
   /** PBKDF2 iteration count used for this device's current key. */
   iterations?: number
+}
+
+export function isLegacySyncDevice(device: Pick<LocalDeviceInfo, 'keySource' | 'userId'>): boolean {
+  return device.keySource === 'legacy-user-id' || (!device.keySource && Boolean(device.userId))
 }
 
 // ============================================================================

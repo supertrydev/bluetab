@@ -18,7 +18,7 @@ interface NewGroupModalProps {
     isOpen: boolean;
     onClose: () => void;
     selectedTabs: BrowserTab[];
-    onCreateGroup: (tabIds: number[], title: string, color: TabGroupColor) => Promise<void>;
+    onCreateGroup: (tabIds: number[], title: string, color: TabGroupColor) => Promise<boolean>;
 }
 
 const COLORS: TabGroupColor[] = ['blue', 'red', 'yellow', 'green', 'pink', 'purple', 'cyan', 'orange', 'grey'];
@@ -35,8 +35,8 @@ export function NewGroupModal({ isOpen, onClose, selectedTabs, onCreateGroup }: 
         setIsCreating(true);
         try {
             const tabIds = selectedTabs.map(t => t.id);
-            await onCreateGroup(tabIds, title.trim() || t('components.newGroupModal.defaultName'), color);
-            handleClose();
+            const created = await onCreateGroup(tabIds, title.trim() || t('components.newGroupModal.defaultName'), color);
+            if (created) handleClose();
         } catch (err) {
             console.error('Failed to create group:', err);
         } finally {
