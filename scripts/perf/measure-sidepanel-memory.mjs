@@ -61,8 +61,17 @@ try {
   await context.route(/^https?:\/\//, (route) => route.abort());
   const isExtensionWorker = (worker) => worker.url().startsWith('chrome-extension://')
     && worker.url().endsWith(manifest.background.service_worker);
-  const worker = context.serviceWorkers().find(isExtensionWorker)
+  let worker = context.serviceWorkers().find(isExtensionWorker)
     || await context.waitForEvent('serviceworker', { predicate: isExtensionWorker, timeout: 30_000 });
+  // Right after install the first worker context can come up before extension
+  // APIs are bound (or be replaced); wait until chrome.storage is reachable.
+  for (let attempt = 0; ; attempt++) {
+    const ready = await worker.evaluate(() => typeof chrome !== 'undefined' && Boolean(chrome.storage)).catch(() => false);
+    if (ready) break;
+    if (attempt >= 40) throw new Error('Extension service worker never exposed chrome.storage');
+    await new Promise((resolveWait) => setTimeout(resolveWait, 250));
+    worker = context.serviceWorkers().find(isExtensionWorker) || worker;
+  }
   const extensionId = new URL(worker.url()).hostname;
   await worker.evaluate(async (fixture) => {
     await chrome.storage.local.set({
