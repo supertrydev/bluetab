@@ -526,7 +526,7 @@
     "ai": {
       "title": "Assistente de IA",
       "smartNamingLabel": "Nomes inteligentes para grupos",
-      "smartNamingDescription": "A IA sugere nomes ao salvar grupos com 2 ou mais abas",
+      "smartNamingDescription": "Os títulos e endereços das abas dos grupos salvos sem nome são enviados à Bluetab AI para sugerir um nome.",
       "clearHistoryLabel": "Limpar histórico da IA",
       "clearHistoryDescription": "Remove deste navegador todo o histórico armazenado de conversas com a IA",
       "historyCleared": "Histórico limpo",

@@ -526,7 +526,7 @@
     "ai": {
       "title": "Asisten AI",
       "smartNamingLabel": "Penamaan Grup Pintar",
-      "smartNamingDescription": "AI menyarankan nama saat menyimpan grup dengan 2 tab atau lebih",
+      "smartNamingDescription": "Judul dan alamat tab dalam grup yang disimpan tanpa nama dikirim ke Bluetab AI untuk menyarankan nama.",
       "clearHistoryLabel": "Hapus Riwayat AI",
       "clearHistoryDescription": "Hapus semua riwayat percakapan AI yang tersimpan dari browser ini",
       "historyCleared": "Riwayat dihapus",

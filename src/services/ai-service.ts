@@ -26,7 +26,7 @@ import { config } from '../config/config';
 import { getToolsForBody } from '../utils/ai-tools';
 import { getAccessToken } from '../utils/auth-state';
 import { AIAllowanceService } from './ai-allowance-service';
-import { hasSeenAINotice } from './ai-notice';
+import { canAccessFeature } from '../utils/feature-gate';
 import { buildAIIntegrationTools } from './ai-integration-tools';
 import type { AIHistoryEntry, AISettings } from '../types/ai';
 import { DEFAULT_AI_SETTINGS } from '../types/ai';
@@ -326,12 +326,11 @@ export class AIService {
     // Single-tab groups skip AI naming
     if (tabs.length < 2) return null;
 
-    // Check if smart naming is enabled. Saving runs in many places without UI,
-    // so naming waits until the one-time AI data notice has been shown.
+    // Naming follows the saved preference and Pro access, independently of the notice.
     try {
       const settings = await AIService.getSettings();
       if (!settings.smartNaming) return null;
-      if (!(await hasSeenAINotice())) return null;
+      if (!(await canAccessFeature('ai_commands')).allowed) return null;
     } catch {
       return null;
     }

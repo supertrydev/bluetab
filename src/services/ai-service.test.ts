@@ -6,6 +6,7 @@
 import { AIService } from './ai-service';
 import { AIAllowanceService } from './ai-allowance-service';
 import { Storage } from '../utils/storage';
+import { canAccessFeature } from '../utils/feature-gate';
 import { getAccessToken } from '../utils/auth-state';
 import type { AIHistoryEntry, AISettings } from '../types/ai';
 import { DEFAULT_AI_SETTINGS } from '../types/ai';
@@ -15,6 +16,7 @@ import { DEFAULT_AI_SETTINGS } from '../types/ai';
 // ============================================================================
 
 jest.mock('../utils/storage');
+jest.mock('../utils/feature-gate', () => ({ canAccessFeature: jest.fn() }));
 jest.mock('./ai-allowance-service', () => ({
   AIAllowanceService: {
     syncFromAIResponse: jest.fn(),
@@ -60,6 +62,7 @@ beforeEach(() => {
   mockStorageSet.mockResolvedValue(undefined);
   mockStorageRemove.mockResolvedValue(undefined);
   mockGetAccessToken.mockResolvedValue('test-token');
+  (canAccessFeature as jest.Mock).mockResolvedValue({ allowed: true });
   mockSyncAllowance.mockResolvedValue(undefined);
 });
 
@@ -228,6 +231,12 @@ describe('AIService settings', () => {
 
     const settings = await AIService.getSettings();
     expect(settings).toEqual(DEFAULT_AI_SETTINGS);
+    expect(settings.smartNaming).toBe(true);
+  });
+
+  it('enables naming for existing settings without an explicit naming choice', async () => {
+    mockStorageGet.mockResolvedValue({ alwaysAllowIntegrationActions: true });
+    expect((await AIService.getSettings()).smartNaming).toBe(true);
   });
 
   it('getSettings merges stored settings with defaults', async () => {
@@ -315,14 +324,18 @@ describe('AIService.suggestGroupName()', () => {
     });
   });
 
-  it('skips the request until the AI data notice has been shown', async () => {
-    mockStorageGet.mockImplementation(async (key: string) => {
-      if (key === 'ai_settings') return { smartNaming: true };
-      return null;
-    });
+  it('suggests a name with default settings before the AI notice has been seen', async () => {
+    mockStorageGet.mockResolvedValue(null);
+    mockFetch.mockResolvedValueOnce({ ok: true, json: async () => ({ name: 'Frontend Frameworks' }) });
 
-    const result = await AIService.suggestGroupName(twoTabs);
-    expect(result).toBeNull();
+    expect(await AIService.suggestGroupName(twoTabs)).toBe('Frontend Frameworks');
+    expect(mockFetch).toHaveBeenCalledTimes(1);
+    expect(mockStorageGet).not.toHaveBeenCalledWith('ai_data_notice_seen');
+  });
+
+  it('sends no request for non-Pro users', async () => {
+    (canAccessFeature as jest.Mock).mockResolvedValue({ allowed: false, reason: 'not_subscribed' });
+    expect(await AIService.suggestGroupName(twoTabs)).toBeNull();
     expect(mockFetch).not.toHaveBeenCalled();
   });
 

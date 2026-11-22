@@ -526,7 +526,7 @@
     "ai": {
       "title": "AI Asistanı",
       "smartNamingLabel": "Akıllı Grup Adlandırma",
-      "smartNamingDescription": "AI, 2 veya daha fazla sekmeyle grup kaydederken isim önerir",
+      "smartNamingDescription": "Adsız kaydedilen gruplardaki sekmelerin başlıkları ve adresleri, ad önerisi için Bluetab AI’a gönderilir.",
       "clearHistoryLabel": "AI Geçmişini Temizle",
       "clearHistoryDescription": "Bu tarayıcıdaki tüm kayıtlı AI konuşma geçmişini sil",
       "historyCleared": "Geçmiş temizlendi",

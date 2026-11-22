@@ -554,7 +554,7 @@ export const AR_RESOURCES = {
     "ai": {
       "title": "\u0645\u0633\u0627\u0639\u062f \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064a",
       "smartNamingLabel": "\u0627\u0644\u062a\u0633\u0645\u064a\u0629 \u0627\u0644\u0630\u0643\u064a\u0629 \u0644\u0644\u0645\u062c\u0645\u0648\u0639\u0627\u062a",
-      "smartNamingDescription": "\u064a\u0642\u062a\u0631\u062d \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064a \u0623\u0633\u0645\u0627\u0621 \u0639\u0646\u062f \u062d\u0641\u0638 \u0645\u062c\u0645\u0648\u0639\u0627\u062a \u062a\u0636\u0645 2 \u0645\u0646 \u0639\u0644\u0627\u0645\u0627\u062a \u0627\u0644\u062a\u0628\u0648\u064a\u0628 \u0623\u0648 \u0623\u0643\u062b\u0631",
+      "smartNamingDescription": "\u062a\u064f\u0631\u0633\u064e\u0644 \u0639\u0646\u0627\u0648\u064a\u0646 \u0627\u0644\u062a\u0628\u0648\u064a\u0628\u0627\u062a \u0648\u0631\u0648\u0627\u0628\u0637\u0647\u0627 \u0641\u064a \u0627\u0644\u0645\u062c\u0645\u0648\u0639\u0627\u062a \u0627\u0644\u0645\u062d\u0641\u0648\u0638\u0629 \u062f\u0648\u0646 \u0627\u0633\u0645 \u0625\u0644\u0649 Bluetab AI \u0644\u0627\u0642\u062a\u0631\u0627\u062d \u0627\u0633\u0645.",
       "clearHistoryLabel": "\u0645\u0633\u062d \u0633\u062c\u0644 \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064a",
       "clearHistoryDescription": "\u0625\u0632\u0627\u0644\u0629 \u0643\u0644 \u0633\u062c\u0644 \u0645\u062d\u0627\u062f\u062b\u0627\u062a \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064a \u0627\u0644\u0645\u062e\u0632\u0651\u0646 \u0645\u0646 \u0647\u0630\u0627 \u0627\u0644\u0645\u062a\u0635\u0641\u062d",
       "historyCleared": "\u062a\u0645 \u0645\u0633\u062d \u0627\u0644\u0633\u062c\u0644",
@@ -4133,7 +4133,7 @@ export const EN_RESOURCES = {
     "ai": {
       "title": "AI Assistant",
       "smartNamingLabel": "Smart Group Naming",
-      "smartNamingDescription": "AI suggests names when saving groups with 2 or more tabs",
+      "smartNamingDescription": "Tab titles and addresses of groups saved without a name are sent to Bluetab AI to suggest a name.",
       "clearHistoryLabel": "Clear AI History",
       "clearHistoryDescription": "Remove all stored AI conversation history from this browser",
       "historyCleared": "History cleared",
@@ -7388,7 +7388,7 @@ export const ES_RESOURCES = {
     "ai": {
       "title": "Asistente de IA",
       "smartNamingLabel": "Nombres inteligentes para grupos",
-      "smartNamingDescription": "La IA sugiere nombres al guardar grupos con 2 o m\u00e1s pesta\u00f1as",
+      "smartNamingDescription": "Los t\u00edtulos y las direcciones de las pesta\u00f1as de los grupos guardados sin nombre se env\u00edan a Bluetab AI para sugerir un nombre.",
       "clearHistoryLabel": "Borrar historial de IA",
       "clearHistoryDescription": "Elimina de este navegador todo el historial de conversaciones con la IA",
       "historyCleared": "Historial borrado",
@@ -10643,7 +10643,7 @@ export const ID_RESOURCES = {
     "ai": {
       "title": "Asisten AI",
       "smartNamingLabel": "Penamaan Grup Pintar",
-      "smartNamingDescription": "AI menyarankan nama saat menyimpan grup dengan 2 tab atau lebih",
+      "smartNamingDescription": "Judul dan alamat tab dalam grup yang disimpan tanpa nama dikirim ke Bluetab AI untuk menyarankan nama.",
       "clearHistoryLabel": "Hapus Riwayat AI",
       "clearHistoryDescription": "Hapus semua riwayat percakapan AI yang tersimpan dari browser ini",
       "historyCleared": "Riwayat dihapus",
@@ -13898,7 +13898,7 @@ export const PT_BR_RESOURCES = {
     "ai": {
       "title": "Assistente de IA",
       "smartNamingLabel": "Nomes inteligentes para grupos",
-      "smartNamingDescription": "A IA sugere nomes ao salvar grupos com 2 ou mais abas",
+      "smartNamingDescription": "Os t\u00edtulos e endere\u00e7os das abas dos grupos salvos sem nome s\u00e3o enviados \u00e0 Bluetab AI para sugerir um nome.",
       "clearHistoryLabel": "Limpar hist\u00f3rico da IA",
       "clearHistoryDescription": "Remove deste navegador todo o hist\u00f3rico armazenado de conversas com a IA",
       "historyCleared": "Hist\u00f3rico limpo",
@@ -17153,7 +17153,7 @@ export const TR_RESOURCES = {
     "ai": {
       "title": "AI Asistan\u0131",
       "smartNamingLabel": "Ak\u0131ll\u0131 Grup Adland\u0131rma",
-      "smartNamingDescription": "AI, 2 veya daha fazla sekmeyle grup kaydederken isim \u00f6nerir",
+      "smartNamingDescription": "Ads\u0131z kaydedilen gruplardaki sekmelerin ba\u015fl\u0131klar\u0131 ve adresleri, ad \u00f6nerisi i\u00e7in Bluetab AI\u2019a g\u00f6nderilir.",
       "clearHistoryLabel": "AI Ge\u00e7mi\u015fini Temizle",
       "clearHistoryDescription": "Bu taray\u0131c\u0131daki t\u00fcm kay\u0131tl\u0131 AI konu\u015fma ge\u00e7mi\u015fini sil",
       "historyCleared": "Ge\u00e7mi\u015f temizlendi",

@@ -526,7 +526,7 @@
     "ai": {
       "title": "AI Assistant",
       "smartNamingLabel": "Smart Group Naming",
-      "smartNamingDescription": "AI suggests names when saving groups with 2 or more tabs",
+      "smartNamingDescription": "Tab titles and addresses of groups saved without a name are sent to Bluetab AI to suggest a name.",
       "clearHistoryLabel": "Clear AI History",
       "clearHistoryDescription": "Remove all stored AI conversation history from this browser",
       "historyCleared": "History cleared",
