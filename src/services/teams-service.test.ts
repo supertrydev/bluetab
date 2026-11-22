@@ -13,6 +13,12 @@
  */
 
 import { TeamsService } from './teams-service'
+import { minimumBrowserGroupTabs } from '@/platform/create-browser-tab-group'
+
+jest.mock('@/platform/create-browser-tab-group', () => ({
+    minimumBrowserGroupTabs: jest.fn(() => 2),
+    createBrowserTabGroup: jest.fn(async () => 7),
+}))
 
 // ─── Mock Declarations ────────────────────────────────────────────────────────
 
@@ -1099,5 +1105,134 @@ describe('tab broadcast — selective mode', () => {
         const setTimeoutSpy = jest.spyOn(global, 'setTimeout')
         TeamsService.setShareAllMode(true)
         expect(setTimeoutSpy).toHaveBeenCalled()
+    })
+})
+
+
+describe('participant browser tab sync', () => {
+    let ws: WebSocket
+    let originalChrome: typeof chrome
+    let liveTabs: Map<number, Partial<chrome.tabs.Tab>>
+    let nextTabId: number
+
+    async function sync(url: string | string[]): Promise<void> {
+        simulateWsMessage(ws, {
+            type: 'TAB_UPDATE', userId: 'host1',
+            tabs: (Array.isArray(url) ? url : [url]).map((address) => ({ title: 'Shared', url: address })),
+        })
+        // TAB_UPDATE starts the async browser sync without awaiting it.
+        for (let i = 0; i < 20; i++) await Promise.resolve()
+    }
+
+    beforeEach(async () => {
+        originalChrome = chrome
+        liveTabs = new Map()
+        nextTabId = 100
+        ;(minimumBrowserGroupTabs as jest.Mock).mockReturnValue(2)
+        ;(global as Record<string, unknown>).chrome = {
+            ...chrome,
+            tabs: {
+                query: jest.fn().mockResolvedValue([]),
+                create: jest.fn(async ({ url }: { url: string }) => {
+                    const tab = { id: nextTabId++, url }
+                    liveTabs.set(tab.id, tab)
+                    return tab
+                }),
+                get: jest.fn(async (id: number) => {
+                    const tab = liveTabs.get(id)
+                    if (!tab) throw new Error('No tab with id')
+                    return tab
+                }),
+                remove: jest.fn(async (id: number) => { liveTabs.delete(id) }),
+                onCreated: { addListener: jest.fn(), removeListener: jest.fn() },
+                onRemoved: { addListener: jest.fn(), removeListener: jest.fn() },
+                onUpdated: { addListener: jest.fn(), removeListener: jest.fn() },
+            },
+            tabGroups: {
+                update: jest.fn().mockResolvedValue({}),
+                onRemoved: { addListener: jest.fn(), removeListener: jest.fn() },
+            },
+        }
+        const joined = TeamsService.joinSession('ROOM_SYNC')
+        await Promise.resolve()
+        await Promise.resolve()
+        ws = wsInstances[0]
+        simulateWsOpen(ws)
+        simulateWsMessage(ws, {
+            type: 'SESSION_JOINED',
+            session: { code: 'ROOM_SYNC', role: 'participant', hostId: 'host1', startedAt: 1, expiresAt: 2 },
+            participants: [{ userId: 'host1', displayName: 'Host', role: 'host', status: 'online', tabs: [], lastSeen: 1 }],
+        })
+        await joined
+    })
+
+    afterEach(() => {
+        TeamsService.disconnect()
+        ;(global as Record<string, unknown>).chrome = originalChrome
+    })
+
+    it.each([
+        ['loading tab', 'https://example.com/docs', { url: '', pendingUrl: 'https://example.com/docs' }],
+        ['http to https redirect', 'http://example.com/docs', { url: 'https://example.com/docs' }],
+        ['trailing slash redirect', 'https://example.com/docs', { url: 'https://example.com/docs/' }],
+        ['live tab navigated elsewhere', 'https://example.com/docs', { url: 'https://example.com/login' }],
+    ])('keeps a %s across repeated syncs', async (_name, url, current) => {
+        await sync(url)
+        liveTabs.set(100, { id: 100, ...current })
+        await sync(url)
+        await sync(url)
+        expect(chrome.tabs.create).toHaveBeenCalledTimes(1)
+        expect(chrome.tabs.remove).not.toHaveBeenCalled()
+    })
+
+    it('reopens a truly closed tab exactly once', async () => {
+        const url = 'https://example.com/docs'
+        await sync(url)
+        liveTabs.delete(100)
+        await sync(url)
+        liveTabs.set(101, { id: 101, url: '', pendingUrl: url })
+        await sync(url)
+        await sync(url)
+        expect(chrome.tabs.create).toHaveBeenCalledTimes(2)
+        expect([...liveTabs.keys()]).toEqual([101])
+    })
+
+    it('reuses an equivalent URL after the remote address changes', async () => {
+        await sync('http://example.com/docs')
+        await sync('https://example.com/docs/')
+        await sync('https://example.com/docs/')
+        expect(chrome.tabs.create).toHaveBeenCalledTimes(1)
+        expect(chrome.tabs.remove).not.toHaveBeenCalled()
+    })
+
+    it('matches a changed remote address against pendingUrl before url', async () => {
+        await sync('https://example.com/docs')
+        liveTabs.set(100, { id: 100, url: 'https://example.com/docs', pendingUrl: 'http://example.com/new/' })
+        await sync('https://example.com/new')
+        expect(chrome.tabs.create).toHaveBeenCalledTimes(1)
+        expect(chrome.tabs.remove).not.toHaveBeenCalled()
+    })
+
+    it('preserves an existing mapping when another tracked tab navigates to its URL', async () => {
+        await sync(['https://example.com/a', 'http://example.com/b/'])
+        const onGroupRemoved = (chrome.tabGroups.onRemoved.addListener as jest.Mock).mock.calls[0][0]
+        onGroupRemoved({ id: 7 })
+        liveTabs.set(100, { id: 100, url: 'https://example.com/b' })
+        await sync('https://example.com/b')
+        expect(chrome.tabs.create).toHaveBeenCalledTimes(2)
+        expect(chrome.tabs.remove).toHaveBeenCalledWith(100)
+        expect([...liveTabs.keys()]).toEqual([101])
+        TeamsService.disconnect()
+        expect(liveTabs.size).toBe(0)
+    })
+
+    it('keeps a loading tab after the user ungroups it', async () => {
+        ;(minimumBrowserGroupTabs as jest.Mock).mockReturnValue(1)
+        await sync('https://example.com/docs')
+        const onGroupRemoved = (chrome.tabGroups.onRemoved.addListener as jest.Mock).mock.calls[0][0]
+        onGroupRemoved({ id: 7 })
+        liveTabs.set(100, { id: 100, url: '', pendingUrl: 'https://example.com/docs' })
+        await sync('https://example.com/docs')
+        expect(chrome.tabs.create).toHaveBeenCalledTimes(1)
     })
 })
