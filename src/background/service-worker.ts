@@ -31,6 +31,7 @@ if (typeof (globalThis as { window?: unknown }).window === 'undefined') {
 }
 
 import { Storage } from '../utils/storage';
+import { getBrainDumpPresentation } from './brain-dump-presentation';
 import { formatTime, getLocaleWeekInfo } from '@/i18n/format';
 import { getLanguageDirection, initI18n, t as translate } from '@/i18n';
 import { normalizeUrl } from '../utils/normalize';
@@ -42,6 +43,7 @@ import { SyncEngine } from '../services/sync-engine';
 import { MCPServerService } from '../services/mcp-server-service';
 import { BluetBridgeService, findChangedGroupIds, debouncedBluetSync } from '../services/bluet-bridge-service';
 import { ALARM_NAMES } from '../config/alarms';
+import { ensureCoreAlarms as reconcileCoreAlarms, watchCoreAlarmChanges } from './core-alarms';
 import { runAutoArchive } from '../services/auto-archive-service';
 import { computeNextRecurringFireAt } from '../utils/reminder-recurrence';
 import { normalizeFocusSettings } from '../config/focus-presets';
@@ -166,25 +168,13 @@ async function deleteRssNotificationMeta(notificationId: string): Promise<void> 
     await Promise.resolve(chrome.storage.session.set({ [RSS_NOTIFICATION_META_KEY]: map })).catch(() => {});
 }
 
-async function ensureAlarm(name: string, alarmInfo: chrome.alarms.AlarmCreateInfo): Promise<void> {
-    const existing = await Promise.resolve(chrome.alarms.get(name)).catch(() => null);
-    if (!existing) {
-        await chrome.alarms.create(name, alarmInfo);
-    }
+function ensureCoreAlarms(): void {
+    void Promise.all([BackupService.ensureScheduled(), reconcileCoreAlarms()]).catch((error) => {
+        console.warn('[BlueTab][Alarms] Scheduling failed:', error);
+    });
 }
 
-function ensureCoreAlarms(): void {
-    void Promise.allSettled([
-        BackupService.ensureScheduled(),
-        ensureAlarm(ALARM_NAMES.AUTH_REFRESH, { periodInMinutes: 30 }),
-        ensureAlarm(ALARM_NAMES.SUBSCRIPTION_CHECK, { periodInMinutes: 60 }),
-        ensureAlarm(ALARM_NAMES.BLUET_BRIDGE_HEARTBEAT, { periodInMinutes: 360 }),
-        ensureAlarm(ALARM_NAMES.RSS_REFRESH, { periodInMinutes: 15, delayInMinutes: 1 }),
-        ensureAlarm(ALARM_NAMES.ADHD_AUTOSUSPEND_SCAN, { periodInMinutes: 1, delayInMinutes: 1 }),
-        ensureAlarm(ALARM_NAMES.V3_KILL_SWITCH_REFRESH, { periodInMinutes: 240 }),
-        ensureAlarm(ALARM_NAMES.GROUP_AUTO_ARCHIVE_SCAN, { periodInMinutes: 60, delayInMinutes: 5 }),
-    ]);
-}
+watchCoreAlarmChanges();
 
 async function ensureFloatingButtonRegistered(settings?: Settings | null): Promise<void> {
     try {
@@ -685,6 +675,11 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
             }
         }
     } else if (alarm.name === ALARM_NAMES.SYNC_POLL) {
+        // A poll alarm left over from an older version: sync is not set up here.
+        if (!(await SyncEngine.isSetup())) {
+            await chrome.alarms.clear(ALARM_NAMES.SYNC_POLL);
+            return;
+        }
         console.log('[BlueTab][Sync] Running scheduled sync poll');
         // Bilateral sync: push local changes, then pull remote changes
         await SyncEngine.sync();
@@ -1197,6 +1192,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
     // Phase 9 — Brain Dump prefs read. Content-script modal seeds the
     // attach/detach chip state from this on mount (ADHD-22 remembers-last-choice).
+    if (message?.action === 'brain-dump:get-presentation') {
+        getBrainDumpPresentation().then(sendResponse).catch(() => sendResponse(null));
+        return true;
+    }
+
     if (message?.action === 'brain-dump:get-prefs') {
         Promise.all([BrainDumpService.getPrefs(), canUseAiPageSummary()])
             .then(([prefs, canSummarizePageToDump]) => sendResponse({ prefs, canSummarizePageToDump }))

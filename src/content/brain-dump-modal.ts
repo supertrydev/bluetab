@@ -41,10 +41,9 @@
  *       Does not touch any Tailwind class or the host page's stylesheet.
  */
 
-import { getLanguageDirection, initI18n, t as translate } from '@/i18n';
+import { BRAIN_DUMP_STRINGS, type BrainDumpStrings } from '@/i18n/brain-dump-strings';
 
 (async () => {
-  const resolvedLanguage = await initI18n({ manageDocumentMetadata: false });
   const MOUNT_FLAG = '__bluetabBrainDumpModalOpen';
   const win = window as typeof window & { [MOUNT_FLAG]?: boolean };
 
@@ -54,6 +53,13 @@ import { getLanguageDirection, initI18n, t as translate } from '@/i18n';
     return;
   }
   win[MOUNT_FLAG] = true;
+
+  // Keep the content script small and independent of i18next. Only the worker
+  // loads the selected language; the English subset also covers a lost reply.
+  const presentation = await chrome.runtime.sendMessage({ action: 'brain-dump:get-presentation' })
+    .catch(() => null) as { language?: string; direction?: 'ltr' | 'rtl'; strings?: BrainDumpStrings } | null;
+  const strings = { ...BRAIN_DUMP_STRINGS, ...presentation?.strings };
+  const translate = (key: keyof BrainDumpStrings): string => strings[key];
 
   // --- Capture tab context ------------------------------------------------
 
@@ -95,8 +101,8 @@ import { getLanguageDirection, initI18n, t as translate } from '@/i18n';
 
   const backdrop = document.createElement('div');
   backdrop.setAttribute('data-bluetab-brain-dump', 'backdrop');
-  backdrop.lang = resolvedLanguage;
-  backdrop.dir = getLanguageDirection(resolvedLanguage);
+  backdrop.lang = presentation?.language ?? 'en';
+  backdrop.dir = presentation?.direction === 'rtl' ? 'rtl' : 'ltr';
   Object.assign(backdrop.style, {
     position: 'fixed',
     top: '0',

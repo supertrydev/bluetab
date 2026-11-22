@@ -49,7 +49,7 @@ let onConnectionChange: ((connected: boolean) => void) | null = null
 export function initializeRealtime(callbacks: {
   onDeltaAvailable: () => Promise<void>
   onConnectionChange?: (connected: boolean) => void
-}): void {
+}, options: { polling?: boolean } = {}): void {
   onDeltaAvailable = callbacks.onDeltaAvailable
   onConnectionChange = callbacks.onConnectionChange || null
 
@@ -59,8 +59,10 @@ export function initializeRealtime(callbacks: {
   // Set up connection state handler
   SyncTransport.onStateChange(handleConnectionStateChange)
 
-  // Set up polling alarm for background sync
-  setupPollingAlarm()
+  // Poll only once sync is set up on this device: a 1-minute alarm would
+  // otherwise wake the service worker for every user, synced or not.
+  if (options.polling ?? true) setupPollingAlarm()
+  else stopPollingAlarm()
 
   console.log('[SyncRealtime] Initialized')
 }
@@ -218,6 +220,13 @@ function setupPollingAlarm(): void {
   console.log(`[SyncRealtime] Polling alarm set for every ${POLL_INTERVAL_MINUTES} minute(s)`)
 }
 
+/** Remove the polling alarm (sync not set up on this device). */
+function stopPollingAlarm(): void {
+  if (typeof chrome !== 'undefined' && chrome.alarms) {
+    void Promise.resolve(chrome.alarms.clear(ALARM_NAMES.SYNC_POLL)).catch(() => {})
+  }
+}
+
 /**
  * Handle the polling alarm.
  * Called from service worker's alarm listener.
@@ -279,6 +288,8 @@ export const SyncRealtime = {
   onUIInactive,
   isUIOpen,
   handlePollAlarm,
+  ensurePollingAlarm: setupPollingAlarm,
+  stopPollingAlarm,
   getPollAlarmName,
   triggerSyncNow,
   getConnectionState,

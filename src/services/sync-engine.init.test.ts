@@ -25,6 +25,7 @@ jest.mock('./sync-transport', () => ({
 jest.mock('./sync-realtime', () => ({
   SyncRealtime: {
     initializeRealtime: jest.fn(),
+    ensurePollingAlarm: jest.fn(),
     shutdownRealtime: jest.fn(),
     onUIActive: jest.fn(),
     onUIInactive: jest.fn(),
@@ -122,6 +123,30 @@ describe('SyncEngine.initialize', () => {
 
     resolveDeviceInfo(null);
     await initPromise;
+    await shutdown();
+  });
+
+  it('does not schedule the 1-minute sync poll before sync is set up on this device', async () => {
+    storageGetMock.mockImplementation(async () => null);
+    const { initialize, shutdown } = await import('./sync-engine');
+    const { SyncRealtime } = await import('./sync-realtime');
+
+    await initialize();
+
+    expect(SyncRealtime.initializeRealtime).toHaveBeenCalledWith(expect.any(Object), { polling: false });
+    await shutdown();
+  });
+
+  it('schedules the sync poll when this device has sync set up', async () => {
+    storageGetMock.mockImplementation(async (key: string) => key === 'syncDeviceInfo'
+      ? { deviceId: 'device', userId: 'account', keySalt: 'salt', keySource: 'user-password', iterations: 600000 }
+      : null);
+    const { initialize, shutdown } = await import('./sync-engine');
+    const { SyncRealtime } = await import('./sync-realtime');
+
+    await initialize();
+
+    expect(SyncRealtime.initializeRealtime).toHaveBeenCalledWith(expect.any(Object), { polling: true });
     await shutdown();
   });
 });
