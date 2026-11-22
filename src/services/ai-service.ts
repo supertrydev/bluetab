@@ -24,17 +24,13 @@ import { Storage } from '../utils/storage';
 import { RingBuffer } from '../utils/ring-buffer';
 import { config } from '../config/config';
 import { getToolsForBody } from '../utils/ai-tools';
-import { getAccessToken } from '../utils/auth-state';
-import { AIAllowanceService } from './ai-allowance-service';
-import { canAccessFeature } from '../utils/feature-gate';
+import { getAIRequestHeaders, getAISettings } from './ai-request';
+import { suggestGroupName } from './ai-group-naming';
 import { buildAIIntegrationTools } from './ai-integration-tools';
 import type { AIHistoryEntry, AISettings } from '../types/ai';
-import { DEFAULT_AI_SETTINGS } from '../types/ai';
 
 const LOG_PREFIX = '[BlueTab][AIService]';
 
-/** Group naming waits this long for the server before keeping the default name. */
-const NAME_GROUP_TIMEOUT_MS = 15_000;
 const LEGACY_AI_HISTORY_KEY = 'ai_history';
 const THREADS_KEY = 'ai_chat_threads';
 const ACTIVE_THREAD_KEY = 'ai_active_thread';
@@ -295,8 +291,7 @@ export class AIService {
    * @returns Merged AI settings (defaults for any missing fields)
    */
   static async getSettings(): Promise<AISettings> {
-    const stored = (await Storage.get<Partial<AISettings>>('ai_settings')) ?? {};
-    return { ...DEFAULT_AI_SETTINGS, ...stored };
+    return getAISettings();
   }
 
   /**
@@ -323,47 +318,7 @@ export class AIService {
   static async suggestGroupName(
     tabs: { title: string; url: string }[]
   ): Promise<string | null> {
-    // Single-tab groups skip AI naming
-    if (tabs.length < 2) return null;
-
-    // Naming follows the saved preference and Pro access, independently of the notice.
-    try {
-      const settings = await AIService.getSettings();
-      if (!settings.smartNaming) return null;
-      if (!(await canAccessFeature('ai_commands')).allowed) return null;
-    } catch {
-      return null;
-    }
-
-    const token = await getAccessToken();
-
-    try {
-      const response = await fetch(
-        config.supertry.apiUrl + config.ai.nameGroupEndpoint,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          },
-          body: JSON.stringify({ tabs: tabs.slice(0, 10) }),
-          // The naming model thinks before it answers; 5 s cut off names the
-          // server had already produced, leaving the group untitled.
-          signal: AbortSignal.timeout(NAME_GROUP_TIMEOUT_MS),
-        }
-      );
-      await AIAllowanceService.syncFromAIResponse(response);
-      if (!response.ok) {
-        console.warn(`${LOG_PREFIX} suggestGroupName: HTTP ${response.status}`);
-        return null;
-      }
-      const data = await response.json() as { name: string };
-      return data.name ?? null;
-    } catch (err) {
-      // warn, not log: store builds strip console.log.
-      console.warn(`${LOG_PREFIX} suggestGroupName: no name`, err);
-      return null;
-    }
+    return suggestGroupName(tabs);
   }
 
   /**
@@ -447,16 +402,12 @@ export class AIService {
     }
 
     // --- Tier 3: Web search ---
-    const token = await getAccessToken();
     try {
       const response = await fetch(
         config.supertry.apiUrl + config.ai.searchEndpoint,
         {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          },
+          headers: await getAIRequestHeaders(),
           body: JSON.stringify({ query }),
         }
       );
