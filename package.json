@@ -15,9 +15,9 @@
     "type": "module",
     "scripts": {
         "dev": "vite build --mode development --watch",
-        "build": "vite build && node scripts/ci/check-content-scripts.cjs && node scripts/ci/check-worker-imports.cjs",
+        "build": "vite build && node scripts/ci/check-content-scripts.cjs && node scripts/ci/check-worker-imports.cjs && node scripts/ci/check-bundle-budget.cjs dist --target chrome",
         "package:cws": "npm run build && node scripts/package-cws.cjs",
-        "build:firefox": "BLUETAB_BROWSER=firefox vite build && node scripts/ci/check-content-scripts.cjs dist-firefox",
+        "build:firefox": "BLUETAB_BROWSER=firefox vite build && node scripts/ci/check-content-scripts.cjs dist-firefox && node scripts/ci/check-bundle-budget.cjs dist-firefox --target firefox",
         "lint:firefox": "web-ext lint --source-dir dist-firefox --self-hosted=false",
         "package:amo": "npm run build:firefox && npm run lint:firefox && node scripts/package-amo.cjs",
         "test": "jest",
