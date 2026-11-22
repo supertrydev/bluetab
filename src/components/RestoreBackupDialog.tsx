@@ -16,10 +16,12 @@
  *       - Dialog closes automatically after restore
  *
  * NOT:  Does not list backups -- that is SessionBackupSettings.tsx.
- *       Does not create the Bluetab group itself -- BackupService returns
- *       snapshot data for 'group' mode; the caller handles group creation.
+ *       Saved data is restored by BackupService; this dialog converts the
+ *       browser windows into saved groups when group mode is selected.
  */
 
+import { Storage } from '@/utils/storage';
+import type { TabGroup } from '@/types/models';
 import { useState } from 'react';
 import { FolderPlus, ExternalLink, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -57,7 +59,24 @@ export function RestoreBackupDialog({
     setIsRestoring(true);
 
     try {
-      await BackupService.restore(snapshot.id, mode);
+      const restored = await BackupService.restore(snapshot.id, mode);
+      if (mode === 'group' && restored) {
+        const now = Date.now();
+        const groups: TabGroup[] = restored.windows.filter(win => win.tabs.length > 0).map(win => {
+          const id = crypto.randomUUID();
+          return {
+            id,
+            name: `${t('settings.sessionBackup.title')} — ${formatDateTime(restored.timestamp)}`,
+            created: now,
+            modified: now,
+            tabs: win.tabs.map(tab => ({
+              id: crypto.randomUUID(), groupId: id, url: tab.url, title: tab.title,
+              favicon: tab.favicon, pinned: tab.pinned, timestamp: now,
+            })),
+          };
+        });
+        if (groups.length > 0) await Storage.atomicUpdate<TabGroup[]>('groups', current => [...(current || []), ...groups], []);
+      }
       const actionLabel =
         mode === 'group'
           ? t('dialogs.restoreBackup.savedAsGroup')
@@ -86,6 +105,7 @@ export function RestoreBackupDialog({
             })}
           </DialogDescription>
         </DialogHeader>
+        {snapshot.savedData && <p className="text-sm text-muted-foreground">{t('dataSafety.restoreSavedData')}</p>}
 
         {isRestoring ? (
           <div className="flex items-center justify-center py-8">

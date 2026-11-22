@@ -849,7 +849,7 @@ export const AR_RESOURCES = {
     "sessionBackup": {
       "title": "\u0646\u0633\u062e \u0627\u0644\u062c\u0644\u0633\u0629 \u0627\u062d\u062a\u064a\u0627\u0637\u064a\u064b\u0627",
       "enableTitle": "\u062a\u0641\u0639\u064a\u0644 \u0627\u0644\u0646\u0633\u062e \u0627\u0644\u0627\u062d\u062a\u064a\u0627\u0637\u064a \u0627\u0644\u062a\u0644\u0642\u0627\u0626\u064a \u0644\u0644\u062c\u0644\u0633\u0629",
-      "enableDescription": "\u064a\u062d\u0641\u0638 \u062f\u0648\u0631\u064a\u064b\u0627 \u062c\u0645\u064a\u0639 \u0639\u0644\u0627\u0645\u0627\u062a \u062a\u0628\u0648\u064a\u0628 \u0627\u0644\u0645\u062a\u0635\u0641\u062d \u0648\u0646\u0648\u0627\u0641\u0630\u0647 \u0627\u0644\u0645\u0641\u062a\u0648\u062d\u0629",
+      "enableDescription": "\u064a\u062d\u0641\u0638 \u062f\u0648\u0631\u064a\u064b\u0627 \u0645\u062c\u0645\u0648\u0639\u0627\u062a\u0643 \u0648\u0648\u0633\u0648\u0645\u0643 \u0648\u0645\u0634\u0627\u0631\u064a\u0639\u0643 \u0648\u0625\u062f\u062e\u0627\u0644\u0627\u062a Brain Dump \u0648\u0627\u0644\u0623\u0631\u0634\u064a\u0641\u0627\u062a \u0648\u0646\u0648\u0627\u0641\u0630 \u0627\u0644\u0645\u062a\u0635\u0641\u062d \u0627\u0644\u0645\u0641\u062a\u0648\u062d\u0629. \u062a\u0638\u0644 \u0627\u0644\u0623\u0631\u0634\u064a\u0641\u0627\u062a \u0627\u0644\u0645\u062d\u0645\u064a\u0629 \u0628\u0643\u0644\u0645\u0629 \u0645\u0631\u0648\u0631 \u0645\u0634\u0641\u0651\u0631\u0629.",
       "frequency": "\u0627\u0644\u062a\u0643\u0631\u0627\u0631",
       "lastBackup": "\u0622\u062e\u0631 \u0646\u0633\u062e\u0629 \u0627\u062d\u062a\u064a\u0627\u0637\u064a\u0629: {{time}}",
       "history": "\u0633\u062c\u0644 \u0627\u0644\u0646\u0633\u062e \u0627\u0644\u0627\u062d\u062a\u064a\u0627\u0637\u064a\u0629",
@@ -863,7 +863,8 @@ export const AR_RESOURCES = {
       "frequencies": {
         "hourly": "\u0643\u0644 \u0633\u0627\u0639\u0629",
         "daily": "\u064a\u0648\u0645\u064a\u064b\u0627",
-        "weekly": "\u0623\u0633\u0628\u0648\u0639\u064a\u064b\u0627"
+        "weekly": "\u0623\u0633\u0628\u0648\u0639\u064a\u064b\u0627",
+        "monthly": "\u0634\u0647\u0631\u064a\u064b\u0627"
       },
       "tabs_zero": "\u0644\u0627 \u062a\u0648\u062c\u062f \u0639\u0644\u0627\u0645\u0627\u062a \u062a\u0628\u0648\u064a\u0628 ({{count}})",
       "tabs_one": "\u0639\u0644\u0627\u0645\u0629 \u062a\u0628\u0648\u064a\u0628 \u0648\u0627\u062d\u062f\u0629 ({{count}})",
@@ -876,7 +877,8 @@ export const AR_RESOURCES = {
       "groups_two": "\u0645\u062c\u0645\u0648\u0639\u062a\u0627\u0646 ({{count}})",
       "groups_few": "{{count}} \u0645\u062c\u0645\u0648\u0639\u0627\u062a",
       "groups_many": "{{count}} \u0645\u062c\u0645\u0648\u0639\u0629",
-      "groups_other": "{{count}} \u0645\u062c\u0645\u0648\u0639\u0629"
+      "groups_other": "{{count}} \u0645\u062c\u0645\u0648\u0639\u0629",
+      "noBackupYet": "\u0644\u0627 \u062a\u0648\u062c\u062f \u0646\u0633\u062e\u0629 \u0627\u062d\u062a\u064a\u0627\u0637\u064a\u0629 \u0628\u0639\u062f"
     },
     "distractionScan": {
       "title": "\u0646\u0637\u0627\u0642\u0627\u062a \u064a\u0642\u062a\u0631\u062d\u0647\u0627 \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064a",
@@ -3602,6 +3604,15 @@ export const AR_RESOURCES = {
     "processing": "\u062a\u0631\u0633\u0644 Supertry \u0647\u0630\u0647 \u0627\u0644\u0628\u064a\u0627\u0646\u0627\u062a \u0639\u0628\u0631 OpenRouter \u0625\u0644\u0649 \u0646\u0645\u0648\u0630\u062c \u0627\u0644\u0630\u0643\u0627\u0621 \u0627\u0644\u0627\u0635\u0637\u0646\u0627\u0639\u064a\u060c \u0648\u0647\u0648 \u062d\u0627\u0644\u064a\u064b\u0627 GLM \u0645\u0646 Z.ai. \u0644\u0627 \u064a\u062f\u0631\u0651\u0628 \u0627\u0644\u0645\u0632\u0648\u0651\u062f \u0646\u0645\u0627\u0630\u062c\u0647 \u0639\u0644\u064a\u0647\u0627\u060c \u0648\u0644\u0627 \u0646\u062d\u062a\u0641\u0638 \u0628\u0637\u0644\u0628\u0627\u062a\u0643 \u0623\u0648 \u0628\u0627\u0644\u0625\u062c\u0627\u0628\u0627\u062a.",
     "privacyLink": "\u0633\u064a\u0627\u0633\u0629 \u0627\u0644\u062e\u0635\u0648\u0635\u064a\u0629",
     "gotIt": "\u0641\u0647\u0645\u062a"
+  },
+  "dataSafety": {
+    "undo": "\u062a\u0631\u0627\u062c\u0639",
+    "seconds": "{{count}} \u062b",
+    "undoFailed": "\u062a\u0639\u0630\u0651\u0631 \u0627\u0644\u062a\u0631\u0627\u062c\u0639 \u0639\u0646 \u0627\u0644\u062d\u0630\u0641. \u064a\u064f\u0631\u062c\u0649 \u0627\u0644\u0645\u062d\u0627\u0648\u0644\u0629 \u0645\u0631\u0629 \u0623\u062e\u0631\u0649.",
+    "memoryNoticeTitle": "\u0639\u0644\u0627\u0645\u0627\u062a \u062a\u0628\u0648\u064a\u0628\u0643 \u0645\u0627 \u0632\u0627\u0644\u062a \u0647\u0646\u0627",
+    "memoryNoticeBody": "\u0639\u0644\u0627\u0645\u0627\u062a \u062a\u0628\u0648\u064a\u0628\u0643 \u0645\u0641\u062a\u0648\u062d\u0629 \u0641\u064a \u0627\u0644\u0645\u062a\u0635\u0641\u062d. \u0644\u0645 \u064a\u064f\u0641\u0642\u062f \u0634\u064a\u0621. \u0627\u062d\u0641\u0638\u0647\u0627 \u0645\u062c\u062f\u062f\u064b\u0627 \u0628\u0627\u0633\u062a\u062e\u062f\u0627\u0645 Alt+S \u0644\u0625\u0639\u0627\u062f\u062a\u0647\u0627 \u0625\u0644\u0649 \u0627\u0644\u0645\u062c\u0645\u0648\u0639\u0629 \u0646\u0641\u0633\u0647\u0627 \u0628\u0627\u0633\u0645\u0647\u0627 \u0648\u0644\u0648\u0646\u0647\u0627 \u0648\u0648\u0633\u0648\u0645\u0647\u0627.",
+    "closesIn": "\u064a\u064f\u063a\u0644\u0642 \u062e\u0644\u0627\u0644 {{count}} \u062b",
+    "restoreSavedData": "\u064a\u0633\u062a\u0639\u064a\u062f \u0643\u0644\u0627 \u0627\u0644\u062e\u064a\u0627\u0631\u064a\u0646 \u0623\u064a\u0636\u064b\u0627 \u0627\u0644\u0645\u062c\u0645\u0648\u0639\u0627\u062a \u0627\u0644\u0645\u062d\u0641\u0648\u0638\u0629 \u0648\u0627\u0644\u0648\u0633\u0648\u0645 \u0648\u0627\u0644\u0645\u0634\u0627\u0631\u064a\u0639 \u0648\u0625\u062f\u062e\u0627\u0644\u0627\u062a Brain Dump \u0648\u0627\u0644\u0623\u0631\u0634\u064a\u0641\u0627\u062a. \u062a\u0639\u0648\u062f \u0627\u0644\u0633\u062c\u0644\u0627\u062a \u0627\u0644\u0645\u0637\u0627\u0628\u0642\u0629 \u0625\u0644\u0649 \u0646\u0633\u062e\u062a\u0647\u0627 \u0627\u0644\u0627\u062d\u062a\u064a\u0627\u0637\u064a\u0629\u060c \u0648\u062a\u064f\u062d\u0641\u0638 \u0628\u0642\u064a\u0629 \u0627\u0644\u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u062d\u0627\u0644\u064a\u0629."
   }
 } as const;
 
@@ -4400,7 +4411,7 @@ export const EN_RESOURCES = {
     "sessionBackup": {
       "title": "Session Backup",
       "enableTitle": "Enable automatic session backup",
-      "enableDescription": "Periodically saves all open browser tabs and windows",
+      "enableDescription": "Periodically saves your groups, tags, projects, Brain Dump entries, archives and open browser windows. Password-protected archives remain encrypted.",
       "frequency": "Frequency",
       "lastBackup": "Last backup: {{time}}",
       "history": "Backup History",
@@ -4414,12 +4425,14 @@ export const EN_RESOURCES = {
       "frequencies": {
         "hourly": "Hourly",
         "daily": "Daily",
-        "weekly": "Weekly"
+        "weekly": "Weekly",
+        "monthly": "Monthly"
       },
       "tabs_one": "{{count}} tab",
       "tabs_other": "{{count}} tabs",
       "groups_one": "{{count}} group",
-      "groups_other": "{{count}} groups"
+      "groups_other": "{{count}} groups",
+      "noBackupYet": "No backup yet"
     },
     "distractionScan": {
       "title": "AI-suggested domains",
@@ -6857,6 +6870,15 @@ export const EN_RESOURCES = {
     "processing": "Supertry sends it through OpenRouter to the AI model, currently GLM by Z.ai. The provider doesn't train on it, and we don't store your requests or the answers.",
     "privacyLink": "Privacy Policy",
     "gotIt": "Got it"
+  },
+  "dataSafety": {
+    "undo": "Undo",
+    "seconds": "{{count}}s",
+    "undoFailed": "Could not undo the deletion. Please try again.",
+    "memoryNoticeTitle": "Your tabs are still here",
+    "memoryNoticeBody": "Your tabs are open in the browser. Nothing was lost. Save them again with Alt+S to put them back in the same group, with its name, color and tags.",
+    "closesIn": "Closes in {{count}}s",
+    "restoreSavedData": "Both options also restore saved groups, tags, projects, Brain Dump entries and archives. Matching records return to their backed-up version; other saved data is kept."
   }
 } as const;
 
@@ -7655,7 +7677,7 @@ export const ES_RESOURCES = {
     "sessionBackup": {
       "title": "Copia de seguridad de sesiones",
       "enableTitle": "Activar copia de seguridad autom\u00e1tica de sesiones",
-      "enableDescription": "Guarda peri\u00f3dicamente todas las pesta\u00f1as y ventanas abiertas del navegador",
+      "enableDescription": "Guarda peri\u00f3dicamente tus grupos, etiquetas, proyectos, entradas de Brain Dump, archivos y ventanas abiertas del navegador. Los archivos protegidos con contrase\u00f1a permanecen cifrados.",
       "frequency": "Frecuencia",
       "lastBackup": "\u00daltima copia: {{time}}",
       "history": "Historial de copias de seguridad",
@@ -7669,12 +7691,14 @@ export const ES_RESOURCES = {
       "frequencies": {
         "hourly": "Cada hora",
         "daily": "Diaria",
-        "weekly": "Semanal"
+        "weekly": "Semanal",
+        "monthly": "Mensual"
       },
       "tabs_one": "{{count}} pesta\u00f1a",
       "tabs_other": "{{count}} pesta\u00f1as",
       "groups_one": "{{count}} grupo",
-      "groups_other": "{{count}} grupos"
+      "groups_other": "{{count}} grupos",
+      "noBackupYet": "A\u00fan no hay copias de seguridad"
     },
     "distractionScan": {
       "title": "Dominios sugeridos por IA",
@@ -10112,6 +10136,15 @@ export const ES_RESOURCES = {
     "processing": "Supertry los env\u00eda a trav\u00e9s de OpenRouter al modelo de IA, actualmente GLM de Z.ai. El proveedor no entrena con ellos y no guardamos tus solicitudes ni las respuestas.",
     "privacyLink": "Pol\u00edtica de privacidad",
     "gotIt": "Entendido"
+  },
+  "dataSafety": {
+    "undo": "Deshacer",
+    "seconds": "{{count}} s",
+    "undoFailed": "No se pudo deshacer la eliminaci\u00f3n. Int\u00e9ntalo de nuevo.",
+    "memoryNoticeTitle": "Tus pesta\u00f1as siguen aqu\u00ed",
+    "memoryNoticeBody": "Tus pesta\u00f1as est\u00e1n abiertas en el navegador. No se ha perdido nada. Gu\u00e1rdalas de nuevo con Alt+S para devolverlas al mismo grupo, con su nombre, color y etiquetas.",
+    "closesIn": "Se cierra en {{count}} s",
+    "restoreSavedData": "Ambas opciones tambi\u00e9n restauran los grupos guardados, las etiquetas, los proyectos, las entradas de Brain Dump y los archivos. Los registros coincidentes vuelven a la versi\u00f3n de la copia; los dem\u00e1s datos guardados se conservan."
   }
 } as const;
 
@@ -10910,7 +10943,7 @@ export const ID_RESOURCES = {
     "sessionBackup": {
       "title": "Cadangan Sesi",
       "enableTitle": "Aktifkan cadangan sesi otomatis",
-      "enableDescription": "Menyimpan semua tab dan jendela browser yang terbuka secara berkala",
+      "enableDescription": "Menyimpan grup, tag, proyek, entri Brain Dump, arsip, dan jendela browser yang terbuka secara berkala. Arsip yang dilindungi kata sandi tetap terenkripsi.",
       "frequency": "Frekuensi",
       "lastBackup": "Cadangan terakhir: {{time}}",
       "history": "Riwayat Cadangan",
@@ -10924,12 +10957,14 @@ export const ID_RESOURCES = {
       "frequencies": {
         "hourly": "Setiap jam",
         "daily": "Harian",
-        "weekly": "Mingguan"
+        "weekly": "Mingguan",
+        "monthly": "Bulanan"
       },
       "tabs_one": "{{count}} tab",
       "tabs_other": "{{count}} tab",
       "groups_one": "{{count}} grup",
-      "groups_other": "{{count}} grup"
+      "groups_other": "{{count}} grup",
+      "noBackupYet": "Belum ada cadangan"
     },
     "distractionScan": {
       "title": "Domain yang disarankan AI",
@@ -13367,6 +13402,15 @@ export const ID_RESOURCES = {
     "processing": "Supertry mengirimnya melalui OpenRouter ke model AI, saat ini GLM dari Z.ai. Penyedia tidak melatih model dengan data ini, dan kami tidak menyimpan permintaan maupun jawabannya.",
     "privacyLink": "Kebijakan Privasi",
     "gotIt": "Mengerti"
+  },
+  "dataSafety": {
+    "undo": "Urungkan",
+    "seconds": "{{count}} dtk",
+    "undoFailed": "Penghapusan tidak dapat diurungkan. Silakan coba lagi.",
+    "memoryNoticeTitle": "Tab Anda masih ada",
+    "memoryNoticeBody": "Tab Anda terbuka di browser. Tidak ada yang hilang. Simpan lagi dengan Alt+S untuk mengembalikannya ke grup yang sama, beserta nama, warna, dan tagnya.",
+    "closesIn": "Menutup dalam {{count}} dtk",
+    "restoreSavedData": "Kedua opsi juga memulihkan grup tersimpan, tag, proyek, entri Brain Dump, dan arsip. Data yang cocok dikembalikan ke versi cadangan; data tersimpan lainnya tetap dipertahankan."
   }
 } as const;
 
@@ -14165,7 +14209,7 @@ export const PT_BR_RESOURCES = {
     "sessionBackup": {
       "title": "Backup de sess\u00e3o",
       "enableTitle": "Ativar backup autom\u00e1tico da sess\u00e3o",
-      "enableDescription": "Salva periodicamente todas as abas e janelas abertas do navegador",
+      "enableDescription": "Salva periodicamente seus grupos, etiquetas, projetos, entradas do Brain Dump, arquivos e janelas abertas do navegador. Os arquivos protegidos por senha permanecem criptografados.",
       "frequency": "Frequ\u00eancia",
       "lastBackup": "\u00daltimo backup: {{time}}",
       "history": "Hist\u00f3rico de backups",
@@ -14179,12 +14223,14 @@ export const PT_BR_RESOURCES = {
       "frequencies": {
         "hourly": "A cada hora",
         "daily": "Diariamente",
-        "weekly": "Semanalmente"
+        "weekly": "Semanalmente",
+        "monthly": "Mensal"
       },
       "tabs_one": "{{count}} aba",
       "tabs_other": "{{count}} abas",
       "groups_one": "{{count}} grupo",
-      "groups_other": "{{count}} grupos"
+      "groups_other": "{{count}} grupos",
+      "noBackupYet": "Nenhum backup ainda"
     },
     "distractionScan": {
       "title": "Dom\u00ednios sugeridos por IA",
@@ -16622,6 +16668,15 @@ export const PT_BR_RESOURCES = {
     "processing": "A Supertry envia esses dados pelo OpenRouter ao modelo de IA, hoje o GLM da Z.ai. O provedor n\u00e3o treina modelos com eles, e n\u00e3o guardamos seus pedidos nem as respostas.",
     "privacyLink": "Pol\u00edtica de Privacidade",
     "gotIt": "Entendi"
+  },
+  "dataSafety": {
+    "undo": "Desfazer",
+    "seconds": "{{count}} s",
+    "undoFailed": "N\u00e3o foi poss\u00edvel desfazer a exclus\u00e3o. Tente novamente.",
+    "memoryNoticeTitle": "Suas abas continuam aqui",
+    "memoryNoticeBody": "Suas abas est\u00e3o abertas no navegador. Nada foi perdido. Salve-as novamente com Alt+S para coloc\u00e1-las no mesmo grupo, com seu nome, cor e etiquetas.",
+    "closesIn": "Fecha em {{count}} s",
+    "restoreSavedData": "As duas op\u00e7\u00f5es tamb\u00e9m restauram grupos salvos, etiquetas, projetos, entradas do Brain Dump e arquivos. Os registros correspondentes voltam \u00e0 vers\u00e3o do backup; os demais dados salvos s\u00e3o mantidos."
   }
 } as const;
 
@@ -17420,7 +17475,7 @@ export const TR_RESOURCES = {
     "sessionBackup": {
       "title": "Oturum Yede\u011fi",
       "enableTitle": "Otomatik oturum yede\u011fini etkinle\u015ftir",
-      "enableDescription": "T\u00fcm a\u00e7\u0131k taray\u0131c\u0131 sekmelerini ve pencerelerini d\u00fczenli olarak kaydeder",
+      "enableDescription": "Gruplar\u0131n\u0131, etiketlerini, projelerini, Brain Dump kay\u0131tlar\u0131n\u0131, ar\u015fivlerini ve a\u00e7\u0131k taray\u0131c\u0131 pencerelerini d\u00fczenli olarak kaydeder. Parola korumal\u0131 ar\u015fivler \u015fifreli kal\u0131r.",
       "frequency": "S\u0131kl\u0131k",
       "lastBackup": "Son yedek: {{time}}",
       "history": "Yedek Ge\u00e7mi\u015fi",
@@ -17434,12 +17489,14 @@ export const TR_RESOURCES = {
       "frequencies": {
         "hourly": "Saatlik",
         "daily": "G\u00fcnl\u00fck",
-        "weekly": "Haftal\u0131k"
+        "weekly": "Haftal\u0131k",
+        "monthly": "Ayl\u0131k"
       },
       "tabs_one": "{{count}} sekme",
       "tabs_other": "{{count}} sekme",
       "groups_one": "{{count}} grup",
-      "groups_other": "{{count}} grup"
+      "groups_other": "{{count}} grup",
+      "noBackupYet": "Hen\u00fcz yedek yok"
     },
     "distractionScan": {
       "title": "AI \u00f6nerili alan adlar\u0131",
@@ -19877,5 +19934,14 @@ export const TR_RESOURCES = {
     "processing": "Supertry bu veriyi OpenRouter \u00fczerinden AI modeline g\u00f6nderir (\u015fu an Z.ai\u2019nin GLM modeli). Sa\u011flay\u0131c\u0131 bu veriyle model e\u011fitmez; isteklerini ve yan\u0131tlar\u0131 biz saklamay\u0131z.",
     "privacyLink": "Gizlilik Politikas\u0131",
     "gotIt": "Anlad\u0131m"
+  },
+  "dataSafety": {
+    "undo": "Geri al",
+    "seconds": "{{count}} sn",
+    "undoFailed": "Silme geri al\u0131namad\u0131. Tekrar dene.",
+    "memoryNoticeTitle": "Sekmelerin h\u00e2l\u00e2 burada",
+    "memoryNoticeBody": "Sekmelerin taray\u0131c\u0131da a\u00e7\u0131k, hi\u00e7bir \u015fey kaybolmad\u0131. Alt+S ile tekrar kaydetti\u011finde ad\u0131, rengi ve etiketleriyle ayn\u0131 gruba geri d\u00f6nerler.",
+    "closesIn": "{{count}} sn i\u00e7inde kapan\u0131r",
+    "restoreSavedData": "\u0130ki se\u00e7enek de kay\u0131tl\u0131 gruplar\u0131, etiketleri, projeleri, Brain Dump kay\u0131tlar\u0131n\u0131 ve ar\u015fivleri de geri y\u00fckler. Yedekte olan kay\u0131tlar yedekteki h\u00e2line d\u00f6ner; di\u011fer kay\u0131tl\u0131 verilerin korunur."
   }
 } as const;

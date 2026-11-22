@@ -793,7 +793,7 @@
     "sessionBackup": {
       "title": "Oturum Yedeği",
       "enableTitle": "Otomatik oturum yedeğini etkinleştir",
-      "enableDescription": "Tüm açık tarayıcı sekmelerini ve pencerelerini düzenli olarak kaydeder",
+      "enableDescription": "Gruplarını, etiketlerini, projelerini, Brain Dump kayıtlarını, arşivlerini ve açık tarayıcı pencerelerini düzenli olarak kaydeder. Parola korumalı arşivler şifreli kalır.",
       "frequency": "Sıklık",
       "lastBackup": "Son yedek: {{time}}",
       "history": "Yedek Geçmişi",
@@ -807,12 +807,14 @@
       "frequencies": {
         "hourly": "Saatlik",
         "daily": "Günlük",
-        "weekly": "Haftalık"
+        "weekly": "Haftalık",
+        "monthly": "Aylık"
       },
       "tabs_one": "{{count}} sekme",
       "tabs_other": "{{count}} sekme",
       "groups_one": "{{count}} grup",
-      "groups_other": "{{count}} grup"
+      "groups_other": "{{count}} grup",
+      "noBackupYet": "Henüz yedek yok"
     },
     "distractionScan": {
       "title": "AI önerili alan adları",
@@ -3250,5 +3252,14 @@
     "processing": "Supertry bu veriyi OpenRouter üzerinden AI modeline gönderir (şu an Z.ai’nin GLM modeli). Sağlayıcı bu veriyle model eğitmez; isteklerini ve yanıtları biz saklamayız.",
     "privacyLink": "Gizlilik Politikası",
     "gotIt": "Anladım"
+  },
+  "dataSafety": {
+    "undo": "Geri al",
+    "seconds": "{{count}} sn",
+    "undoFailed": "Silme geri alınamadı. Tekrar dene.",
+    "memoryNoticeTitle": "Sekmelerin hâlâ burada",
+    "memoryNoticeBody": "Sekmelerin tarayıcıda açık, hiçbir şey kaybolmadı. Alt+S ile tekrar kaydettiğinde adı, rengi ve etiketleriyle aynı gruba geri dönerler.",
+    "closesIn": "{{count}} sn içinde kapanır",
+    "restoreSavedData": "İki seçenek de kayıtlı grupları, etiketleri, projeleri, Brain Dump kayıtlarını ve arşivleri de geri yükler. Yedekte olan kayıtlar yedekteki hâline döner; diğer kayıtlı verilerin korunur."
   }
 }

@@ -7,7 +7,7 @@
  *       or visibility.
  *
  * WHAT: Settings section with enable/disable toggle, frequency selector
- *       (hourly/daily/weekly), "Last backup" indicator, and scrollable
+ *       (hourly/daily/weekly/monthly), "Last backup" indicator, and scrollable
  *       backup history with restore buttons.
  *
  * HOW:  - BackupService.getSettings() and BackupService.listSnapshots() on mount
@@ -16,7 +16,7 @@
  *       - Restore button opens RestoreBackupDialog
  *       - Listens to chrome.storage.onChanged for 'backupSettings' and
  *         'sessionBackups' keys for reactive updates
- *       - Session backup is off by default
+ *       - Automatic backup is enabled monthly by default
  *
  * NOT:  Does not perform backups -- that is BackupService + service-worker.ts.
  *       Does not handle group creation from restore -- BackupService returns data.
@@ -28,14 +28,14 @@ import { isolateBidi } from '@/i18n/bidi';
 import { HardDrive, RotateCw } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { formatCompactPastTime, formatDateTime, formatNumber } from '@/i18n/format';
-import { BackupService } from '@/services/backup-service';
+import { BackupService, DEFAULT_BACKUP_SETTINGS } from '@/services/backup-service';
 import { RestoreBackupDialog } from '@/components/RestoreBackupDialog';
 import { ToastManager } from '@/components/Toast';
 import type { BackupSnapshot, BackupSettings } from '@/types/productivity';
 
 type Frequency = BackupSettings['frequency'];
 
-const FREQUENCY_OPTIONS: Frequency[] = ['hourly', 'daily', 'weekly'];
+const FREQUENCY_OPTIONS: Frequency[] = ['hourly', 'daily', 'weekly', 'monthly'];
 
 function formatSnapshotDate(timestamp: number): string {
   return formatDateTime(timestamp, {
@@ -54,13 +54,15 @@ function formatBytes(bytes: number): string {
 
 export function SessionBackupSettings() {
   const { t } = useTranslation();
-  const [settings, setSettings] = useState<BackupSettings>({
-    enabled: false,
-    frequency: 'daily',
-  });
+  const [settings, setSettings] = useState<BackupSettings>(DEFAULT_BACKUP_SETTINGS);
   const [snapshots, setSnapshots] = useState<BackupSnapshot[]>([]);
   const [restoreTarget, setRestoreTarget] = useState<BackupSnapshot | null>(null);
   const [isToggling, setIsToggling] = useState(false);
+  const [, refreshRelativeTime] = useState(0);
+  useEffect(() => {
+    const interval = setInterval(() => refreshRelativeTime(value => value + 1), 60_000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Load data on mount
   useEffect(() => {
@@ -79,7 +81,7 @@ export function SessionBackupSettings() {
     const listener = (changes: { [key: string]: chrome.storage.StorageChange }) => {
       if (changes.backupSettings) {
         setSettings(
-          changes.backupSettings.newValue || { enabled: false, frequency: 'daily' },
+          changes.backupSettings.newValue || DEFAULT_BACKUP_SETTINGS,
         );
       }
       if (changes.sessionBackups) {
@@ -157,7 +159,7 @@ export function SessionBackupSettings() {
           <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
             {t('settings.sessionBackup.frequency')}
           </label>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             {FREQUENCY_OPTIONS.map((opt) => (
               <button
                 key={opt}
@@ -176,12 +178,14 @@ export function SessionBackupSettings() {
         </div>
 
         {/* Last Backup Indicator */}
-        {lastBackup && (
+        {lastBackup ? (
           <div className="text-sm text-muted-foreground">
             {t('settings.sessionBackup.lastBackup', {
               time: isolateBidi(formatCompactPastTime(lastBackup.timestamp), 'ltr'),
             })}
           </div>
+        ) : (
+          <div className="text-sm text-muted-foreground">{t('settings.sessionBackup.noBackupYet')}</div>
         )}
 
         {/* Backup History */}

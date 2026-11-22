@@ -1,5 +1,7 @@
+import { deleteGroupsWithUndo } from '@/services/group-deletion';
+import { shouldShowGroupMemoryNotice, showGroupMemoryNotice } from '@/services/group-memory-notice';
 import React, { useState, useEffect } from 'react';
-import { toast } from '@/components/Toast';
+import { toast, ToastManager } from '@/components/Toast';
 import { motion } from 'framer-motion';
 import { stagger } from 'framer-motion';
 import type { Variants } from 'framer-motion';
@@ -346,6 +348,7 @@ export function GroupsPanel() {
                 group,
                 settings,
                 currentTabs,
+                keepFocus: await shouldShowGroupMemoryNotice(settings),
             });
 
             if (groupingError) {
@@ -364,6 +367,7 @@ export function GroupsPanel() {
                 const updated = groups.filter(g => g.id !== group.id);
                 await Storage.set('groups', updated);
                 setGroups(updated);
+                await showGroupMemoryNotice(settings);
             }
         } catch (error) {
             console.error('Failed to restore:', error);
@@ -387,10 +391,9 @@ export function GroupsPanel() {
 
     const deleteGroup = async (groupId: string) => {
         try {
-            await GroupMemoryStorageService.forgetGroup(groupId);
-            const updated = groups.filter(g => g.id !== groupId);
-            await Storage.set('groups', updated);
-            setGroups(updated);
+            const receipt = await deleteGroupsWithUndo([groupId]);
+            setGroups(receipt.updatedGroups);
+            if (receipt.count > 0) ToastManager.getInstance().undo({ key: 'options.manager.deletedGroups', values: { count: receipt.count } }, receipt);
             try {
                 await removeGroupState(groupId);
                 const newState = new Map(collapsedGroups);

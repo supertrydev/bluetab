@@ -1,3 +1,4 @@
+import { shouldShowGroupMemoryNotice, showGroupMemoryNotice } from './group-memory-notice';
 import { FlowService } from './flow-service';
 import { Storage } from '../utils/storage';
 import { getDefaultSettings } from '../utils/sorting';
@@ -208,9 +209,10 @@ export async function restoreSavedTabWithBehavior({
     active = true,
     settingsFallback = {},
 }: RestoreSavedTabOptions): Promise<RestoreSavedTabResult> {
-    const openedTab = await chrome.tabs.create({ url, active });
     const storedSettings = await Storage.get<Settings>('settings');
     const settings = { ...getDefaultSettings(), ...settingsFallback, ...(storedSettings || {}) };
+    const showNotice = await shouldShowGroupMemoryNotice(settings);
+    const openedTab = await chrome.tabs.create({ url, active: active && !showNotice });
     await recordGroupActivity(groupId);
 
     if (settings.restoreBehavior !== 'removeFromList') {
@@ -239,6 +241,7 @@ export async function restoreSavedTabWithBehavior({
         .filter((candidate) => candidate.tabs.length > 0);
 
     await Storage.set('groups', updatedGroups);
+    if (group) await showGroupMemoryNotice(settings);
 
     return {
         updatedGroups,

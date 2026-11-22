@@ -18,7 +18,7 @@
  *       - enable/disable/setFrequency manage the SESSION_BACKUP alarm
  *       - restore() supports 'window' (recreate full window + tab groups) and
  *         'group' (return data for caller to save as Bluetab group)
- *       - Frequency map: hourly=60, daily=1440, weekly=10080 periodInMinutes
+ *       - Frequency map: hourly=60, daily=1440, weekly=10080, monthly=43200 periodInMinutes
  *
  * NOT:  Does not render UI -- consumed by service-worker alarm handlers and
  *       settings page components. Does not handle the "Save as Bluetab group"
@@ -29,9 +29,11 @@ import { createBrowserTabGroup } from '@/platform/create-browser-tab-group';
 import { isBrowserInternalUrl } from '@/platform/extension-platform';
 import { ALARM_NAMES } from '@/config/alarms';
 import { Storage } from '@/utils/storage';
+import { ArchiveStorageService } from '@/utils/archive-storage';
 import { RingBuffer } from '@/utils/ring-buffer';
 import type {
   BackupSnapshot,
+  BackupSavedData,
   BackupWindow,
   BackupTab,
   BackupTabGroup,
@@ -40,20 +42,25 @@ import type {
 
 const LOG_PREFIX = '[BlueTab][Backup]';
 const MAX_SNAPSHOTS = 10;
+/** Only the newest snapshots carry a full copy of saved data; older ones keep just the windows. */
+export const MAX_SAVED_DATA_SNAPSHOTS = 3;
 const OVERSIZED_THRESHOLD = 50 * 1024; // 50KB
 
 const FREQUENCY_MAP: Record<BackupSettings['frequency'], number> = {
   hourly: 60,
   daily: 1440,
   weekly: 10080,
+  monthly: 43200,
 };
+
+export const DEFAULT_BACKUP_SETTINGS: BackupSettings = { enabled: true, frequency: 'monthly' };
 
 export class BackupService {
   private static readonly ringBuffer = new RingBuffer<BackupSnapshot>(MAX_SNAPSHOTS);
 
   /**
-   * Capture a snapshot of all normal browser windows with their tabs and
-   * native tab groups. Filters out chrome:// and chrome-extension:// URLs.
+   * Capture saved groups, tags, projects, Brain Dump entries, encrypted archives,
+   * and all normal browser windows with their tabs and native tab groups. Filters out chrome:// and chrome-extension:// URLs.
    * Strips favicons if the snapshot exceeds 50KB.
    * Uses RingBuffer(10) for FIFO eviction.
    */
@@ -96,7 +103,16 @@ export class BackupService {
       });
     }
 
+    // Copy the persisted representation. In particular, never decrypt archives.
+    const [groups, tags, projects, brainDump, archives] = await Promise.all([
+      Storage.get<BackupSavedData['groups']>('groups'),
+      Storage.get<BackupSavedData['tags']>('tags'),
+      Storage.get<BackupSavedData['projects']>('projects'),
+      Storage.get<BackupSavedData['brain_dump_inbox']>('brain_dump_inbox'),
+      Storage.get<BackupSavedData['archivedGroups']>('archivedGroups'),
+    ]);
     const snapshot: BackupSnapshot = {
+      savedData: { groups: groups || [], tags: tags || [], projects: projects || [], brain_dump_inbox: brainDump || [], archivedGroups: archives },
       id: crypto.randomUUID(),
       timestamp: Date.now(),
       windows: backupWindows,
@@ -125,7 +141,11 @@ export class BackupService {
 
     const existing =
       (await Storage.get<BackupSnapshot[]>('sessionBackups')) || [];
-    const updated = BackupService.ringBuffer.push(existing, snapshot);
+    const updated = BackupService.ringBuffer.push(existing, snapshot).map((item, index, all) => {
+      if (index >= all.length - MAX_SAVED_DATA_SNAPSHOTS || !item.savedData) return item;
+      const { savedData: _savedData, ...windowsOnly } = item;
+      return windowsOnly;
+    });
     await Storage.set('sessionBackups', updated);
 
     console.log(
@@ -152,6 +172,32 @@ export class BackupService {
     if (!snapshot) {
       console.warn(`${LOG_PREFIX} Snapshot ${snapshotId} not found`);
       return undefined;
+    }
+
+    if (snapshot.savedData) {
+      // Recover snapshot records while preserving unrelated data saved since the backup.
+      for (const key of ['groups', 'tags', 'projects', 'brain_dump_inbox'] as const) {
+        const records = snapshot.savedData[key];
+        await Storage.atomicUpdate<Array<{ id: string }>>(key, current => {
+          const restoredIds = new Set(records.map(record => record.id));
+          return [...records, ...(current || []).filter(record => !restoredIds.has(record.id))];
+        }, []);
+      }
+      const savedArchives = snapshot.savedData.archivedGroups;
+      if (savedArchives) {
+        await Storage.atomicUpdate<NonNullable<BackupSavedData['archivedGroups']>>('archivedGroups', current => {
+          const archives = { ...current?.archives, ...savedArchives.archives };
+          return {
+            archives,
+            metadata: {
+              ...savedArchives.metadata,
+              totalArchives: Object.keys(archives).length,
+              totalSizeBytes: new TextEncoder().encode(JSON.stringify(archives)).length,
+            },
+          };
+        });
+        await ArchiveStorageService.rebuildSearchIndex();
+      }
     }
 
     if (mode === 'group') {
@@ -277,11 +323,22 @@ export class BackupService {
    * Get backup settings from storage, with defaults.
    */
   static async getSettings(): Promise<BackupSettings> {
-    return (
-      (await Storage.get<BackupSettings>('backupSettings')) || {
-        enabled: false,
-        frequency: 'daily',
-      }
-    );
+    // Earlier versions only persisted this key after a user changed a setting.
+    // An existing value is therefore an explicit choice, even enabled: false.
+    return { ...DEFAULT_BACKUP_SETTINGS, ...(await Storage.get<Partial<BackupSettings>>('backupSettings')) };
+  }
+
+  /** Ensure scheduling on install, startup and worker wake without postponing an existing alarm. */
+  static async ensureScheduled(): Promise<void> {
+    const settings = await BackupService.getSettings();
+    if (!settings.enabled) {
+      await chrome.alarms.clear(ALARM_NAMES.SESSION_BACKUP);
+      return;
+    }
+    const periodInMinutes = FREQUENCY_MAP[settings.frequency];
+    const alarm = await chrome.alarms.get(ALARM_NAMES.SESSION_BACKUP);
+    if (!alarm || alarm.periodInMinutes !== periodInMinutes) {
+      await chrome.alarms.create(ALARM_NAMES.SESSION_BACKUP, { periodInMinutes });
+    }
   }
 }

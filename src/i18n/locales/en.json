@@ -793,7 +793,7 @@
     "sessionBackup": {
       "title": "Session Backup",
       "enableTitle": "Enable automatic session backup",
-      "enableDescription": "Periodically saves all open browser tabs and windows",
+      "enableDescription": "Periodically saves your groups, tags, projects, Brain Dump entries, archives and open browser windows. Password-protected archives remain encrypted.",
       "frequency": "Frequency",
       "lastBackup": "Last backup: {{time}}",
       "history": "Backup History",
@@ -807,12 +807,14 @@
       "frequencies": {
         "hourly": "Hourly",
         "daily": "Daily",
-        "weekly": "Weekly"
+        "weekly": "Weekly",
+        "monthly": "Monthly"
       },
       "tabs_one": "{{count}} tab",
       "tabs_other": "{{count}} tabs",
       "groups_one": "{{count}} group",
-      "groups_other": "{{count}} groups"
+      "groups_other": "{{count}} groups",
+      "noBackupYet": "No backup yet"
     },
     "distractionScan": {
       "title": "AI-suggested domains",
@@ -3250,5 +3252,14 @@
     "processing": "Supertry sends it through OpenRouter to the AI model, currently GLM by Z.ai. The provider doesn't train on it, and we don't store your requests or the answers.",
     "privacyLink": "Privacy Policy",
     "gotIt": "Got it"
+  },
+  "dataSafety": {
+    "undo": "Undo",
+    "seconds": "{{count}}s",
+    "undoFailed": "Could not undo the deletion. Please try again.",
+    "memoryNoticeTitle": "Your tabs are still here",
+    "memoryNoticeBody": "Your tabs are open in the browser. Nothing was lost. Save them again with Alt+S to put them back in the same group, with its name, color and tags.",
+    "closesIn": "Closes in {{count}}s",
+    "restoreSavedData": "Both options also restore saved groups, tags, projects, Brain Dump entries and archives. Matching records return to their backed-up version; other saved data is kept."
   }
 }

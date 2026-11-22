@@ -175,6 +175,7 @@ async function ensureAlarm(name: string, alarmInfo: chrome.alarms.AlarmCreateInf
 
 function ensureCoreAlarms(): void {
     void Promise.allSettled([
+        BackupService.ensureScheduled(),
         ensureAlarm(ALARM_NAMES.AUTH_REFRESH, { periodInMinutes: 30 }),
         ensureAlarm(ALARM_NAMES.SUBSCRIPTION_CHECK, { periodInMinutes: 60 }),
         ensureAlarm(ALARM_NAMES.BLUET_BRIDGE_HEARTBEAT, { periodInMinutes: 360 }),
@@ -727,7 +728,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
     } else if (alarm.name === ALARM_NAMES.SESSION_BACKUP) {
         try {
             console.log('[BlueTab][Backup] Running scheduled backup');
-            await BackupService.capture();
+            if ((await BackupService.getSettings()).enabled) await BackupService.capture();
         } catch (err) {
             console.error('[BlueTab][Backup] capture error:', err);
         }

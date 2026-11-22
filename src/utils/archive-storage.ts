@@ -541,7 +541,8 @@ export class ArchiveStorageService {
     }
   }
 
-  private static async rebuildSearchIndex(): Promise<void> {
+  /** Rebuild derived search data after restoring raw archives; protected contents stay opaque. */
+  static async rebuildSearchIndex(): Promise<void> {
     try {
       const archives = await this.getArchives();
       await Storage.set(this.SEARCH_INDEX_KEY, []);

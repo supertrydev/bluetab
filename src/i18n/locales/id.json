@@ -793,7 +793,7 @@
     "sessionBackup": {
       "title": "Cadangan Sesi",
       "enableTitle": "Aktifkan cadangan sesi otomatis",
-      "enableDescription": "Menyimpan semua tab dan jendela browser yang terbuka secara berkala",
+      "enableDescription": "Menyimpan grup, tag, proyek, entri Brain Dump, arsip, dan jendela browser yang terbuka secara berkala. Arsip yang dilindungi kata sandi tetap terenkripsi.",
       "frequency": "Frekuensi",
       "lastBackup": "Cadangan terakhir: {{time}}",
       "history": "Riwayat Cadangan",
@@ -807,12 +807,14 @@
       "frequencies": {
         "hourly": "Setiap jam",
         "daily": "Harian",
-        "weekly": "Mingguan"
+        "weekly": "Mingguan",
+        "monthly": "Bulanan"
       },
       "tabs_one": "{{count}} tab",
       "tabs_other": "{{count}} tab",
       "groups_one": "{{count}} grup",
-      "groups_other": "{{count}} grup"
+      "groups_other": "{{count}} grup",
+      "noBackupYet": "Belum ada cadangan"
     },
     "distractionScan": {
       "title": "Domain yang disarankan AI",
@@ -3250,5 +3252,14 @@
     "processing": "Supertry mengirimnya melalui OpenRouter ke model AI, saat ini GLM dari Z.ai. Penyedia tidak melatih model dengan data ini, dan kami tidak menyimpan permintaan maupun jawabannya.",
     "privacyLink": "Kebijakan Privasi",
     "gotIt": "Mengerti"
+  },
+  "dataSafety": {
+    "undo": "Urungkan",
+    "seconds": "{{count}} dtk",
+    "undoFailed": "Penghapusan tidak dapat diurungkan. Silakan coba lagi.",
+    "memoryNoticeTitle": "Tab Anda masih ada",
+    "memoryNoticeBody": "Tab Anda terbuka di browser. Tidak ada yang hilang. Simpan lagi dengan Alt+S untuk mengembalikannya ke grup yang sama, beserta nama, warna, dan tagnya.",
+    "closesIn": "Menutup dalam {{count}} dtk",
+    "restoreSavedData": "Kedua opsi juga memulihkan grup tersimpan, tag, proyek, entri Brain Dump, dan arsip. Data yang cocok dikembalikan ke versi cadangan; data tersimpan lainnya tetap dipertahankan."
   }
 }

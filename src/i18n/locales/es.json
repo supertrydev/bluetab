@@ -793,7 +793,7 @@
     "sessionBackup": {
       "title": "Copia de seguridad de sesiones",
       "enableTitle": "Activar copia de seguridad automática de sesiones",
-      "enableDescription": "Guarda periódicamente todas las pestañas y ventanas abiertas del navegador",
+      "enableDescription": "Guarda periódicamente tus grupos, etiquetas, proyectos, entradas de Brain Dump, archivos y ventanas abiertas del navegador. Los archivos protegidos con contraseña permanecen cifrados.",
       "frequency": "Frecuencia",
       "lastBackup": "Última copia: {{time}}",
       "history": "Historial de copias de seguridad",
@@ -807,12 +807,14 @@
       "frequencies": {
         "hourly": "Cada hora",
         "daily": "Diaria",
-        "weekly": "Semanal"
+        "weekly": "Semanal",
+        "monthly": "Mensual"
       },
       "tabs_one": "{{count}} pestaña",
       "tabs_other": "{{count}} pestañas",
       "groups_one": "{{count}} grupo",
-      "groups_other": "{{count}} grupos"
+      "groups_other": "{{count}} grupos",
+      "noBackupYet": "Aún no hay copias de seguridad"
     },
     "distractionScan": {
       "title": "Dominios sugeridos por IA",
@@ -3250,5 +3252,14 @@
     "processing": "Supertry los envía a través de OpenRouter al modelo de IA, actualmente GLM de Z.ai. El proveedor no entrena con ellos y no guardamos tus solicitudes ni las respuestas.",
     "privacyLink": "Política de privacidad",
     "gotIt": "Entendido"
+  },
+  "dataSafety": {
+    "undo": "Deshacer",
+    "seconds": "{{count}} s",
+    "undoFailed": "No se pudo deshacer la eliminación. Inténtalo de nuevo.",
+    "memoryNoticeTitle": "Tus pestañas siguen aquí",
+    "memoryNoticeBody": "Tus pestañas están abiertas en el navegador. No se ha perdido nada. Guárdalas de nuevo con Alt+S para devolverlas al mismo grupo, con su nombre, color y etiquetas.",
+    "closesIn": "Se cierra en {{count}} s",
+    "restoreSavedData": "Ambas opciones también restauran los grupos guardados, las etiquetas, los proyectos, las entradas de Brain Dump y los archivos. Los registros coincidentes vuelven a la versión de la copia; los demás datos guardados se conservan."
   }
 }

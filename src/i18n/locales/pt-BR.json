@@ -793,7 +793,7 @@
     "sessionBackup": {
       "title": "Backup de sessão",
       "enableTitle": "Ativar backup automático da sessão",
-      "enableDescription": "Salva periodicamente todas as abas e janelas abertas do navegador",
+      "enableDescription": "Salva periodicamente seus grupos, etiquetas, projetos, entradas do Brain Dump, arquivos e janelas abertas do navegador. Os arquivos protegidos por senha permanecem criptografados.",
       "frequency": "Frequência",
       "lastBackup": "Último backup: {{time}}",
       "history": "Histórico de backups",
@@ -807,12 +807,14 @@
       "frequencies": {
         "hourly": "A cada hora",
         "daily": "Diariamente",
-        "weekly": "Semanalmente"
+        "weekly": "Semanalmente",
+        "monthly": "Mensal"
       },
       "tabs_one": "{{count}} aba",
       "tabs_other": "{{count}} abas",
       "groups_one": "{{count}} grupo",
-      "groups_other": "{{count}} grupos"
+      "groups_other": "{{count}} grupos",
+      "noBackupYet": "Nenhum backup ainda"
     },
     "distractionScan": {
       "title": "Domínios sugeridos por IA",
@@ -3250,5 +3252,14 @@
     "processing": "A Supertry envia esses dados pelo OpenRouter ao modelo de IA, hoje o GLM da Z.ai. O provedor não treina modelos com eles, e não guardamos seus pedidos nem as respostas.",
     "privacyLink": "Política de Privacidade",
     "gotIt": "Entendi"
+  },
+  "dataSafety": {
+    "undo": "Desfazer",
+    "seconds": "{{count}} s",
+    "undoFailed": "Não foi possível desfazer a exclusão. Tente novamente.",
+    "memoryNoticeTitle": "Suas abas continuam aqui",
+    "memoryNoticeBody": "Suas abas estão abertas no navegador. Nada foi perdido. Salve-as novamente com Alt+S para colocá-las no mesmo grupo, com seu nome, cor e etiquetas.",
+    "closesIn": "Fecha em {{count}} s",
+    "restoreSavedData": "As duas opções também restauram grupos salvos, etiquetas, projetos, entradas do Brain Dump e arquivos. Os registros correspondentes voltam à versão do backup; os demais dados salvos são mantidos."
   }
 }
