@@ -187,3 +187,18 @@ class MockWebSocket {
   constructor(url: string) { this.url = url; }
 }
 (global as Record<string, unknown>).WebSocket = MockWebSocket;
+
+// Packaged locale fetches are disk reads in Jest; API tests can still install
+// their own fetch doubles. Production always uses chrome.runtime.getURL().
+const nativeFetch = globalThis.fetch;
+globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
+  const match = String(input).match(/^chrome-extension:\/\/test-extension-id\/locales\/(en|tr|es|pt-BR|id|ar)\.json$/);
+  if (match) {
+    const { readFileSync } = require('node:fs');
+    const { resolve } = require('node:path');
+    const data = JSON.parse(readFileSync(resolve(process.cwd(), 'src/i18n/locales', `${match[1]}.json`), 'utf8'));
+    return { ok: true, status: 200, json: async () => data } as Response;
+  }
+  if (!nativeFetch) throw new Error(`Unexpected fetch in test: ${String(input)}`);
+  return nativeFetch(input, init);
+}) as typeof fetch;
