@@ -9,7 +9,8 @@ and Firefox Add-ons.
   redirected when a participant's browser tab group is missing.
 - Smart Group Naming (Pro) names unnamed groups as soon as it is on, without
   waiting for the one-time AI notice. Its setting explains that tab titles
-  and addresses are sent to Bluetab AI.
+  and addresses are sent to Bluetab AI. Names are written in your interface
+  language.
 - Creating a GitHub issue in a repository outside your connected list always
   asks for confirmation, even with "Always allow" on or an empty connected list.
 - Deleting groups in the manager, popup or side panel, including bulk deletion,
