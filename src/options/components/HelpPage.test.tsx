@@ -39,7 +39,7 @@ describe('Help changelog', () => {
 
   it.each<[SupportedLanguage, string]>([
     ['en', 'Previous versions'],
-    ['tr', 'Önceki sürümler'],
+    ['tr', '\u00d6nceki s\u00fcr\u00fcmler'],
     ['es', 'Versiones anteriores'],
     ['pt-BR', 'Versões anteriores'],
     ['id', 'Versi sebelumnya'],

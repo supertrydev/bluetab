@@ -113,10 +113,11 @@ describe('logInvocation — 30-day soft TTL prune', () => {
 
   it('keeps entries exactly at the 30-day boundary (>=cutoff)', async () => {
     const now = Date.now();
+    jest.spyOn(Date, 'now').mockReturnValue(now);
     const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
     // Entry exactly at cutoff should be retained.
     memory.set(STORAGE_KEY, [
-      makeEntry({ tool_name: 'boundary', timestamp: now - THIRTY_DAYS_MS + 1 }),
+      makeEntry({ tool_name: 'boundary', timestamp: now - THIRTY_DAYS_MS }),
     ]);
 
     await logInvocation(makeEntry({ tool_name: 'fresh', timestamp: now }));

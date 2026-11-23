@@ -6,12 +6,11 @@ import { useTranslation } from 'react-i18next';
 import { t as translate } from '@/i18n';
 import { isolateBidi } from '@/i18n/bidi';
 import { Storage } from '../../utils/storage';
+import { SUPPORT_EMAIL } from '@/utils/support-contact';
 
 interface HelpPageProps {
   sidebarTrigger: ReactNode;
 }
-
-const SUPPORT_EMAIL = 'support@supertry.net';
 
 // FAQ data
 const FAQ_ITEMS = [

@@ -64,6 +64,7 @@ const INTENTIONAL_IDENTICAL_COPY = new Set([
     'settingsTabs.brainDump',
     'settingsTabs.adhd',
     'settingsTabs.mcp',
+    'settings.about.copyright', // Copyright symbol, year, and company name are language-neutral.
     'settings.brainDump.title',
     'settings.mcp.bearerToken',
     'settings.mcp.connectedClient.toolsets.brainDump',

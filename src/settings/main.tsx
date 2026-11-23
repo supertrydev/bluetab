@@ -8,11 +8,10 @@ import { textSizeService } from '../utils/TextSizeService';
 import { Toaster } from '@/components/Toast';
 import { LocaleDirectionProvider } from '@/components/LocaleDirectionProvider';
 import { getLanguageDirection, initI18n, setDocumentTitle } from '@/i18n';
-import { isolateBidi } from '@/i18n/bidi';
 import { AppSidebar } from '../components/app-sidebar';
 import { SidebarProvider, SidebarInset, SidebarTrigger } from '../components/ui/sidebar';
 import { Separator } from '../components/ui/separator';
-import Logo from '../components/Logo';
+import { AboutSettings } from './components/AboutSettings';
 import { Info, Palette, Cloud, Timer, Shield, Sparkles, BarChart2, Bell, Rss, HardDrive, Settings2, Menu, Download, Search, X, Brain, BookMarked, Server, Plug2, StickyNote } from 'lucide-react';
 import { useAuth } from '../components/auth/useAuth';
 import { ThemeSettings } from './components/ThemeSettings';
@@ -341,27 +340,7 @@ function SettingsPage() {
             case 'general': return <GeneralSettings settings={settings} onSettingsChange={setSettings} />;
             case 'group-menu': return <GroupMenuSettings settings={settings} isPro={isPro} onSettingsChange={setSettings} />;
             case 'backup': return <BackupSettings settings={settings} groups={groups} onSettingsChange={setSettings} onGroupsChange={setGroups} />;
-            case 'about': return (
-                <div>
-                    <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 flex items-center gap-2 mb-4">
-                        <Info className="w-5 h-5" />
-                        {t('settingsTabs.about')}
-                    </h3>
-                    <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
-                        <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 text-center sm:text-start">
-                            <Logo size="splash" className="flex-shrink-0" />
-                            <div>
-                                <p className="text-sm text-gray-600 dark:text-gray-400">
-                                    {t('common.version', { version: isolateBidi(chrome.runtime.getManifest().version, 'ltr') })}
-                                </p>
-                                <p className="text-sm text-gray-600 dark:text-gray-300 mt-2 max-w-md">
-                                    {t('settings.aboutDescription')}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            );
+            case 'about': return <AboutSettings />;
             default: return null;
         }
     };

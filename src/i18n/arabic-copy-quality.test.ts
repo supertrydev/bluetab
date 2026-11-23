@@ -62,6 +62,7 @@ describe('Arabic copy quality', () => {
     'options.groupList.sort.alphabetical',
     'options.stats.noData',
     'settings.adhd.whitelistPlaceholder',
+    'settings.about.copyright', // Copyright symbol, year, and company name are language-neutral.
     'settings.brainDump.title',
     'settings.focus.blockedPhrasesPlaceholder',
     'settings.focus.domainPlaceholder',
