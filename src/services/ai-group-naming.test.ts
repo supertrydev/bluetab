@@ -7,6 +7,7 @@ jest.mock('../utils/storage');
 jest.mock('../utils/auth-state', () => ({ getAccessToken: jest.fn() }));
 jest.mock('../utils/feature-gate', () => ({ canAccessFeature: jest.fn() }));
 jest.mock('./ai-allowance-service', () => ({ AIAllowanceService: { syncFromAIResponse: jest.fn() } }));
+jest.mock('../i18n', () => ({ getResolvedLanguage: jest.fn().mockResolvedValue('tr') }));
 const tabs = Array.from({ length: 12 }, (_, i) => ({ title: `Tab ${i}`, url: `https://example.com/${i}` }));
 const originalFetch = global.fetch;
 beforeEach(() => {
@@ -17,12 +18,12 @@ beforeEach(() => {
   global.fetch = jest.fn().mockResolvedValue({ ok: true, json: async () => ({ name: 'Research' }) });
 });
 afterEach(() => { global.fetch = originalFetch; jest.restoreAllMocks(); });
-it('preserves auth, first ten tabs, allowance updates and the 15-second timeout', async () => {
+it('preserves auth, first ten tabs, the UI language, allowance updates and the 15-second timeout', async () => {
   const timeout = jest.spyOn(AbortSignal, 'timeout');
   expect(await suggestGroupName(tabs)).toBe('Research');
   expect(fetch).toHaveBeenCalledWith(expect.stringContaining('/api/ai/name-group'), expect.objectContaining({
     method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer token' },
-    body: JSON.stringify({ tabs: tabs.slice(0, 10) }),
+    body: JSON.stringify({ tabs: tabs.slice(0, 10), language: 'tr' }),
   }));
   expect(timeout).toHaveBeenCalledWith(15_000);
   expect(AIAllowanceService.syncFromAIResponse).toHaveBeenCalled();
