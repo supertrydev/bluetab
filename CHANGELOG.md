@@ -37,6 +37,11 @@ and Firefox Add-ons.
 - A repeatable memory measurement script uses a fixed 100-tab fixture. With
   that fixture in headless Chromium, side panel JavaScript heap fell from
   7.54 MiB in 1.0.6 to 6.23 MiB; this measures the panel heap, not total browser RAM.
+- Search ignores case, accents and Arabic harakat in every language: "istanbul"
+  finds "İstanbul" and "cafe" finds "Café" (manager, side panel, popup, new tab,
+  Brain Dump, archives and the `bt` address-bar search).
+- Onboarding keeps the same card height on every step, so Next stays in place;
+  language and theme are dropdowns. The side panel's save button uses the brand colour.
 - Settings → About is a full About page: links (website, release notes, source,
   bug form, support, privacy, terms), "Rate Bluetab" for the Chrome Web Store or
   Firefox Add-ons, copyable diagnostics for bug reports, the AGPL-3.0 license and
