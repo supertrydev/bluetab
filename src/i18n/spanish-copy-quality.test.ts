@@ -67,6 +67,7 @@ describe('Spanish copy quality', () => {
     'document.newTabTitle',
     'document.popupTitle',
     'flow.page.title',
+    'managerWelcome.tabs.bluetab', // Product name stays unchanged in every locale.
     'flow.ruleCard.not',
     'notifications.appTitle',
     'notifications.pomodoroTitle',
@@ -82,6 +83,7 @@ describe('Spanish copy quality', () => {
     'popup.errorBoundary.errorShort',
     'settings.adhd.breakPreview',
     'settings.adhd.whitelistPlaceholder',
+    'settings.about.copyright', // Copyright symbol, year, and company name are language-neutral.
     'settings.brainDump.title',
     'settings.focus.blockedPhrasesPlaceholder',
     'settings.focus.domainPlaceholder',
@@ -165,8 +167,7 @@ describe('Spanish copy quality', () => {
     );
 
     expect(settingsSource).toContain('<SelectItem value="es">{t(\'common.spanish\')}</SelectItem>');
-    expect(onboardingSource).toContain("language === 'es'");
-    expect(onboardingSource).toContain("onLanguageChange('es')");
+    expect(onboardingSource).toContain('<SelectItem value="es">');
     expect(onboardingSource).toContain("t('common.spanish')");
   });
 

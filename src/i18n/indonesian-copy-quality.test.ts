@@ -70,6 +70,7 @@ describe('Indonesian copy quality', () => {
     'document.newTabTitle',
     'document.popupTitle',
     'flow.page.title',
+    'managerWelcome.tabs.bluetab', // Product name stays unchanged in every locale.
     'flow.ruleCard.templateBadge',
     'navigation.menu',
     'newTab.tabLabel',
@@ -87,6 +88,8 @@ describe('Indonesian copy quality', () => {
     'options.stats.sessionCount.pomodoro_one',
     'popup.archiveModal.tabCount_one',
     'settings.adhd.whitelistPlaceholder',
+    'settings.about.browser', // Browser is also the established Indonesian UI term.
+    'settings.about.copyright', // Copyright symbol, year, and company name are language-neutral.
     'settings.brainDump.title',
     'settings.focus.blockedPhrasesPlaceholder',
     'settings.focus.domainPlaceholder',

@@ -1,3 +1,4 @@
+import { matchesSearch, normalizeForSearch } from '@/utils/search-text';
 import { useState, useMemo, useCallback } from 'react';
 import type { BrowserTab } from './useBrowserTabs';
 import type { BrowserGroup } from './useBrowserGroups';
@@ -25,14 +26,14 @@ export function useTabSearch({
 }: UseTabSearchProps): UseTabSearchReturn {
     const [searchQuery, setSearchQuery] = useState('');
 
-    const normalizedQuery = searchQuery.toLowerCase().trim();
+    const normalizedQuery = normalizeForSearch(searchQuery);
 
-    const matchesSearch = useCallback((tab: BrowserTab, groupTitle?: string): boolean => {
+    const matchesTab = useCallback((tab: BrowserTab, groupTitle?: string): boolean => {
         if (!normalizedQuery) return true;
 
-        const titleMatch = tab.title.toLowerCase().includes(normalizedQuery);
-        const urlMatch = tab.url.toLowerCase().includes(normalizedQuery);
-        const groupMatch = groupTitle ? groupTitle.toLowerCase().includes(normalizedQuery) : false;
+        const titleMatch = matchesSearch(tab.title, normalizedQuery);
+        const urlMatch = matchesSearch(tab.url, normalizedQuery);
+        const groupMatch = groupTitle ? matchesSearch(groupTitle, normalizedQuery) : false;
 
         return titleMatch || urlMatch || groupMatch;
     }, [normalizedQuery]);
@@ -42,7 +43,7 @@ export function useTabSearch({
         const ungroupedTabs = tabs.filter(t => !t.pinned && t.groupId === -1);
 
         // Filter pinned tabs
-        const filteredPinnedTabs = pinnedTabs.filter(tab => matchesSearch(tab));
+        const filteredPinnedTabs = pinnedTabs.filter(tab => matchesTab(tab));
 
         // Filter grouped tabs
         const filteredGroupedTabs = new Map<number, BrowserTab[]>();
@@ -50,10 +51,10 @@ export function useTabSearch({
 
         groups.forEach(group => {
             const groupTabs = groupedTabs.get(group.id) || [];
-            const matchingTabs = groupTabs.filter(tab => matchesSearch(tab, group.title));
+            const matchingTabs = groupTabs.filter(tab => matchesTab(tab, group.title));
 
             // Include group if it has matching tabs OR if group title matches query
-            const groupTitleMatches = normalizedQuery && group.title?.toLowerCase().includes(normalizedQuery);
+            const groupTitleMatches = normalizedQuery && matchesSearch(group.title ?? '', normalizedQuery);
 
             if (matchingTabs.length > 0 || groupTitleMatches) {
                 // If group title matches, include all tabs
@@ -63,7 +64,7 @@ export function useTabSearch({
         });
 
         // Filter ungrouped tabs
-        const filteredUngroupedTabs = ungroupedTabs.filter(tab => matchesSearch(tab));
+        const filteredUngroupedTabs = ungroupedTabs.filter(tab => matchesTab(tab));
 
         return {
             filteredPinnedTabs,
@@ -71,7 +72,7 @@ export function useTabSearch({
             filteredUngroupedTabs,
             filteredGroups
         };
-    }, [tabs, groups, groupedTabs, matchesSearch, normalizedQuery]);
+    }, [tabs, groups, groupedTabs, matchesTab, normalizedQuery]);
 
     const hasResults = !normalizedQuery || (
         filteredResults.filteredPinnedTabs.length > 0 ||

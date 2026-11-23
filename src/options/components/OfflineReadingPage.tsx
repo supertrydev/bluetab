@@ -1,3 +1,4 @@
+import { matchesSearch, normalizeForSearch } from '@/utils/search-text';
 import * as React from 'react';
 import { BookMarked, Pin, AlertTriangle, ChevronDown, ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -98,11 +99,11 @@ export function OfflineReadingPage({
 
   const filtered = React.useMemo(() => {
     if (!articles) return [];
-    const q = search.trim().toLowerCase();
+    const q = normalizeForSearch(search);
     return articles.filter(a => {
       if (filter === 'unread' && a.readAt !== null) return false;
       if (filter === 'pinned' && a.pinned !== 1) return false;
-      if (q && !(a.title.toLowerCase().includes(q) || a.url.toLowerCase().includes(q)))
+      if (q && !(matchesSearch(a.title, q) || matchesSearch(a.url, q)))
         return false;
       return true;
     });

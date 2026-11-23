@@ -39,6 +39,16 @@ function createApis(): jest.Mocked<RestoreSidepanelGroupTabsApis> {
 }
 
 describe('restoreSidepanelGroupTabs', () => {
+  it('keeps the acting page visible while the first Group Memory notice is shown', async () => {
+    const apis = createApis();
+    apis.createWindow.mockResolvedValue({ id: 9, tabs: [{ id: 201 }] });
+    await restoreSidepanelGroupTabs({
+      group: savedGroup, settings: { restoreMode: 'newWindow' }, currentTabs: [], apis, keepFocus: true,
+    });
+    expect(apis.createWindow).toHaveBeenCalledWith({ url: 'https://react.dev', focused: false });
+    expect(apis.createTab).toHaveBeenCalledWith({ url: 'https://typescriptlang.org', windowId: 9, active: false });
+  });
+
   it('restores current-window tabs into one named browser group when configured', async () => {
     const apis = createApis();
 

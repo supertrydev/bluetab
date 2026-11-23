@@ -1,3 +1,4 @@
+import { readAvailableMemory, measureFreedMemory } from './freed-memory';
 import { saveTabsToBlueTab, type SaveTabsToBlueTabResult } from './saved-tab-actions';
 import { getAuthState } from '../utils/auth-state';
 import { Storage } from '../utils/storage';
@@ -14,6 +15,10 @@ async function getGeneratedGroupName(kind: 'session' | 'suspended', now: number)
   return translate(`contextMenu.generatedGroups.${kind}`, { time: formatTime(now) });
 }
 
+export interface SaveCurrentWindowTabsResult extends SaveTabsToBlueTabResult {
+  freedMemory?: Promise<number | null>;
+}
+
 export interface SaveCurrentWindowTabsOptions {
   now?: number;
   projectId?: string | null;
@@ -21,6 +26,7 @@ export interface SaveCurrentWindowTabsOptions {
 
 export interface SaveBrowserTabsSelectionOptions extends SaveCurrentWindowTabsOptions {
   tabs: chrome.tabs.Tab[];
+  measureMemory?: boolean;
   defaultGroupName: string;
   currentWindowTabs?: chrome.tabs.Tab[];
 }
@@ -77,8 +83,9 @@ export async function saveBrowserTabsSelection(
     now = Date.now(),
     projectId = null,
     currentWindowTabs,
+    measureMemory = false,
   }: SaveBrowserTabsSelectionOptions,
-): Promise<SaveTabsToBlueTabResult | null> {
+): Promise<SaveCurrentWindowTabsResult | null> {
   const windowTabs = currentWindowTabs ?? await chrome.tabs.query({ currentWindow: true });
   const settings = await Storage.getSettings();
   const savableTabs = getSavableTabs(tabs, settings);
@@ -93,7 +100,8 @@ export async function saveBrowserTabsSelection(
   }
 
   const authState = await getAuthState();
-  return saveTabsToBlueTab(
+  const before = closeSourceTabs && measureMemory ? await readAvailableMemory() : null;
+  const result = await saveTabsToBlueTab(
     tabs,
     defaultGroupName,
     {
@@ -103,15 +111,21 @@ export async function saveBrowserTabsSelection(
       isPro: authState.isPro,
     },
   );
+  return {
+    ...result,
+    ...(closeSourceTabs && result.closedCount > 0 && before !== null
+      ? { freedMemory: measureFreedMemory(before) } : {}),
+  };
 }
 
 export async function saveCurrentWindowTabs(
   { now = Date.now(), projectId = null }: SaveCurrentWindowTabsOptions = {},
-): Promise<SaveTabsToBlueTabResult | null> {
+): Promise<SaveCurrentWindowTabsResult | null> {
   const currentWindowTabs = await chrome.tabs.query({ currentWindow: true });
   return saveBrowserTabsSelection({
     tabs: currentWindowTabs,
     currentWindowTabs,
+    measureMemory: true,
     defaultGroupName: await getGeneratedGroupName('session', now),
     now,
     projectId,
@@ -120,7 +134,7 @@ export async function saveCurrentWindowTabs(
 
 export async function saveSuspendedTabsFromCurrentWindow(
   { now = Date.now(), projectId = null }: SaveCurrentWindowTabsOptions = {},
-): Promise<SaveTabsToBlueTabResult | null> {
+): Promise<SaveCurrentWindowTabsResult | null> {
   const currentWindowTabs = await chrome.tabs.query({ currentWindow: true });
   const suspendedTabs = currentWindowTabs.filter((tab) => tab.discarded);
 

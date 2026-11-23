@@ -58,7 +58,7 @@ interface ToolSpec {
   /** Lines for the confirmation card: user content, plus localized notes. */
   summarize: (input: Record<string, unknown>, ctx: ToolContext) => string[];
   /** Shares outside the user's own workspace: never skip the confirmation. */
-  alwaysConfirm?: (input: Record<string, unknown>) => boolean;
+  alwaysConfirm?: (input: Record<string, unknown>, ctx: ToolContext) => boolean;
 }
 
 export interface AIIntegrationTool {
@@ -189,6 +189,10 @@ const TOOL_SPECS: ToolSpec[] = [
       return { owner, repo, title: str(input.title), body: str(input.body) };
     },
     summarize: (input) => lines(input.title, input.repo),
+    alwaysConfirm: (input, ctx) => {
+      const target = (str(input.repo) ?? ctx.githubRepos[0])?.toLowerCase();
+      return !ctx.githubRepos.some((repo) => repo.toLowerCase() === target);
+    },
   },
   {
     integrationId: 'github',
@@ -388,7 +392,7 @@ export async function prepareAIIntegrationAction(
   return {
     integrationName: ctx.displayName,
     details: spec.summarize(input, ctx),
-    alwaysConfirm: spec.alwaysConfirm?.(input) ?? false,
+    alwaysConfirm: spec.alwaysConfirm?.(input, ctx) ?? false,
   };
 }
 

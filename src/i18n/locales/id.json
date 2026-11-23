@@ -167,7 +167,33 @@
     "about": "Tentang"
   },
   "settings": {
-    "aboutDescription": "Kelola tab Chrome dalam sekali klik. Simpan, atur, dan pulihkan sesi penjelajahan dengan mudah.",
+    "aboutDescription": "Simpan setiap tab, temukan dengan cepat, dan tampilkan lebih sedikit tanpa menutup satu pun. Pengelola tab yang tenang dan privat untuk Chrome dan Firefox.",
+    "about": {
+      "website": "Situs web",
+      "releaseNotes": "Catatan rilis",
+      "sourceCode": "Kode sumber",
+      "reportBug": "Laporkan bug",
+      "support": "Dukungan",
+      "privacyPolicy": "Kebijakan privasi",
+      "termsOfUse": "Ketentuan penggunaan",
+      "links": "Tautan Bluetab",
+      "rate": "Beri nilai Bluetab",
+      "reviewsHelp": "Ulasan membantu orang lain menemukan Bluetab.",
+      "diagnostics": "Informasi diagnostik",
+      "version": "Versi",
+      "browser": "Browser",
+      "operatingSystem": "Sistem operasi",
+      "interfaceLanguage": "Bahasa antarmuka",
+      "extensionId": "ID ekstensi",
+      "unavailable": "Tidak tersedia",
+      "copyDetails": "Salin detail",
+      "copied": "Disalin",
+      "copyFailed": "Tidak dapat menyalin detail. Silakan coba lagi.",
+      "licenseHeading": "Lisensi dan sumber terbuka",
+      "license": "Bluetab adalah perangkat lunak bebas di bawah lisensi GNU AGPL-3.0",
+      "libraries": "Pustaka sumber terbuka ({{count}})",
+      "copyright": "© 2026 Supertry"
+    },
     "page": {
       "title": "Pengaturan",
       "description": "Kelola preferensi Bluetab Anda",
@@ -526,7 +552,7 @@
     "ai": {
       "title": "Asisten AI",
       "smartNamingLabel": "Penamaan Grup Pintar",
-      "smartNamingDescription": "AI menyarankan nama saat menyimpan grup dengan 2 tab atau lebih",
+      "smartNamingDescription": "Judul dan alamat tab dalam grup yang disimpan tanpa nama dikirim ke Bluetab AI untuk menyarankan nama.",
       "clearHistoryLabel": "Hapus Riwayat AI",
       "clearHistoryDescription": "Hapus semua riwayat percakapan AI yang tersimpan dari browser ini",
       "historyCleared": "Riwayat dihapus",
@@ -793,7 +819,7 @@
     "sessionBackup": {
       "title": "Cadangan Sesi",
       "enableTitle": "Aktifkan cadangan sesi otomatis",
-      "enableDescription": "Menyimpan semua tab dan jendela browser yang terbuka secara berkala",
+      "enableDescription": "Menyimpan grup, tag, proyek, entri Brain Dump, arsip, dan jendela browser yang terbuka secara berkala. Arsip yang dilindungi kata sandi tetap terenkripsi.",
       "frequency": "Frekuensi",
       "lastBackup": "Cadangan terakhir: {{time}}",
       "history": "Riwayat Cadangan",
@@ -807,12 +833,14 @@
       "frequencies": {
         "hourly": "Setiap jam",
         "daily": "Harian",
-        "weekly": "Mingguan"
+        "weekly": "Mingguan",
+        "monthly": "Bulanan"
       },
       "tabs_one": "{{count}} tab",
       "tabs_other": "{{count}} tab",
       "groups_one": "{{count}} grup",
-      "groups_other": "{{count}} grup"
+      "groups_other": "{{count}} grup",
+      "noBackupYet": "Belum ada cadangan"
     },
     "distractionScan": {
       "title": "Domain yang disarankan AI",
@@ -1005,11 +1033,9 @@
       "title": "Selamat datang di Bluetab",
       "description": "Siapkan semuanya dalam waktu kurang dari satu menit.",
       "introLine1": "Bluetab membantu Anda menyimpan tab sekali klik, membuat grup pintar, dan memakai alat produktivitas langsung di browser.",
-      "introLine2": "Tur singkat ini akan menyiapkan semuanya dalam waktu kurang dari satu menit.",
       "languageTitle": "Pilih bahasa",
       "languageDescription": "Secara default, Bluetab mengikuti bahasa browser. Anda dapat mengubahnya kapan saja di Pengaturan.",
-      "themeTitle": "Pilih tema",
-      "themeDescription": "Secara default, tema browser mengikuti tampilan sistem."
+      "themeTitle": "Pilih tema"
     },
     "sidepanel": {
       "title": "Panel samping Bluetab",
@@ -1106,6 +1132,28 @@
         "item3": "Sinkronkan di beberapa profil browser dan komputer.",
         "item4": "Tersedia dari halaman Akun di pengaturan Bluetab."
       }
+    },
+    "focus": {
+      "cta": "Ingin Bluetab membantumu fokus? 3 pertanyaan, 30 detik",
+      "title": "Preferensi fokusmu",
+      "question1": "Berapa tab yang ingin kamu lihat sekaligus?",
+      "noLimit": "Tanpa batas",
+      "hiddenHint": "Tab tambahan dilipat ke dalam grup tersembunyi. Tidak ada tab yang ditutup.",
+      "question2": "Apa yang membantumu fokus pada tugas?",
+      "pomodoro": "Pomodoro 25 menit",
+      "flowtime": "Bekerja tanpa batas waktu dan mendapat saran istirahat (Flowtime)",
+      "visual": "Lihat sisa waktu sebagai cakram yang mengecil (Visual Time)",
+      "none": "Tidak ada",
+      "question3": "Apa yang sebaiknya dilakukan pada tab yang sudah lama tidak kamu gunakan?",
+      "suspend30": "Tidurkan setelah 30 menit (Zz)",
+      "suspend120": "Setelah 2 jam",
+      "leaveAlone": "Biarkan saja",
+      "tabSummary": "Batas tab yang terlihat: {{count}}",
+      "suspendSummary": "Tidurkan tab yang tidak aktif setelah {{minutes}} menit",
+      "nothingEnabled": "Tidak ada fitur fokus yang dipilih.",
+      "tip": "Saat kamu perlu menyelesaikan sesuatu, tekan Hard Focus di panel samping.",
+      "settingsHint": "Kamu bisa mengubahnya kapan saja di Pengaturan → ADHD.",
+      "saveError": "Preferensimu tidak dapat disimpan. Coba lagi."
     }
   },
   "feedback": {
@@ -1195,7 +1243,8 @@
     "rssSingleFallback": "Artikel baru",
     "rssMultipleHeader": "{{count}} artikel baru:",
     "autoArchived_one": "{{count}} grup tidak aktif dipindahkan ke Arsip",
-    "autoArchived_other": "{{count}} grup tidak aktif dipindahkan ke Arsip"
+    "autoArchived_other": "{{count}} grup tidak aktif dipindahkan ke Arsip",
+    "memoryFreed": " · sekitar {{mb}} MB memori dibebaskan"
   },
   "time": {
     "justNow": "baru saja",
@@ -1535,6 +1584,10 @@
         "dataPrivacy": {
           "question": "Di mana data saya disimpan?",
           "answer": "Sebagian besar data Bluetab awalnya disimpan secara lokal di browser. Beberapa fitur dapat mengirim data terpilih keluar perangkat saat digunakan: sinkronisasi cloud mengunggah data sinkronisasi terenkripsi, fitur AI mengirim konteks permintaan ke backend AI, integrasi mengirim konten ke alat terhubung, penerbitan Bluet mengirim koleksi yang dibagikan ke Bluet, dan MCP dapat memberikan akses data Bluetab yang disetujui kepada klien AI eksternal."
+        },
+        "freedMemory": {
+          "question": "Bagaimana Bluetab mengukur memori yang dibebaskan?",
+          "answer": "Bluetab membandingkan memori kosong komputermu sebelum tab ditutup dan beberapa detik sesudahnya. Aplikasi lain dapat memengaruhi hasilnya, jadi hasil ditampilkan sebagai perkiraan dan hanya jika perbedaannya jelas."
         }
       },
       "shortcutIntro": "Pintasan keyboard ini berfungsi di seluruh sistem selama Bluetab terpasang. Di browser berbasis Chromium, Anda dapat menyesuaikannya di {{path}}.",
@@ -1555,36 +1608,11 @@
         "featureButton": "Sarankan Fitur"
       },
       "changelog": {
-        "v1_0_6_1": "Tur pengenalan membuka panel samping saat memperkenalkannya",
-        "v1_0_6_2": "Membuat grup tab kini lebih andal, termasuk di Opera (Opera memerlukan minimal dua tab per grup)",
-        "v1_0_6_3": "Hubungkan Bluetab ke ChatGPT dari direktori aplikasi ChatGPT",
-        "v1_0_6_4": "Sinkronisasi memerlukan kata sandi sinkronisasi di setiap perangkat. Perangkat dengan pengaturan sinkronisasi lama dapat memulai dari awal dan tetap menyimpan data lokalnya",
-        "v1_0_6_5": "Mengirim ke aplikasi yang terhubung tidak lagi gagal saat login-nya perlu diperbarui di latar belakang",
-        "v1_0_6_6": "Bantuan langsung membuka formulir laporan bug dan permintaan fitur di GitHub",
-        "v1_0_5_1": "Kini tersedia untuk Firefox (versi 140 atau lebih baru)",
-        "v1_0_5_2": "Sinkronisasi dan Teams tidak lagi menaruh token sesi Anda di alamat web",
-        "v1_0_5_3": "Pembaruan keamanan untuk pembersihan halaman dan pustaka bawaan lainnya",
-        "v1_0_5_4": "Pengaturan → Tentang kini menampilkan versi yang terpasang",
-        "v1_0_3_1": "Impor mempertahankan judul OneTab dan membaca ekspor Session Buddy",
-        "v1_0_3_2": "Beri nama setiap perangkat saat browser bergabung ke sinkronisasi",
-        "v1_0_3_3": "Bluetab AI menampilkan apa yang dikirim sebelum permintaan pertama dan meminta konfirmasi sebelum bertindak di aplikasi yang terhubung",
-        "v1_0_3_4": "Halaman bantuan menampilkan alamat email dukungan",
-        "v1_0_0_1": "Pengelola grup AI dan ringkasan halaman ke Dump",
-        "v1_0_0_2": "Peningkatan Brain Dump, termasuk penyimpanan teks terpilih dan indikator halaman tertaut",
-        "v1_0_0_3": "Akses server MCP untuk klien AI eksternal",
-        "v1_0_0_4": "Perbaikan keandalan sinkronisasi cloud, pengelolaan perangkat, dan cakupan pengaturan yang lebih luas",
-        "v1_0_0_5": "Peluncuran penskalaan teks dan peningkatan judul statistik",
-        "v1_0_0_6": "Perbaikan stabilitas Fokus dan menu konteks",
-        "v0_9_0_1": "Alur onboarding baru dan Brain Dump sebagai fitur utama",
-        "v0_9_0_2": "Otomatisasi Flow dan tindakan tab berbantuan AI",
-        "v0_9_0_3": "Integrasi untuk alat seperti Notion, Slack, Linear, GitHub, dan lainnya",
-        "v0_9_0_4": "Peningkatan tombol mengambang dan alur penyimpanan cepat",
-        "v0_9_0_5": "Tindakan simpan yang lebih pintar, penyempurnaan pintasan, dan peningkatan UI",
-        "v0_1_0_1": "Simpan, atur, dan pulihkan tab",
-        "v0_1_0_2": "Proyek dan tag untuk pengaturan",
-        "v0_1_0_3": "Pintasan keyboard dan tampilan pengelola",
-        "v0_1_0_4": "Impor bookmark browser",
-        "v0_1_0_5": "Fondasi awal sinkronisasi cloud"
+        "v1_0_7_1": "Tidak sengaja menghapus grup? Anda dapat membatalkannya dalam 10 detik.",
+        "v1_0_7_2": "Grup tersimpan, tag, proyek, dan catatan Brain Dump Anda kini dicadangkan secara otomatis sebulan sekali.",
+        "v1_0_7_3": "Penamaan Grup Pintar (Pro) memberi nama pada grup yang belum bernama begitu fitur ini diaktifkan.",
+        "v1_0_7_4": "Lebih ringan dan lebih tenang: Bluetab hanya memuat bahasa Anda dan tidak lagi aktif setiap menit di latar belakang.",
+        "previousVersions": "Versi sebelumnya"
       },
       "editShortcuts": "Ubah pintasan"
     },
@@ -3250,5 +3278,28 @@
     "processing": "Supertry mengirimnya melalui OpenRouter ke model AI, saat ini GLM dari Z.ai. Penyedia tidak melatih model dengan data ini, dan kami tidak menyimpan permintaan maupun jawabannya.",
     "privacyLink": "Kebijakan Privasi",
     "gotIt": "Mengerti"
+  },
+  "dataSafety": {
+    "undo": "Urungkan",
+    "seconds": "{{count}} dtk",
+    "undoFailed": "Penghapusan tidak dapat diurungkan. Silakan coba lagi.",
+    "memoryNoticeTitle": "Tab Anda masih ada",
+    "memoryNoticeBody": "Tab Anda terbuka di browser. Tidak ada yang hilang. Simpan lagi dengan Alt+S untuk mengembalikannya ke grup yang sama, beserta nama, warna, dan tagnya.",
+    "closesIn": "Menutup dalam {{count}} dtk",
+    "restoreSavedData": "Kedua opsi juga memulihkan grup tersimpan, tag, proyek, entri Brain Dump, dan arsip. Data yang cocok dikembalikan ke versi cadangan; data tersimpan lainnya tetap dipertahankan."
+  },
+  "managerWelcome": {
+    "title": "Selamat datang di Bluetab",
+    "body": "Tekan Alt+S untuk menyimpan semua tab yang terbuka di satu jendela sebagai satu grup. Grupmu muncul di sini. Kami menambahkan grup contoh untuk membantumu memulai.",
+    "existingBody": "Tekan Alt+S untuk menyimpan semua tab yang terbuka di satu jendela sebagai satu grup. Grupmu muncul di sini.",
+    "done": "Selesai",
+    "exampleTag": "Contoh",
+    "groupName": "Mulai menggunakan Bluetab",
+    "tabs": {
+      "bluetab": "Bluetab",
+      "releases": "Catatan rilis",
+      "connect": "Hubungkan Bluetab ke aplikasi AI-mu",
+      "feedback": "Laporkan bug atau usulkan fitur"
+    }
   }
 }

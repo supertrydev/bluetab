@@ -1,13 +1,6 @@
 import { createInstance, type TOptions } from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import {
-  AR_RESOURCES,
-  EN_RESOURCES,
-  ES_RESOURCES,
-  ID_RESOURCES,
-  PT_BR_RESOURCES,
-  TR_RESOURCES,
-} from './runtime-resources';
+import { EN_RESOURCES } from './runtime-resources';
 import type { Settings } from '@/types/models';
 
 export const SUPPORTED_LANGUAGES = ['en', 'tr', 'es', 'pt-BR', 'id', 'ar'] as const;
@@ -17,16 +10,29 @@ export type LanguagePreference = 'system' | SupportedLanguage;
 const DEFAULT_LANGUAGE: SupportedLanguage = 'en';
 const DEFAULT_NAMESPACE = 'translation';
 const i18n = createInstance();
-const resources = {
-  ar: { translation: AR_RESOURCES },
+const resources: Record<string, { translation: Record<string, unknown> }> = {
   en: { translation: EN_RESOURCES },
-  es: { translation: ES_RESOURCES },
-  id: { translation: ID_RESOURCES },
-  'pt-BR': { translation: PT_BR_RESOURCES },
-  tr: { translation: TR_RESOURCES },
-} as const;
+};
+let languageQueue: Promise<unknown> = Promise.resolve();
 
-let initPromise: Promise<SupportedLanguage> | null = null;
+async function loadLanguage(language: SupportedLanguage): Promise<SupportedLanguage> {
+  if (resources[language]) return language;
+  try {
+    const response = await fetch(chrome.runtime.getURL(`locales/${language}.json`));
+    if (!response.ok) throw new Error(`Locale ${language}: HTTP ${response.status}`);
+    const translation = await response.json();
+    if (!translation || typeof translation !== 'object' || Array.isArray(translation)) {
+      throw new Error(`Invalid locale ${language}`);
+    }
+    resources[language] = { translation };
+    if (i18n.isInitialized) i18n.addResourceBundle(language, DEFAULT_NAMESPACE, translation);
+    return language;
+  } catch (error) {
+    console.warn('[BlueTab][i18n] Using English fallback:', error);
+    // Failed requests are not cached: a later switch can retry.
+    return DEFAULT_LANGUAGE;
+  }
+}
 
 export type TextDirection = 'ltr' | 'rtl';
 
@@ -166,6 +172,7 @@ async function ensureI18n(
   language: SupportedLanguage,
   manageDocumentMetadata = true,
 ): Promise<SupportedLanguage> {
+  language = await loadLanguage(language);
   if (i18n.isInitialized) {
     if (i18n.resolvedLanguage !== language) {
       await i18n.changeLanguage(language);
@@ -200,29 +207,21 @@ export async function initI18n(options?: {
   preference?: LanguagePreference | null;
   manageDocumentMetadata?: boolean;
 }): Promise<SupportedLanguage> {
-  const [resolved] = await Promise.all([
-    options?.language ?? getResolvedLanguage(options?.preference),
-    loadTimeFormatPreference(),
-  ]);
-  const manageDocumentMetadata = options?.manageDocumentMetadata ?? true;
-
-  if (!initPromise) {
-    initPromise = ensureI18n(resolved, manageDocumentMetadata).finally(() => {
-      initPromise = null;
-    });
-    return initPromise;
-  }
-
-  await initPromise;
-  return ensureI18n(resolved, manageDocumentMetadata);
+  const next = languageQueue.catch(() => {}).then(async () => {
+    const [resolved] = await Promise.all([
+      options?.language ?? getResolvedLanguage(options?.preference),
+      loadTimeFormatPreference(),
+    ]);
+    return ensureI18n(resolved, options?.manageDocumentMetadata ?? true);
+  });
+  languageQueue = next;
+  return next;
 }
 
 export async function applyLanguagePreference(
   preference: LanguagePreference,
 ): Promise<SupportedLanguage> {
-  const resolved = resolveLanguagePreference(preference);
-  await ensureI18n(resolved);
-  return resolved;
+  return initI18n({ preference });
 }
 
 export function getCurrentLanguage(): SupportedLanguage {

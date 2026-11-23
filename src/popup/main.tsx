@@ -1,3 +1,7 @@
+import { matchesSearch, normalizeForSearch } from '@/utils/search-text';
+import { shouldShowGroupMemoryNotice, showGroupMemoryNotice } from '@/services/group-memory-notice';
+import { GroupMemoryNotice } from '@/components/GroupMemoryNotice';
+import { deleteGroupsWithUndo } from '@/services/group-deletion';
 import { useState, useEffect, useCallback } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Storage } from '../utils/storage';
@@ -225,18 +229,20 @@ function App() {
                     break;
             }
 
+            const showNotice = await shouldShowGroupMemoryNotice(settings);
             if (shouldCreateNewWindow) {
                 // Create new window with first tab
                 if (group.tabs.length > 0) {
                     const newWindow = await chrome.windows.create({
                         url: group.tabs[0].url,
-                        focused: true
+                        focused: !showNotice
                     });
 
                     // Add remaining tabs to the new window
                     for (let i = 1; i < group.tabs.length; i++) {
                         await chrome.tabs.create({
                             url: group.tabs[i].url,
+                            active: !showNotice,
                             windowId: newWindow.id
                         });
                     }
@@ -244,7 +250,7 @@ function App() {
             } else {
                 // Add tabs to current window
                 for (const tab of group.tabs) {
-                    await chrome.tabs.create({ url: tab.url });
+                    await chrome.tabs.create({ url: tab.url, active: !showNotice });
                 }
             }
 
@@ -264,7 +270,7 @@ function App() {
             }
 
             // Close popup after restoring
-            window.close();
+            if (!(await showGroupMemoryNotice(settings))) window.close();
         } catch (error) {
             ToastManager.getInstance().error({
                 key: 'feedback.failedToRestoreTabs',
@@ -275,12 +281,10 @@ function App() {
 
     const deleteGroup = async (groupId: string) => {
         try {
-            // Group Memory: Forget the group when manually deleted (user explicitly wants it gone)
-            await GroupMemoryStorageService.forgetGroup(groupId);
-
-            const updatedGroups = groups.filter(g => g.id !== groupId);
-            await Storage.set('groups', updatedGroups);
+            const receipt = await deleteGroupsWithUndo([groupId]);
+            const { updatedGroups } = receipt;
             setGroups(updatedGroups);
+            if (receipt.count > 0) ToastManager.getInstance().undo({ key: 'options.manager.deletedGroups', values: { count: receipt.count } }, receipt);
 
             // Remove the group's collapsed state
             try {
@@ -354,15 +358,15 @@ function App() {
     };
     const { pinnedGroups, unpinnedGroups } = (() => {
         const filtered = groups.filter(group => {
-            const searchLower = search.toLowerCase();
-            const matchesName = group.name.toLowerCase().includes(searchLower);
+            const searchLower = normalizeForSearch(search);
+            const matchesName = matchesSearch(group.name, searchLower);
             const matchesTabs = group.tabs.some(tab =>
-                tab.title.toLowerCase().includes(searchLower) ||
-                tab.url.toLowerCase().includes(searchLower)
+                matchesSearch(tab.title, searchLower) ||
+                matchesSearch(tab.url, searchLower)
             );
             const matchesTags = group.tags && group.tags.length > 0 &&
                 TagManager.getTagsByIds(group.tags, tags).some(tag =>
-                    tag.name.toLowerCase().includes(searchLower)
+                    matchesSearch(tag.name, searchLower)
                 );
 
             return matchesName || matchesTabs || matchesTags;
@@ -768,6 +772,7 @@ function App() {
                 type="danger"
             />
 
+            <GroupMemoryNotice />
             <Toaster richColors position={direction === 'rtl' ? 'bottom-left' : 'bottom-right'} />
         </div>
     );

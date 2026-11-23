@@ -54,6 +54,7 @@ describe('Arabic copy quality', () => {
     'document.newTabTitle',
     'document.popupTitle',
     'flow.page.title',
+    'managerWelcome.tabs.bluetab', // Product name stays unchanged in every locale.
     'flow.ruleCard.not',
     'notifications.appTitle',
     'notifications.pomodoroTitle',
@@ -62,6 +63,7 @@ describe('Arabic copy quality', () => {
     'options.groupList.sort.alphabetical',
     'options.stats.noData',
     'settings.adhd.whitelistPlaceholder',
+    'settings.about.copyright', // Copyright symbol, year, and company name are language-neutral.
     'settings.brainDump.title',
     'settings.focus.blockedPhrasesPlaceholder',
     'settings.focus.domainPlaceholder',

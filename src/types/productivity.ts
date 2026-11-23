@@ -20,6 +20,9 @@
  *       Does not define the alarm name registry (see config/alarms.ts).
  */
 
+import type { TabGroup, Tag, Project } from '@/types/models';
+import type { BrainDumpEntry } from '@/types/adhd';
+import type { ArchiveStorage } from '@/types/archive';
 import type { NotificationSound } from '@/types/rss';
 
 // ---------------------------------------------------------------------------
@@ -143,10 +146,20 @@ export const DEFAULT_REMINDER_SETTINGS: ReminderSettings = {
 // Backup types
 // ---------------------------------------------------------------------------
 
+export interface BackupSavedData {
+  groups: TabGroup[];
+  tags: Tag[];
+  projects: Project[];
+  brain_dump_inbox: BrainDumpEntry[];
+  archivedGroups: ArchiveStorage | null;
+}
+
 export interface BackupSnapshot {
   id: string;
   timestamp: number;
   windows: BackupWindow[];
+  /** Absent in legacy, browser-only snapshots. Archive data stays encrypted. */
+  savedData?: BackupSavedData;
   totalTabs: number;
   totalGroups: number;
   sizeBytes: number;
@@ -177,7 +190,7 @@ export interface BackupTabGroup {
 
 export interface BackupSettings {
   enabled: boolean;
-  frequency: 'hourly' | 'daily' | 'weekly';
+  frequency: 'hourly' | 'daily' | 'weekly' | 'monthly';
 }
 
 // ---------------------------------------------------------------------------

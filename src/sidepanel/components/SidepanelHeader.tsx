@@ -29,7 +29,7 @@ export const SidepanelHeader: React.FC<SidepanelHeaderProps> = ({
                 <Button
                     variant="ghost"
                     size="sm"
-                    className="gap-1.5 h-6 text-xs text-muted-foreground hover:text-primary px-2"
+                    className="gap-1.5 h-6 text-xs text-primary hover:text-primary/90 hover:bg-primary/10 px-2"
                     onClick={onSaveAllTabs}
                     aria-label={t('sidepanel.header.saveCurrentTabs')}
                     title={t('sidepanel.header.saveCurrentTabs')}

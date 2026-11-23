@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Toaster as SonnerToaster, toast as sonnerToast, type ExternalToast } from 'sonner';
 import { t } from '@/i18n';
 import { DEFAULT_SUPPORT_SETTINGS, getSupportSettings, SUPPORT_SETTINGS_KEY } from '@/utils/support-settings';
@@ -111,6 +112,12 @@ export class ToastManager {
         return showToast(type, message, mergedOptions);
     }
 
+    undo(message: ToastMessageInput, receipt: { expiresAt: number; undo: () => Promise<boolean> }) {
+        return sonnerToast.custom(id => <UndoToast id={id} message={message} receipt={receipt} />, {
+            duration: Infinity,
+        });
+    }
+
     success(message: ToastMessageInput, duration?: number, options?: FeedbackOptions) {
         return this.show(message, 'success', duration, options);
     }
@@ -162,4 +169,37 @@ export function Toast() {
 // Legacy component for backward compatibility
 export function ToastContainer() {
     return null;
+}
+
+function UndoToast({ id, message, receipt }: {
+    id: string | number;
+    message: ToastMessageInput;
+    receipt: { expiresAt: number; undo: () => Promise<boolean> };
+}) {
+    const [remaining, setRemaining] = useState(Math.max(0, Math.ceil((receipt.expiresAt - Date.now()) / 1000)));
+    const [busy, setBusy] = useState(false);
+    useEffect(() => {
+        const tick = () => {
+            const seconds = Math.max(0, Math.ceil((receipt.expiresAt - Date.now()) / 1000));
+            setRemaining(seconds);
+            if (seconds === 0) sonnerToast.dismiss(id);
+        };
+        const interval = setInterval(tick, 250);
+        tick();
+        return () => clearInterval(interval);
+    }, [id, receipt.expiresAt]);
+    return <div role="status" className="flex items-center gap-3 rounded-lg border border-border bg-bg-1 p-4 text-sm text-foreground shadow-lg">
+        <span>{resolveMessage(message)}</span>
+        <button className="font-medium text-primary" disabled={busy || remaining === 0} onClick={async () => {
+            setBusy(true);
+            try {
+                await receipt.undo();
+                sonnerToast.dismiss(id);
+            } catch {
+                setBusy(false);
+                toast.error({ key: 'dataSafety.undoFailed' });
+            }
+        }}>{t('dataSafety.undo')}</button>
+        <span className="text-xs text-muted-foreground">{t('dataSafety.seconds', { count: remaining })}</span>
+    </div>;
 }

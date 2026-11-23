@@ -188,6 +188,18 @@ const participantTabGroups = new Map<string, { groupId: number | null; tabMap: M
 const TAB_GROUP_COLORS: chrome.tabGroups.ColorEnum[] = ['blue', 'red', 'yellow', 'green', 'pink', 'purple', 'cyan', 'orange']
 let nextColorIdx = 0
 
+function normalizeParticipantUrl(url: string): string {
+    try {
+        const parsed = new URL(url)
+        if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return url
+        parsed.protocol = 'https:'
+        parsed.pathname = parsed.pathname.replace(/\/$/, '')
+        return parsed.href
+    } catch {
+        return url
+    }
+}
+
 async function syncParticipantBrowserGroup(
     userId: string,
     displayName: string,
@@ -198,24 +210,38 @@ async function syncParticipantBrowserGroup(
             ?? { groupId: null, tabMap: new Map<string, number>() }
         participantTabGroups.set(userId, entry)
 
-        const wantedUrls = new Set(tabs.map((tab) => tab.url))
-        for (const [url, tabId] of entry.tabMap) {
-            if (!wantedUrls.has(url)) {
+        const wantedUrls = new Map(tabs.map((tab) => [normalizeParticipantUrl(tab.url), tab.url]))
+        for (const [url, tabId] of [...entry.tabMap]) {
+            // Missing groups can still have live (ungrouped or loading) tabs.
+            const tab = entry.groupId === null
+                ? await chrome.tabs.get(tabId).catch(() => undefined)
+                : undefined
+            let wantedUrl = wantedUrls.get(normalizeParticipantUrl(url))
+            if (!wantedUrl && tab) {
+                const currentUrl = normalizeParticipantUrl(tab.pendingUrl || tab.url || '')
+                // A redirect must not replace another shared tab's existing mapping.
+                const alreadyTracked = [...entry.tabMap.keys()]
+                    .some((trackedUrl) => normalizeParticipantUrl(trackedUrl) === currentUrl)
+                if (!alreadyTracked) wantedUrl = wantedUrls.get(currentUrl)
+            }
+            if (!wantedUrl) {
                 await chrome.tabs.remove(tabId).catch(() => {})
                 entry.tabMap.delete(url)
-            } else if (entry.groupId === null) {
-                // The group can be removed without closing its tabs.
-                const tab = await chrome.tabs.get(tabId).catch(() => undefined)
-                if (!tab || tab.url !== url) entry.tabMap.delete(url)
+            } else if (entry.groupId === null && !tab) {
+                // Only a missing tab ID requires reopening; navigation does not.
+                entry.tabMap.delete(url)
+            } else if (wantedUrl !== url) {
+                entry.tabMap.delete(url)
+                entry.tabMap.set(wantedUrl, tabId)
             }
         }
 
         const newTabIds: number[] = []
-        for (const tab of tabs) {
-            if (entry.tabMap.has(tab.url)) continue
-            const created = await chrome.tabs.create({ url: tab.url, active: false })
+        for (const url of wantedUrls.values()) {
+            if (entry.tabMap.has(url)) continue
+            const created = await chrome.tabs.create({ url, active: false })
             if (created.id) {
-                entry.tabMap.set(tab.url, created.id)
+                entry.tabMap.set(url, created.id)
                 newTabIds.push(created.id)
             }
         }

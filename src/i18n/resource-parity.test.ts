@@ -38,22 +38,20 @@ function loadResourceFromDisk(fileName: 'ar.json' | 'en.json' | 'es.json' | 'id.
 }
 
 describe('i18n resource parity', () => {
-  it('keeps generated Arabic runtime resources synchronized with its locale source', () => {
-    expect((runtimeResources as Record<string, unknown>).AR_RESOURCES).toEqual(
-      loadResourceFromDisk('ar.json'),
-    );
+  it('keeps the bundled fallback synchronized with English', () => {
+    expect(runtimeResources.EN_RESOURCES).toEqual(loadResourceFromDisk('en.json'));
+    expect(Object.keys(runtimeResources)).toEqual(['EN_RESOURCES']);
   });
 
-  it('keeps generated runtime resources synchronized with locale sources', () => {
-    expect(runtimeResources.EN_RESOURCES).toEqual(loadResourceFromDisk('en.json'));
-    expect(runtimeResources.ES_RESOURCES).toEqual(loadResourceFromDisk('es.json'));
-    expect((runtimeResources as Record<string, unknown>).ID_RESOURCES).toEqual(
-      loadResourceFromDisk('id.json'),
-    );
-    expect((runtimeResources as Record<string, unknown>).PT_BR_RESOURCES).toEqual(
-      loadResourceFromDisk('pt-BR.json'),
-    );
-    expect(runtimeResources.TR_RESOURCES).toEqual(loadResourceFromDisk('tr.json'));
+  it('packages every other language as JSON synchronized with its source', () => {
+    const { getLocaleAssets } = require('../../scripts/generate-runtime-resources.cjs');
+    const assets = getLocaleAssets();
+    expect(assets.map((asset: { fileName: string }) => asset.fileName).sort()).toEqual([
+      'locales/ar.json', 'locales/es.json', 'locales/id.json', 'locales/pt-BR.json', 'locales/tr.json',
+    ]);
+    for (const asset of assets) {
+      expect(JSON.parse(asset.source)).toEqual(loadResourceFromDisk(asset.fileName.replace('locales/', '')));
+    }
   });
 
   it('keeps English and Turkish resources in sync', () => {

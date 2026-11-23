@@ -1,3 +1,8 @@
+import { shouldShowGroupMemoryNotice, showGroupMemoryNotice } from '@/services/group-memory-notice';
+import { consumeManagerWelcome } from '@/services/manager-welcome';
+import { ManagerWelcome } from './components/ManagerWelcome';
+import { GroupMemoryNotice } from '@/components/GroupMemoryNotice';
+import { deleteGroupsWithUndo } from '@/services/group-deletion';
 import { createBrowserTabGroup } from '@/platform/create-browser-tab-group';
 import { useState, useEffect, useMemo, useCallback, useTransition } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -91,6 +96,7 @@ interface TabManagerContentProps {
 
 function TabManagerContent({ groups, setGroups }: TabManagerContentProps) {
     const direction = useDirection();
+    const [welcomeKind, setWelcomeKind] = useState<'sample' | 'existing' | null>(null);
     // Phase 9 Plan 09-04 — Simplify Mode attribute wiring for Options shell.
     useSimplifyMode();
 
@@ -347,6 +353,8 @@ function TabManagerContent({ groups, setGroups }: TabManagerContentProps) {
             console.error('Migration failed (non-critical):', error);
         }
 
+        const welcome = await consumeManagerWelcome();
+        if (welcome) setWelcomeKind(welcome);
         await loadGroups();
     }, [loadGroups]);
 
@@ -734,6 +742,7 @@ function TabManagerContent({ groups, setGroups }: TabManagerContentProps) {
     const restoreGroup = async (group: TabGroup) => {
         try {
             const storedSettings = await Storage.get<Settings>('settings') || getDefaultSettings();
+            const showNotice = await shouldShowGroupMemoryNotice(storedSettings);
             const restoreMode = storedSettings.restoreMode || 'smart';
             const tabGroupRestoreMode = storedSettings.tabGroupRestoreMode || 'normal';
 
@@ -761,7 +770,7 @@ function TabManagerContent({ groups, setGroups }: TabManagerContentProps) {
 
             if (shouldCreateNewWindow) {
                 if (group.tabs.length > 0) {
-                    const newWindow = await chrome.windows.create({ url: group.tabs[0].url, focused: true });
+                    const newWindow = await chrome.windows.create({ url: group.tabs[0].url, focused: !showNotice });
                     targetWindowId = newWindow.id;
                     if (newWindow.tabs && newWindow.tabs[0].id) createdTabIds.push(newWindow.tabs[0].id);
 
@@ -780,7 +789,7 @@ function TabManagerContent({ groups, setGroups }: TabManagerContentProps) {
             if (tabGroupRestoreMode === 'browserGroups' && createdTabIds.length > 0) {
                 try {
                     await new Promise(resolve => setTimeout(resolve, 150));
-                    if (targetWindowId) {
+                    if (targetWindowId && !showNotice) {
                         await chrome.windows.update(targetWindowId, { focused: true });
                         await new Promise(resolve => setTimeout(resolve, 100));
                     }
@@ -801,6 +810,7 @@ function TabManagerContent({ groups, setGroups }: TabManagerContentProps) {
                 await Storage.set('groups', updatedGroups);
                 setGroups(updatedGroups);
                 ToastManager.getInstance().success(translate('options.manager.restoredAndRemoved', { count: group.tabs.length, name: isolateBidi(group.name) }));
+                await showGroupMemoryNotice(storedSettings);
             } else {
                 ToastManager.getInstance().success(translate('options.manager.restored', { count: group.tabs.length, name: isolateBidi(group.name) }));
             }
@@ -895,10 +905,10 @@ function TabManagerContent({ groups, setGroups }: TabManagerContentProps) {
 
     const deleteGroup = async (groupId: string) => {
         try {
-            await GroupMemoryStorageService.forgetGroup(groupId);
-            const updatedGroups = groups.filter(g => g.id !== groupId);
-            await Storage.set('groups', updatedGroups);
+            const receipt = await deleteGroupsWithUndo([groupId]);
+            const { updatedGroups } = receipt;
             setGroups(updatedGroups);
+            if (receipt.count > 0) ToastManager.getInstance().undo({ key: 'options.manager.deletedGroups', values: { count: receipt.count } }, receipt);
             try {
                 await removeGroupState(groupId);
                 const newCollapsedState = new Map(collapsedGroups);
@@ -907,7 +917,6 @@ function TabManagerContent({ groups, setGroups }: TabManagerContentProps) {
             } catch (stateError) {
                 console.error('Failed to remove group state:', stateError);
             }
-            ToastManager.getInstance().success(translate('options.manager.groupDeleted'));
         } catch (error) {
             ToastManager.getInstance().error(translate('feedback.failedToDeleteGroup', { message: isolateBidi((error as Error).message) }));
         }
@@ -937,19 +946,14 @@ function TabManagerContent({ groups, setGroups }: TabManagerContentProps) {
             const groupsToDelete = groups.filter(g => selectedGroups.has(g.id) && !g.locked);
             const lockedCount = Array.from(selectedGroups).filter(id => groups.find(g => g.id === id)?.locked).length;
 
-            const updatedGroups = groups.filter(group => !selectedGroups.has(group.id) || group.locked);
-            await Storage.set('groups', updatedGroups);
-            setGroups(updatedGroups);
+            const receipt = await deleteGroupsWithUndo(groupsToDelete.map(group => group.id));
+            setGroups(receipt.updatedGroups);
             bulkEdit.clearSelection();
-
-            if (lockedCount > 0) {
-                ToastManager.getInstance().warning(translate('options.manager.deletedGroupsWithSkipped', {
-                    deleted: groupsToDelete.length,
-                    locked: lockedCount,
-                }));
-            } else {
-                ToastManager.getInstance().success(translate('options.manager.deletedGroups', { count: groupsToDelete.length }));
-            }
+            const message = lockedCount > 0
+                ? translate('options.manager.deletedGroupsWithSkipped', { deleted: receipt.count, locked: lockedCount })
+                : translate('options.manager.deletedGroups', { count: receipt.count });
+            if (receipt.count > 0) ToastManager.getInstance().undo(message, receipt);
+            else ToastManager.getInstance().warning(message);
         } catch (error) {
             ToastManager.getInstance().error(translate('options.manager.failedToDeleteGroups', { message: isolateBidi((error as Error).message) }));
         }
@@ -958,10 +962,6 @@ function TabManagerContent({ groups, setGroups }: TabManagerContentProps) {
     const handleDeleteConfirm = async () => {
         setShowDeleteModal(false);
         if (deleteModalType === 'group' && deleteTarget) {
-            const group = groups.find(g => g.id === deleteTarget);
-            if (group && pinManagement.isPinned(group.id)) {
-                await pinManagement.togglePin(group.id);
-            }
             await deleteGroup(deleteTarget);
         } else if (deleteModalType === 'selected') {
             await bulkDeleteGroups();
@@ -1302,6 +1302,8 @@ function TabManagerContent({ groups, setGroups }: TabManagerContentProps) {
                         </DialogContent>
                     </Dialog>
 
+                    <ManagerWelcome kind={welcomeKind} onDone={() => setWelcomeKind(null)} />
+                    <GroupMemoryNotice />
                     <Toaster richColors position={direction === 'rtl' ? 'bottom-left' : 'bottom-right'} />
 
                     {/* Wrapped full-screen overlay */}

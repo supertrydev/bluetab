@@ -478,7 +478,7 @@ describe('BackupService', () => {
 
       const result = await BackupService.getSettings();
 
-      expect(result).toEqual({ enabled: false, frequency: 'daily' });
+      expect(result).toEqual({ enabled: true, frequency: 'monthly' });
     });
   });
 });

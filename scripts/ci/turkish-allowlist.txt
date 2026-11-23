@@ -35,3 +35,7 @@ src/i18n/brazilian-portuguese-copy-quality.test.ts
 src/i18n/resource-parity.test.ts
 src/i18n/turkish-copy-quality.test.ts
 src/utils/integration-labels.test.ts
+
+# 1.0.7 manager welcome: test fixture for the localized sample group name and
+# "Example" tag in Turkish. Test data, not rendered UI copy.
+src/services/manager-welcome.test.ts

@@ -1,3 +1,4 @@
+import { matchesSearch } from '@/utils/search-text';
 import React, { useState, useEffect } from 'react';
 import { Search, Check, Info, AlertTriangle, AlertCircle, Loader2, Archive } from 'lucide-react';
 import { ModalWrapper } from './ModalWrapper';
@@ -133,7 +134,7 @@ export function ArchiveModal({
 
     // Filter groups based on search query
     const filteredGroups = groups.filter(group =>
-        group.name.toLowerCase().includes(searchQuery.toLowerCase())
+        matchesSearch(group.name, searchQuery)
     );
 
     return (

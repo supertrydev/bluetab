@@ -1,3 +1,6 @@
+import { showSaveNotification } from '@/services/save-notification';
+import { markManagerWelcomePending } from '@/services/manager-welcome';
+import { matchesSearch, normalizeForSearch } from '@/utils/search-text';
 // MV3 service workers have no document global, but Vite's bundled
 // preload-helper injects <link rel="modulepreload"> via
 // document.head.appendChild() before every dynamic await import(...)
@@ -31,6 +34,7 @@ if (typeof (globalThis as { window?: unknown }).window === 'undefined') {
 }
 
 import { Storage } from '../utils/storage';
+import { getBrainDumpPresentation } from './brain-dump-presentation';
 import { formatTime, getLocaleWeekInfo } from '@/i18n/format';
 import { getLanguageDirection, initI18n, t as translate } from '@/i18n';
 import { normalizeUrl } from '../utils/normalize';
@@ -42,6 +46,7 @@ import { SyncEngine } from '../services/sync-engine';
 import { MCPServerService } from '../services/mcp-server-service';
 import { BluetBridgeService, findChangedGroupIds, debouncedBluetSync } from '../services/bluet-bridge-service';
 import { ALARM_NAMES } from '../config/alarms';
+import { ensureCoreAlarms as reconcileCoreAlarms, watchCoreAlarmChanges } from './core-alarms';
 import { runAutoArchive } from '../services/auto-archive-service';
 import { computeNextRecurringFireAt } from '../utils/reminder-recurrence';
 import { normalizeFocusSettings } from '../config/focus-presets';
@@ -166,24 +171,13 @@ async function deleteRssNotificationMeta(notificationId: string): Promise<void> 
     await Promise.resolve(chrome.storage.session.set({ [RSS_NOTIFICATION_META_KEY]: map })).catch(() => {});
 }
 
-async function ensureAlarm(name: string, alarmInfo: chrome.alarms.AlarmCreateInfo): Promise<void> {
-    const existing = await Promise.resolve(chrome.alarms.get(name)).catch(() => null);
-    if (!existing) {
-        await chrome.alarms.create(name, alarmInfo);
-    }
+function ensureCoreAlarms(): void {
+    void Promise.all([BackupService.ensureScheduled(), reconcileCoreAlarms()]).catch((error) => {
+        console.warn('[BlueTab][Alarms] Scheduling failed:', error);
+    });
 }
 
-function ensureCoreAlarms(): void {
-    void Promise.allSettled([
-        ensureAlarm(ALARM_NAMES.AUTH_REFRESH, { periodInMinutes: 30 }),
-        ensureAlarm(ALARM_NAMES.SUBSCRIPTION_CHECK, { periodInMinutes: 60 }),
-        ensureAlarm(ALARM_NAMES.BLUET_BRIDGE_HEARTBEAT, { periodInMinutes: 360 }),
-        ensureAlarm(ALARM_NAMES.RSS_REFRESH, { periodInMinutes: 15, delayInMinutes: 1 }),
-        ensureAlarm(ALARM_NAMES.ADHD_AUTOSUSPEND_SCAN, { periodInMinutes: 1, delayInMinutes: 1 }),
-        ensureAlarm(ALARM_NAMES.V3_KILL_SWITCH_REFRESH, { periodInMinutes: 240 }),
-        ensureAlarm(ALARM_NAMES.GROUP_AUTO_ARCHIVE_SCAN, { periodInMinutes: 60, delayInMinutes: 5 }),
-    ]);
-}
+watchCoreAlarmChanges();
 
 async function ensureFloatingButtonRegistered(settings?: Settings | null): Promise<void> {
     try {
@@ -684,6 +678,11 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
             }
         }
     } else if (alarm.name === ALARM_NAMES.SYNC_POLL) {
+        // A poll alarm left over from an older version: sync is not set up here.
+        if (!(await SyncEngine.isSetup())) {
+            await chrome.alarms.clear(ALARM_NAMES.SYNC_POLL);
+            return;
+        }
         console.log('[BlueTab][Sync] Running scheduled sync poll');
         // Bilateral sync: push local changes, then pull remote changes
         await SyncEngine.sync();
@@ -727,7 +726,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
     } else if (alarm.name === ALARM_NAMES.SESSION_BACKUP) {
         try {
             console.log('[BlueTab][Backup] Running scheduled backup');
-            await BackupService.capture();
+            if ((await BackupService.getSettings()).enabled) await BackupService.capture();
         } catch (err) {
             console.error('[BlueTab][Backup] capture error:', err);
         }
@@ -1196,6 +1195,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
     // Phase 9 — Brain Dump prefs read. Content-script modal seeds the
     // attach/detach chip state from this on mount (ADHD-22 remembers-last-choice).
+    if (message?.action === 'brain-dump:get-presentation') {
+        getBrainDumpPresentation().then(sendResponse).catch(() => sendResponse(null));
+        return true;
+    }
+
     if (message?.action === 'brain-dump:get-prefs') {
         Promise.all([BrainDumpService.getPrefs(), canUseAiPageSummary()])
             .then(([prefs, canSummarizePageToDump]) => sendResponse({ prefs, canSummarizePageToDump }))
@@ -1943,6 +1947,7 @@ async function resetStaleIntegrationReauthFlags(): Promise<void> {
 }
 
 chrome.runtime.onInstalled.addListener(async (details) => {
+    await markManagerWelcomePending(details.reason);
     ensureCoreAlarms();
     if (details.reason === 'update') {
         await resetStaleIntegrationReauthFlags();
@@ -2265,11 +2270,11 @@ chrome.omnibox.onInputChanged.addListener(async (text, suggest) => {
 
     const groups = await Storage.get<TabGroup[]>('groups') || [];
     const suggestions: chrome.omnibox.SuggestResult[] = [];
-    const lowerText = text.toLowerCase();
+    const lowerText = normalizeForSearch(text);
 
     // Search groups
     const matchingGroups = groups.filter(group =>
-        group.name.toLowerCase().includes(lowerText)
+        matchesSearch(group.name, lowerText)
     );
 
     for (const group of matchingGroups) {
@@ -2285,7 +2290,7 @@ chrome.omnibox.onInputChanged.addListener(async (text, suggest) => {
     // Search tabs within groups
     for (const group of groups) {
         for (const tab of group.tabs) {
-            if (tab.title.toLowerCase().includes(lowerText) || tab.url.toLowerCase().includes(lowerText)) {
+            if (matchesSearch(tab.title, lowerText) || matchesSearch(tab.url, lowerText)) {
                 suggestions.push({
                     content: `tab:${tab.url}`,
                     description: translate('components.omnibox.tabDescription', {
@@ -2800,11 +2805,12 @@ async function saveAllTabsToProject(projectId: string): Promise<void> {
 
     const project = (await Storage.getProjects()).find(p => p.id === projectId);
     try {
-        await createBasicNotification(
+        await showSaveNotification(
             translate('notifications.savedToProject', {
                 count: result.processedCount,
                 project: project?.name || 'Unknown',
             }),
+            result.freedMemory,
         );
     } catch (notificationError) {
         console.error('Notification error:', notificationError);
@@ -2907,7 +2913,7 @@ async function saveAllTabs(): Promise<void> {
     }
 
     try {
-        await createBasicNotification(parts.join(' · '));
+        await showSaveNotification(parts.join(' · '), result.freedMemory);
     } catch (notificationError) {
         console.error('Notification error:', notificationError);
     }

@@ -1,35 +1,7 @@
 import { Storage } from '../utils/storage';
-import { AIService } from './ai-service';
+import { suggestGroupName } from './ai-group-naming';
 import type { TabGroup, TabItem } from '../types/models';
-import {
-  AR_RESOURCES,
-  EN_RESOURCES,
-  ES_RESOURCES,
-  ID_RESOURCES,
-  PT_BR_RESOURCES,
-  TR_RESOURCES,
-} from '../i18n/runtime-resources';
-
-/** English prefixes used before group names were translated (existing groups). */
-const LEGACY_PREFIXES = ['Session ', 'Saved ', 'Selected ', 'Suspended '];
-const GENERATED_NAME_KEYS = ['session', 'suspended', 'selected', 'saved', 'savedSet'] as const;
-
-/**
- * Prefixes of every auto-generated name template in every language
- * ("Oturum ", "Sesión ", ...), so a group saved in one language is still
- * recognised after the user switches language.
- */
-const AUTO_GENERATED_PREFIXES: string[] = (() => {
-  const prefixes = new Set(LEGACY_PREFIXES);
-  for (const resources of [AR_RESOURCES, EN_RESOURCES, ES_RESOURCES, ID_RESOURCES, PT_BR_RESOURCES, TR_RESOURCES]) {
-    const templates = resources.contextMenu.generatedGroups as Record<string, string>;
-    for (const key of GENERATED_NAME_KEYS) {
-      const prefix = templates[key]?.split('{{')[0];
-      if (prefix && prefix.trim()) prefixes.add(prefix);
-    }
-  }
-  return [...prefixes];
-})();
+import { AUTO_GENERATED_PREFIXES } from '../i18n/generated-name-prefixes';
 
 interface AutoRenameSavedGroupIfUntitledParams {
   groupId: string;
@@ -57,7 +29,7 @@ export async function autoRenameSavedGroupIfUntitled({
   }
 
   try {
-    const suggestedName = (await AIService.suggestGroupName(
+    const suggestedName = (await suggestGroupName(
       tabs.map((tab) => ({ title: tab.title, url: tab.url })),
     ))?.trim();
 

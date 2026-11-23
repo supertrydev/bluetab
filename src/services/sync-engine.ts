@@ -431,11 +431,11 @@ export async function initialize(opts?: Partial<SyncEngineOptions>): Promise<voi
       }
     }
 
-    // Initialize real-time sync (SSE + polling)
+    // Initialize real-time sync (SSE + polling; polling only once sync is set up)
     SyncRealtime.initializeRealtime({
       onDeltaAvailable: handleDeltaAvailable,
       onConnectionChange: handleConnectionChange,
-    })
+    }, { polling: Boolean(deviceInfo) })
 
     // Set device ID for transport
     if (deviceInfo) {
@@ -591,7 +591,7 @@ export async function resume(): Promise<void> {
   SyncRealtime.initializeRealtime({
     onDeltaAvailable: handleDeltaAvailable,
     onConnectionChange: handleConnectionChange,
-  })
+  }, { polling: await isSetup() })
 
   console.log('[SyncEngine] Sync resumed by user')
 
@@ -734,6 +734,7 @@ export async function setupSync(
 
     setLocalDeviceId(deviceId)
     await updateState({ status: 'connected' })
+    if (!syncPaused) SyncRealtime.ensurePollingAlarm()
 
     return { success: true }
   } catch (error) {
@@ -776,6 +777,7 @@ export async function restoreSync(
     setLocalDeviceId(deviceInfo.deviceId)
     SyncTransport.setDeviceId(deviceInfo.deviceId)
     await updateState({ status: 'connected', lastError: null })
+    if (!syncPaused) SyncRealtime.ensurePollingAlarm()
     if (isOnlineState) {
       await handleOnline(true)
     }

@@ -11,6 +11,7 @@ describe('Settings RTL and bidi contract', () => {
   it('uses logical spacing and mirrors only directional settings arrows', () => {
     const files = [
       'ADHDSettings.tsx',
+      'AboutSettings.tsx',
       'BackupSettings.tsx',
       'GeneralSettings.tsx',
       'MCPServerSection.tsx',
@@ -35,7 +36,7 @@ describe('Settings RTL and bidi contract', () => {
     expect(source.match(/absolute end-2/g)).toHaveLength(2);
     expect(source.match(/dir="auto"/g)).toHaveLength(2);
     expect(source).toContain("position={direction === 'rtl' ? 'bottom-left' : 'bottom-right'}");
-    expect(source).toContain("version: isolateBidi(chrome.runtime.getManifest().version, 'ltr')");
+    expect(read('AboutSettings.tsx')).toContain("version: isolateBidi(version, 'ltr')");
   });
 
   it('isolates provider, account, workspace, project, and channel labels', () => {

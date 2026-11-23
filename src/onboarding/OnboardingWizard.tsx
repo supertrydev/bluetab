@@ -19,7 +19,10 @@
  *       Does not re-open if onboarding_state.completed is already true.
  */
 
-import React, { useCallback, useEffect, useState } from 'react';
+import { FocusQuestions } from './FocusQuestions';
+import { applyFocusPreferences, type FocusPreferences } from './focus-preferences';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Sparkles,
@@ -73,30 +76,6 @@ interface Step {
 // Step content components
 // ---------------------------------------------------------------------------
 
-function ThemeOption({
-  active,
-  label,
-  onClick,
-}: {
-  active: boolean;
-  label: string;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`rounded-lg border px-3 py-2 text-sm font-medium transition-colors ${
-        active
-          ? 'border-primary bg-primary text-primary-foreground'
-          : 'border-border bg-background/70 text-foreground hover:bg-accent'
-      }`}
-    >
-      {label}
-    </button>
-  );
-}
-
 function WelcomeContent({
   theme,
   onThemeChange,
@@ -116,39 +95,44 @@ function WelcomeContent({
         <p className="text-sm text-muted-foreground">
           {t('onboarding.welcome.introLine1')}
         </p>
-        <p className="text-sm text-muted-foreground">
-          {t('onboarding.welcome.introLine2')}
+      </div>
+      {/* Language and theme side by side, so the welcome step fits the fixed card height. */}
+      <div className="w-full rounded-xl border border-border bg-muted/30 p-4 space-y-3">
+        <div className="grid grid-cols-2 gap-3 text-start">
+          <div className="space-y-1.5">
+            <label htmlFor="onboarding-language" className="text-sm font-medium text-foreground">{t('onboarding.welcome.languageTitle')}</label>
+            <Select value={language} onValueChange={(value) => onLanguageChange(value as LanguagePreference)}>
+              <SelectTrigger id="onboarding-language">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="system">{t('common.browserDefault')}</SelectItem>
+                <SelectItem value="en">{t('common.english')}</SelectItem>
+                <SelectItem value="tr">{t('common.turkish')}</SelectItem>
+                <SelectItem value="es">{t('common.spanish')}</SelectItem>
+                <SelectItem value="pt-BR">{t('common.brazilianPortuguese')}</SelectItem>
+                <SelectItem value="id">{t('common.indonesian')}</SelectItem>
+                <SelectItem value="ar">{t('common.arabic')}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-1.5">
+            <label htmlFor="onboarding-theme" className="text-sm font-medium text-foreground">{t('onboarding.welcome.themeTitle')}</label>
+            <Select value={theme} onValueChange={(value) => onThemeChange(value as Theme)}>
+              <SelectTrigger id="onboarding-theme">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="system">{t('common.browser')}</SelectItem>
+                <SelectItem value="light">{t('common.light')}</SelectItem>
+                <SelectItem value="dark">{t('common.dark')}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+        <p className="text-xs text-muted-foreground text-center">
+          {t('onboarding.welcome.languageDescription')}
         </p>
-      </div>
-      <div className="w-full rounded-xl border border-border bg-muted/30 p-4 space-y-3">
-        <div className="space-y-1 text-center">
-          <p className="text-sm font-medium text-foreground">{t('onboarding.welcome.languageTitle')}</p>
-          <p className="text-xs text-muted-foreground">
-            {t('onboarding.welcome.languageDescription')}
-          </p>
-        </div>
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-          <ThemeOption active={language === 'system'} label={t('common.browserDefault')} onClick={() => onLanguageChange('system')} />
-          <ThemeOption active={language === 'en'} label={t('common.english')} onClick={() => onLanguageChange('en')} />
-          <ThemeOption active={language === 'tr'} label={t('common.turkish')} onClick={() => onLanguageChange('tr')} />
-          <ThemeOption active={language === 'es'} label={t('common.spanish')} onClick={() => onLanguageChange('es')} />
-          <ThemeOption active={language === 'pt-BR'} label={t('common.brazilianPortuguese')} onClick={() => onLanguageChange('pt-BR')} />
-          <ThemeOption active={language === 'id'} label={t('common.indonesian')} onClick={() => onLanguageChange('id')} />
-          <ThemeOption active={language === 'ar'} label={t('common.arabic')} onClick={() => onLanguageChange('ar')} />
-        </div>
-      </div>
-      <div className="w-full rounded-xl border border-border bg-muted/30 p-4 space-y-3">
-        <div className="space-y-1 text-center">
-          <p className="text-sm font-medium text-foreground">{t('onboarding.welcome.themeTitle')}</p>
-          <p className="text-xs text-muted-foreground">
-            {t('onboarding.welcome.themeDescription')}
-          </p>
-        </div>
-        <div className="grid grid-cols-3 gap-2">
-          <ThemeOption active={theme === 'system'} label={t('common.browser')} onClick={() => onThemeChange('system')} />
-          <ThemeOption active={theme === 'light'} label={t('common.light')} onClick={() => onThemeChange('light')} />
-          <ThemeOption active={theme === 'dark'} label={t('common.dark')} onClick={() => onThemeChange('dark')} />
-        </div>
       </div>
     </div>
   );
@@ -559,6 +543,15 @@ export function OnboardingWizard() {
     [t],
   );
   const [currentStep, setCurrentStep] = useState(0);
+  const [focusStep, setFocusStep] = useState<number | null>(null);
+  const [focusAnswers, setFocusAnswers] = useState<FocusPreferences>({ tabs: null, timer: 'none', suspend: null });
+  const [finishing, setFinishing] = useState(false);
+  const [finishError, setFinishError] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (contentRef.current) contentRef.current.scrollTop = 0;
+  }, [currentStep, focusStep]);
   const [showExtended, setShowExtended] = useState(false);
   const [floatingButtonAccessGranted, setFloatingButtonAccessGranted] = useState(false);
   const [floatingButtonAccessLoading, setFloatingButtonAccessLoading] = useState(false);
@@ -662,11 +655,17 @@ export function OnboardingWizard() {
   };
 
   const handleComplete = async () => {
-    await Storage.set('onboarding_state', {
-      completed: true,
-      completedAt: Date.now(),
-    });
-    navigateToOptions();
+    if (finishing) return;
+    setFinishing(true);
+    setFinishError(false);
+    try {
+      if (focusStep === 3) await applyFocusPreferences(focusAnswers);
+      await Storage.set('onboarding_state', { completed: true, completedAt: Date.now() });
+      navigateToOptions();
+    } catch {
+      setFinishError(true);
+      setFinishing(false);
+    }
   };
 
   const handleSkip = async () => {
@@ -678,6 +677,11 @@ export function OnboardingWizard() {
   };
 
   const handleNext = () => {
+    if (focusStep !== null) {
+      if (focusStep < 3) setFocusStep(focusStep + 1);
+      else void handleComplete();
+      return;
+    }
     if (isLastStep) {
       handleComplete();
     } else {
@@ -689,6 +693,10 @@ export function OnboardingWizard() {
   };
 
   const handleBack = () => {
+    if (focusStep !== null) {
+      setFocusStep(focusStep === 0 ? null : focusStep - 1);
+      return;
+    }
     setCurrentStep((s) => Math.max(0, s - 1));
   };
 
@@ -697,7 +705,7 @@ export function OnboardingWizard() {
   const isWelcomeStep = step.id === 'welcome';
   const progressPercent = ((currentStep + 1) / steps.length) * 100;
 
-  const nextLabel = isLastStep
+  const nextLabel = focusStep !== null ? (focusStep === 3 ? t('onboarding.finish') : t('onboarding.next')) : isLastStep
     ? t('onboarding.finish')
     : isDoneStep && !showExtended
     ? t('onboarding.continue')
@@ -707,15 +715,19 @@ export function OnboardingWizard() {
     <div className="min-h-screen flex items-center justify-center p-4 bg-background">
       <div className="w-full max-w-lg">
         {/* Card */}
-        <div className="rounded-2xl border border-border bg-card shadow-lg overflow-hidden">
+        <div
+          className="flex flex-col rounded-2xl border border-border bg-card shadow-lg overflow-hidden"
+          style={{ height: 'min(680px, calc(100dvh - 2rem))' }}
+        >
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+          <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-border">
             <span className="text-sm font-semibold text-primary">Bluetab</span>
-            {!isLastStep && (
+            {(!isLastStep || focusStep !== null) && (
               <button
-                onClick={handleSkip}
+                disabled={finishing}
+                onClick={focusStep !== null ? () => { setFocusStep(null); setFocusAnswers({ tabs: null, timer: 'none', suspend: null }); } : handleSkip}
                 className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
-                title={t('labels.skipOnboarding')}
+                title={focusStep !== null ? t('onboarding.skip') : t('labels.skipOnboarding')}
               >
                 <X className="w-3.5 h-3.5" />
                 {t('onboarding.skip')}
@@ -724,10 +736,10 @@ export function OnboardingWizard() {
           </div>
 
           {/* Step content with animation */}
-          <div className="px-6 pt-6 pb-4">
+          <div ref={contentRef} className="min-h-0 flex-1 overflow-y-auto px-6 pt-6 pb-4">
             <AnimatePresence mode="wait">
               <motion.div
-                key={step.id}
+                key={focusStep !== null ? `focus-${focusStep}` : step.id}
                 initial={{ opacity: 0, x: isRtl ? -20 : 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: isRtl ? 20 : -20 }}
@@ -742,18 +754,24 @@ export function OnboardingWizard() {
                       <StepIcon className="w-6 h-6 text-primary" />
                     </div>
                   )}
-                  <h1 className="text-2xl font-bold text-foreground">{step.title}</h1>
-                  <p className="mt-1 text-sm text-muted-foreground">{step.description}</p>
+                  <h1 className="text-2xl font-bold text-foreground">{focusStep !== null ? t('onboarding.focus.title') : step.title}</h1>
+                  <p className="mt-1 text-sm text-muted-foreground">{focusStep === null ? step.description : null}</p>
                 </div>
 
                 {/* Step-specific content */}
-                <div>{step.content}</div>
+                <div>{focusStep !== null
+                  ? <FocusQuestions step={focusStep} answers={focusAnswers} onChange={setFocusAnswers} />
+                  : <>{step.content}{isDoneStep && <button type="button" onClick={() => setFocusStep(0)} className="w-full rounded-lg border border-primary/30 p-3 text-sm text-primary hover:bg-primary/5">
+                    {t('onboarding.focus.cta')}
+                  </button>}</>}
+                </div>
               </motion.div>
             </AnimatePresence>
           </div>
 
           {/* Footer: progress + navigation */}
-          <div className="px-6 py-4 border-t border-border space-y-4">
+          <footer className="shrink-0 px-6 py-4 border-t border-border space-y-4">
+            {finishError && <p role="alert" className="text-sm text-destructive">{t('onboarding.focus.saveError')}</p>}
             {/* Progress bar */}
             <div className="h-2 w-full overflow-hidden rounded-full bg-muted/80">
               <div
@@ -767,7 +785,7 @@ export function OnboardingWizard() {
               {/* Back button */}
               <button
                 onClick={handleBack}
-                disabled={isFirstStep}
+                disabled={isFirstStep || finishing}
                 className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                   isFirstStep
                     ? 'invisible'
@@ -781,19 +799,19 @@ export function OnboardingWizard() {
               {/* Next / Finish button */}
               <button
                 onClick={handleNext}
+                disabled={finishing}
                 className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
               >
                 {nextLabel}
                 {!isLastStep && <ArrowRight className="w-4 h-4 rtl:rotate-180" />}
               </button>
             </div>
-          </div>
+            {/* Step counter stays inside the viewport-fitting card. */}
+            <p className="text-center text-xs text-muted-foreground">
+              {t('labels.stepCounter', { current: currentStep + 1, total: steps.length })}
+            </p>
+          </footer>
         </div>
-
-        {/* Step counter */}
-        <p className="mt-3 text-center text-xs text-muted-foreground">
-          {t('labels.stepCounter', { current: currentStep + 1, total: steps.length })}
-        </p>
       </div>
     </div>
   );

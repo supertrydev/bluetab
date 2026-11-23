@@ -1,3 +1,4 @@
+import { matchesSearch, normalizeForSearch } from '@/utils/search-text';
 /**
  * @module services/mcp-server-service
  *
@@ -595,7 +596,7 @@ const READ_HANDLERS: Record<string, ReadHandler> = {
   },
   search_tabs: async (args) => {
     const parsed = MCP_TOOL_REGISTRY.search_tabs.args.parse(args);
-    const q = parsed.query.toLowerCase();
+    const q = normalizeForSearch(parsed.query);
     const groups = (await Storage.get<TabGroup[]>('groups')) ?? [];
     const matches: Array<{
       group_id: string;
@@ -606,8 +607,8 @@ const READ_HANDLERS: Record<string, ReadHandler> = {
       if ((g as TabGroup & { archived?: unknown }).archived) continue;
       for (const t of g.tabs ?? []) {
         if (
-          t.title.toLowerCase().includes(q) ||
-          t.url.toLowerCase().includes(q)
+          matchesSearch(t.title, q) ||
+          matchesSearch(t.url, q)
         ) {
           matches.push({
             group_id: g.id,

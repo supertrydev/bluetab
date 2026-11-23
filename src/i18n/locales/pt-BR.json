@@ -167,7 +167,33 @@
     "about": "Sobre"
   },
   "settings": {
-    "aboutDescription": "Gerenciamento de abas com um clique para Chrome. Salve, organize e restaure suas sessões de navegação com facilidade.",
+    "aboutDescription": "Salve cada aba, encontre rápido e mantenha menos à vista sem fechar nenhuma. Um gerenciador de abas tranquilo e privado para Chrome e Firefox.",
+    "about": {
+      "website": "Site",
+      "releaseNotes": "Notas da versão",
+      "sourceCode": "Código-fonte",
+      "reportBug": "Relatar um erro",
+      "support": "Suporte",
+      "privacyPolicy": "Política de privacidade",
+      "termsOfUse": "Termos de uso",
+      "links": "Links do Bluetab",
+      "rate": "Avalie o Bluetab",
+      "reviewsHelp": "As avaliações ajudam outras pessoas a descobrir o Bluetab.",
+      "diagnostics": "Informações de diagnóstico",
+      "version": "Versão",
+      "browser": "Navegador",
+      "operatingSystem": "Sistema operacional",
+      "interfaceLanguage": "Idioma da interface",
+      "extensionId": "ID da extensão",
+      "unavailable": "Indisponível",
+      "copyDetails": "Copiar detalhes",
+      "copied": "Copiado",
+      "copyFailed": "Não foi possível copiar os detalhes. Tente novamente.",
+      "licenseHeading": "Licença e código aberto",
+      "license": "O Bluetab é um software livre sob a licença GNU AGPL-3.0",
+      "libraries": "Bibliotecas de código aberto ({{count}})",
+      "copyright": "© 2026 Supertry"
+    },
     "page": {
       "title": "Configurações",
       "description": "Gerencie suas preferências do Bluetab",
@@ -526,7 +552,7 @@
     "ai": {
       "title": "Assistente de IA",
       "smartNamingLabel": "Nomes inteligentes para grupos",
-      "smartNamingDescription": "A IA sugere nomes ao salvar grupos com 2 ou mais abas",
+      "smartNamingDescription": "Os títulos e endereços das abas dos grupos salvos sem nome são enviados à Bluetab AI para sugerir um nome.",
       "clearHistoryLabel": "Limpar histórico da IA",
       "clearHistoryDescription": "Remove deste navegador todo o histórico armazenado de conversas com a IA",
       "historyCleared": "Histórico limpo",
@@ -793,7 +819,7 @@
     "sessionBackup": {
       "title": "Backup de sessão",
       "enableTitle": "Ativar backup automático da sessão",
-      "enableDescription": "Salva periodicamente todas as abas e janelas abertas do navegador",
+      "enableDescription": "Salva periodicamente seus grupos, etiquetas, projetos, entradas do Brain Dump, arquivos e janelas abertas do navegador. Os arquivos protegidos por senha permanecem criptografados.",
       "frequency": "Frequência",
       "lastBackup": "Último backup: {{time}}",
       "history": "Histórico de backups",
@@ -807,12 +833,14 @@
       "frequencies": {
         "hourly": "A cada hora",
         "daily": "Diariamente",
-        "weekly": "Semanalmente"
+        "weekly": "Semanalmente",
+        "monthly": "Mensal"
       },
       "tabs_one": "{{count}} aba",
       "tabs_other": "{{count}} abas",
       "groups_one": "{{count}} grupo",
-      "groups_other": "{{count}} grupos"
+      "groups_other": "{{count}} grupos",
+      "noBackupYet": "Nenhum backup ainda"
     },
     "distractionScan": {
       "title": "Domínios sugeridos por IA",
@@ -1005,11 +1033,9 @@
       "title": "Boas-vindas ao Bluetab",
       "description": "Prepare tudo em menos de um minuto.",
       "introLine1": "O Bluetab oferece salvamento de abas com um clique, grupos inteligentes e ferramentas de produtividade integradas ao navegador.",
-      "introLine2": "Este breve tour deixará tudo pronto em menos de um minuto.",
       "languageTitle": "Escolha seu idioma",
       "languageDescription": "Por padrão, o Bluetab segue o idioma do navegador. Você pode alterá-lo a qualquer momento em Configurações.",
-      "themeTitle": "Escolha seu tema",
-      "themeDescription": "Por padrão, o tema do navegador segue a aparência do sistema."
+      "themeTitle": "Escolha seu tema"
     },
     "sidepanel": {
       "title": "Painel lateral do Bluetab",
@@ -1106,6 +1132,28 @@
         "item3": "Sincronize entre vários perfis de navegador e computadores.",
         "item4": "Disponível na página Conta das configurações do Bluetab."
       }
+    },
+    "focus": {
+      "cta": "Quer que o Bluetab ajude você a se concentrar? 3 perguntas, 30 segundos",
+      "title": "Suas preferências de foco",
+      "question1": "Quantas abas você gosta de ver ao mesmo tempo?",
+      "noLimit": "Sem limite",
+      "hiddenHint": "As abas extras ficam em um grupo oculto. Nenhuma aba é fechada.",
+      "question2": "O que ajuda você a se concentrar em uma tarefa?",
+      "pomodoro": "Pomodoro de 25 minutos",
+      "flowtime": "Trabalhar sem limite de tempo e receber uma sugestão de pausa (Flowtime)",
+      "visual": "Ver o tempo restante como um disco que diminui (Visual Time)",
+      "none": "Nenhuma opção",
+      "question3": "O que deve acontecer com as abas que você não usa há algum tempo?",
+      "suspend30": "Suspendê-las após 30 minutos (Zz)",
+      "suspend120": "Após 2 horas",
+      "leaveAlone": "Deixá-las como estão",
+      "tabSummary": "Limite de abas visíveis: {{count}}",
+      "suspendSummary": "Suspender abas inativas após {{minutes}} minutos",
+      "nothingEnabled": "Nenhum recurso de foco selecionado.",
+      "tip": "Quando precisar terminar algo, pressione Hard Focus no painel lateral.",
+      "settingsHint": "Você pode mudar isso a qualquer momento em Configurações → ADHD.",
+      "saveError": "Não foi possível salvar suas preferências. Tente novamente."
     }
   },
   "feedback": {
@@ -1195,7 +1243,8 @@
     "rssSingleFallback": "Novo artigo",
     "rssMultipleHeader": "{{count}} novos artigos:",
     "autoArchived_one": "{{count}} grupo inativo foi movido para o Arquivo",
-    "autoArchived_other": "{{count}} grupos inativos foram movidos para o Arquivo"
+    "autoArchived_other": "{{count}} grupos inativos foram movidos para o Arquivo",
+    "memoryFreed": " · cerca de {{mb}} MB de memória liberados"
   },
   "time": {
     "justNow": "agora mesmo",
@@ -1535,6 +1584,10 @@
         "dataPrivacy": {
           "question": "Onde meus dados são armazenados?",
           "answer": "A maioria dos dados do Bluetab começa armazenada localmente no navegador. Alguns recursos podem enviar dados selecionados para fora do dispositivo quando usados: a sincronização na nuvem envia dados criptografados, os recursos de IA enviam o contexto da solicitação ao backend de IA, as integrações enviam conteúdo às ferramentas conectadas, a publicação no Bluet envia coleções compartilhadas ao Bluet e o MCP pode disponibilizar dados aprovados do Bluetab a clientes externos de IA."
+        },
+        "freedMemory": {
+          "question": "Como o Bluetab mede a memória liberada?",
+          "answer": "O Bluetab compara a memória livre do seu computador antes de fechar as abas e alguns segundos depois. Outros aplicativos podem afetar o resultado, por isso ele é mostrado como uma estimativa e apenas quando a diferença é clara."
         }
       },
       "shortcutIntro": "Estes atalhos de teclado funcionam em todo o sistema enquanto o Bluetab está instalado. Em navegadores baseados em Chromium, você pode personalizá-los em {{path}}.",
@@ -1555,36 +1608,11 @@
         "featureButton": "Sugerir um recurso"
       },
       "changelog": {
-        "v1_0_6_1": "A introdução abre o painel lateral quando o apresenta",
-        "v1_0_6_2": "Criar grupos de abas ficou mais confiável, inclusive no Opera (o Opera precisa de pelo menos duas abas por grupo)",
-        "v1_0_6_3": "Conecte o Bluetab ao ChatGPT pelo diretório de apps do ChatGPT",
-        "v1_0_6_4": "A sincronização exige uma senha de sincronização em cada dispositivo. Dispositivos com a configuração antiga podem recomeçar e manter seus dados locais",
-        "v1_0_6_5": "Enviar para apps conectados não falha mais quando o login precisa ser renovado em segundo plano",
-        "v1_0_6_6": "A Ajuda abre diretamente os formulários de bugs e pedidos de recursos no GitHub",
-        "v1_0_5_1": "Agora disponível para Firefox (versão 140 ou posterior)",
-        "v1_0_5_2": "A sincronização e o Teams não colocam mais seu token de sessão nos endereços web",
-        "v1_0_5_3": "Atualizações de segurança para a limpeza de páginas e outras bibliotecas integradas",
-        "v1_0_5_4": "Configurações → Sobre mostra a versão instalada",
-        "v1_0_3_1": "A importação mantém os títulos do OneTab e lê exportações do Session Buddy",
-        "v1_0_3_2": "Dê um nome a cada dispositivo quando um navegador entra na sincronização",
-        "v1_0_3_3": "O Bluetab AI mostra o que envia antes da primeira solicitação e pergunta antes de agir em apps conectados",
-        "v1_0_3_4": "A página de ajuda mostra o e-mail de suporte",
-        "v1_0_0_1": "Organizador de grupos com IA e resumos de páginas para o Dump",
-        "v1_0_0_2": "Melhorias no Brain Dump, incluindo captura de texto selecionado e indicadores de páginas vinculadas",
-        "v1_0_0_3": "Acesso ao servidor MCP para clientes externos de IA",
-        "v1_0_0_4": "Correções de confiabilidade da sincronização na nuvem, gerenciamento de dispositivos e cobertura mais ampla de configurações",
-        "v1_0_0_5": "Ampliação do ajuste de texto e melhorias nos títulos das estatísticas",
-        "v1_0_0_6": "Correções de estabilidade do Foco e do menu de contexto",
-        "v0_9_0_1": "Novo fluxo de introdução e Brain Dump como recurso principal",
-        "v0_9_0_2": "Automações do Flow e ações de abas assistidas por IA",
-        "v0_9_0_3": "Integrações com ferramentas como Notion, Slack, Linear, GitHub e outras",
-        "v0_9_0_4": "Melhorias no botão flutuante e nos fluxos de captura rápida",
-        "v0_9_0_5": "Ações de salvamento mais inteligentes, refinamentos nos atalhos e melhorias na interface",
-        "v0_1_0_1": "Salvar, organizar e restaurar abas",
-        "v0_1_0_2": "Projetos e etiquetas para organização",
-        "v0_1_0_3": "Atalhos de teclado e visualização do gerenciador",
-        "v0_1_0_4": "Importação de favoritos do navegador",
-        "v0_1_0_5": "Base inicial da sincronização na nuvem"
+        "v1_0_7_1": "Excluiu um grupo por engano? Você pode desfazer a ação em até 10 segundos.",
+        "v1_0_7_2": "Agora seus grupos salvos, etiquetas, projetos e notas do Brain Dump têm backup automático uma vez por mês.",
+        "v1_0_7_3": "Nomes inteligentes para grupos (Pro) dá nomes aos grupos sem nome assim que você ativa o recurso.",
+        "v1_0_7_4": "Mais leve e silencioso: o Bluetab carrega apenas o seu idioma e não é mais ativado a cada minuto em segundo plano.",
+        "previousVersions": "Versões anteriores"
       },
       "editShortcuts": "Editar atalhos"
     },
@@ -3250,5 +3278,28 @@
     "processing": "A Supertry envia esses dados pelo OpenRouter ao modelo de IA, hoje o GLM da Z.ai. O provedor não treina modelos com eles, e não guardamos seus pedidos nem as respostas.",
     "privacyLink": "Política de Privacidade",
     "gotIt": "Entendi"
+  },
+  "dataSafety": {
+    "undo": "Desfazer",
+    "seconds": "{{count}} s",
+    "undoFailed": "Não foi possível desfazer a exclusão. Tente novamente.",
+    "memoryNoticeTitle": "Suas abas continuam aqui",
+    "memoryNoticeBody": "Suas abas estão abertas no navegador. Nada foi perdido. Salve-as novamente com Alt+S para colocá-las no mesmo grupo, com seu nome, cor e etiquetas.",
+    "closesIn": "Fecha em {{count}} s",
+    "restoreSavedData": "As duas opções também restauram grupos salvos, etiquetas, projetos, entradas do Brain Dump e arquivos. Os registros correspondentes voltam à versão do backup; os demais dados salvos são mantidos."
+  },
+  "managerWelcome": {
+    "title": "Boas-vindas ao Bluetab",
+    "body": "Pressione Alt+S para salvar todas as abas abertas de uma janela em um único grupo. Seus grupos aparecem aqui. Adicionamos um grupo de exemplo para você começar.",
+    "existingBody": "Pressione Alt+S para salvar todas as abas abertas de uma janela em um único grupo. Seus grupos aparecem aqui.",
+    "done": "Pronto",
+    "exampleTag": "Exemplo",
+    "groupName": "Primeiros passos com o Bluetab",
+    "tabs": {
+      "bluetab": "Bluetab",
+      "releases": "Notas da versão",
+      "connect": "Conecte o Bluetab ao seu aplicativo de IA",
+      "feedback": "Relate um erro ou sugira um recurso"
+    }
   }
 }

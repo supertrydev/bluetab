@@ -63,6 +63,25 @@ describe('AI integration tools', () => {
       .toContain('team/site, team/api');
   });
 
+  it.each([
+    ['listed repository', ['team/site'], 'team/site', false],
+    ['unlisted repository', ['team/site'], 'other/site', true],
+    ['different case', ['Team/Site'], 'TEAM/site', false],
+    ['default repository', ['team/site'], undefined, false],
+    ['empty list', [], 'team/site', true],
+    ['missing list', undefined, 'team/site', true],
+  ])('handles issue confirmation for a %s', async (_name, repos, repo, forced) => {
+    mockListConnectedAccounts.mockResolvedValue([account('github')]);
+    localStore.integration_settings = { github_repos: repos?.map((fullName) => ({ fullName })) };
+
+    const plan = await prepareAIIntegrationAction('github__create_issue', { title: 'Bug', repo });
+    if ('status' in plan) throw new Error('expected a plan');
+    expect(plan.alwaysConfirm).toBe(forced);
+    expect(shouldConfirmIntegrationAction(plan, true)).toBe(forced);
+    expect(shouldConfirmIntegrationAction(plan, false)).toBe(true);
+    expect(mockDispatchVerb).not.toHaveBeenCalled();
+  });
+
   it('maps an Outlook event to the adapter fields and the connected account', async () => {
     mockListConnectedAccounts.mockResolvedValue([account('outlook-calendar', 'outlook-acc')]);
     const input = { title: 'Birthday', start: '2026-10-12T12:00:00', end: '2026-10-12T13:00:00' };

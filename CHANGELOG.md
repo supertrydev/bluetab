@@ -3,6 +3,59 @@
 All notable changes to Bluetab. Versions are the same in the Chrome Web Store
 and Firefox Add-ons.
 
+## 1.0.7
+
+- Teams no longer reopens shared tabs that are still loading or have been
+  redirected when a participant's browser tab group is missing.
+- Smart Group Naming (Pro) names unnamed groups as soon as it is on, without
+  waiting for the one-time AI notice. Its setting explains that tab titles
+  and addresses are sent to Bluetab AI. Names are written in your interface
+  language.
+- Creating a GitHub issue in a repository outside your connected list always
+  asks for confirmation, even with "Always allow" on or an empty connected list.
+- Deleting groups in the manager, popup or side panel, including bulk deletion,
+  offers Undo for 10 seconds. Undo restores their position, Group Memory and pins.
+- Automatic backup is on by default and runs monthly; existing explicit choices
+  are kept. Snapshots include saved groups, tags, projects, Brain Dump notes and
+  archives. Password-protected archives stay encrypted. Of the ten snapshots
+  kept, the newest three retain saved data; older snapshots keep windows only.
+  Restoring merges saved data, preserving newer records absent from the backup,
+  and older window-only backups still work. Settings show the last backup time.
+- A one-time notice explains why a restored group leaves the saved list when
+  Group Memory is on, and how saving its open tabs brings it back to the same
+  group. The notice closes after 30 seconds or when dismissed.
+- Bluetab bundles English as a fallback and loads your selected language from
+  packaged locale files on demand, instead of loading all six languages.
+- The Brain Dump shortcut script receives its translations from the worker,
+  shrinking from about 1.24 MB to 13 KB. The worker uses a separate group-naming
+  module, so it no longer loads the full AI service.
+- Background alarms run only when their features need them, including the
+  one-minute sync poll only after sync is set up. A fresh install keeps only
+  monthly backup and kill-switch refresh alarms, avoiding minute-by-minute wakes.
+- Both builds check bundle sizes and permissions against reviewed baselines,
+  catching unexpected growth, new assets and added permissions.
+- A repeatable memory measurement script uses a fixed 100-tab fixture. With
+  that fixture in headless Chromium, side panel JavaScript heap fell from
+  7.54 MiB in 1.0.6 to 6.23 MiB; this measures the panel heap, not total browser RAM.
+- Search ignores case, accents and Arabic harakat in every language: "istanbul"
+  finds "İstanbul" and "cafe" finds "Café" (manager, side panel, popup, new tab,
+  Brain Dump, archives and the `bt` address-bar search).
+- Onboarding keeps the same card height on every step, so Next stays in place;
+  language and theme are dropdowns. The side panel's save button uses the brand colour.
+- A fresh install opens the manager with a "Getting started with Bluetab" example
+  group and a short welcome.
+- Onboarding ends with three optional focus questions that set up ADHD mode (tabs in
+  sight, focus timer, idle tabs).
+- On Chrome, Brave, Edge and Opera, saving and closing tabs shows about how much memory
+  was freed (measured, shown only above 50 MB). New permission `system.memory`, which
+  shows no install warning; not used on Firefox.
+- Settings → About is a full About page: links (website, release notes, source,
+  bug form, support, privacy, terms), "Rate Bluetab" for the Chrome Web Store or
+  Firefox Add-ons, copyable diagnostics for bug reports, the AGPL-3.0 license and
+  the open-source libraries Bluetab uses.
+- Help → Changelog shows only the latest version with four short notes and a
+  link to previous releases. Full release notes remain here and on GitHub.
+
 ## 1.0.6
 
 - The onboarding wizard opens the side panel as you reach its introduction.

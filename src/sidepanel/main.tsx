@@ -1,3 +1,4 @@
+import { GroupMemoryNotice } from '@/components/GroupMemoryNotice';
 import { StrictMode, Suspense, lazy, useState, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ThemeManager } from '../utils/theme';
@@ -300,6 +301,7 @@ function SidePanel() {
                     </TabsContent>
                 </Tabs>
             </div>
+            <GroupMemoryNotice />
             <Toaster richColors position={direction === 'rtl' ? 'bottom-left' : 'bottom-right'} />
         </div>
     );

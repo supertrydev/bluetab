@@ -167,7 +167,33 @@
     "about": "About"
   },
   "settings": {
-    "aboutDescription": "One-click tab management for Chrome. Save, organize, and restore your browsing sessions with ease.",
+    "aboutDescription": "Save every tab, find it fast, and keep fewer in sight without closing any. A calm, private tab manager for Chrome and Firefox.",
+    "about": {
+      "website": "Website",
+      "releaseNotes": "Release notes",
+      "sourceCode": "Source code",
+      "reportBug": "Report a bug",
+      "support": "Support",
+      "privacyPolicy": "Privacy policy",
+      "termsOfUse": "Terms of use",
+      "links": "Bluetab links",
+      "rate": "Rate Bluetab",
+      "reviewsHelp": "Reviews help other people find Bluetab.",
+      "diagnostics": "Diagnostics",
+      "version": "Version",
+      "browser": "Browser",
+      "operatingSystem": "Operating system",
+      "interfaceLanguage": "Interface language",
+      "extensionId": "Extension ID",
+      "unavailable": "Unavailable",
+      "copyDetails": "Copy details",
+      "copied": "Copied",
+      "copyFailed": "Could not copy details. Please try again.",
+      "licenseHeading": "License and open source",
+      "license": "Bluetab is free software under the GNU AGPL-3.0",
+      "libraries": "Open-source libraries ({{count}})",
+      "copyright": "© 2026 Supertry"
+    },
     "page": {
       "title": "Settings",
       "description": "Manage your Bluetab preferences",
@@ -526,7 +552,7 @@
     "ai": {
       "title": "AI Assistant",
       "smartNamingLabel": "Smart Group Naming",
-      "smartNamingDescription": "AI suggests names when saving groups with 2 or more tabs",
+      "smartNamingDescription": "Tab titles and addresses of groups saved without a name are sent to Bluetab AI to suggest a name.",
       "clearHistoryLabel": "Clear AI History",
       "clearHistoryDescription": "Remove all stored AI conversation history from this browser",
       "historyCleared": "History cleared",
@@ -793,7 +819,7 @@
     "sessionBackup": {
       "title": "Session Backup",
       "enableTitle": "Enable automatic session backup",
-      "enableDescription": "Periodically saves all open browser tabs and windows",
+      "enableDescription": "Periodically saves your groups, tags, projects, Brain Dump entries, archives and open browser windows. Password-protected archives remain encrypted.",
       "frequency": "Frequency",
       "lastBackup": "Last backup: {{time}}",
       "history": "Backup History",
@@ -807,12 +833,14 @@
       "frequencies": {
         "hourly": "Hourly",
         "daily": "Daily",
-        "weekly": "Weekly"
+        "weekly": "Weekly",
+        "monthly": "Monthly"
       },
       "tabs_one": "{{count}} tab",
       "tabs_other": "{{count}} tabs",
       "groups_one": "{{count}} group",
-      "groups_other": "{{count}} groups"
+      "groups_other": "{{count}} groups",
+      "noBackupYet": "No backup yet"
     },
     "distractionScan": {
       "title": "AI-suggested domains",
@@ -1005,11 +1033,9 @@
       "title": "Welcome to Bluetab",
       "description": "Get your setup ready in under a minute.",
       "introLine1": "Bluetab gives you one-click tab saving, smart groups, and built-in productivity tools across your browser.",
-      "introLine2": "This short tour will get you up and running in under a minute.",
       "languageTitle": "Choose your language",
       "languageDescription": "Bluetab follows your browser language by default. You can change it any time in Settings.",
-      "themeTitle": "Choose your theme",
-      "themeDescription": "Browser theme follows your system appearance by default."
+      "themeTitle": "Choose your theme"
     },
     "sidepanel": {
       "title": "Bluetab sidepanel",
@@ -1106,6 +1132,28 @@
         "item3": "Sync across multiple browser profiles and computers.",
         "item4": "Available from the Account page in Bluetab settings."
       }
+    },
+    "focus": {
+      "cta": "Want Bluetab to help you focus? 3 questions, 30 seconds",
+      "title": "Your focus preferences",
+      "question1": "How many tabs do you like to see at once?",
+      "noLimit": "No limit",
+      "hiddenHint": "Extra tabs fold into a hidden group. Nothing is closed.",
+      "question2": "What helps you focus on a task?",
+      "pomodoro": "25-minute Pomodoro",
+      "flowtime": "Work without a timer and get a break suggestion (Flowtime)",
+      "visual": "See the remaining time as a shrinking disc (Visual Time)",
+      "none": "None",
+      "question3": "What should happen to tabs you haven't touched in a while?",
+      "suspend30": "Quiet them after 30 minutes (Zz)",
+      "suspend120": "After 2 hours",
+      "leaveAlone": "Leave them alone",
+      "tabSummary": "Visible tab limit: {{count}}",
+      "suspendSummary": "Quiet inactive tabs after {{minutes}} minutes",
+      "nothingEnabled": "No focus features selected.",
+      "tip": "When you need to finish something, press Hard Focus in the side panel.",
+      "settingsHint": "You can change this anytime in Settings → ADHD.",
+      "saveError": "Could not save your preferences. Try again."
     }
   },
   "feedback": {
@@ -1195,7 +1243,8 @@
     "rssSingleFallback": "New article",
     "rssMultipleHeader": "{{count}} new articles:",
     "autoArchived_one": "{{count}} inactive group moved to the Archive",
-    "autoArchived_other": "{{count}} inactive groups moved to the Archive"
+    "autoArchived_other": "{{count}} inactive groups moved to the Archive",
+    "memoryFreed": " · about {{mb}} MB of memory freed"
   },
   "time": {
     "justNow": "just now",
@@ -1535,6 +1584,10 @@
         "dataPrivacy": {
           "question": "Where is my data stored?",
           "answer": "Most Bluetab data starts local to your browser. Some features can send selected data off-device when you use them: cloud sync uploads encrypted sync data, AI features send request context to the AI backend, integrations send content to connected tools, Bluet publishing sends shared collections to Bluet, and MCP can expose approved Bluetab data to external AI clients."
+        },
+        "freedMemory": {
+          "question": "How does Bluetab measure freed memory?",
+          "answer": "Bluetab compares your computer’s free memory before and a few seconds after the tabs close. Other apps can affect the result, so it is shown as an estimate and only when the difference is clear."
         }
       },
       "shortcutIntro": "These keyboard shortcuts work system-wide while Bluetab is installed. In Chromium-based browsers, you can customize them at {{path}}.",
@@ -1555,36 +1608,11 @@
         "featureButton": "Suggest a Feature"
       },
       "changelog": {
-        "v1_0_6_1": "Onboarding opens the side panel when it introduces it",
-        "v1_0_6_2": "Creating tab groups is more reliable, including in Opera (Opera needs at least two tabs per group)",
-        "v1_0_6_3": "Connect Bluetab to ChatGPT from the ChatGPT app directory",
-        "v1_0_6_4": "Sync needs a sync password on every device. Devices on the old sync setup can start fresh and keep their local data",
-        "v1_0_6_5": "Sending to connected apps no longer fails when their sign-in has to be renewed in the background",
-        "v1_0_6_6": "Help opens the GitHub bug and feature request forms directly",
-        "v1_0_5_1": "Now available for Firefox (version 140 or later)",
-        "v1_0_5_2": "Sync and Teams no longer put your sign-in token in web addresses",
-        "v1_0_5_3": "Security updates for page cleaning and other built-in libraries",
-        "v1_0_5_4": "Settings → About shows the installed version",
-        "v1_0_3_1": "Import keeps OneTab titles and reads Session Buddy exports",
-        "v1_0_3_2": "Name each device when a browser joins sync",
-        "v1_0_3_3": "Bluetab AI shows what it sends before the first request and asks before acting in connected apps",
-        "v1_0_3_4": "The Help page lists the support email address",
-        "v1_0_0_1": "AI group organizer and page-to-Dump summaries",
-        "v1_0_0_2": "Brain Dump improvements, including selected-text capture and linked-page indicators",
-        "v1_0_0_3": "MCP server access for external AI clients",
-        "v1_0_0_4": "Cloud sync reliability fixes, device management, and broader settings coverage",
-        "v1_0_0_5": "Text scaling rollout and stats title improvements",
-        "v1_0_0_6": "Focus and context-menu stability fixes",
-        "v0_9_0_1": "New onboarding flow and Brain Dump as a first-class feature",
-        "v0_9_0_2": "Flow automations and AI-assisted tab actions",
-        "v0_9_0_3": "Integrations for tools like Notion, Slack, Linear, GitHub, and more",
-        "v0_9_0_4": "Floating button improvements and quick capture workflows",
-        "v0_9_0_5": "Smarter save actions, shortcut polish, and UI refinements",
-        "v0_1_0_1": "Save, organize, and restore tabs",
-        "v0_1_0_2": "Projects and tags for organization",
-        "v0_1_0_3": "Keyboard shortcuts and manager view",
-        "v0_1_0_4": "Browser bookmarks import",
-        "v0_1_0_5": "Early cloud sync foundation"
+        "v1_0_7_1": "Deleted a group by mistake? Undo it within 10 seconds.",
+        "v1_0_7_2": "Your saved groups, tags, projects and Brain Dump notes are now backed up automatically once a month.",
+        "v1_0_7_3": "Smart Group Naming (Pro) names unnamed groups as soon as it is on.",
+        "v1_0_7_4": "Lighter and quieter: Bluetab loads only your language and no longer wakes up every minute in the background.",
+        "previousVersions": "Previous versions"
       },
       "editShortcuts": "Edit shortcuts"
     },
@@ -3250,5 +3278,28 @@
     "processing": "Supertry sends it through OpenRouter to the AI model, currently GLM by Z.ai. The provider doesn't train on it, and we don't store your requests or the answers.",
     "privacyLink": "Privacy Policy",
     "gotIt": "Got it"
+  },
+  "dataSafety": {
+    "undo": "Undo",
+    "seconds": "{{count}}s",
+    "undoFailed": "Could not undo the deletion. Please try again.",
+    "memoryNoticeTitle": "Your tabs are still here",
+    "memoryNoticeBody": "Your tabs are open in the browser. Nothing was lost. Save them again with Alt+S to put them back in the same group, with its name, color and tags.",
+    "closesIn": "Closes in {{count}}s",
+    "restoreSavedData": "Both options also restore saved groups, tags, projects, Brain Dump entries and archives. Matching records return to their backed-up version; other saved data is kept."
+  },
+  "managerWelcome": {
+    "title": "Welcome to Bluetab",
+    "body": "Press Alt+S to save all open tabs in a window as one group. Your groups show up here. We added an example group to get you started.",
+    "existingBody": "Press Alt+S to save all open tabs in a window as one group. Your groups show up here.",
+    "done": "Done",
+    "exampleTag": "Example",
+    "groupName": "Getting started with Bluetab",
+    "tabs": {
+      "bluetab": "Bluetab",
+      "releases": "Release notes",
+      "connect": "Connect Bluetab to your AI app",
+      "feedback": "Report a bug or request a feature"
+    }
   }
 }

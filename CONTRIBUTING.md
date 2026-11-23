@@ -33,6 +33,12 @@ npm test -- --runInBand
 npm run build && npm run build:firefox && npm run lint:firefox
 ```
 
+## Preparing a release
+
+Update Help → Changelog (latest version only, 2–4 user-facing items, all six
+languages) and add the full notes to CHANGELOG.md; the GitHub release uses the
+CHANGELOG.md section.
+
 ## Branches
 
 - `main` is the version in the Chrome Web Store and Firefox Add-ons. Nobody pushes to it directly.

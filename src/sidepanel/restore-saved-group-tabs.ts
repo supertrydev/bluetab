@@ -15,6 +15,7 @@ interface RestoreSidepanelGroupTabsInput {
   settings: Pick<Partial<Settings>, 'restoreMode' | 'tabGroupRestoreMode'>;
   currentTabs: ReadonlyArray<{ url?: string }>;
   apis?: RestoreSidepanelGroupTabsApis;
+  keepFocus?: boolean;
 }
 
 interface RestoreSidepanelGroupTabsResult {
@@ -52,13 +53,14 @@ export async function restoreSidepanelGroupTabs({
   settings,
   currentTabs,
   apis = chromeApis,
+  keepFocus = false,
 }: RestoreSidepanelGroupTabsInput): Promise<RestoreSidepanelGroupTabsResult> {
   const createdTabIds: number[] = [];
 
   if (shouldCreateNewWindow(settings.restoreMode, currentTabs) && group.tabs.length > 0) {
     const restoredWindow = await apis.createWindow({
       url: group.tabs[0].url,
-      focused: true,
+      focused: !keepFocus,
     });
     const firstTabId = restoredWindow.tabs?.[0]?.id;
     if (typeof firstTabId === 'number') createdTabIds.push(firstTabId);
@@ -67,12 +69,13 @@ export async function restoreSidepanelGroupTabs({
       const restoredTab = await apis.createTab({
         url: group.tabs[index].url,
         windowId: restoredWindow.id,
+        ...(keepFocus ? { active: false } : {}),
       });
       if (typeof restoredTab.id === 'number') createdTabIds.push(restoredTab.id);
     }
   } else {
     for (const tab of group.tabs) {
-      const restoredTab = await apis.createTab({ url: tab.url });
+      const restoredTab = await apis.createTab({ url: tab.url, ...(keepFocus ? { active: false } : {}) });
       if (typeof restoredTab.id === 'number') createdTabIds.push(restoredTab.id);
     }
   }

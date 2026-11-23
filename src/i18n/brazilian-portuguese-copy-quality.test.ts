@@ -67,6 +67,7 @@ describe('Brazilian Portuguese copy quality', () => {
     'document.newTabTitle',
     'document.popupTitle',
     'flow.page.title',
+    'managerWelcome.tabs.bluetab', // Product name stays unchanged in every locale.
     'navigation.menu',
     'notifications.appTitle',
     'notifications.pomodoroTitle',
@@ -84,6 +85,7 @@ describe('Brazilian Portuguese copy quality', () => {
     'options.stats.sessionCount.pomodoro_other',
     'settings.adhd.breakPreview',
     'settings.adhd.whitelistPlaceholder',
+    'settings.about.copyright', // Copyright symbol, year, and company name are language-neutral.
     'settings.brainDump.title',
     'settings.focus.blockedPhrasesPlaceholder',
     'settings.focus.domainPlaceholder',

@@ -1,3 +1,4 @@
+import { matchesSearch, normalizeForSearch, findSearchMatch } from '@/utils/search-text';
 import { memo, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from './ui/button';
@@ -74,13 +75,13 @@ interface MasonryGroupCardProps {
 
 function highlightMatch(text: string, query: string): React.ReactNode {
   if (!query) return text;
-  const idx = text.toLowerCase().indexOf(query.toLowerCase());
-  if (idx === -1) return text;
+  const match = findSearchMatch(text, query);
+  if (!match) return text;
   return (
     <>
-      {text.slice(0, idx)}
-      <mark className="bg-yellow-200/60 dark:bg-yellow-500/30 rounded-sm px-0.5">{text.slice(idx, idx + query.length)}</mark>
-      {text.slice(idx + query.length)}
+      {text.slice(0, match.start)}
+      <mark className="bg-yellow-200/60 dark:bg-yellow-500/30 rounded-sm px-0.5">{text.slice(match.start, match.end)}</mark>
+      {text.slice(match.end)}
     </>
   );
 }
@@ -137,10 +138,10 @@ export const MasonryGroupCard = memo(function MasonryGroupCard({
   const [copiedTabId, setCopiedTabId] = useState<string | null>(null);
 
   // Search: filter tabs and highlight helper
-  const q = searchQuery.trim().toLowerCase();
-  const groupNameMatches = q && group.name.toLowerCase().includes(q);
+  const q = normalizeForSearch(searchQuery);
+  const groupNameMatches = q && matchesSearch(group.name, q);
   const displayTabs = q && !groupNameMatches
-    ? group.tabs.filter(t => t.title.toLowerCase().includes(q) || t.url.toLowerCase().includes(q))
+    ? group.tabs.filter(t => matchesSearch(t.title, q) || matchesSearch(t.url, q))
     : group.tabs;
   const shouldPreviewTabs = heavyTabPreview && tabLayout === 'grid' && !q;
   const visibleTabs = getHeavyListDisplayTabs(displayTabs, {

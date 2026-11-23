@@ -1,4 +1,6 @@
 import { defineConfig } from 'vite';
+import { createRequire } from 'module';
+const { generateRuntimeResources, getLocaleAssets } = createRequire(import.meta.url)('./scripts/generate-runtime-resources.cjs');
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
 import { cpSync, readFileSync, writeFileSync } from 'fs';
@@ -44,6 +46,17 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [
     react(),
+    {
+      name: 'runtime-locales',
+      buildStart() {
+        generateRuntimeResources();
+        for (const asset of getLocaleAssets()) {
+          this.addWatchFile(resolve(__dirname, 'src/i18n', asset.fileName));
+          this.emitFile({ type: 'asset', ...asset });
+        }
+        this.addWatchFile(resolve(__dirname, 'src/i18n/locales/en.json'));
+      },
+    },
     {
       name: 'injected-iife-scripts',
       buildStart() {

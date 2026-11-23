@@ -1,3 +1,4 @@
+import { matchesSearch, normalizeForSearch } from '@/utils/search-text';
 /**
  * @module options/components/FeedsPage
  *
@@ -361,13 +362,13 @@ export function FeedsPage({ sidebarTrigger }: FeedsPageProps = {}) {
   // and feed title so users can surface articles by any of those fields.
   const searchResults = useMemo(() => {
     if (!isSearching) return [];
-    const q = searchQuery.trim().toLowerCase();
-    const feedTitleById = new Map(feeds.map((f) => [f.id, f.title.toLowerCase()]));
+    const q = normalizeForSearch(searchQuery);
+    const feedTitleById = new Map(feeds.map((f) => [f.id, f.title]));
     return allArticles.filter((a) => {
-      if (a.title.toLowerCase().includes(q)) return true;
-      if (a.description && a.description.toLowerCase().includes(q)) return true;
+      if (matchesSearch(a.title, q)) return true;
+      if (a.description && matchesSearch(a.description, q)) return true;
       const feedTitle = feedTitleById.get(a.feedId);
-      if (feedTitle && feedTitle.includes(q)) return true;
+      if (feedTitle && matchesSearch(feedTitle, q)) return true;
       return false;
     });
   }, [isSearching, searchQuery, allArticles, feeds]);

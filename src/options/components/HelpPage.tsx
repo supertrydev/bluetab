@@ -1,20 +1,20 @@
 import { openShortcutSettings, SHORTCUTS_SETTINGS_LABEL } from '@/platform/extension-platform';
-import React, { useState } from 'react';
+import { Fragment, useState, type ReactNode } from 'react';
 import * as Tabs from '@radix-ui/react-tabs';
 import { ChevronDown, BookOpen, ExternalLink, HelpCircle, Keyboard, Mail } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { t as translate } from '@/i18n';
 import { isolateBidi } from '@/i18n/bidi';
 import { Storage } from '../../utils/storage';
+import { SUPPORT_EMAIL } from '@/utils/support-contact';
 
 interface HelpPageProps {
-  sidebarTrigger: React.ReactNode;
+  sidebarTrigger: ReactNode;
 }
-
-const SUPPORT_EMAIL = 'support@supertry.net';
 
 // FAQ data
 const FAQ_ITEMS = [
+  { id: 'freedMemory', questionKey: 'options.helpPage.faq.freedMemory.question', answerKey: 'options.helpPage.faq.freedMemory.answer' },
   {
     id: 'save-tabs',
     questionKey: 'options.helpPage.faq.saveTabs.question',
@@ -76,72 +76,16 @@ const SHORTCUTS = [
   { keys: ['Alt', 'B'], actionKey: 'options.helpPage.shortcutActions.openManager' },
 ];
 
-// Release notes (latest first)
+// Release notes (latest version only)
 const CHANGELOG = [
   {
-    version: '1.0.6',
+    version: '1.0.7',
     date: '2026-11',
     changeKeys: [
-      'options.helpPage.changelog.v1_0_6_1',
-      'options.helpPage.changelog.v1_0_6_2',
-      'options.helpPage.changelog.v1_0_6_3',
-      'options.helpPage.changelog.v1_0_6_4',
-      'options.helpPage.changelog.v1_0_6_5',
-      'options.helpPage.changelog.v1_0_6_6',
-    ],
-  },
-  {
-    version: '1.0.5',
-    date: '2026-11',
-    changeKeys: [
-      'options.helpPage.changelog.v1_0_5_1',
-      'options.helpPage.changelog.v1_0_5_2',
-      'options.helpPage.changelog.v1_0_5_3',
-      'options.helpPage.changelog.v1_0_5_4',
-    ],
-  },
-  {
-    version: '1.0.3',
-    date: '2026-10',
-    changeKeys: [
-      'options.helpPage.changelog.v1_0_3_1',
-      'options.helpPage.changelog.v1_0_3_2',
-      'options.helpPage.changelog.v1_0_3_3',
-      'options.helpPage.changelog.v1_0_3_4',
-    ],
-  },
-  {
-    version: '1.0.0',
-    date: '2026-06',
-    changeKeys: [
-      'options.helpPage.changelog.v1_0_0_1',
-      'options.helpPage.changelog.v1_0_0_2',
-      'options.helpPage.changelog.v1_0_0_3',
-      'options.helpPage.changelog.v1_0_0_4',
-      'options.helpPage.changelog.v1_0_0_5',
-      'options.helpPage.changelog.v1_0_0_6',
-    ],
-  },
-  {
-    version: '0.9.0',
-    date: '2026-03',
-    changeKeys: [
-      'options.helpPage.changelog.v0_9_0_1',
-      'options.helpPage.changelog.v0_9_0_2',
-      'options.helpPage.changelog.v0_9_0_3',
-      'options.helpPage.changelog.v0_9_0_4',
-      'options.helpPage.changelog.v0_9_0_5',
-    ],
-  },
-  {
-    version: '0.1.0',
-    date: '2025',
-    changeKeys: [
-      'options.helpPage.changelog.v0_1_0_1',
-      'options.helpPage.changelog.v0_1_0_2',
-      'options.helpPage.changelog.v0_1_0_3',
-      'options.helpPage.changelog.v0_1_0_4',
-      'options.helpPage.changelog.v0_1_0_5',
+      'options.helpPage.changelog.v1_0_7_1',
+      'options.helpPage.changelog.v1_0_7_2',
+      'options.helpPage.changelog.v1_0_7_3',
+      'options.helpPage.changelog.v1_0_7_4',
     ],
   },
 ];
@@ -290,12 +234,12 @@ export function HelpPage({ sidebarTrigger }: HelpPageProps) {
                     <span className="text-sm">{translate(actionKey)}</span>
                     <div className="flex items-center gap-1">
                       {keys.map((k, i) => (
-                        <React.Fragment key={k}>
+                        <Fragment key={k}>
                           {i > 0 && <span className="text-muted-foreground text-xs">+</span>}
                           <kbd dir="ltr" className="px-2 py-1 rounded bg-muted border border-border text-xs font-mono">
                             {k}
                           </kbd>
-                        </React.Fragment>
+                        </Fragment>
                       ))}
                     </div>
                   </div>
@@ -329,6 +273,15 @@ export function HelpPage({ sidebarTrigger }: HelpPageProps) {
                   </div>
                 ))}
               </div>
+              <a
+                href="https://github.com/supertrydev/bluetab/releases"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
+              >
+                {t('options.helpPage.changelog.previousVersions')}
+                <ExternalLink className="h-3.5 w-3.5" />
+              </a>
             </Tabs.Content>
 
             {/* Feedback Tab */}

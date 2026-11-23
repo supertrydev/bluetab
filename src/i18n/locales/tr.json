@@ -167,7 +167,33 @@
     "about": "Hakkında"
   },
   "settings": {
-    "aboutDescription": "Chrome için tek tıkla sekme yönetimi. Tarama oturumlarını kolayca kaydet, düzenle ve geri yükle.",
+    "aboutDescription": "Her sekmeyi kaydet, hızla bul, hiçbirini kapatmadan gözünün önünde daha azını tut. Chrome ve Firefox için sade ve gizliliğe saygılı bir sekme yöneticisi.",
+    "about": {
+      "website": "Web sitesi",
+      "releaseNotes": "Sürüm notları",
+      "sourceCode": "Kaynak kodu",
+      "reportBug": "Hata bildir",
+      "support": "Destek",
+      "privacyPolicy": "Gizlilik politikası",
+      "termsOfUse": "Kullanım koşulları",
+      "links": "Bluetab bağlantıları",
+      "rate": "Bluetab’i değerlendir",
+      "reviewsHelp": "Değerlendirmeler, başkalarının Bluetab’i keşfetmesine yardımcı olur.",
+      "diagnostics": "Tanılama bilgileri",
+      "version": "Sürüm",
+      "browser": "Tarayıcı",
+      "operatingSystem": "İşletim sistemi",
+      "interfaceLanguage": "Arayüz dili",
+      "extensionId": "Uzantı kimliği",
+      "unavailable": "Kullanılamıyor",
+      "copyDetails": "Bilgileri kopyala",
+      "copied": "Kopyalandı",
+      "copyFailed": "Bilgiler kopyalanamadı. Lütfen tekrar dene.",
+      "licenseHeading": "Lisans ve açık kaynak",
+      "license": "Bluetab, GNU AGPL-3.0 lisansı altında sunulan özgür bir yazılımdır",
+      "libraries": "Açık kaynak kütüphaneler ({{count}})",
+      "copyright": "© 2026 Supertry"
+    },
     "page": {
       "title": "Ayarlar",
       "description": "Bluetab tercihlerini yönet",
@@ -526,7 +552,7 @@
     "ai": {
       "title": "AI Asistanı",
       "smartNamingLabel": "Akıllı Grup Adlandırma",
-      "smartNamingDescription": "AI, 2 veya daha fazla sekmeyle grup kaydederken isim önerir",
+      "smartNamingDescription": "Adsız kaydedilen gruplardaki sekmelerin başlıkları ve adresleri, ad önerisi için Bluetab AI’a gönderilir.",
       "clearHistoryLabel": "AI Geçmişini Temizle",
       "clearHistoryDescription": "Bu tarayıcıdaki tüm kayıtlı AI konuşma geçmişini sil",
       "historyCleared": "Geçmiş temizlendi",
@@ -793,7 +819,7 @@
     "sessionBackup": {
       "title": "Oturum Yedeği",
       "enableTitle": "Otomatik oturum yedeğini etkinleştir",
-      "enableDescription": "Tüm açık tarayıcı sekmelerini ve pencerelerini düzenli olarak kaydeder",
+      "enableDescription": "Gruplarını, etiketlerini, projelerini, Brain Dump kayıtlarını, arşivlerini ve açık tarayıcı pencerelerini düzenli olarak kaydeder. Parola korumalı arşivler şifreli kalır.",
       "frequency": "Sıklık",
       "lastBackup": "Son yedek: {{time}}",
       "history": "Yedek Geçmişi",
@@ -807,12 +833,14 @@
       "frequencies": {
         "hourly": "Saatlik",
         "daily": "Günlük",
-        "weekly": "Haftalık"
+        "weekly": "Haftalık",
+        "monthly": "Aylık"
       },
       "tabs_one": "{{count}} sekme",
       "tabs_other": "{{count}} sekme",
       "groups_one": "{{count}} grup",
-      "groups_other": "{{count}} grup"
+      "groups_other": "{{count}} grup",
+      "noBackupYet": "Henüz yedek yok"
     },
     "distractionScan": {
       "title": "AI önerili alan adları",
@@ -1005,11 +1033,9 @@
       "title": "Bluetab'e Hoş Geldin",
       "description": "Kurulumu bir dakikadan kısa sürede hazırla.",
       "introLine1": "Bluetab tarayıcın genelinde tek tıkla sekme kaydetme, akıllı gruplar ve yerleşik üretkenlik araçları sunar.",
-      "introLine2": "Bu kısa tur seni bir dakikadan kısa sürede hazır hale getirir.",
       "languageTitle": "Dilini seç",
       "languageDescription": "Bluetab varsayılan olarak tarayıcı dilini kullanır. Bunu daha sonra Ayarlar'dan değiştirebilirsin.",
-      "themeTitle": "Temanı seç",
-      "themeDescription": "Tarayıcı teması varsayılan olarak sistem görünümünü takip eder."
+      "themeTitle": "Temanı seç"
     },
     "sidepanel": {
       "title": "Bluetab yan paneli",
@@ -1106,6 +1132,28 @@
         "item3": "Birden fazla tarayıcı profili ve bilgisayar arasında senkronize olur.",
         "item4": "Bluetab ayarlarındaki Hesap sayfasından erişilebilir."
       }
+    },
+    "focus": {
+      "cta": "Bluetab odaklanmana yardımcı olsun mu? 3 soru, 30 saniye",
+      "title": "Odaklanma tercihlerin",
+      "question1": "Aynı anda kaç sekme görmek istersin?",
+      "noLimit": "Sınır yok",
+      "hiddenHint": "Fazla sekmeler gizli bir grupta toplanır. Hiçbir sekme kapatılmaz.",
+      "question2": "Bir işe odaklanmana ne yardımcı olur?",
+      "pomodoro": "25 dakikalık Pomodoro",
+      "flowtime": "Süre sınırı olmadan çalış ve mola önerisi al (Flowtime)",
+      "visual": "Kalan süreyi küçülen bir disk olarak gör (Visual Time)",
+      "none": "Hiçbiri",
+      "question3": "Bir süredir kullanmadığın sekmelere ne olsun?",
+      "suspend30": "30 dakika sonra uyut (Zz)",
+      "suspend120": "2 saat sonra uyut",
+      "leaveAlone": "Oldukları gibi bırak",
+      "tabSummary": "Görünür sekme sınırı: {{count}}",
+      "suspendSummary": "Kullanılmayan sekmeleri {{minutes}} dakika sonra uyut",
+      "nothingEnabled": "Odaklanma özelliği seçmedin.",
+      "tip": "Bir işi bitirmen gerektiğinde yan panelde Hard Focus’a bas.",
+      "settingsHint": "Bunu istediğin zaman Ayarlar → ADHD bölümünden değiştirebilirsin.",
+      "saveError": "Tercihlerin kaydedilemedi. Tekrar dene."
     }
   },
   "feedback": {
@@ -1195,7 +1243,8 @@
     "rssSingleFallback": "Yeni makale",
     "rssMultipleHeader": "{{count}} yeni makale:",
     "autoArchived_one": "{{count}} hareketsiz grup Arşiv'e taşındı",
-    "autoArchived_other": "{{count}} hareketsiz grup Arşiv'e taşındı"
+    "autoArchived_other": "{{count}} hareketsiz grup Arşiv'e taşındı",
+    "memoryFreed": " · yaklaşık {{mb}} MB bellek boşaldı"
   },
   "time": {
     "justNow": "şimdi",
@@ -1535,6 +1584,10 @@
         "dataPrivacy": {
           "question": "Verilerim nerede tutuluyor?",
           "answer": "Bluetab verilerinin çoğu önce tarayıcında yerel olarak kalır. Bazı özellikleri kullandığında seçili veriler cihaz dışına gönderilebilir: bulut senkronu şifreli senkron verisini yükler, AI özellikleri istek bağlamını AI sunucusuna gönderir, entegrasyonlar içeriği bağlı araçlara yollar, Bluet yayını paylaşılan koleksiyonları Bluet'e gönderir ve MCP onaylı Bluetab verisini harici AI istemcilerine açabilir."
+        },
+        "freedMemory": {
+          "question": "Bluetab boşalan belleği nasıl ölçer?",
+          "answer": "Bluetab, sekmeler kapanmadan önceki ve kapandıktan birkaç saniye sonraki boş bilgisayar belleğini karşılaştırır. Diğer uygulamalar sonucu etkileyebildiği için bu değer tahmini olarak ve yalnızca fark belirgin olduğunda gösterilir."
         }
       },
       "shortcutIntro": "Bluetab kurulu olduğu sürece bu klavye kısayolları sistem genelinde çalışır. Chromium tabanlı tarayıcılarda bunları {{path}} adresinden özelleştirebilirsin.",
@@ -1555,36 +1608,11 @@
         "featureButton": "Özellik Öner"
       },
       "changelog": {
-        "v1_0_6_1": "Tanıtım turu, yan paneli anlatırken paneli açıyor",
-        "v1_0_6_2": "Sekme grubu oluşturmak, Opera dahil daha güvenilir (Opera'da bir grup için en az iki sekme gerekir)",
-        "v1_0_6_3": "Bluetab'ı ChatGPT uygulama dizininden ChatGPT'ye bağlayabilirsin",
-        "v1_0_6_4": "Senkronizasyon her cihazda bir senkronizasyon parolası istiyor. Eski senkronizasyon kurulumundaki cihazlar yerel verilerini koruyarak yeniden başlayabilir",
-        "v1_0_6_5": "Bağlı uygulamalara gönderim, oturumun arka planda yenilenmesi gerektiğinde artık başarısız olmuyor",
-        "v1_0_6_6": "Yardım sayfası GitHub hata bildirimi ve özellik isteği formlarını doğrudan açıyor",
-        "v1_0_5_1": "Artık Firefox'ta da kullanılabilir (sürüm 140 veya üstü)",
-        "v1_0_5_2": "Senkronizasyon ve Teams, oturum anahtarını artık web adreslerinde göndermiyor",
-        "v1_0_5_3": "Sayfa temizleme ve diğer yerleşik kütüphaneler için güvenlik güncellemeleri",
-        "v1_0_5_4": "Ayarlar → Hakkında artık yüklü sürümü gösteriyor",
-        "v1_0_3_1": "İçe aktarma OneTab başlıklarını koruyor ve Session Buddy dışa aktarımlarını okuyor",
-        "v1_0_3_2": "Bir tarayıcı senkronizasyona katıldığında cihaza ad verebilirsin",
-        "v1_0_3_3": "Bluetab AI ilk istekten önce ne gönderdiğini gösteriyor ve bağlı uygulamalarda işlem yapmadan önce soruyor",
-        "v1_0_3_4": "Yardım sayfasında destek e-posta adresi yer alıyor",
-        "v1_0_0_1": "AI grup düzenleyici ve sayfadan Dump'a özetler",
-        "v1_0_0_2": "Seçili metin yakalama ve bağlı sayfa göstergeleri dahil Brain Dump iyileştirmeleri",
-        "v1_0_0_3": "Harici AI istemcileri için MCP sunucu erişimi",
-        "v1_0_0_4": "Bulut senkronu güvenilirliği düzeltmeleri, cihaz yönetimi ve daha geniş ayar kapsamı",
-        "v1_0_0_5": "Metin ölçeklendirme yayını ve istatistik başlığı iyileştirmeleri",
-        "v1_0_0_6": "Odak ve bağlam menüsü kararlılık düzeltmeleri",
-        "v0_9_0_1": "Yeni ilk kullanım akışı ve temel özellik olarak Brain Dump",
-        "v0_9_0_2": "Flow otomasyonları ve AI destekli sekme eylemleri",
-        "v0_9_0_3": "Notion, Slack, Linear, GitHub ve daha fazlası için entegrasyonlar",
-        "v0_9_0_4": "Yüzer düğme iyileştirmeleri ve hızlı yakalama akışları",
-        "v0_9_0_5": "Daha akıllı kaydetme eylemleri, kısayol iyileştirmeleri ve arayüz dokunuşları",
-        "v0_1_0_1": "Sekmeleri kaydet, düzenle ve geri yükle",
-        "v0_1_0_2": "Düzen için projeler ve etiketler",
-        "v0_1_0_3": "Klavye kısayolları ve yönetici görünümü",
-        "v0_1_0_4": "Tarayıcı yer imi içe aktarma",
-        "v0_1_0_5": "Erken dönem bulut senkron temeli"
+        "v1_0_7_1": "Bir grubu yanlışlıkla mı sildin? 10 saniye içinde geri alabilirsin.",
+        "v1_0_7_2": "Kaydettiğin gruplar, etiketler, projeler ve Brain Dump notları artık ayda bir otomatik olarak yedekleniyor.",
+        "v1_0_7_3": "Akıllı Grup Adlandırma (Pro), açar açmaz adsız gruplara ad veriyor.",
+        "v1_0_7_4": "Daha hafif ve sessiz: Bluetab yalnızca kullandığın dili yüklüyor ve artık arka planda her dakika uyanmıyor.",
+        "previousVersions": "Önceki sürümler"
       },
       "editShortcuts": "Kısayolları düzenle"
     },
@@ -3250,5 +3278,28 @@
     "processing": "Supertry bu veriyi OpenRouter üzerinden AI modeline gönderir (şu an Z.ai’nin GLM modeli). Sağlayıcı bu veriyle model eğitmez; isteklerini ve yanıtları biz saklamayız.",
     "privacyLink": "Gizlilik Politikası",
     "gotIt": "Anladım"
+  },
+  "dataSafety": {
+    "undo": "Geri al",
+    "seconds": "{{count}} sn",
+    "undoFailed": "Silme geri alınamadı. Tekrar dene.",
+    "memoryNoticeTitle": "Sekmelerin hâlâ burada",
+    "memoryNoticeBody": "Sekmelerin tarayıcıda açık, hiçbir şey kaybolmadı. Alt+S ile tekrar kaydettiğinde adı, rengi ve etiketleriyle aynı gruba geri dönerler.",
+    "closesIn": "{{count}} sn içinde kapanır",
+    "restoreSavedData": "İki seçenek de kayıtlı grupları, etiketleri, projeleri, Brain Dump kayıtlarını ve arşivleri de geri yükler. Yedekte olan kayıtlar yedekteki hâline döner; diğer kayıtlı verilerin korunur."
+  },
+  "managerWelcome": {
+    "title": "Bluetab’e hoş geldin",
+    "body": "Bir penceredeki tüm açık sekmeleri tek bir grup olarak kaydetmek için Alt+S tuşlarına bas. Grupların burada görünür. Başlamanı kolaylaştırmak için bir örnek grup ekledik.",
+    "existingBody": "Bir penceredeki tüm açık sekmeleri tek bir grup olarak kaydetmek için Alt+S tuşlarına bas. Grupların burada görünür.",
+    "done": "Tamam",
+    "exampleTag": "Örnek",
+    "groupName": "Bluetab’e başlarken",
+    "tabs": {
+      "bluetab": "Bluetab",
+      "releases": "Sürüm notları",
+      "connect": "Bluetab’i yapay zekâ uygulamana bağla",
+      "feedback": "Hata bildir veya özellik öner"
+    }
   }
 }
