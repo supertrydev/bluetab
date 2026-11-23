@@ -55,22 +55,19 @@ describe('OnboardingWizard onboarding steps', () => {
   });
 
   it('offers Brazilian Portuguese and restores its persisted preference', () => {
-    expect(source).toContain("language === 'pt-BR'");
-    expect(source).toContain("onLanguageChange('pt-BR')");
+    expect(source).toContain('<SelectItem value="pt-BR">');
     expect(source).toContain("t('common.brazilianPortuguese')");
     expect(source).toContain("nextLanguage === 'pt-BR'");
   });
 
   it('offers Indonesian and restores its persisted preference', () => {
-    expect(source).toContain("language === 'id'");
-    expect(source).toContain("onLanguageChange('id')");
+    expect(source).toContain('<SelectItem value="id">');
     expect(source).toContain("t('common.indonesian')");
     expect(source).toContain("nextLanguage === 'id'");
   });
 
   it('offers Arabic and restores its persisted preference', () => {
-    expect(source).toContain("language === 'ar'");
-    expect(source).toContain("onLanguageChange('ar')");
+    expect(source).toContain('<SelectItem value="ar">');
     expect(source).toContain("t('common.arabic')");
     expect(source).toContain("nextLanguage === 'ar'");
   });

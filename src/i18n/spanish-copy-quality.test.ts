@@ -166,8 +166,7 @@ describe('Spanish copy quality', () => {
     );
 
     expect(settingsSource).toContain('<SelectItem value="es">{t(\'common.spanish\')}</SelectItem>');
-    expect(onboardingSource).toContain("language === 'es'");
-    expect(onboardingSource).toContain("onLanguageChange('es')");
+    expect(onboardingSource).toContain('<SelectItem value="es">');
     expect(onboardingSource).toContain("t('common.spanish')");
   });
 

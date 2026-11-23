@@ -1033,11 +1033,9 @@
       "title": "Bluetab'e Hoş Geldin",
       "description": "Kurulumu bir dakikadan kısa sürede hazırla.",
       "introLine1": "Bluetab tarayıcın genelinde tek tıkla sekme kaydetme, akıllı gruplar ve yerleşik üretkenlik araçları sunar.",
-      "introLine2": "Bu kısa tur seni bir dakikadan kısa sürede hazır hale getirir.",
       "languageTitle": "Dilini seç",
       "languageDescription": "Bluetab varsayılan olarak tarayıcı dilini kullanır. Bunu daha sonra Ayarlar'dan değiştirebilirsin.",
-      "themeTitle": "Temanı seç",
-      "themeDescription": "Tarayıcı teması varsayılan olarak sistem görünümünü takip eder."
+      "themeTitle": "Temanı seç"
     },
     "sidepanel": {
       "title": "Bluetab yan paneli",

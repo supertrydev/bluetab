@@ -1033,11 +1033,9 @@
       "title": "Boas-vindas ao Bluetab",
       "description": "Prepare tudo em menos de um minuto.",
       "introLine1": "O Bluetab oferece salvamento de abas com um clique, grupos inteligentes e ferramentas de produtividade integradas ao navegador.",
-      "introLine2": "Este breve tour deixará tudo pronto em menos de um minuto.",
       "languageTitle": "Escolha seu idioma",
       "languageDescription": "Por padrão, o Bluetab segue o idioma do navegador. Você pode alterá-lo a qualquer momento em Configurações.",
-      "themeTitle": "Escolha seu tema",
-      "themeDescription": "Por padrão, o tema do navegador segue a aparência do sistema."
+      "themeTitle": "Escolha seu tema"
     },
     "sidepanel": {
       "title": "Painel lateral do Bluetab",

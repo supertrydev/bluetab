@@ -1034,11 +1034,9 @@ export const EN_RESOURCES = {
       "title": "Welcome to Bluetab",
       "description": "Get your setup ready in under a minute.",
       "introLine1": "Bluetab gives you one-click tab saving, smart groups, and built-in productivity tools across your browser.",
-      "introLine2": "This short tour will get you up and running in under a minute.",
       "languageTitle": "Choose your language",
       "languageDescription": "Bluetab follows your browser language by default. You can change it any time in Settings.",
-      "themeTitle": "Choose your theme",
-      "themeDescription": "Browser theme follows your system appearance by default."
+      "themeTitle": "Choose your theme"
     },
     "sidepanel": {
       "title": "Bluetab sidepanel",

@@ -1033,11 +1033,9 @@
       "title": "Selamat datang di Bluetab",
       "description": "Siapkan semuanya dalam waktu kurang dari satu menit.",
       "introLine1": "Bluetab membantu Anda menyimpan tab sekali klik, membuat grup pintar, dan memakai alat produktivitas langsung di browser.",
-      "introLine2": "Tur singkat ini akan menyiapkan semuanya dalam waktu kurang dari satu menit.",
       "languageTitle": "Pilih bahasa",
       "languageDescription": "Secara default, Bluetab mengikuti bahasa browser. Anda dapat mengubahnya kapan saja di Pengaturan.",
-      "themeTitle": "Pilih tema",
-      "themeDescription": "Secara default, tema browser mengikuti tampilan sistem."
+      "themeTitle": "Pilih tema"
     },
     "sidepanel": {
       "title": "Panel samping Bluetab",

@@ -1033,11 +1033,9 @@
       "title": "Te damos la bienvenida a Bluetab",
       "description": "Prepara tu configuración en menos de un minuto.",
       "introLine1": "Bluetab te permite guardar pestañas con un clic y ofrece grupos inteligentes y herramientas de productividad integradas en el navegador.",
-      "introLine2": "Este breve recorrido te permitirá empezar en menos de un minuto.",
       "languageTitle": "Elige tu idioma",
       "languageDescription": "Bluetab usa el idioma de tu navegador de forma predeterminada. Puedes cambiarlo cuando quieras en Configuración.",
-      "themeTitle": "Elige tu tema",
-      "themeDescription": "De forma predeterminada, el tema del navegador sigue la apariencia del sistema."
+      "themeTitle": "Elige tu tema"
     },
     "sidepanel": {
       "title": "Panel lateral de Bluetab",
