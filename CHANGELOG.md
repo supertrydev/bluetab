@@ -42,6 +42,13 @@ and Firefox Add-ons.
   Brain Dump, archives and the `bt` address-bar search).
 - Onboarding keeps the same card height on every step, so Next stays in place;
   language and theme are dropdowns. The side panel's save button uses the brand colour.
+- A fresh install opens the manager with a "Getting started with Bluetab" example
+  group and a short welcome.
+- Onboarding ends with three optional focus questions that set up ADHD mode (tabs in
+  sight, focus timer, idle tabs).
+- On Chrome, Brave, Edge and Opera, saving and closing tabs shows about how much memory
+  was freed (measured, shown only above 50 MB). New permission `system.memory`, which
+  shows no install warning; not used on Firefox.
 - Settings → About is a full About page: links (website, release notes, source,
   bug form, support, privacy, terms), "Rate Bluetab" for the Chrome Web Store or
   Firefox Add-ons, copyable diagnostics for bug reports, the AGPL-3.0 license and
