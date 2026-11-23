@@ -14,6 +14,7 @@ interface HelpPageProps {
 
 // FAQ data
 const FAQ_ITEMS = [
+  { id: 'freedMemory', questionKey: 'options.helpPage.faq.freedMemory.question', answerKey: 'options.helpPage.faq.freedMemory.answer' },
   {
     id: 'save-tabs',
     questionKey: 'options.helpPage.faq.saveTabs.question',

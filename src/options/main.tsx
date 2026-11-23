@@ -1,4 +1,6 @@
 import { shouldShowGroupMemoryNotice, showGroupMemoryNotice } from '@/services/group-memory-notice';
+import { consumeManagerWelcome } from '@/services/manager-welcome';
+import { ManagerWelcome } from './components/ManagerWelcome';
 import { GroupMemoryNotice } from '@/components/GroupMemoryNotice';
 import { deleteGroupsWithUndo } from '@/services/group-deletion';
 import { createBrowserTabGroup } from '@/platform/create-browser-tab-group';
@@ -94,6 +96,7 @@ interface TabManagerContentProps {
 
 function TabManagerContent({ groups, setGroups }: TabManagerContentProps) {
     const direction = useDirection();
+    const [welcomeKind, setWelcomeKind] = useState<'sample' | 'existing' | null>(null);
     // Phase 9 Plan 09-04 — Simplify Mode attribute wiring for Options shell.
     useSimplifyMode();
 
@@ -350,6 +353,8 @@ function TabManagerContent({ groups, setGroups }: TabManagerContentProps) {
             console.error('Migration failed (non-critical):', error);
         }
 
+        const welcome = await consumeManagerWelcome();
+        if (welcome) setWelcomeKind(welcome);
         await loadGroups();
     }, [loadGroups]);
 
@@ -1297,6 +1302,7 @@ function TabManagerContent({ groups, setGroups }: TabManagerContentProps) {
                         </DialogContent>
                     </Dialog>
 
+                    <ManagerWelcome kind={welcomeKind} onDone={() => setWelcomeKind(null)} />
                     <GroupMemoryNotice />
                     <Toaster richColors position={direction === 'rtl' ? 'bottom-left' : 'bottom-right'} />
 

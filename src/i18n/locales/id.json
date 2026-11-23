@@ -1132,6 +1132,28 @@
         "item3": "Sinkronkan di beberapa profil browser dan komputer.",
         "item4": "Tersedia dari halaman Akun di pengaturan Bluetab."
       }
+    },
+    "focus": {
+      "cta": "Ingin Bluetab membantumu fokus? 3 pertanyaan, 30 detik",
+      "title": "Preferensi fokusmu",
+      "question1": "Berapa tab yang ingin kamu lihat sekaligus?",
+      "noLimit": "Tanpa batas",
+      "hiddenHint": "Tab tambahan dilipat ke dalam grup tersembunyi. Tidak ada tab yang ditutup.",
+      "question2": "Apa yang membantumu fokus pada tugas?",
+      "pomodoro": "Pomodoro 25 menit",
+      "flowtime": "Bekerja tanpa batas waktu dan mendapat saran istirahat (Flowtime)",
+      "visual": "Lihat sisa waktu sebagai cakram yang mengecil (Visual Time)",
+      "none": "Tidak ada",
+      "question3": "Apa yang sebaiknya dilakukan pada tab yang sudah lama tidak kamu gunakan?",
+      "suspend30": "Tidurkan setelah 30 menit (Zz)",
+      "suspend120": "Setelah 2 jam",
+      "leaveAlone": "Biarkan saja",
+      "tabSummary": "Batas tab yang terlihat: {{count}}",
+      "suspendSummary": "Tidurkan tab yang tidak aktif setelah {{minutes}} menit",
+      "nothingEnabled": "Tidak ada fitur fokus yang dipilih.",
+      "tip": "Saat kamu perlu menyelesaikan sesuatu, tekan Hard Focus di panel samping.",
+      "settingsHint": "Kamu bisa mengubahnya kapan saja di Pengaturan → ADHD.",
+      "saveError": "Preferensimu tidak dapat disimpan. Coba lagi."
     }
   },
   "feedback": {
@@ -1221,7 +1243,8 @@
     "rssSingleFallback": "Artikel baru",
     "rssMultipleHeader": "{{count}} artikel baru:",
     "autoArchived_one": "{{count}} grup tidak aktif dipindahkan ke Arsip",
-    "autoArchived_other": "{{count}} grup tidak aktif dipindahkan ke Arsip"
+    "autoArchived_other": "{{count}} grup tidak aktif dipindahkan ke Arsip",
+    "memoryFreed": " · sekitar {{mb}} MB memori dibebaskan"
   },
   "time": {
     "justNow": "baru saja",
@@ -1561,6 +1584,10 @@
         "dataPrivacy": {
           "question": "Di mana data saya disimpan?",
           "answer": "Sebagian besar data Bluetab awalnya disimpan secara lokal di browser. Beberapa fitur dapat mengirim data terpilih keluar perangkat saat digunakan: sinkronisasi cloud mengunggah data sinkronisasi terenkripsi, fitur AI mengirim konteks permintaan ke backend AI, integrasi mengirim konten ke alat terhubung, penerbitan Bluet mengirim koleksi yang dibagikan ke Bluet, dan MCP dapat memberikan akses data Bluetab yang disetujui kepada klien AI eksternal."
+        },
+        "freedMemory": {
+          "question": "Bagaimana Bluetab mengukur memori yang dibebaskan?",
+          "answer": "Bluetab membandingkan memori kosong komputermu sebelum tab ditutup dan beberapa detik sesudahnya. Aplikasi lain dapat memengaruhi hasilnya, jadi hasil ditampilkan sebagai perkiraan dan hanya jika perbedaannya jelas."
         }
       },
       "shortcutIntro": "Pintasan keyboard ini berfungsi di seluruh sistem selama Bluetab terpasang. Di browser berbasis Chromium, Anda dapat menyesuaikannya di {{path}}.",
@@ -3260,5 +3287,19 @@
     "memoryNoticeBody": "Tab Anda terbuka di browser. Tidak ada yang hilang. Simpan lagi dengan Alt+S untuk mengembalikannya ke grup yang sama, beserta nama, warna, dan tagnya.",
     "closesIn": "Menutup dalam {{count}} dtk",
     "restoreSavedData": "Kedua opsi juga memulihkan grup tersimpan, tag, proyek, entri Brain Dump, dan arsip. Data yang cocok dikembalikan ke versi cadangan; data tersimpan lainnya tetap dipertahankan."
+  },
+  "managerWelcome": {
+    "title": "Selamat datang di Bluetab",
+    "body": "Tekan Alt+S untuk menyimpan semua tab yang terbuka di satu jendela sebagai satu grup. Grupmu muncul di sini. Kami menambahkan grup contoh untuk membantumu memulai.",
+    "existingBody": "Tekan Alt+S untuk menyimpan semua tab yang terbuka di satu jendela sebagai satu grup. Grupmu muncul di sini.",
+    "done": "Selesai",
+    "exampleTag": "Contoh",
+    "groupName": "Mulai menggunakan Bluetab",
+    "tabs": {
+      "bluetab": "Bluetab",
+      "releases": "Catatan rilis",
+      "connect": "Hubungkan Bluetab ke aplikasi AI-mu",
+      "feedback": "Laporkan bug atau usulkan fitur"
+    }
   }
 }

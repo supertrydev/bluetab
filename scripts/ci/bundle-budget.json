@@ -2,7 +2,7 @@
   "version": 1,
   "targets": {
     "chrome": {
-      "total": 4369312,
+      "total": 4390889,
       "assets": {
         "_locales/ar/messages.json": [
           880
@@ -26,10 +26,10 @@
           1921
         ],
         "assets/AIPanel.js": [
-          373096
+          373016
         ],
         "assets/BrainDumpPanel.js": [
-          17976
+          17946
         ],
         "assets/ConfirmModal.js": [
           1709
@@ -41,16 +41,16 @@
           4716
         ],
         "assets/NotionPagePicker.js": [
-          11395
+          9730
         ],
         "assets/PomodoroStatus.js": [
-          2698
+          2668
         ],
         "assets/ReminderQuickPicker.js": [
           4747
         ],
         "assets/TeamsPanel.js": [
-          38293
+          38263
         ],
         "assets/TextSizeService.js": [
           4045
@@ -62,16 +62,16 @@
           13547
         ],
         "assets/account.js": [
-          16598
+          16568
         ],
         "assets/ai-brain-dump-reminder-tools.js": [
-          5740
+          5710
         ],
         "assets/ai-flow-focus-tools.js": [
-          4774
+          4713
         ],
         "assets/ai-group-naming.js": [
-          148435
+          148400
         ],
         "assets/ai-group-organizer.js": [
           5358
@@ -80,7 +80,7 @@
           269
         ],
         "assets/ai-service.js": [
-          113370
+          113340
         ],
         "assets/app-sidebar.js": [
           52929
@@ -92,7 +92,7 @@
           93
         ],
         "assets/backup-service.js": [
-          23545
+          23510
         ],
         "assets/bell.js": [
           294
@@ -101,7 +101,7 @@
           120
         ],
         "assets/blocked.js": [
-          8286
+          8256
         ],
         "assets/bluet-bridge-service.js": [
           11983
@@ -131,7 +131,7 @@
           1299
         ],
         "assets/feeds.js": [
-          47399
+          47369
         ],
         "assets/file-text.js": [
           389
@@ -140,10 +140,10 @@
           1443
         ],
         "assets/flow-storage.js": [
-          7009
+          6974
         ],
         "assets/flow.js": [
-          57812
+          57777
         ],
         "assets/focus-service.js": [
           7809
@@ -195,6 +195,9 @@
         "assets/logo-light.svg": [
           17973
         ],
+        "assets/manager-welcome.js": [
+          4413
+        ],
         "assets/menu.js": [
           377
         ],
@@ -217,7 +220,7 @@
           82
         ],
         "assets/newtabApp.js": [
-          11856
+          11824
         ],
         "assets/offscreen-manager.js": [
           1563
@@ -226,7 +229,7 @@
           2662
         ],
         "assets/onboarding.js": [
-          17508
+          20732
         ],
         "assets/options-layout.css": [
           1095
@@ -235,7 +238,7 @@
           178
         ],
         "assets/options.js": [
-          179988
+          180711
         ],
         "assets/pause.js": [
           215
@@ -250,7 +253,7 @@
           194
         ],
         "assets/pomodoro-service.js": [
-          15592
+          15557
         ],
         "assets/preload-helper.js": [
           1110
@@ -277,13 +280,13 @@
           304
         ],
         "assets/save-current-window-tabs.js": [
-          24769
+          27024
         ],
         "assets/save.js": [
           658
         ],
         "assets/schemas.js": [
-          99760
+          280482
         ],
         "assets/scroll-area.js": [
           12569
@@ -301,7 +304,7 @@
           784
         ],
         "assets/settings.js": [
-          285362,
+          285332,
           694
         ],
         "assets/shield.js": [
@@ -311,13 +314,10 @@
           4198
         ],
         "assets/sidepanel.js": [
-          98870
+          99065
         ],
         "assets/square.js": [
           151
-        ],
-        "assets/storage.js": [
-          178808
         ],
         "assets/switch.js": [
           3844
@@ -326,7 +326,7 @@
           13126
         ],
         "assets/tailwind.css": [
-          158234
+          158311
         ],
         "assets/tailwind.js": [
           143499
@@ -356,25 +356,25 @@
           24860
         ],
         "locales/ar.json": [
-          211911
+          214619
         ],
         "locales/es.json": [
-          149424
+          151560
         ],
         "locales/id.json": [
-          136346
+          138327
         ],
         "locales/pt-BR.json": [
-          144855
+          146937
         ],
         "locales/tr.json": [
-          142023
+          144041
         ],
         "manifest.json": [
-          2952
+          2973
         ],
         "src/account/index.html": [
-          3332
+          3256
         ],
         "src/assets/bluetab-avatar.png": [
           9352
@@ -497,10 +497,10 @@
           343
         ],
         "src/background/service-worker.js": [
-          112282
+          112680
         ],
         "src/blocked/index.html": [
-          1833
+          1757
         ],
         "src/content/brain-dump-modal.js": [
           13334
@@ -515,10 +515,10 @@
           24627
         ],
         "src/feeds/index.html": [
-          4108
+          4032
         ],
         "src/flow/index.html": [
-          3896
+          3820
         ],
         "src/newtab/app.html": [
           1178
@@ -527,10 +527,10 @@
           433
         ],
         "src/onboarding/index.html": [
-          2327
+          2492
         ],
         "src/options/index.html": [
-          5757
+          5765
         ],
         "src/scripts/theme-init.js": [
           716
@@ -542,10 +542,10 @@
           811
         ],
         "src/settings/index.html": [
-          6386
+          6310
         ],
         "src/sidepanel/index.html": [
-          3914
+          3836
         ]
       },
       "permissions": [
@@ -562,6 +562,7 @@
         "scripting",
         "sidePanel",
         "storage",
+        "system.memory",
         "tabGroups",
         "tabs",
         "unlimitedStorage",
@@ -580,7 +581,7 @@
       ]
     },
     "firefox": {
-      "total": 4368526,
+      "total": 4390082,
       "assets": {
         "_locales/ar/messages.json": [
           880
@@ -604,10 +605,10 @@
           1921
         ],
         "assets/AIPanel.js": [
-          373096
+          373016
         ],
         "assets/BrainDumpPanel.js": [
-          17976
+          17946
         ],
         "assets/ConfirmModal.js": [
           1709
@@ -619,16 +620,16 @@
           4716
         ],
         "assets/NotionPagePicker.js": [
-          11395
+          9730
         ],
         "assets/PomodoroStatus.js": [
-          2698
+          2668
         ],
         "assets/ReminderQuickPicker.js": [
           4747
         ],
         "assets/TeamsPanel.js": [
-          38293
+          38263
         ],
         "assets/TextSizeService.js": [
           4045
@@ -640,16 +641,16 @@
           13547
         ],
         "assets/account.js": [
-          16598
+          16568
         ],
         "assets/ai-brain-dump-reminder-tools.js": [
-          5740
+          5710
         ],
         "assets/ai-flow-focus-tools.js": [
-          4774
+          4713
         ],
         "assets/ai-group-naming.js": [
-          148435
+          148400
         ],
         "assets/ai-group-organizer.js": [
           5358
@@ -658,7 +659,7 @@
           269
         ],
         "assets/ai-service.js": [
-          113370
+          113340
         ],
         "assets/app-sidebar.js": [
           52929
@@ -670,7 +671,7 @@
           93
         ],
         "assets/backup-service.js": [
-          23545
+          23510
         ],
         "assets/bell.js": [
           294
@@ -679,7 +680,7 @@
           120
         ],
         "assets/blocked.js": [
-          8286
+          8256
         ],
         "assets/bluet-bridge-service.js": [
           11983
@@ -709,7 +710,7 @@
           1795
         ],
         "assets/feeds.js": [
-          47399
+          47369
         ],
         "assets/file-text.js": [
           389
@@ -718,10 +719,10 @@
           1443
         ],
         "assets/flow-storage.js": [
-          7009
+          6974
         ],
         "assets/flow.js": [
-          57812
+          57777
         ],
         "assets/focus-service.js": [
           7809
@@ -773,6 +774,9 @@
         "assets/logo-light.svg": [
           17973
         ],
+        "assets/manager-welcome.js": [
+          4413
+        ],
         "assets/menu.js": [
           377
         ],
@@ -795,7 +799,7 @@
           82
         ],
         "assets/newtabApp.js": [
-          11856
+          11824
         ],
         "assets/offscreen-handlers.js": [
           2565
@@ -804,7 +808,7 @@
           517
         ],
         "assets/onboarding.js": [
-          17508
+          20732
         ],
         "assets/options-layout.css": [
           1095
@@ -813,7 +817,7 @@
           178
         ],
         "assets/options.js": [
-          179988
+          180711
         ],
         "assets/pause.js": [
           215
@@ -828,7 +832,7 @@
           194
         ],
         "assets/pomodoro-service.js": [
-          15592
+          15557
         ],
         "assets/preload-helper.js": [
           1110
@@ -855,13 +859,13 @@
           304
         ],
         "assets/save-current-window-tabs.js": [
-          24769
+          27024
         ],
         "assets/save.js": [
           658
         ],
         "assets/schemas.js": [
-          99760
+          280482
         ],
         "assets/scroll-area.js": [
           12569
@@ -879,7 +883,7 @@
           784
         ],
         "assets/settings.js": [
-          285233,
+          285203,
           694
         ],
         "assets/shield.js": [
@@ -889,13 +893,10 @@
           4198
         ],
         "assets/sidepanel.js": [
-          98870
+          99065
         ],
         "assets/square.js": [
           151
-        ],
-        "assets/storage.js": [
-          178808
         ],
         "assets/switch.js": [
           3844
@@ -904,7 +905,7 @@
           13126
         ],
         "assets/tailwind.css": [
-          158234
+          158311
         ],
         "assets/tailwind.js": [
           143499
@@ -934,25 +935,25 @@
           24860
         ],
         "locales/ar.json": [
-          211911
+          214619
         ],
         "locales/es.json": [
-          149424
+          151560
         ],
         "locales/id.json": [
-          136346
+          138327
         ],
         "locales/pt-BR.json": [
-          144855
+          146937
         ],
         "locales/tr.json": [
-          142023
+          144041
         ],
         "manifest.json": [
           2918
         ],
         "src/account/index.html": [
-          3332
+          3256
         ],
         "src/assets/bluetab-avatar.png": [
           9352
@@ -1072,10 +1073,10 @@
           36096
         ],
         "src/background/service-worker.js": [
-          112610
+          113008
         ],
         "src/blocked/index.html": [
-          1833
+          1757
         ],
         "src/content/brain-dump-modal.js": [
           13334
@@ -1090,10 +1091,10 @@
           24627
         ],
         "src/feeds/index.html": [
-          4108
+          4032
         ],
         "src/flow/index.html": [
-          3896
+          3820
         ],
         "src/newtab/app.html": [
           1178
@@ -1102,10 +1103,10 @@
           433
         ],
         "src/onboarding/index.html": [
-          2327
+          2492
         ],
         "src/options/index.html": [
-          5757
+          5765
         ],
         "src/scripts/theme-init.js": [
           716
@@ -1117,10 +1118,10 @@
           811
         ],
         "src/settings/index.html": [
-          6386
+          6310
         ],
         "src/sidepanel/index.html": [
-          3914
+          3836
         ]
       },
       "permissions": [

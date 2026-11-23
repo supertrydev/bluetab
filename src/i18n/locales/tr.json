@@ -1132,6 +1132,28 @@
         "item3": "Birden fazla tarayıcı profili ve bilgisayar arasında senkronize olur.",
         "item4": "Bluetab ayarlarındaki Hesap sayfasından erişilebilir."
       }
+    },
+    "focus": {
+      "cta": "Bluetab odaklanmana yardımcı olsun mu? 3 soru, 30 saniye",
+      "title": "Odaklanma tercihlerin",
+      "question1": "Aynı anda kaç sekme görmek istersin?",
+      "noLimit": "Sınır yok",
+      "hiddenHint": "Fazla sekmeler gizli bir grupta toplanır. Hiçbir sekme kapatılmaz.",
+      "question2": "Bir işe odaklanmana ne yardımcı olur?",
+      "pomodoro": "25 dakikalık Pomodoro",
+      "flowtime": "Süre sınırı olmadan çalış ve mola önerisi al (Flowtime)",
+      "visual": "Kalan süreyi küçülen bir disk olarak gör (Visual Time)",
+      "none": "Hiçbiri",
+      "question3": "Bir süredir kullanmadığın sekmelere ne olsun?",
+      "suspend30": "30 dakika sonra uyut (Zz)",
+      "suspend120": "2 saat sonra uyut",
+      "leaveAlone": "Oldukları gibi bırak",
+      "tabSummary": "Görünür sekme sınırı: {{count}}",
+      "suspendSummary": "Kullanılmayan sekmeleri {{minutes}} dakika sonra uyut",
+      "nothingEnabled": "Odaklanma özelliği seçmedin.",
+      "tip": "Bir işi bitirmen gerektiğinde yan panelde Hard Focus’a bas.",
+      "settingsHint": "Bunu istediğin zaman Ayarlar → ADHD bölümünden değiştirebilirsin.",
+      "saveError": "Tercihlerin kaydedilemedi. Tekrar dene."
     }
   },
   "feedback": {
@@ -1221,7 +1243,8 @@
     "rssSingleFallback": "Yeni makale",
     "rssMultipleHeader": "{{count}} yeni makale:",
     "autoArchived_one": "{{count}} hareketsiz grup Arşiv'e taşındı",
-    "autoArchived_other": "{{count}} hareketsiz grup Arşiv'e taşındı"
+    "autoArchived_other": "{{count}} hareketsiz grup Arşiv'e taşındı",
+    "memoryFreed": " · yaklaşık {{mb}} MB bellek boşaldı"
   },
   "time": {
     "justNow": "şimdi",
@@ -1561,6 +1584,10 @@
         "dataPrivacy": {
           "question": "Verilerim nerede tutuluyor?",
           "answer": "Bluetab verilerinin çoğu önce tarayıcında yerel olarak kalır. Bazı özellikleri kullandığında seçili veriler cihaz dışına gönderilebilir: bulut senkronu şifreli senkron verisini yükler, AI özellikleri istek bağlamını AI sunucusuna gönderir, entegrasyonlar içeriği bağlı araçlara yollar, Bluet yayını paylaşılan koleksiyonları Bluet'e gönderir ve MCP onaylı Bluetab verisini harici AI istemcilerine açabilir."
+        },
+        "freedMemory": {
+          "question": "Bluetab boşalan belleği nasıl ölçer?",
+          "answer": "Bluetab, sekmeler kapanmadan önceki ve kapandıktan birkaç saniye sonraki boş bilgisayar belleğini karşılaştırır. Diğer uygulamalar sonucu etkileyebildiği için bu değer tahmini olarak ve yalnızca fark belirgin olduğunda gösterilir."
         }
       },
       "shortcutIntro": "Bluetab kurulu olduğu sürece bu klavye kısayolları sistem genelinde çalışır. Chromium tabanlı tarayıcılarda bunları {{path}} adresinden özelleştirebilirsin.",
@@ -3260,5 +3287,19 @@
     "memoryNoticeBody": "Sekmelerin tarayıcıda açık, hiçbir şey kaybolmadı. Alt+S ile tekrar kaydettiğinde adı, rengi ve etiketleriyle aynı gruba geri dönerler.",
     "closesIn": "{{count}} sn içinde kapanır",
     "restoreSavedData": "İki seçenek de kayıtlı grupları, etiketleri, projeleri, Brain Dump kayıtlarını ve arşivleri de geri yükler. Yedekte olan kayıtlar yedekteki hâline döner; diğer kayıtlı verilerin korunur."
+  },
+  "managerWelcome": {
+    "title": "Bluetab’e hoş geldin",
+    "body": "Bir penceredeki tüm açık sekmeleri tek bir grup olarak kaydetmek için Alt+S tuşlarına bas. Grupların burada görünür. Başlamanı kolaylaştırmak için bir örnek grup ekledik.",
+    "existingBody": "Bir penceredeki tüm açık sekmeleri tek bir grup olarak kaydetmek için Alt+S tuşlarına bas. Grupların burada görünür.",
+    "done": "Tamam",
+    "exampleTag": "Örnek",
+    "groupName": "Bluetab’e başlarken",
+    "tabs": {
+      "bluetab": "Bluetab",
+      "releases": "Sürüm notları",
+      "connect": "Bluetab’i yapay zekâ uygulamana bağla",
+      "feedback": "Hata bildir veya özellik öner"
+    }
   }
 }

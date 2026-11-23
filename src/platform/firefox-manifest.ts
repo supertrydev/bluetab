@@ -28,7 +28,7 @@ export const FIREFOX_OPTIONAL_DATA_COLLECTION = [
 ];
 
 /** Chrome-only permissions Firefox does not know (they only cause warnings). */
-const CHROME_ONLY_PERMISSIONS = new Set(['sidePanel', 'offscreen', 'favicon', 'windows', 'commands']);
+const CHROME_ONLY_PERMISSIONS = new Set(['system.memory', 'sidePanel', 'offscreen', 'favicon', 'windows', 'commands']);
 
 /**
  * Chrome tolerates reusing a smaller PNG for a bigger size key (64 → icon48,

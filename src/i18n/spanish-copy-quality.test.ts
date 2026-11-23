@@ -67,6 +67,7 @@ describe('Spanish copy quality', () => {
     'document.newTabTitle',
     'document.popupTitle',
     'flow.page.title',
+    'managerWelcome.tabs.bluetab', // Product name stays unchanged in every locale.
     'flow.ruleCard.not',
     'notifications.appTitle',
     'notifications.pomodoroTitle',

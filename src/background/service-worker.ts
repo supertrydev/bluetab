@@ -1,3 +1,5 @@
+import { showSaveNotification } from '@/services/save-notification';
+import { markManagerWelcomePending } from '@/services/manager-welcome';
 import { matchesSearch, normalizeForSearch } from '@/utils/search-text';
 // MV3 service workers have no document global, but Vite's bundled
 // preload-helper injects <link rel="modulepreload"> via
@@ -1945,6 +1947,7 @@ async function resetStaleIntegrationReauthFlags(): Promise<void> {
 }
 
 chrome.runtime.onInstalled.addListener(async (details) => {
+    await markManagerWelcomePending(details.reason);
     ensureCoreAlarms();
     if (details.reason === 'update') {
         await resetStaleIntegrationReauthFlags();
@@ -2802,11 +2805,12 @@ async function saveAllTabsToProject(projectId: string): Promise<void> {
 
     const project = (await Storage.getProjects()).find(p => p.id === projectId);
     try {
-        await createBasicNotification(
+        await showSaveNotification(
             translate('notifications.savedToProject', {
                 count: result.processedCount,
                 project: project?.name || 'Unknown',
             }),
+            result.freedMemory,
         );
     } catch (notificationError) {
         console.error('Notification error:', notificationError);
@@ -2909,7 +2913,7 @@ async function saveAllTabs(): Promise<void> {
     }
 
     try {
-        await createBasicNotification(parts.join(' · '));
+        await showSaveNotification(parts.join(' · '), result.freedMemory);
     } catch (notificationError) {
         console.error('Notification error:', notificationError);
     }

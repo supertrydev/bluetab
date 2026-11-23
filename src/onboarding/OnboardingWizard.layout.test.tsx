@@ -71,3 +71,28 @@ it('uses labelled language and theme selects with all original options and immed
   expect(ThemeManager.applyTheme).toHaveBeenCalledWith('dark');
   expect(Storage.set).toHaveBeenCalledWith('settings', expect.objectContaining({ language: 'ar' }));
 });
+
+it('keeps the focus questions in the existing card and writes nothing when skipped', async () => {
+  const footer = container.querySelector('footer')!;
+  for (let step = 0; step < 6; step++) {
+    await act(async () => (footer.querySelectorAll('button')[1] as HTMLButtonElement).click());
+  }
+  const counter = footer.querySelector('p')!.textContent;
+  const writes = (Storage.set as jest.Mock).mock.calls.length;
+  const cta = Array.from(container.querySelectorAll('button')).find(button => button.textContent === i18n.t('onboarding.focus.cta'))!;
+  await act(async () => cta.click());
+  for (const value of ['8', 'visual', '30']) {
+    expect(container.querySelector('footer')).toBe(footer);
+    expect(footer.querySelector('p')!.textContent).toBe(counter);
+    await act(async () => (container.querySelector(`input[value="${value}"]`) as HTMLInputElement).click());
+    await act(async () => (footer.querySelectorAll('button')[1] as HTMLButtonElement).click());
+  }
+  expect(container.textContent).toContain(i18n.t('onboarding.focus.tabSummary', { count: 8 }));
+  expect(container.textContent).toContain(i18n.t('onboarding.focus.visual'));
+  expect(container.textContent).toContain(i18n.t('onboarding.focus.suspendSummary', { minutes: 30 }));
+  expect((Storage.set as jest.Mock).mock.calls).toHaveLength(writes);
+  const skip = Array.from(container.querySelectorAll('button')).find(button => button.textContent?.includes(i18n.t('onboarding.skip')))!;
+  await act(async () => skip.click());
+  expect(container.querySelector('h1')!.textContent).toBe(i18n.t('onboarding.done.title'));
+  expect((Storage.set as jest.Mock).mock.calls).toHaveLength(writes);
+});

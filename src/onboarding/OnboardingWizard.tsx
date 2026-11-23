@@ -19,6 +19,8 @@
  *       Does not re-open if onboarding_state.completed is already true.
  */
 
+import { FocusQuestions } from './FocusQuestions';
+import { applyFocusPreferences, type FocusPreferences } from './focus-preferences';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -541,11 +543,15 @@ export function OnboardingWizard() {
     [t],
   );
   const [currentStep, setCurrentStep] = useState(0);
+  const [focusStep, setFocusStep] = useState<number | null>(null);
+  const [focusAnswers, setFocusAnswers] = useState<FocusPreferences>({ tabs: null, timer: 'none', suspend: null });
+  const [finishing, setFinishing] = useState(false);
+  const [finishError, setFinishError] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (contentRef.current) contentRef.current.scrollTop = 0;
-  }, [currentStep]);
+  }, [currentStep, focusStep]);
   const [showExtended, setShowExtended] = useState(false);
   const [floatingButtonAccessGranted, setFloatingButtonAccessGranted] = useState(false);
   const [floatingButtonAccessLoading, setFloatingButtonAccessLoading] = useState(false);
@@ -649,11 +655,17 @@ export function OnboardingWizard() {
   };
 
   const handleComplete = async () => {
-    await Storage.set('onboarding_state', {
-      completed: true,
-      completedAt: Date.now(),
-    });
-    navigateToOptions();
+    if (finishing) return;
+    setFinishing(true);
+    setFinishError(false);
+    try {
+      if (focusStep === 3) await applyFocusPreferences(focusAnswers);
+      await Storage.set('onboarding_state', { completed: true, completedAt: Date.now() });
+      navigateToOptions();
+    } catch {
+      setFinishError(true);
+      setFinishing(false);
+    }
   };
 
   const handleSkip = async () => {
@@ -665,6 +677,11 @@ export function OnboardingWizard() {
   };
 
   const handleNext = () => {
+    if (focusStep !== null) {
+      if (focusStep < 3) setFocusStep(focusStep + 1);
+      else void handleComplete();
+      return;
+    }
     if (isLastStep) {
       handleComplete();
     } else {
@@ -676,6 +693,10 @@ export function OnboardingWizard() {
   };
 
   const handleBack = () => {
+    if (focusStep !== null) {
+      setFocusStep(focusStep === 0 ? null : focusStep - 1);
+      return;
+    }
     setCurrentStep((s) => Math.max(0, s - 1));
   };
 
@@ -684,7 +705,7 @@ export function OnboardingWizard() {
   const isWelcomeStep = step.id === 'welcome';
   const progressPercent = ((currentStep + 1) / steps.length) * 100;
 
-  const nextLabel = isLastStep
+  const nextLabel = focusStep !== null ? (focusStep === 3 ? t('onboarding.finish') : t('onboarding.next')) : isLastStep
     ? t('onboarding.finish')
     : isDoneStep && !showExtended
     ? t('onboarding.continue')
@@ -701,11 +722,12 @@ export function OnboardingWizard() {
           {/* Header */}
           <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-border">
             <span className="text-sm font-semibold text-primary">Bluetab</span>
-            {!isLastStep && (
+            {(!isLastStep || focusStep !== null) && (
               <button
-                onClick={handleSkip}
+                disabled={finishing}
+                onClick={focusStep !== null ? () => { setFocusStep(null); setFocusAnswers({ tabs: null, timer: 'none', suspend: null }); } : handleSkip}
                 className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
-                title={t('labels.skipOnboarding')}
+                title={focusStep !== null ? t('onboarding.skip') : t('labels.skipOnboarding')}
               >
                 <X className="w-3.5 h-3.5" />
                 {t('onboarding.skip')}
@@ -717,7 +739,7 @@ export function OnboardingWizard() {
           <div ref={contentRef} className="min-h-0 flex-1 overflow-y-auto px-6 pt-6 pb-4">
             <AnimatePresence mode="wait">
               <motion.div
-                key={step.id}
+                key={focusStep !== null ? `focus-${focusStep}` : step.id}
                 initial={{ opacity: 0, x: isRtl ? -20 : 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: isRtl ? 20 : -20 }}
@@ -732,18 +754,24 @@ export function OnboardingWizard() {
                       <StepIcon className="w-6 h-6 text-primary" />
                     </div>
                   )}
-                  <h1 className="text-2xl font-bold text-foreground">{step.title}</h1>
-                  <p className="mt-1 text-sm text-muted-foreground">{step.description}</p>
+                  <h1 className="text-2xl font-bold text-foreground">{focusStep !== null ? t('onboarding.focus.title') : step.title}</h1>
+                  <p className="mt-1 text-sm text-muted-foreground">{focusStep === null ? step.description : null}</p>
                 </div>
 
                 {/* Step-specific content */}
-                <div>{step.content}</div>
+                <div>{focusStep !== null
+                  ? <FocusQuestions step={focusStep} answers={focusAnswers} onChange={setFocusAnswers} />
+                  : <>{step.content}{isDoneStep && <button type="button" onClick={() => setFocusStep(0)} className="w-full rounded-lg border border-primary/30 p-3 text-sm text-primary hover:bg-primary/5">
+                    {t('onboarding.focus.cta')}
+                  </button>}</>}
+                </div>
               </motion.div>
             </AnimatePresence>
           </div>
 
           {/* Footer: progress + navigation */}
           <footer className="shrink-0 px-6 py-4 border-t border-border space-y-4">
+            {finishError && <p role="alert" className="text-sm text-destructive">{t('onboarding.focus.saveError')}</p>}
             {/* Progress bar */}
             <div className="h-2 w-full overflow-hidden rounded-full bg-muted/80">
               <div
@@ -757,7 +785,7 @@ export function OnboardingWizard() {
               {/* Back button */}
               <button
                 onClick={handleBack}
-                disabled={isFirstStep}
+                disabled={isFirstStep || finishing}
                 className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                   isFirstStep
                     ? 'invisible'
@@ -771,6 +799,7 @@ export function OnboardingWizard() {
               {/* Next / Finish button */}
               <button
                 onClick={handleNext}
+                disabled={finishing}
                 className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
               >
                 {nextLabel}

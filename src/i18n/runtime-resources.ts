@@ -1133,6 +1133,28 @@ export const EN_RESOURCES = {
         "item3": "Sync across multiple browser profiles and computers.",
         "item4": "Available from the Account page in Bluetab settings."
       }
+    },
+    "focus": {
+      "cta": "Want Bluetab to help you focus? 3 questions, 30 seconds",
+      "title": "Your focus preferences",
+      "question1": "How many tabs do you like to see at once?",
+      "noLimit": "No limit",
+      "hiddenHint": "Extra tabs fold into a hidden group. Nothing is closed.",
+      "question2": "What helps you focus on a task?",
+      "pomodoro": "25-minute Pomodoro",
+      "flowtime": "Work without a timer and get a break suggestion (Flowtime)",
+      "visual": "See the remaining time as a shrinking disc (Visual Time)",
+      "none": "None",
+      "question3": "What should happen to tabs you haven't touched in a while?",
+      "suspend30": "Quiet them after 30 minutes (Zz)",
+      "suspend120": "After 2 hours",
+      "leaveAlone": "Leave them alone",
+      "tabSummary": "Visible tab limit: {{count}}",
+      "suspendSummary": "Quiet inactive tabs after {{minutes}} minutes",
+      "nothingEnabled": "No focus features selected.",
+      "tip": "When you need to finish something, press Hard Focus in the side panel.",
+      "settingsHint": "You can change this anytime in Settings \u2192 ADHD.",
+      "saveError": "Could not save your preferences. Try again."
     }
   },
   "feedback": {
@@ -1222,7 +1244,8 @@ export const EN_RESOURCES = {
     "rssSingleFallback": "New article",
     "rssMultipleHeader": "{{count}} new articles:",
     "autoArchived_one": "{{count}} inactive group moved to the Archive",
-    "autoArchived_other": "{{count}} inactive groups moved to the Archive"
+    "autoArchived_other": "{{count}} inactive groups moved to the Archive",
+    "memoryFreed": " \u00b7 about {{mb}} MB of memory freed"
   },
   "time": {
     "justNow": "just now",
@@ -1562,6 +1585,10 @@ export const EN_RESOURCES = {
         "dataPrivacy": {
           "question": "Where is my data stored?",
           "answer": "Most Bluetab data starts local to your browser. Some features can send selected data off-device when you use them: cloud sync uploads encrypted sync data, AI features send request context to the AI backend, integrations send content to connected tools, Bluet publishing sends shared collections to Bluet, and MCP can expose approved Bluetab data to external AI clients."
+        },
+        "freedMemory": {
+          "question": "How does Bluetab measure freed memory?",
+          "answer": "Bluetab compares your computer\u2019s free memory before and a few seconds after the tabs close. Other apps can affect the result, so it is shown as an estimate and only when the difference is clear."
         }
       },
       "shortcutIntro": "These keyboard shortcuts work system-wide while Bluetab is installed. In Chromium-based browsers, you can customize them at {{path}}.",
@@ -3261,5 +3288,19 @@ export const EN_RESOURCES = {
     "memoryNoticeBody": "Your tabs are open in the browser. Nothing was lost. Save them again with Alt+S to put them back in the same group, with its name, color and tags.",
     "closesIn": "Closes in {{count}}s",
     "restoreSavedData": "Both options also restore saved groups, tags, projects, Brain Dump entries and archives. Matching records return to their backed-up version; other saved data is kept."
+  },
+  "managerWelcome": {
+    "title": "Welcome to Bluetab",
+    "body": "Press Alt+S to save all open tabs in a window as one group. Your groups show up here. We added an example group to get you started.",
+    "existingBody": "Press Alt+S to save all open tabs in a window as one group. Your groups show up here.",
+    "done": "Done",
+    "exampleTag": "Example",
+    "groupName": "Getting started with Bluetab",
+    "tabs": {
+      "bluetab": "Bluetab",
+      "releases": "Release notes",
+      "connect": "Connect Bluetab to your AI app",
+      "feedback": "Report a bug or request a feature"
+    }
   }
 } as const;

@@ -1,3 +1,4 @@
+import { toast } from '@/components/Toast';
 import { Storage } from '../utils/storage';
 import { getAuthState } from '../utils/auth-state';
 import { saveTabsToBlueTab } from '../services/saved-tab-actions';
@@ -7,6 +8,8 @@ import {
   saveSuspendedTabsFromCurrentWindow,
 } from '../services/save-current-window-tabs';
 import { saveCurrentWindowTabsFromSidepanel } from './save-current-window-tabs';
+
+jest.mock('@/components/Toast', () => ({ toast: { success: jest.fn().mockReturnValue('save-toast') } }));
 
 jest.mock('../utils/storage', () => ({
   Storage: {
@@ -90,6 +93,46 @@ describe('saveCurrentWindowTabsFromSidepanel', () => {
         now: 1_700_000_000_000,
       }),
     );
+  });
+
+  it('reads before saving, then updates the same toast after tabs close', async () => {
+    jest.useFakeTimers();
+    const getInfo = jest.fn()
+      .mockResolvedValueOnce({ availableCapacity: 1000 * 1024 * 1024 })
+      .mockResolvedValueOnce({ availableCapacity: 1409 * 1024 * 1024 });
+    Object.assign(chrome, { system: { memory: { getInfo } } });
+    try {
+      const result = await saveCurrentWindowTabsFromSidepanel();
+      expect(getInfo.mock.invocationCallOrder[0]).toBeLessThan(mockSaveTabsToBlueTab.mock.invocationCallOrder[0]);
+      expect(toast.success).toHaveBeenCalledTimes(1);
+      const original = (toast.success as jest.Mock).mock.calls[0][0];
+      await jest.advanceTimersByTimeAsync(3000);
+      expect(await result?.freedMemory).toBe(410);
+      expect(toast.success).toHaveBeenLastCalledWith(original + ' · about 410 MB of memory freed', { id: 'save-toast' });
+    } finally {
+      jest.useRealTimers();
+      Object.assign(chrome, { system: undefined });
+    }
+  });
+
+  it('does not read memory when close-on-save is off', async () => {
+    const getInfo = jest.fn();
+    Object.assign(chrome, { system: { memory: { getInfo } } });
+    mockGetSettings.mockResolvedValue({ browserTabsCloseOnSave: false } as never);
+    const result = await saveCurrentWindowTabsFromSidepanel();
+    expect(getInfo).not.toHaveBeenCalled();
+    expect(result?.freedMemory).toBeUndefined();
+    Object.assign(chrome, { system: undefined });
+  });
+
+  it('does not measure when the save closes no tabs', async () => {
+    const getInfo = jest.fn().mockResolvedValue({ availableCapacity: 1000 });
+    Object.assign(chrome, { system: { memory: { getInfo } } });
+    mockSaveTabsToBlueTab.mockResolvedValueOnce({ processedCount: 1, memoryRestoredCount: 0, flowMatchedCount: 0, defaultGroupedCount: 1, closedCount: 0, savedGroups: [] });
+    const result = await saveCurrentWindowTabsFromSidepanel();
+    expect(result?.freedMemory).toBeUndefined();
+    expect(getInfo).toHaveBeenCalledTimes(1);
+    Object.assign(chrome, { system: undefined });
   });
 
   it('opens the manager tab before closing when all savable tabs in the window would be removed', async () => {

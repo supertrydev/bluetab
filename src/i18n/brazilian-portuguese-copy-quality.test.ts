@@ -67,6 +67,7 @@ describe('Brazilian Portuguese copy quality', () => {
     'document.newTabTitle',
     'document.popupTitle',
     'flow.page.title',
+    'managerWelcome.tabs.bluetab', // Product name stays unchanged in every locale.
     'navigation.menu',
     'notifications.appTitle',
     'notifications.pomodoroTitle',

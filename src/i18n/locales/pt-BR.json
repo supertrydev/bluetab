@@ -1132,6 +1132,28 @@
         "item3": "Sincronize entre vários perfis de navegador e computadores.",
         "item4": "Disponível na página Conta das configurações do Bluetab."
       }
+    },
+    "focus": {
+      "cta": "Quer que o Bluetab ajude você a se concentrar? 3 perguntas, 30 segundos",
+      "title": "Suas preferências de foco",
+      "question1": "Quantas abas você gosta de ver ao mesmo tempo?",
+      "noLimit": "Sem limite",
+      "hiddenHint": "As abas extras ficam em um grupo oculto. Nenhuma aba é fechada.",
+      "question2": "O que ajuda você a se concentrar em uma tarefa?",
+      "pomodoro": "Pomodoro de 25 minutos",
+      "flowtime": "Trabalhar sem limite de tempo e receber uma sugestão de pausa (Flowtime)",
+      "visual": "Ver o tempo restante como um disco que diminui (Visual Time)",
+      "none": "Nenhuma opção",
+      "question3": "O que deve acontecer com as abas que você não usa há algum tempo?",
+      "suspend30": "Suspendê-las após 30 minutos (Zz)",
+      "suspend120": "Após 2 horas",
+      "leaveAlone": "Deixá-las como estão",
+      "tabSummary": "Limite de abas visíveis: {{count}}",
+      "suspendSummary": "Suspender abas inativas após {{minutes}} minutos",
+      "nothingEnabled": "Nenhum recurso de foco selecionado.",
+      "tip": "Quando precisar terminar algo, pressione Hard Focus no painel lateral.",
+      "settingsHint": "Você pode mudar isso a qualquer momento em Configurações → ADHD.",
+      "saveError": "Não foi possível salvar suas preferências. Tente novamente."
     }
   },
   "feedback": {
@@ -1221,7 +1243,8 @@
     "rssSingleFallback": "Novo artigo",
     "rssMultipleHeader": "{{count}} novos artigos:",
     "autoArchived_one": "{{count}} grupo inativo foi movido para o Arquivo",
-    "autoArchived_other": "{{count}} grupos inativos foram movidos para o Arquivo"
+    "autoArchived_other": "{{count}} grupos inativos foram movidos para o Arquivo",
+    "memoryFreed": " · cerca de {{mb}} MB de memória liberados"
   },
   "time": {
     "justNow": "agora mesmo",
@@ -1561,6 +1584,10 @@
         "dataPrivacy": {
           "question": "Onde meus dados são armazenados?",
           "answer": "A maioria dos dados do Bluetab começa armazenada localmente no navegador. Alguns recursos podem enviar dados selecionados para fora do dispositivo quando usados: a sincronização na nuvem envia dados criptografados, os recursos de IA enviam o contexto da solicitação ao backend de IA, as integrações enviam conteúdo às ferramentas conectadas, a publicação no Bluet envia coleções compartilhadas ao Bluet e o MCP pode disponibilizar dados aprovados do Bluetab a clientes externos de IA."
+        },
+        "freedMemory": {
+          "question": "Como o Bluetab mede a memória liberada?",
+          "answer": "O Bluetab compara a memória livre do seu computador antes de fechar as abas e alguns segundos depois. Outros aplicativos podem afetar o resultado, por isso ele é mostrado como uma estimativa e apenas quando a diferença é clara."
         }
       },
       "shortcutIntro": "Estes atalhos de teclado funcionam em todo o sistema enquanto o Bluetab está instalado. Em navegadores baseados em Chromium, você pode personalizá-los em {{path}}.",
@@ -3260,5 +3287,19 @@
     "memoryNoticeBody": "Suas abas estão abertas no navegador. Nada foi perdido. Salve-as novamente com Alt+S para colocá-las no mesmo grupo, com seu nome, cor e etiquetas.",
     "closesIn": "Fecha em {{count}} s",
     "restoreSavedData": "As duas opções também restauram grupos salvos, etiquetas, projetos, entradas do Brain Dump e arquivos. Os registros correspondentes voltam à versão do backup; os demais dados salvos são mantidos."
+  },
+  "managerWelcome": {
+    "title": "Boas-vindas ao Bluetab",
+    "body": "Pressione Alt+S para salvar todas as abas abertas de uma janela em um único grupo. Seus grupos aparecem aqui. Adicionamos um grupo de exemplo para você começar.",
+    "existingBody": "Pressione Alt+S para salvar todas as abas abertas de uma janela em um único grupo. Seus grupos aparecem aqui.",
+    "done": "Pronto",
+    "exampleTag": "Exemplo",
+    "groupName": "Primeiros passos com o Bluetab",
+    "tabs": {
+      "bluetab": "Bluetab",
+      "releases": "Notas da versão",
+      "connect": "Conecte o Bluetab ao seu aplicativo de IA",
+      "feedback": "Relate um erro ou sugira um recurso"
+    }
   }
 }

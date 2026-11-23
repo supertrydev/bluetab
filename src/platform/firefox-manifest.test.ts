@@ -26,7 +26,7 @@ describe('toFirefoxManifest', () => {
   });
 
   it('drops Chrome-only permissions and the Chrome key', () => {
-    for (const permission of ['sidePanel', 'offscreen', 'favicon', 'windows', 'commands']) {
+    for (const permission of ['system.memory', 'sidePanel', 'offscreen', 'favicon', 'windows', 'commands']) {
       expect(firefox.permissions).not.toContain(permission);
     }
     expect(firefox.permissions).toEqual(expect.arrayContaining(['tabs', 'tabGroups', 'storage', 'declarativeNetRequest']));

@@ -96,6 +96,7 @@ const INTENTIONAL_IDENTICAL_COPY = new Set([
     'flow.conditionTypes.url_matches_regex',
     'flow.ruleCard.not',
     'flow.page.title',
+    'managerWelcome.tabs.bluetab', // Product name stays unchanged in every locale.
     'sidepanel.brainDump',
     'sidepanel.teams',
     'sidepanel.aiUpgradePrompt.assistantName',

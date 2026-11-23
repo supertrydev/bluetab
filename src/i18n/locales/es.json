@@ -1132,6 +1132,28 @@
         "item3": "Sincroniza varios perfiles de navegador y equipos.",
         "item4": "Disponible en la página Cuenta de la configuración de Bluetab."
       }
+    },
+    "focus": {
+      "cta": "¿Quieres que Bluetab te ayude a concentrarte? 3 preguntas, 30 segundos",
+      "title": "Tus preferencias de concentración",
+      "question1": "¿Cuántas pestañas te gusta ver a la vez?",
+      "noLimit": "Sin límite",
+      "hiddenHint": "Las pestañas adicionales se agrupan en un grupo oculto. No se cierra ninguna.",
+      "question2": "¿Qué te ayuda a concentrarte en una tarea?",
+      "pomodoro": "Pomodoro de 25 minutos",
+      "flowtime": "Trabajar sin límite de tiempo y recibir una sugerencia de descanso (Flowtime)",
+      "visual": "Ver el tiempo restante como un disco que se encoge (Visual Time)",
+      "none": "Ninguna opción",
+      "question3": "¿Qué debería pasar con las pestañas que llevas un tiempo sin usar?",
+      "suspend30": "Suspenderlas después de 30 minutos (Zz)",
+      "suspend120": "Después de 2 horas",
+      "leaveAlone": "Dejarlas como están",
+      "tabSummary": "Límite de pestañas visibles: {{count}}",
+      "suspendSummary": "Suspender las pestañas inactivas después de {{minutes}} minutos",
+      "nothingEnabled": "No has seleccionado funciones de concentración.",
+      "tip": "Cuando necesites terminar algo, pulsa Hard Focus en el panel lateral.",
+      "settingsHint": "Puedes cambiarlo cuando quieras en Configuración → ADHD.",
+      "saveError": "No se pudieron guardar tus preferencias. Inténtalo de nuevo."
     }
   },
   "feedback": {
@@ -1221,7 +1243,8 @@
     "rssSingleFallback": "Artículo nuevo",
     "rssMultipleHeader": "{{count}} artículos nuevos:",
     "autoArchived_one": "{{count}} grupo inactivo se movió al Archivo",
-    "autoArchived_other": "{{count}} grupos inactivos se movieron al Archivo"
+    "autoArchived_other": "{{count}} grupos inactivos se movieron al Archivo",
+    "memoryFreed": " · unos {{mb}} MB de memoria liberados"
   },
   "time": {
     "justNow": "ahora mismo",
@@ -1561,6 +1584,10 @@
         "dataPrivacy": {
           "question": "¿Dónde se guardan mis datos?",
           "answer": "La mayoría de los datos de Bluetab comienzan almacenados localmente en tu navegador. Algunas funciones pueden enviar fuera del dispositivo los datos que selecciones al usarlas: la sincronización en la nube carga datos cifrados, las funciones de IA envían contexto de solicitud al servicio de IA, las integraciones envían contenido a las herramientas conectadas, la publicación en Bluet envía colecciones compartidas y MCP puede exponer datos aprobados de Bluetab a clientes de IA externos."
+        },
+        "freedMemory": {
+          "question": "¿Cómo mide Bluetab la memoria liberada?",
+          "answer": "Bluetab compara la memoria libre de tu ordenador antes de cerrar las pestañas y unos segundos después. Otras aplicaciones pueden afectar al resultado, por lo que se muestra como una estimación y solo cuando la diferencia es clara."
         }
       },
       "shortcutIntro": "Estos atajos de teclado funcionan en todo el sistema mientras Bluetab está instalado. En navegadores basados en Chromium puedes personalizarlos en {{path}}.",
@@ -3260,5 +3287,19 @@
     "memoryNoticeBody": "Tus pestañas están abiertas en el navegador. No se ha perdido nada. Guárdalas de nuevo con Alt+S para devolverlas al mismo grupo, con su nombre, color y etiquetas.",
     "closesIn": "Se cierra en {{count}} s",
     "restoreSavedData": "Ambas opciones también restauran los grupos guardados, las etiquetas, los proyectos, las entradas de Brain Dump y los archivos. Los registros coincidentes vuelven a la versión de la copia; los demás datos guardados se conservan."
+  },
+  "managerWelcome": {
+    "title": "Te damos la bienvenida a Bluetab",
+    "body": "Pulsa Alt+S para guardar todas las pestañas abiertas de una ventana en un solo grupo. Tus grupos aparecen aquí. Añadimos un grupo de ejemplo para que empieces.",
+    "existingBody": "Pulsa Alt+S para guardar todas las pestañas abiertas de una ventana en un solo grupo. Tus grupos aparecen aquí.",
+    "done": "Listo",
+    "exampleTag": "Ejemplo",
+    "groupName": "Primeros pasos con Bluetab",
+    "tabs": {
+      "bluetab": "Bluetab",
+      "releases": "Notas de la versión",
+      "connect": "Conecta Bluetab a tu aplicación de IA",
+      "feedback": "Informa de un error o solicita una función"
+    }
   }
 }
