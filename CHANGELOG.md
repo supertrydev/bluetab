@@ -37,6 +37,10 @@ and Firefox Add-ons.
 - A repeatable memory measurement script uses a fixed 100-tab fixture. With
   that fixture in headless Chromium, side panel JavaScript heap fell from
   7.54 MiB in 1.0.6 to 6.23 MiB; this measures the panel heap, not total browser RAM.
+- Settings → About is a full About page: links (website, release notes, source,
+  bug form, support, privacy, terms), "Rate Bluetab" for the Chrome Web Store or
+  Firefox Add-ons, copyable diagnostics for bug reports, the AGPL-3.0 license and
+  the open-source libraries Bluetab uses.
 - Help → Changelog shows only the latest version with four short notes and a
   link to previous releases. Full release notes remain here and on GitHub.
 
