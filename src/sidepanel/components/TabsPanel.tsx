@@ -1,3 +1,4 @@
+import { matchesSearch, normalizeForSearch } from '@/utils/search-text';
 import { createBrowserTabGroup, minimumBrowserGroupTabs } from '@/platform/create-browser-tab-group';
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { motion } from 'framer-motion';
@@ -232,9 +233,9 @@ export function TabsPanel() {
     // Collect all matching tab IDs across all sections
     const matchingTabIds = useMemo(() => {
         if (!searchQuery) return [];
-        const q = searchQuery.toLowerCase();
+        const q = normalizeForSearch(searchQuery);
         return tabs.filter(t =>
-            t.title.toLowerCase().includes(q) || t.url.toLowerCase().includes(q)
+            matchesSearch(t.title, q) || matchesSearch(t.url, q)
         ).map(t => t.id);
     }, [tabs, searchQuery]);
     const matchingTabIdSet = useMemo(() => new Set(matchingTabIds), [matchingTabIds]);

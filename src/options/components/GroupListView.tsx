@@ -1,3 +1,4 @@
+import { matchesSearch, normalizeForSearch } from '@/utils/search-text';
 import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChevronDown, Grid3X3, LayoutGrid, LayoutDashboard, Pencil, X, Layers } from 'lucide-react';
@@ -267,17 +268,17 @@ export function GroupListView({
 
         filtered = filtered.filter(group => {
             if (search === '') return true;
-            const searchLower = search.toLowerCase();
+            const searchLower = normalizeForSearch(search);
 
-            const matchesText = group.name.toLowerCase().includes(searchLower) ||
+            const matchesText = matchesSearch(group.name, searchLower) ||
                 group.tabs.some(tab =>
-                    tab.title.toLowerCase().includes(searchLower) ||
-                    tab.url.toLowerCase().includes(searchLower)
+                    matchesSearch(tab.title, searchLower) ||
+                    matchesSearch(tab.url, searchLower)
                 );
 
             const matchesTag = group.tags && group.tags.some(tagId => {
                 const tag = tags.find(t => t.id === tagId);
-                return tag && tag.name.toLowerCase().includes(searchLower);
+                return tag && matchesSearch(tag.name, searchLower);
             });
 
             return matchesText || matchesTag;

@@ -1,3 +1,4 @@
+import { matchesSearch, normalizeForSearch } from '@/utils/search-text';
 // MV3 service workers have no document global, but Vite's bundled
 // preload-helper injects <link rel="modulepreload"> via
 // document.head.appendChild() before every dynamic await import(...)
@@ -2266,11 +2267,11 @@ chrome.omnibox.onInputChanged.addListener(async (text, suggest) => {
 
     const groups = await Storage.get<TabGroup[]>('groups') || [];
     const suggestions: chrome.omnibox.SuggestResult[] = [];
-    const lowerText = text.toLowerCase();
+    const lowerText = normalizeForSearch(text);
 
     // Search groups
     const matchingGroups = groups.filter(group =>
-        group.name.toLowerCase().includes(lowerText)
+        matchesSearch(group.name, lowerText)
     );
 
     for (const group of matchingGroups) {
@@ -2286,7 +2287,7 @@ chrome.omnibox.onInputChanged.addListener(async (text, suggest) => {
     // Search tabs within groups
     for (const group of groups) {
         for (const tab of group.tabs) {
-            if (tab.title.toLowerCase().includes(lowerText) || tab.url.toLowerCase().includes(lowerText)) {
+            if (matchesSearch(tab.title, lowerText) || matchesSearch(tab.url, lowerText)) {
                 suggestions.push({
                     content: `tab:${tab.url}`,
                     description: translate('components.omnibox.tabDescription', {

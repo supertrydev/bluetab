@@ -1,3 +1,4 @@
+import { matchesSearch, normalizeForSearch } from '@/utils/search-text';
 import React, { useState, useEffect } from 'react';
 import { AuroraBackground } from '@/components/ui/aurora-background';
 import { Search } from 'lucide-react';
@@ -79,12 +80,12 @@ const NewTab = () => {
 
             const groups = await loadNewTabGroups();
             const results: SearchResult[] = [];
-            const query = searchQuery.toLowerCase();
+            const query = normalizeForSearch(searchQuery);
             const strings = getNewTabStrings(language);
 
             // Search groups
             groups.forEach(group => {
-                if (group.name.toLowerCase().includes(query)) {
+                if (matchesSearch(group.name, query)) {
                     results.push({
                         type: 'group',
                         id: group.id,
@@ -95,7 +96,7 @@ const NewTab = () => {
 
                 // Search tabs within groups
                 group.tabs.forEach(tab => {
-                    if (tab.title.toLowerCase().includes(query) || tab.url.toLowerCase().includes(query)) {
+                    if (matchesSearch(tab.title, query) || matchesSearch(tab.url, query)) {
                         results.push({
                             type: 'tab',
                             id: tab.id,

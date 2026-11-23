@@ -1,3 +1,4 @@
+import { matchesSearch, normalizeForSearch } from '@/utils/search-text';
 import { StrictMode, useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ThemeManager } from '../utils/theme';
@@ -148,7 +149,7 @@ function SettingsPage() {
 
         settingsTabs.forEach((tab) => {
             const section = sectionRefs.current.get(tab.id);
-            const textContent = section?.textContent?.toLowerCase() ?? '';
+            const textContent = normalizeForSearch(section?.textContent ?? '');
             nextIndex[tab.id] = textContent.replace(/\s+/g, ' ').trim();
         });
 
@@ -300,12 +301,12 @@ function SettingsPage() {
     }, [rebuildSectionSearchIndex]);
 
     // Filter tabs by search query
-    const q = searchQuery.toLowerCase().trim();
+    const q = normalizeForSearch(searchQuery);
     const visibleTabs = q
         ? settingsTabs.filter(tab => {
             const indexedContent = sectionSearchIndex[tab.id] ?? '';
-            return tab.label.toLowerCase().includes(q)
-                || tab.keywords.toLowerCase().includes(q)
+            return matchesSearch(tab.label, q)
+                || matchesSearch(tab.keywords, q)
                 || indexedContent.includes(q);
         })
         : settingsTabs;

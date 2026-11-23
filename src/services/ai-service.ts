@@ -1,3 +1,4 @@
+import { matchesSearch, normalizeForSearch } from '@/utils/search-text';
 /**
  * @module services/ai-service
  *
@@ -337,7 +338,7 @@ export class AIService {
     tier: 'bluetab' | 'rss' | 'web';
     results: { title: string; url: string; snippet?: string }[];
   }> {
-    const queryLower = query.toLowerCase();
+    const queryLower = normalizeForSearch(query);
 
     // --- Tier 1: Bluetab saved groups ---
     try {
@@ -351,8 +352,8 @@ export class AIService {
       for (const group of groups) {
         for (const tab of group.tabs ?? []) {
           if (
-            tab.title.toLowerCase().includes(queryLower) ||
-            tab.url.toLowerCase().includes(queryLower)
+            matchesSearch(tab.title, queryLower) ||
+            matchesSearch(tab.url, queryLower)
           ) {
             bluetabMatches.push({ title: tab.title, url: tab.url });
           }
@@ -379,8 +380,8 @@ export class AIService {
         for (const feedArticles of Object.values(rssArticles)) {
           for (const article of feedArticles) {
             if (
-              article.title.toLowerCase().includes(queryLower) ||
-              (article.description ?? '').toLowerCase().includes(queryLower)
+              matchesSearch(article.title, queryLower) ||
+              matchesSearch(article.description ?? '', queryLower)
             ) {
               rssMatches.push({
                 title: article.title,

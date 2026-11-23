@@ -1,3 +1,4 @@
+import { matchesSearch, normalizeForSearch } from '@/utils/search-text';
 /**
  * @module sidepanel/hooks/useAIChat
  *
@@ -802,12 +803,12 @@ export function useAIChat(): UseAIChatReturn {
           const tabs = await new Promise<chrome.tabs.Tab[]>((resolve) => {
             chrome.tabs.query({ currentWindow: true }, resolve);
           });
-          const q = query.toLowerCase();
+          const q = normalizeForSearch(query);
           const matches = tabs
             .filter((t) => {
-              const title = (t.title ?? '').toLowerCase();
-              const url = (t.url ?? '').toLowerCase();
-              return title.includes(q) || url.includes(q);
+              const title = (t.title ?? '');
+              const url = (t.url ?? '');
+              return matchesSearch(title, q) || matchesSearch(url, q);
             })
             .map((t) => ({ id: t.id, title: t.title, url: t.url }));
           return { matches, count: matches.length };
@@ -935,7 +936,7 @@ export function useAIChat(): UseAIChatReturn {
         if (toolName === 'search_bluetab') {
           const query = typeof args.query === 'string' ? args.query : '';
           const groups = (await Storage.get<TabGroup[]>('groups')) ?? [];
-          const q = query.toLowerCase();
+          const q = normalizeForSearch(query);
 
           // Empty query = return ALL groups with ALL tabs (for reorganize workflow)
           // Compact format: short URL (domain only) to save tokens
@@ -966,7 +967,7 @@ export function useAIChat(): UseAIChatReturn {
           }> = [];
 
           for (const group of groups) {
-            if (group.name.toLowerCase().includes(q)) {
+            if (matchesSearch(group.name, q)) {
               results.push({
                 groupId: group.id,
                 groupName: group.name,
@@ -977,8 +978,8 @@ export function useAIChat(): UseAIChatReturn {
             }
             for (const tab of group.tabs) {
               if (
-                tab.title.toLowerCase().includes(q) ||
-                tab.url.toLowerCase().includes(q)
+                matchesSearch(tab.title, q) ||
+                matchesSearch(tab.url, q)
               ) {
                 results.push({
                   groupId: group.id,
@@ -1049,12 +1050,12 @@ export function useAIChat(): UseAIChatReturn {
             // Dynamic import — gracefully handles Phase 4 not being built
             const { RSSService } = await import('@/services/rss-service');
             const allArticles = await RSSService.getArticles('all');
-            const q = query.toLowerCase();
+            const q = normalizeForSearch(query);
             const matches = allArticles
               .filter((a) => {
-                const title = (a.title ?? '').toLowerCase();
-                const link = (a.link ?? '').toLowerCase();
-                return title.includes(q) || link.includes(q);
+                const title = (a.title ?? '');
+                const link = (a.link ?? '');
+                return matchesSearch(title, q) || matchesSearch(link, q);
               })
               .slice(0, 10)
               .map((a) => ({
@@ -1525,8 +1526,8 @@ export function useAIChat(): UseAIChatReturn {
             // If no projectId but name provided, fuzzy-find by name
             if (!projectId && typeof args.name === 'string') {
               const projects = await Storage.getProjects();
-              const needle = args.name.toLowerCase();
-              const found = projects.find((p) => p.name.toLowerCase().includes(needle));
+              const needle = normalizeForSearch(args.name);
+              const found = projects.find((p) => matchesSearch(p.name, needle));
               if (found) projectId = found.id;
             }
 

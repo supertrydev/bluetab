@@ -1,3 +1,4 @@
+import { matchesSearch, normalizeForSearch } from '@/utils/search-text';
 import { shouldShowGroupMemoryNotice, showGroupMemoryNotice } from '@/services/group-memory-notice';
 import { GroupMemoryNotice } from '@/components/GroupMemoryNotice';
 import { deleteGroupsWithUndo } from '@/services/group-deletion';
@@ -357,15 +358,15 @@ function App() {
     };
     const { pinnedGroups, unpinnedGroups } = (() => {
         const filtered = groups.filter(group => {
-            const searchLower = search.toLowerCase();
-            const matchesName = group.name.toLowerCase().includes(searchLower);
+            const searchLower = normalizeForSearch(search);
+            const matchesName = matchesSearch(group.name, searchLower);
             const matchesTabs = group.tabs.some(tab =>
-                tab.title.toLowerCase().includes(searchLower) ||
-                tab.url.toLowerCase().includes(searchLower)
+                matchesSearch(tab.title, searchLower) ||
+                matchesSearch(tab.url, searchLower)
             );
             const matchesTags = group.tags && group.tags.length > 0 &&
                 TagManager.getTagsByIds(group.tags, tags).some(tag =>
-                    tag.name.toLowerCase().includes(searchLower)
+                    matchesSearch(tag.name, searchLower)
                 );
 
             return matchesName || matchesTabs || matchesTags;

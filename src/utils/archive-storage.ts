@@ -1,3 +1,4 @@
+import { matchesSearch, normalizeForSearch } from '@/utils/search-text';
 import { ArchivedGroup, ArchiveStorage, ArchiveOperationResult, ArchiveFilters, ArchiveSearchIndex } from '../types/archive';
 import { TabGroup } from '../types/models';
 import { Storage } from './storage';
@@ -254,14 +255,14 @@ export class ArchiveStorageService {
 
       // Apply search query filter
       if (filters.searchQuery) {
-        const query = filters.searchQuery.toLowerCase();
+        const query = normalizeForSearch(filters.searchQuery);
         const searchIndex = await this.getSearchIndex();
         const matchingIds = searchIndex
           .filter(index =>
-            index.groupName.toLowerCase().includes(query) ||
-            index.tabTitles.some(title => title.toLowerCase().includes(query)) ||
-            index.tabUrls.some(url => url.toLowerCase().includes(query)) ||
-            index.tags.some(tag => tag.toLowerCase().includes(query))
+            matchesSearch(index.groupName, query) ||
+            index.tabTitles.some(title => matchesSearch(title, query)) ||
+            index.tabUrls.some(url => matchesSearch(url, query)) ||
+            index.tags.some(tag => matchesSearch(tag, query))
           )
           .map(index => index.archiveId);
 

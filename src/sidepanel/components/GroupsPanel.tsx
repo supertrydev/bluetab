@@ -1,3 +1,4 @@
+import { matchesSearch, normalizeForSearch, findSearchMatch } from '@/utils/search-text';
 import { deleteGroupsWithUndo } from '@/services/group-deletion';
 import { shouldShowGroupMemoryNotice, showGroupMemoryNotice } from '@/services/group-memory-notice';
 import React, { useState, useEffect } from 'react';
@@ -79,13 +80,13 @@ const itemVariants: Variants = {
 
 function highlightMatch(text: string, query: string): React.ReactNode {
     if (!query) return text;
-    const idx = text.toLowerCase().indexOf(query.toLowerCase());
-    if (idx === -1) return text;
+    const match = findSearchMatch(text, query);
+    if (!match) return text;
     return (
         <>
-            {text.slice(0, idx)}
-            <mark className="bg-yellow-200/60 dark:bg-yellow-500/30 rounded-sm px-0.5">{text.slice(idx, idx + query.length)}</mark>
-            {text.slice(idx + query.length)}
+            {text.slice(0, match.start)}
+            <mark className="bg-yellow-200/60 dark:bg-yellow-500/30 rounded-sm px-0.5">{text.slice(match.start, match.end)}</mark>
+            {text.slice(match.end)}
         </>
     );
 }
@@ -432,11 +433,11 @@ export function GroupsPanel() {
     // Filter & sort
     const { pinnedGroups, unpinnedGroups } = (() => {
         const filtered = groups.filter(group => {
-            const q = search.toLowerCase();
+            const q = normalizeForSearch(search);
             if (!q) return true;
-            const matchesName = group.name.toLowerCase().includes(q);
-            const matchesTabs = group.tabs.some(t => t.title.toLowerCase().includes(q) || t.url.toLowerCase().includes(q));
-            const matchesTags = group.tags?.length ? TagManager.getTagsByIds(group.tags, tags).some(t => t.name.toLowerCase().includes(q)) : false;
+            const matchesName = matchesSearch(group.name, q);
+            const matchesTabs = group.tabs.some(t => matchesSearch(t.title, q) || matchesSearch(t.url, q));
+            const matchesTags = group.tags?.length ? TagManager.getTagsByIds(group.tags, tags).some(t => matchesSearch(t.name, q)) : false;
             return matchesName || matchesTabs || matchesTags;
         });
         const sorted = sortGroupsWithPinning(filtered, 'newest');
@@ -447,10 +448,10 @@ export function GroupsPanel() {
     })();
 
     const renderGroupCard = (group: TabGroup, isPinned: boolean) => {
-        const q = search.toLowerCase();
-        const groupNameMatches = q && group.name.toLowerCase().includes(q);
+        const q = normalizeForSearch(search);
+        const groupNameMatches = q && matchesSearch(group.name, q);
         const displayTabs = q && !groupNameMatches
-            ? group.tabs.filter(t => t.title.toLowerCase().includes(q) || t.url.toLowerCase().includes(q))
+            ? group.tabs.filter(t => matchesSearch(t.title, q) || matchesSearch(t.url, q))
             : group.tabs;
         return (
         <div className={`border border-border rounded-lg p-3 bg-card hover-lift ${isPinned ? 'group-pinned' : ''}`}>

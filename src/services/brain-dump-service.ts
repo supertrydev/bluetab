@@ -1,3 +1,4 @@
+import { findSearchMatch, normalizeForSearch } from '@/utils/search-text';
 /**
  * @module services/brain-dump-service
  *
@@ -110,10 +111,7 @@ export interface BrainDumpSearchResponse {
 }
 
 function normalizeSearchText(value: string): string {
-  return value
-    .toLowerCase()
-    .normalize('NFKD')
-    .replace(/[\u0300-\u036f]/g, '')
+  return normalizeForSearch(value)
     .replace(/[^\p{L}\p{N}\s]+/gu, ' ')
     .replace(/\s+/g, ' ')
     .trim();
@@ -174,14 +172,12 @@ function buildSnippet(text: string, query: string, maxLength: number = 180): str
     return text.length <= maxLength ? text : `${text.slice(0, maxLength - 1)}...`;
   }
 
-  const lowerText = text.toLowerCase();
-  const lowerQuery = query.toLowerCase();
-  const matchIndex = lowerText.indexOf(lowerQuery);
-  if (matchIndex === -1) {
+  const match = findSearchMatch(text, query);
+  if (!match) {
     return text.length <= maxLength ? text : `${text.slice(0, maxLength - 1)}...`;
   }
 
-  const start = Math.max(0, matchIndex - Math.floor((maxLength - lowerQuery.length) / 2));
+  const start = Math.max(0, match.start - Math.floor((maxLength - (match.end - match.start)) / 2));
   const end = Math.min(text.length, start + maxLength);
   const raw = text.slice(start, end);
   const prefix = start > 0 ? '...' : '';

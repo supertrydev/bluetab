@@ -1,3 +1,4 @@
+import { matchesSearch, normalizeForSearch } from '@/utils/search-text';
 import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -42,10 +43,10 @@ export function AddGroupToProjectModal({
     // Filter by search query
     const filteredGroups = useMemo(() => {
         if (!searchQuery.trim()) return availableGroups;
-        const query = searchQuery.toLowerCase();
+        const query = normalizeForSearch(searchQuery);
         return availableGroups.filter(g =>
-            g.name.toLowerCase().includes(query) ||
-            g.tabs.some(t => t.title.toLowerCase().includes(query) || t.url.toLowerCase().includes(query))
+            matchesSearch(g.name, query) ||
+            g.tabs.some(t => matchesSearch(t.title, query) || matchesSearch(t.url, query))
         );
     }, [availableGroups, searchQuery]);
 

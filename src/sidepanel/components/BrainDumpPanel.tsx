@@ -1,3 +1,4 @@
+import { matchesSearch, normalizeForSearch } from '@/utils/search-text';
 /**
  * @module sidepanel/components/BrainDumpPanel
  *
@@ -181,13 +182,13 @@ export function entryMatchesQuery(
   entry: BrainDumpEntryType,
   query: string,
 ): boolean {
-  const q = query.trim().toLowerCase();
+  const q = normalizeForSearch(query);
   if (!q) return true;
-  if (entry.text.toLowerCase().includes(q)) return true;
-  const title = entry.tabContext?.title?.toLowerCase();
-  if (title && title.includes(q)) return true;
-  const url = entry.tabContext?.url?.toLowerCase();
-  if (url && url.includes(q)) return true;
+  if (matchesSearch(entry.text, q)) return true;
+  const title = entry.tabContext?.title;
+  if (title && matchesSearch(title, q)) return true;
+  const url = entry.tabContext?.url;
+  if (url && matchesSearch(url, q)) return true;
   return false;
 }
 

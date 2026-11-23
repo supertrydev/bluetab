@@ -1,3 +1,4 @@
+import { findSearchMatch, matchesSearch, normalizeForSearch } from '@/utils/search-text';
 /**
  * Archive Search Service
  * ======================
@@ -162,7 +163,7 @@ export class ArchiveSearchService {
       const archives = Object.values(archiveStorage.archives);
       const suggestions = new Set<string>();
 
-      const lowerQuery = partialQuery.toLowerCase();
+      const lowerQuery = normalizeForSearch(partialQuery);
 
       for (const archive of archives) {
         // Skip protected archives for suggestions
@@ -176,13 +177,13 @@ export class ArchiveSearchService {
         }
 
         // Check group name
-        if (group.name.toLowerCase().includes(lowerQuery)) {
+        if (matchesSearch(group.name, lowerQuery)) {
           suggestions.add(group.name);
         }
 
         // Check tab titles and URLs
         for (const tab of group.tabs) {
-          if (tab.title.toLowerCase().includes(lowerQuery)) {
+          if (matchesSearch(tab.title, lowerQuery)) {
             suggestions.add(tab.title);
           }
 
@@ -190,7 +191,7 @@ export class ArchiveSearchService {
           try {
             const url = new URL(tab.url);
             const domain = url.hostname.replace('www.', '');
-            if (domain.includes(lowerQuery)) {
+            if (matchesSearch(domain, lowerQuery)) {
               suggestions.add(domain);
             }
           } catch {
@@ -201,7 +202,7 @@ export class ArchiveSearchService {
         // Check tags
         if (group.tags) {
           for (const tag of group.tags) {
-            if (tag.toLowerCase().includes(lowerQuery)) {
+            if (matchesSearch(tag, lowerQuery)) {
               suggestions.add(tag);
             }
           }
@@ -438,10 +439,9 @@ export class ArchiveSearchService {
     options: AdvancedSearchOptions
   ): Promise<SearchResult[]> {
     const results: SearchResult[] = [];
-    const normalizedQuery = options.caseSensitive ? searchText : searchText.toLowerCase();
 
     for (const archive of archives) {
-      const searchResult = this.searchInArchive(archive, normalizedQuery, options);
+      const searchResult = this.searchInArchive(archive, searchText, options);
       if (searchResult.relevanceScore > 0) {
         results.push(searchResult);
       }
@@ -535,16 +535,17 @@ export class ArchiveSearchService {
   }
 
   private static textMatches(text: string, query: string, options: AdvancedSearchOptions): boolean {
-    const normalizedText = options.caseSensitive ? text : text.toLowerCase();
-    const normalizedQuery = options.caseSensitive ? query : query.toLowerCase();
-
+    // Regex syntax (e.g. \S, \P) must not be lowercased or compatibility-folded.
     if (options.regexMode) {
-      const regex = makeSafeUserRegex(normalizedQuery, options.caseSensitive ? 'g' : 'gi');
-      return regex ? regex.test(normalizedText) : false;
+      const regex = makeSafeUserRegex(query, options.caseSensitive ? 'g' : 'gi');
+      return regex ? regex.test(text) : false;
     }
 
+    const normalizedText = options.caseSensitive ? text : normalizeForSearch(text);
+    const normalizedQuery = options.caseSensitive ? query : normalizeForSearch(query);
+
     if (options.wholeWords) {
-      const regex = new RegExp(`\\b${this.escapeRegex(normalizedQuery)}\\b`, 'i');
+      const regex = new RegExp(`\\b${this.escapeRegex(normalizedQuery)}\\b`, options.caseSensitive ? '' : 'i');
       return regex.test(normalizedText);
     }
 
@@ -557,20 +558,23 @@ export class ArchiveSearchService {
 
   private static createHighlights(field: string, text: string, query: string, options: AdvancedSearchOptions) {
     const highlights: SearchResult['highlights'] = [];
-    const normalizedText = options.caseSensitive ? text : text.toLowerCase();
-    const normalizedQuery = options.caseSensitive ? query : query.toLowerCase();
+    if (!(options.caseSensitive ? query : normalizeForSearch(query))) return highlights;
 
-    let index = normalizedText.indexOf(normalizedQuery);
-    while (index !== -1) {
+    let fromIndex = 0;
+    while (highlights.length < 3) {
+      const index = options.caseSensitive ? text.indexOf(query, fromIndex) : -1;
+      const match = options.caseSensitive
+        ? (index < 0 ? null : { start: index, end: index + query.length })
+        : findSearchMatch(text, query, fromIndex);
+      if (!match) break;
+      const snippetStart = Math.max(0, match.start - 20);
       highlights.push({
         field,
-        text: text.substring(Math.max(0, index - 20), Math.min(text.length, index + query.length + 20)),
-        matchStart: Math.max(0, 20 - index),
-        matchEnd: Math.max(0, 20 - index) + query.length
+        text: text.slice(snippetStart, Math.min(text.length, match.end + 20)),
+        matchStart: match.start - snippetStart,
+        matchEnd: match.end - snippetStart,
       });
-
-      index = normalizedText.indexOf(normalizedQuery, index + 1);
-      if (highlights.length >= 3) break; // Limit highlights per field
+      fromIndex = match.end;
     }
 
     return highlights;
@@ -693,7 +697,7 @@ export class ArchiveSearchService {
     // This would implement query expansion and spelling correction
     // For now, return simple variations
     const suggestions: string[] = [];
-    const lowerQuery = query.toLowerCase();
+    const lowerQuery = normalizeForSearch(query);
 
     // Find partial matches in archive names
     for (const archive of archives.slice(0, 20)) { // Limit to first 20 for performance
@@ -702,7 +706,7 @@ export class ArchiveSearchService {
       const group = archive.originalGroup;
       if (typeof group === 'string') continue;
 
-      const words = group.name.toLowerCase().split(' ');
+      const words = normalizeForSearch(group.name).split(' ');
       for (const word of words) {
         if (word.includes(lowerQuery) && word !== lowerQuery && !suggestions.includes(word)) {
           suggestions.push(word);
