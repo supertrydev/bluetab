@@ -58,7 +58,7 @@ export function ArchiveList({
     if (loading) {
         return (
             <div className="flex items-center justify-center py-8">
-                <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+                <div className="flex items-center gap-2 text-text-muted">
                     <Loader2 className="w-4 h-4 animate-spin" />
                     <span>{t('archive.list.loading')}</span>
                 </div>
@@ -70,17 +70,17 @@ export function ArchiveList({
         return (
             <div className="absolute inset-0 flex flex-col items-center justify-center text-center -mt-12">
                 {/* Icon Circle */}
-                <div className="w-24 h-24 rounded-full bg-gray-300 dark:bg-gray-700/30 flex items-center justify-center mb-6">
-                    <Archive className="w-8 h-8 text-gray-500 dark:text-gray-500" />
+                <div className="w-24 h-24 rounded-full bg-accent flex items-center justify-center mb-6">
+                    <Archive className="w-8 h-8 text-text-muted" />
                 </div>
 
                 {/* Title */}
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">
+                <h3 className="text-xl font-semibold text-text-strong mb-3">
                     {t('archive.list.emptyTitle')}
                 </h3>
 
                 {/* Description */}
-                <p className="text-sm text-gray-500 dark:text-gray-400 max-w-md leading-relaxed">
+                <p className="text-sm text-text-muted max-w-md leading-relaxed">
                     {filters?.searchQuery ? (
                         <>{t('archive.list.emptySearch')}</>
                     ) : (
@@ -95,7 +95,7 @@ export function ArchiveList({
                             ...filters,
                             searchQuery: undefined
                         })}
-                        className="mt-6 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors"
+                        className="mt-6 px-4 py-2 bg-primary hover:bg-primary-hover text-white text-sm rounded-full transition-colors"
                     >
                         {t('archive.list.clearSearch')}
                     </button>
@@ -124,7 +124,7 @@ export function ArchiveList({
             {/* Pagination */}
             {totalPages > 1 && (
                 <div className="flex items-center justify-between">
-                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                    <div className="text-xs text-text-muted">
                         {t('archive.list.showing', {
                             start: startIndex + 1,
                             end: Math.min(endIndex, archives.length),
@@ -136,19 +136,19 @@ export function ArchiveList({
                         <button
                             onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                             disabled={currentPage === 1}
-                            className="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            className="px-2 py-1 text-xs bg-muted text-text-strong rounded-full hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                         >
                             <ChevronLeft className="w-3 h-3 rtl:rotate-180" />
                         </button>
 
-                        <span dir="ltr" className="px-2 py-1 text-xs text-gray-700 dark:text-gray-300">
+                        <span dir="ltr" className="px-2 py-1 text-xs text-text-strong">
                             {currentPage} / {totalPages}
                         </span>
 
                         <button
                             onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                             disabled={currentPage === totalPages}
-                            className="px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            className="px-2 py-1 text-xs bg-muted text-text-strong rounded-full hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                         >
                             <ChevronRight className="w-3 h-3 rtl:rotate-180" />
                         </button>

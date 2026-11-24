@@ -47,7 +47,7 @@ export function ParticipantSummaryRow({
             aria-label={label}
             aria-expanded={expanded}
             aria-controls="teams-participants-drawer"
-            className="flex w-full min-w-0 items-center gap-2 rounded-md px-1 py-1 text-start hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="flex w-full min-w-0 items-center gap-2 rounded-md px-1 py-1 text-start hover:bg-accent"
         >
             <div className="flex flex-shrink-0" aria-hidden="true">
                 {participants.slice(0, 3).map((participant) => (
@@ -56,12 +56,12 @@ export function ParticipantSummaryRow({
                         className="relative -ms-1.5 flex h-7 w-7 items-center justify-center rounded-md border border-background bg-muted first:ms-0"
                         title={participant.displayName}
                     >
-                        <span className="select-none text-micro font-semibold text-foreground/80">
+                        <span className="select-none text-xs font-semibold text-foreground/80">
                             {getInitials(participant.displayName)}
                         </span>
                         <span className={cn(
                             'absolute -bottom-0.5 -end-0.5 h-2 w-2 rounded-full border-[1.5px] border-background',
-                            participant.status === 'online' ? 'bg-green-500' : 'bg-muted-foreground/40'
+                            participant.status === 'online' ? 'bg-success' : 'bg-muted-foreground/40'
                         )} />
                     </div>
                 ))}
@@ -72,7 +72,7 @@ export function ParticipantSummaryRow({
             </span>
 
             {participants.length > 3 && (
-                <span dir="ltr" className="flex-shrink-0 text-micro text-muted-foreground">
+                <span dir="ltr" className="flex-shrink-0 text-xs text-muted-foreground">
                     +{participants.length - 3}
                 </span>
             )}
@@ -107,14 +107,14 @@ export function ParticipantAvatarTile({ participant, isHost, onClick }: AvatarTi
             className="relative flex-shrink-0 w-9 h-9 rounded-lg bg-muted flex items-center justify-center hover:bg-accent transition-colors group"
             title={`${participant.displayName}${isHost ? ` (${t('components.teams.host')})` : ''}`}
         >
-            <bdi dir="auto" className="text-caption font-semibold text-foreground/80 select-none">
+            <bdi dir="auto" className="text-xs font-semibold text-foreground/80 select-none">
                 {getInitials(participant.displayName)}
             </bdi>
 
             {/* Status dot — bottom inline-end corner */}
             <span className={cn(
                 'absolute -bottom-0.5 -end-0.5 w-2.5 h-2.5 rounded-full border-2 border-background',
-                isOnline ? 'bg-green-500' : 'bg-muted-foreground/40'
+                isOnline ? 'bg-success' : 'bg-muted-foreground/40'
             )} />
 
             {/* Host indicator — small crown-like top inline-start dot */}
@@ -141,12 +141,12 @@ export function ParticipantListRow({ participant, isHost }: ListRowProps) {
         <div className="flex items-center gap-2.5 px-3 py-2">
             {/* Avatar */}
             <div className="relative flex-shrink-0 w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
-                <bdi dir="auto" className="text-micro font-semibold text-foreground/80">
+                <bdi dir="auto" className="text-xs font-semibold text-foreground/80">
                     {getInitials(participant.displayName)}
                 </bdi>
                 <span className={cn(
                     'absolute -bottom-0.5 -end-0.5 w-2 h-2 rounded-full border-[1.5px] border-background',
-                    isOnline ? 'bg-green-500' : 'bg-muted-foreground/40'
+                    isOnline ? 'bg-success' : 'bg-muted-foreground/40'
                 )} />
             </div>
 
@@ -155,7 +155,7 @@ export function ParticipantListRow({ participant, isHost }: ListRowProps) {
                 <span className={cn('text-xs truncate block', isHost && 'font-semibold')}>
                     <bdi dir="auto">{participant.displayName}</bdi>
                 </span>
-                <span className="text-micro text-muted-foreground">
+                <span className="text-xs text-muted-foreground">
                     {isOnline ? t('components.teams.online') : t('components.teams.offline')}
                     {tabCount > 0 && ` · ${t('components.teams.tab', { count: tabCount })}`}
                 </span>
@@ -163,7 +163,7 @@ export function ParticipantListRow({ participant, isHost }: ListRowProps) {
 
             {/* Host badge */}
             {isHost && (
-                <span className="flex-shrink-0 text-tiny font-medium px-1.5 py-0.5 rounded bg-primary/10 text-primary">
+                <span className="flex-shrink-0 text-xs font-medium px-1.5 py-0.5 rounded bg-primary/10 text-primary">
                     {t('components.teams.host')}
                 </span>
             )}

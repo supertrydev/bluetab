@@ -30,7 +30,7 @@ function InlineError({ message, onDismiss }: { message: string; onDismiss: () =>
     }, [onDismiss])
 
     return (
-        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-destructive/10 text-destructive text-xs animate-in fade-in slide-in-from-top-1 duration-200">
+        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-danger-muted text-destructive text-xs animate-in fade-in slide-in-from-top-1 duration-200">
             <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
             <span dir="auto" className="flex-1">{message}</span>
         </div>
@@ -119,7 +119,7 @@ export function TeamsPreSession() {
                         <button
                             onClick={handleHost}
                             disabled={isCreating}
-                            className="flex items-center justify-center gap-2 w-full px-3 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="flex items-center justify-center gap-2 w-full px-3 py-2 rounded-full bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {isCreating ? (
                                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -181,7 +181,7 @@ export function TeamsPreSession() {
                             onChange={(e) => setJoinCode(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6))}
                             placeholder={t('sidepanel.teamsPreSession.codePlaceholder')}
                             maxLength={6}
-                            className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-center font-mono text-lg tracking-widest uppercase placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-ring"
+                            className="w-full px-3.5 py-2 rounded-input border border-field bg-bg-1 text-foreground text-center font-mono text-lg tracking-widest uppercase placeholder:text-muted-foreground/50"
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter' && joinCode.length === 6) {
                                     handleJoin()
@@ -191,7 +191,7 @@ export function TeamsPreSession() {
                         <button
                             onClick={handleJoin}
                             disabled={isJoining || joinCode.length !== 6}
-                            className="flex items-center justify-center gap-2 w-full px-3 py-2 rounded-lg bg-secondary text-secondary-foreground text-sm font-medium hover:bg-secondary/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="flex items-center justify-center gap-2 w-full px-3 py-2 rounded-full bg-secondary text-secondary-foreground text-sm font-medium hover:bg-secondary/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {isJoining ? (
                                 <Loader2 className="w-3.5 h-3.5 animate-spin" />

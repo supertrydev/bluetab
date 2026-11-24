@@ -70,20 +70,20 @@ export function FlowtimeBreakRunning({ state }: FlowtimeBreakRunningProps) {
   }, []);
 
   return (
-    <div className="mb-2 px-3 py-2" data-testid="flowtime-break-running">
+    <div className="mb-2 rounded-lg border border-border bg-bg-1 px-4 py-3" data-testid="flowtime-break-running">
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-0.5">
-          <span className="text-micro font-medium text-green-500 uppercase tracking-wide">
+          <span className="text-xs font-medium text-success">
             {t('sidepanel.flowtimeBreakRunning.break')}
           </span>
-          <span className="text-lg font-mono font-semibold text-foreground tabular-nums">
+          <span className="text-lg font-mono font-medium text-foreground tabular-nums">
             {formatCountdown(remainingMs)}
           </span>
         </div>
         <button
           type="button"
           onClick={handleStop}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-accent/50 rounded transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-accent/50 rounded-full transition-colors"
           aria-label={t('sidepanel.flowtimeBreakRunning.stopAria')}
         >
           <Square className="w-3.5 h-3.5" />

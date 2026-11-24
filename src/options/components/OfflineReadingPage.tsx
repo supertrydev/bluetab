@@ -253,10 +253,10 @@ export function OfflineReadingPage({
           <div className="flex-1 min-h-0 overflow-y-auto">
             {/* 80% soft-warning cleanup banner */}
             {quota?.isWarning && !quota.isBlocked && (
-              <div className="border border-amber-500/60 bg-amber-50 dark:bg-amber-950/30 p-3 flex items-start gap-2 text-sm mx-4 mt-4">
-                <AlertTriangle className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" aria-hidden="true" />
+              <div className="border border-warning/30 bg-warning-muted p-3 flex items-start gap-2 text-sm mx-4 mt-4">
+                <AlertTriangle className="h-4 w-4 text-warning mt-0.5 shrink-0" aria-hidden="true" />
                 <div className="flex-1">
-                  <div className="font-medium text-amber-900 dark:text-amber-200">
+                  <div className="font-medium text-warning">
                     {t('options.offlineReadingPage.storageLow', {
                       percent: Math.round(quota.percentUsed * 100),
                     })}
@@ -304,10 +304,10 @@ export function OfflineReadingPage({
                         ) : (
                           <ChevronDown className="h-3 w-3 shrink-0 text-muted-foreground" />
                         )}
-                        <h2 className="text-caption font-semibold uppercase tracking-wider text-muted-foreground truncate">
+                        <h2 className="text-xs font-semibold text-muted-foreground truncate">
                           <bdi dir="auto">{displayName}</bdi>
                         </h2>
-                        <span dir="ltr" className="text-caption font-medium text-muted-foreground/70 shrink-0">
+                        <span dir="ltr" className="text-xs font-medium text-muted-foreground/70 shrink-0">
                           {list.length}
                         </span>
                       </button>

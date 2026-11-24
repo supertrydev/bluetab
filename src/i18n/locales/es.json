@@ -149,6 +149,8 @@
   "settingsTabs": {
     "appearance": "Apariencia",
     "general": "General",
+    "tabs": "Comportamiento de pestañas",
+    "sidePanel": "Panel lateral",
     "pomodoro": "Pomodoro",
     "focus": "Modo de concentración",
     "brainDump": "Brain Dump",
@@ -326,7 +328,6 @@
         }
       },
       "browserTabs": {
-        "title": "Pestañas del navegador",
         "groupBorderLabel": "Borde del color del grupo",
         "groupBorderDescription": "Muestra en el panel lateral un borde alrededor de los grupos de pestañas que coincida con el color del grupo.",
         "closeOnSaveLabel": "Cerrar las pestañas después de guardarlas",
@@ -1504,7 +1505,7 @@
       "layoutGrid": "Diseño de cuadrícula",
       "layoutMasonry": "Diseño de mosaico",
       "layoutDashboard": "Diseño de panel",
-      "searchPlaceholder": "Buscar grupos, pestañas o etiquetas...",
+      "searchPlaceholder": "Buscar grupos, pestañas, etiquetas o notas...",
       "sortFallback": "Ordenar",
       "sort": {
         "newest": "Más recientes primero",
@@ -2302,12 +2303,9 @@
       "messages_other": "{{count}} mensajes"
     },
     "aiUpgradePrompt": {
-      "assistantName": "Bluetab AI",
       "preview": "Puedo organizar tus pestañas, cambiar nombres de grupos y preparar acciones antes de modificar nada.",
-      "title": "Asistente de IA",
-      "subtitle": "Gestiona pestañas con lenguaje natural.",
+      "title": "Asistente de IA de Bluetab",
       "locked": "Bloqueado",
-      "inputPlaceholder": "Pregunta a Bluetab AI...",
       "upgrade": "Mejorar a Pro"
     },
     "aiChatThread": {

@@ -40,25 +40,25 @@ export function ConfirmModal({
             case 'danger':
                 return {
                     Icon: AlertCircle,
-                    iconColor: 'text-red-500',
+                    iconColor: 'text-danger',
                     variant: 'danger' as const
                 };
             case 'warning':
                 return {
                     Icon: AlertTriangle,
-                    iconColor: 'text-yellow-500',
+                    iconColor: 'text-warning',
                     variant: 'primary' as const
                 };
             case 'info':
                 return {
                     Icon: Info,
-                    iconColor: 'text-blue-500',
+                    iconColor: 'text-primary',
                     variant: 'primary' as const
                 };
             default:
                 return {
                     Icon: Info,
-                    iconColor: 'text-gray-500',
+                    iconColor: 'text-text-muted',
                     variant: 'primary' as const
                 };
         }
@@ -75,8 +75,8 @@ export function ConfirmModal({
                             <Icon className="h-6 w-6" />
                         </div>
                         <div className="flex-1 min-w-0 space-y-2">
-                            <DialogTitle className="text-gray-900 dark:text-gray-100">{title}</DialogTitle>
-                            <DialogDescription className="text-sm leading-relaxed text-gray-700 dark:text-gray-300">
+                            <DialogTitle className="text-text-strong">{title}</DialogTitle>
+                            <DialogDescription className="text-sm leading-relaxed text-text-strong">
                                 {message}
                             </DialogDescription>
                         </div>

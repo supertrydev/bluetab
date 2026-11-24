@@ -72,8 +72,8 @@ export function NavUser() {
       <SidebarMenu>
         <SidebarMenuItem>
           <SidebarMenuButton size="lg" className="animate-pulse">
-            <div className="h-8 w-8 rounded-lg bg-sidebar-accent" />
-            <div className="grid flex-1 gap-1">
+            <div className="h-8 w-8 shrink-0 rounded-full bg-sidebar-accent" />
+            <div className="grid flex-1 gap-1 group-data-[collapsible=icon]:hidden">
               <div className="h-4 w-20 rounded bg-sidebar-accent" />
               <div className="h-3 w-16 rounded bg-sidebar-accent" />
             </div>
@@ -90,19 +90,20 @@ export function NavUser() {
           <SidebarMenuItem>
             <SidebarMenuButton
               size="lg"
+              tooltip={t('navigation.user.signIn')}
               onClick={() => setShowLoginModal(true)}
               className="hover:bg-sidebar-accent"
             >
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sidebar-accent">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sidebar-accent">
                 <User className="h-4 w-4" />
               </div>
-              <div className="grid flex-1 text-start text-sm leading-tight">
+              <div className="grid flex-1 text-start text-sm leading-tight group-data-[collapsible=icon]:hidden">
                 <span className="truncate font-semibold">{t('navigation.user.signIn')}</span>
                 <span className="truncate text-xs text-muted-foreground">
                   {t('navigation.user.accessPremium')}
                 </span>
               </div>
-              <LogIn className="ms-auto h-4 w-4" />
+              <LogIn className="ms-auto h-4 w-4 group-data-[collapsible=icon]:hidden" />
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

@@ -2,11 +2,10 @@
  * @module sidepanel/components/AIUpgradePrompt
  *
  * WHY:  Non-Pro users who open the AI tab see this component instead of the
- *       chat interface. It demonstrates what the AI can do and provides a
- *       clear upgrade path to Pro.
+ *       chat interface.
  *
- * WHAT: Sidepanel-native locked AI state showing a calm chat preview and a
- *       single upgrade call-to-action.
+ * WHAT: The Bluetab mark, one message saying what the assistant does, and a
+ *       single upgrade button.
  *
  * HOW:  Reads upgrade URL from getUpgradeUrl() in feature-gate.ts.
  *       Pure presentation — no state, no API calls.
@@ -14,33 +13,19 @@
  * NOT:  Does not handle payment. Does not make API calls.
  */
 
-import { Bot, LockKeyhole, Sparkles } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { UpgradeToProButton } from '@/components/auth/UpgradeToProButton';
 import { getUpgradeUrl } from '@/utils/feature-gate';
-
-// ============================================================================
-// Component
-// ============================================================================
+import bluetabAvatar from '@/assets/bluetab-avatar.png';
 
 /** A single chat bubble hinting at what the assistant does. */
 function LockedPreviewMessage() {
   const { t } = useTranslation();
 
   return (
-    <div className="flex w-full items-start gap-2 text-left">
-      <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary-muted text-primary">
-        <Bot className="h-3.5 w-3.5" />
-      </div>
-      <div className="min-w-0 flex-1 rounded-2xl rounded-tl-md bg-bg-1 px-3 py-2.5">
-        <p className="text-[11px] font-semibold text-text-strong">
-          {t('sidepanel.aiUpgradePrompt.assistantName')}
-        </p>
-        <p className="mt-0.5 text-caption leading-relaxed text-text">
-          {t('sidepanel.aiUpgradePrompt.preview')}
-        </p>
-      </div>
-    </div>
+    <p className="rounded-2xl border border-border bg-bg-1 px-4 py-3 text-start text-sm leading-relaxed text-text">
+      {t('sidepanel.aiUpgradePrompt.preview')}
+    </p>
   );
 }
 
@@ -52,41 +37,20 @@ export function AIUpgradePrompt() {
   };
 
   return (
-    <div className="relative h-full overflow-hidden bg-bg-0">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-[radial-gradient(circle_at_50%_20%,hsla(226,68%,50%,0.16),transparent_65%)]" />
-
-      <div className="relative flex h-full flex-col px-4 py-4">
-        {/* Centered intro: icon, title, one preview bubble */}
-        <div className="flex flex-1 flex-col items-center justify-center text-center">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary-muted text-primary shadow-lg shadow-primary/20">
-            <Sparkles className="h-5 w-5" />
-          </div>
-          <p className="mt-4 text-base font-semibold text-text-strong">
-            {t('sidepanel.aiUpgradePrompt.title')}
-          </p>
-          <p className="mt-1 text-caption text-text-muted">
-            {t('sidepanel.aiUpgradePrompt.subtitle')}
-          </p>
-
-          <div className="mt-6 w-full max-w-xs">
-            <LockedPreviewMessage />
-          </div>
+    <div className="flex h-full flex-col items-center justify-center overflow-y-auto bg-bg-0 px-4 py-6">
+      <div className="flex w-full max-w-xs flex-col items-center">
+        <img src={bluetabAvatar} alt="" width={56} height={56} className="h-14 w-14 rounded-2xl" />
+        <h2 className="mt-3 text-base font-semibold text-text-strong">
+          {t('sidepanel.aiUpgradePrompt.title')}
+        </h2>
+        <div className="mt-5 w-full">
+          <LockedPreviewMessage />
         </div>
-
-        {/* Locked composer + single CTA */}
-        <div className="space-y-2.5">
-          <button
-            type="button"
-            onClick={openUpgrade}
-            aria-label={t('sidepanel.aiUpgradePrompt.upgrade')}
-            className="flex min-h-10 w-full items-center justify-between gap-2 rounded-full border border-border/70 bg-bg-1/60 px-4 text-xs text-text-muted transition-colors hover:border-border focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
-          >
-            <span className="truncate">{t('sidepanel.aiUpgradePrompt.inputPlaceholder')}</span>
-            <LockKeyhole className="h-3.5 w-3.5 shrink-0" />
-          </button>
-
-          <UpgradeToProButton className="w-full" onClick={openUpgrade} />
-        </div>
+        <UpgradeToProButton
+          className="mt-4 w-full"
+          onClick={openUpgrade}
+          aria-label={t('sidepanel.aiUpgradePrompt.upgrade')}
+        />
       </div>
     </div>
   );

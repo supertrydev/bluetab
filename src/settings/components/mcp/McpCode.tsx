@@ -24,7 +24,7 @@ export function CopyButton({ text, className }: { text: string; className?: stri
       onClick={handleCopy}
       className={
         className ??
-        'absolute top-2 end-2 p-1.5 rounded-md bg-bg-1/80 hover:bg-bg-2 text-muted-foreground hover:text-foreground transition-colors'
+        'absolute top-2 end-2 p-1.5 rounded-md bg-bg-1/80 hover:bg-accent text-muted-foreground hover:text-foreground transition-colors'
       }
       aria-label={translate('common.copy')}
     >

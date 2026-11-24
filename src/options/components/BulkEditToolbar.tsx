@@ -177,9 +177,9 @@ export function useBulkEditToolbar({
     };
 
     const ToolbarElement = bulkMode ? (
-        <div className="sticky top-[56px] xl:top-16 z-30 bg-bg-1/95 backdrop-blur-sm border-b border-border shadow-sm">
+        <div className="sticky top-[56px] xl:top-16 z-30 bg-glass-bg backdrop-blur-md border-b border-border-glass">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-            <div className="bg-bg-1 border border-border rounded-xl shadow-lg p-4">
+            <div className="bg-bg-1 border border-border rounded-lg shadow-md p-4">
                 {/* Header Row */}
                 <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
@@ -187,13 +187,13 @@ export function useBulkEditToolbar({
                             <Pencil className="w-3.5 h-3.5 text-white" />
                         </div>
                         <div>
-                            <h3 className="text-sm font-bold text-text-strong">{t('options.bulkEdit.title')}</h3>
+                            <h3 className="text-sm font-semibold text-text-strong">{t('options.bulkEdit.title')}</h3>
                             <p className="text-xs text-text-muted">{t('options.bulkEdit.selectedCount', { count: selectedGroups.size })}</p>
                         </div>
                     </div>
                     <button
                         onClick={exitBulkMode}
-                        className="p-1.5 rounded-lg text-text-muted hover:text-text-strong hover:bg-bg-2 transition-colors"
+                        className="p-1.5 rounded-full text-text-muted hover:text-text-strong hover:bg-accent transition-colors"
                         title={t('options.bulkEdit.exitEditMode')}
                     >
                         <X className="w-4 h-4" />
@@ -205,14 +205,14 @@ export function useBulkEditToolbar({
                     {/* Selection */}
                     <button
                         onClick={selectAllGroups}
-                        className="px-3 py-1.5 bg-primary hover:bg-primary-hover text-white rounded-lg text-xs font-medium flex items-center gap-1.5"
+                        className="px-3 py-1.5 bg-primary hover:bg-primary-hover text-white rounded-full text-xs font-medium transition-colors flex items-center gap-1.5"
                     >
                         <CheckCheck className="w-3.5 h-3.5" />
                         {t('options.bulkEdit.selectAll')}
                     </button>
                     <button
                         onClick={clearSelection}
-                        className="px-3 py-1.5 bg-bg-2 hover:bg-highlight text-text-strong border border-border rounded-lg text-xs font-medium flex items-center gap-1.5"
+                        className="px-3 py-1.5 bg-muted hover:bg-accent text-text-strong rounded-full text-xs font-medium transition-colors flex items-center gap-1.5"
                     >
                         <X className="w-3.5 h-3.5" />
                         {t('options.bulkEdit.clear')}
@@ -223,11 +223,11 @@ export function useBulkEditToolbar({
                     {/* Tag Operations - Compact Dropdowns */}
                     <DropdownMenu>
                         <DropdownMenuTrigger
-                            className="px-3 py-1.5 bg-bg-2 hover:bg-highlight rounded-lg text-xs text-text-strong cursor-pointer flex items-center gap-1.5 disabled:opacity-50"
+                            className="px-3 py-1.5 bg-muted hover:bg-accent rounded-full text-xs font-medium text-text-strong transition-colors cursor-pointer flex items-center gap-1.5 disabled:opacity-50"
                             disabled={selectedGroups.size === 0}
                         >
                             {t('options.bulkEdit.addTag')}
-                            <ChevronDown className="w-2.5 h-2.5 text-success" />
+                            <ChevronDown className="w-3.5 h-3.5 text-success" />
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="start">
                             {tags.map(tag => (
@@ -239,11 +239,11 @@ export function useBulkEditToolbar({
                     </DropdownMenu>
                     <DropdownMenu>
                         <DropdownMenuTrigger
-                            className="px-3 py-1.5 bg-bg-2 hover:bg-highlight rounded-lg text-xs text-text-strong cursor-pointer flex items-center gap-1.5 disabled:opacity-50"
+                            className="px-3 py-1.5 bg-muted hover:bg-accent rounded-full text-xs font-medium text-text-strong transition-colors cursor-pointer flex items-center gap-1.5 disabled:opacity-50"
                             disabled={selectedGroups.size === 0}
                         >
                             {t('options.bulkEdit.removeTag')}
-                            <ChevronDown className="w-2.5 h-2.5 text-danger" />
+                            <ChevronDown className="w-3.5 h-3.5 text-danger" />
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="start">
                             {tags.map(tag => (
@@ -257,11 +257,11 @@ export function useBulkEditToolbar({
                     {/* Assign to Project */}
                     <DropdownMenu>
                         <DropdownMenuTrigger
-                            className="px-3 py-1.5 bg-bg-2 hover:bg-highlight rounded-lg text-xs text-text-strong cursor-pointer flex items-center gap-1.5 disabled:opacity-50"
+                            className="px-3 py-1.5 bg-muted hover:bg-accent rounded-full text-xs font-medium text-text-strong transition-colors cursor-pointer flex items-center gap-1.5 disabled:opacity-50"
                             disabled={selectedGroups.size === 0}
                         >
                             {t('options.bulkEdit.assignToProject')}
-                            <Folder className="w-2.5 h-2.5 text-primary" />
+                            <Folder className="w-3.5 h-3.5 text-primary" />
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="start">
                             <DropdownMenuItem onClick={() => handleBulkAssignToProject(undefined)}>
@@ -281,7 +281,7 @@ export function useBulkEditToolbar({
                     <button
                         onClick={handleBulkCopyLinks}
                         disabled={selectedGroups.size === 0}
-                        className="px-3 py-1.5 bg-bg-2 hover:bg-highlight text-text-strong border border-border rounded-lg text-xs font-medium flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-3 py-1.5 bg-muted hover:bg-accent text-text-strong rounded-full text-xs font-medium transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
                         title={t('options.bulkEdit.copyLinksTitle')}
                     >
                         <Copy className="w-3.5 h-3.5" />
@@ -290,7 +290,7 @@ export function useBulkEditToolbar({
                     <button
                         onClick={handleBulkShare}
                         disabled={selectedGroups.size === 0}
-                        className="px-3 py-1.5 bg-bg-2 hover:bg-highlight text-text-strong border border-border rounded-lg text-xs font-medium flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-3 py-1.5 bg-muted hover:bg-accent text-text-strong rounded-full text-xs font-medium transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
                         title={t('options.bulkEdit.shareTitle')}
                     >
                         <Share2 className="w-3.5 h-3.5" />
@@ -299,7 +299,7 @@ export function useBulkEditToolbar({
                     <button
                         onClick={handleBulkLockToggle}
                         disabled={selectedGroups.size === 0}
-                        className="px-3 py-1.5 bg-bg-2 hover:bg-highlight text-text-strong border border-border rounded-lg text-xs font-medium flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-3 py-1.5 bg-muted hover:bg-accent text-text-strong rounded-full text-xs font-medium transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
                         title={t('options.bulkEdit.lockUnlockTitle')}
                     >
                         <Lock className="w-3.5 h-3.5" />
@@ -311,7 +311,7 @@ export function useBulkEditToolbar({
                             onArchiveSelected(Array.from(selectedGroups));
                         }}
                         disabled={selectedGroups.size === 0}
-                        className="px-3 py-1.5 bg-bg-2 hover:bg-highlight text-text-strong border border-border rounded-lg text-xs font-medium flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-3 py-1.5 bg-muted hover:bg-accent text-text-strong rounded-full text-xs font-medium transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
                         title={t('options.bulkEdit.archiveTitle')}
                     >
                         <Archive className="w-3.5 h-3.5" />
@@ -324,7 +324,7 @@ export function useBulkEditToolbar({
                                 onSaveOfflineSelected(Array.from(selectedGroups));
                             }}
                             disabled={selectedGroups.size === 0}
-                            className="px-3 py-1.5 bg-bg-2 hover:bg-highlight text-text-strong border border-border rounded-lg text-xs font-medium flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="px-3 py-1.5 bg-muted hover:bg-accent text-text-strong rounded-full text-xs font-medium transition-colors flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
                             title={t('options.bulkEdit.saveOfflineTitle')}
                         >
                             <Download className="w-3.5 h-3.5" />
@@ -338,7 +338,7 @@ export function useBulkEditToolbar({
                     {selectedGroups.size > 0 && (
                         <button
                             onClick={handleShowDeleteSelectedModal}
-                            className="px-3 py-1.5 bg-danger hover:brightness-110 text-white rounded-lg text-xs font-medium flex items-center gap-1.5"
+                            className="px-3 py-1.5 bg-danger hover:brightness-110 text-white rounded-full text-xs font-medium transition-colors flex items-center gap-1.5"
                         >
                             <Trash2 className="w-3.5 h-3.5" />
                             {t('common.delete')}

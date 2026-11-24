@@ -11,7 +11,7 @@ describe('final RTL presentation residuals', () => {
       "t('components.masonry.moreTabs', { count: selectedTabs.size - maxPreviewTabs })",
     );
     expect(source('options/components/DragDropOverlay.tsx')).not.toContain(' more tabs`');
-    expect(source('components/MasonryGroupCard.tsx')).toContain(
+    expect(source('components/ProjectBadge.tsx')).toContain(
       "t('components.groupInfo.project')",
     );
     expect(source('sidepanel/components/BrainDumpPanel.tsx')).toContain(

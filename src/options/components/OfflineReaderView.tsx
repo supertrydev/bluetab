@@ -185,7 +185,7 @@ export function OfflineReaderView({ articleId, onClose, onPinChanged }: OfflineR
       <style>{READER_STYLES}</style>
       <div className="flex items-center justify-between gap-2 p-3 border-b shrink-0">
         <Button type="button" variant="ghost" size="sm" onClick={onClose}>
-          <ArrowLeft className="h-4 w-4 me-2 rtl:rotate-180" />
+          <ArrowLeft className="h-4 w-4 rtl:rotate-180" />
           {t('options.offlineReaderView.library')}
         </Button>
         <div className="flex items-center gap-2">
@@ -197,8 +197,8 @@ export function OfflineReaderView({ articleId, onClose, onPinChanged }: OfflineR
             aria-pressed={article.pinned === 1}
           >
             {article.pinned === 1
-              ? <PinOff className="h-4 w-4 me-2" />
-              : <Pin className="h-4 w-4 me-2" />
+              ? <PinOff className="h-4 w-4" />
+              : <Pin className="h-4 w-4" />
             }
             {article.pinned === 1 ? t('options.offlineReaderView.unpin') : t('options.offlineReaderView.pin')}
           </Button>
@@ -208,7 +208,7 @@ export function OfflineReaderView({ articleId, onClose, onPinChanged }: OfflineR
             size="sm"
             onClick={() => { void chrome.tabs.create({ url: article.url }); }}
           >
-            <ExternalLink className="h-4 w-4 me-2" />
+            <ExternalLink className="h-4 w-4" />
             {t('options.offlineReaderView.openInTab')}
           </Button>
         </div>
@@ -218,7 +218,7 @@ export function OfflineReaderView({ articleId, onClose, onPinChanged }: OfflineR
           {heroUrl && (
             <img src={heroUrl} alt="" loading="lazy" className="w-full rounded-md mb-6" />
           )}
-          <h1 className="text-2xl font-bold leading-tight mb-3 text-foreground">
+          <h1 className="text-2xl font-semibold leading-tight mb-3 text-foreground">
             <bdi dir={article.title ? 'auto' : 'ltr'}>{article.title || article.url}</bdi>
           </h1>
           {article.byline && (

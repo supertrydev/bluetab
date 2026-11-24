@@ -133,7 +133,7 @@ export function NotionPagePicker({
                 onValueChange={setSelectedPageId}
                 disabled={submitting}
               >
-                <SelectTrigger className="h-11 w-full rounded-lg border-border bg-bg-0 text-sm text-text-strong data-[placeholder]:text-gray-400">
+                <SelectTrigger className="h-11 w-full rounded-lg border-border bg-bg-0 text-sm text-text-strong data-[placeholder]:text-text-muted">
                   <SelectValue placeholder={t('components.notionPagePicker.selectPage')} />
                 </SelectTrigger>
                 <SelectContent>
@@ -158,7 +158,7 @@ export function NotionPagePicker({
               onChange={(e) => setDatabaseTitle(e.target.value)}
               placeholder={t('components.notionPagePicker.databasePlaceholder')}
               disabled={submitting}
-              className="h-11 rounded-lg border-border bg-bg-0 text-sm text-text-strong placeholder:text-gray-400 focus-visible:ring-primary/50 focus-visible:ring-offset-0"
+              className="h-11 rounded-lg border-border bg-bg-0 text-sm text-text-strong placeholder:text-text-muted focus-visible:ring-primary/50 focus-visible:ring-offset-0"
               autoFocus
             />
           </div>

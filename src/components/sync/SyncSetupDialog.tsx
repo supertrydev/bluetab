@@ -217,15 +217,15 @@ export function SyncSetupDialog({
 
           {/* Error message */}
           {displayError && (
-            <div className="p-3 rounded-md bg-red-500/10 border border-red-500/20">
-              <p dir="auto" className="text-sm text-red-500">{displayError}</p>
+            <div className="p-3 rounded-md bg-danger-muted border border-danger/30">
+              <p dir="auto" className="text-sm text-danger">{displayError}</p>
             </div>
           )}
 
           {/* Warning for restore */}
             {!isSetup && (
-              <div className="p-3 rounded-md bg-yellow-500/10 border border-yellow-500/20">
-                <p className="text-sm text-yellow-600 dark:text-yellow-400">
+              <div className="p-3 rounded-md bg-warning-muted border border-warning/30">
+                <p className="text-sm text-warning">
                   {startFresh
                     ? t('components.sync.setup.freshWarning')
                     : t('components.sync.setup.restoreWarning')}
@@ -245,7 +245,7 @@ export function SyncSetupDialog({
             <Button type="submit" disabled={isSubmitting || !password}>
               {isSubmitting ? (
                 <>
-                  <Loader2 className="w-4 h-4 me-2 animate-spin" />
+                  <Loader2 className="w-4 h-4 animate-spin" />
                   {isSetup ? t('components.sync.setup.settingUp') : startFresh ? t('components.sync.setup.startingFresh') : t('components.sync.setup.restoring')}
                 </>
               ) : isSetup ? (

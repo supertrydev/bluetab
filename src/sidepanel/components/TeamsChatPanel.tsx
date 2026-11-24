@@ -140,7 +140,7 @@ export function TeamsChatPanel({
                 <button
                     type="button"
                     data-testid="teams-chat-trigger"
-                    className="flex w-full items-center gap-2 border-t border-border bg-background/95 px-3 py-2 text-sm font-medium hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
+                    className="flex w-full items-center gap-2 border-t border-border bg-background/95 px-3 py-2 text-sm font-medium hover:bg-accent"
                 >
                     <MessageCircle className="w-4 h-4 text-muted-foreground flex-shrink-0" />
                     <span className="flex-1 text-start">{t('sidepanel.teamsChat.label')}</span>
@@ -197,7 +197,7 @@ export function TeamsChatPanel({
                                         <bdi dir="auto" className="text-xs font-semibold text-foreground">
                                             {msg.senderName}
                                         </bdi>
-                                        <span dir="ltr" className="text-micro text-muted-foreground">
+                                        <span dir="ltr" className="text-xs text-muted-foreground">
                                             {formatTime(msg.timestamp)}
                                         </span>
                                     </div>
@@ -225,12 +225,12 @@ export function TeamsChatPanel({
                             onKeyDown={handleKeyDown}
                             placeholder={isConnected ? t('sidepanel.teamsChat.inputPlaceholder') : t('sidepanel.teamsChat.notConnected')}
                             disabled={!isConnected}
-                            className="min-w-0 flex-1 rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                            className="min-w-0 flex-1 rounded-input border border-field bg-bg-1 px-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground/60 disabled:cursor-not-allowed disabled:opacity-50"
                         />
                         <button
                             onClick={handleSend}
                             disabled={!isConnected || !inputText.trim()}
-                            className="flex-shrink-0 p-1.5 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                            className="flex-shrink-0 p-1.5 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                             aria-label={t('sidepanel.teamsChat.send')}
                         >
                             <Send className="w-3.5 h-3.5" />

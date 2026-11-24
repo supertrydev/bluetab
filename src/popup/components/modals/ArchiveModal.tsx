@@ -160,7 +160,7 @@ export function ArchiveModal({
                                 placeholder={t('popup.archiveModal.searchPlaceholder')}
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="ps-8 pe-3 py-1.5 text-sm border border-border rounded-lg bg-bg-1 text-text focus:ring-2 focus:ring-primary focus:border-primary w-40"
+                                className="ps-8 pe-3 py-1.5 text-sm border border-field rounded-input bg-bg-1 text-text w-40"
                             />
                         </div>
                     </div>
@@ -179,7 +179,7 @@ export function ArchiveModal({
                                         key={group.id}
                                         className={`flex items-center gap-3 p-3 cursor-pointer border-s-3 transition-all ${isSelected
                                             ? 'border-s-primary bg-primary-muted/30'
-                                            : 'border-s-transparent hover:bg-bg-2'
+                                            : 'border-s-transparent hover:bg-accent'
                                             } border-b border-border last:border-b-0`}
                                     >
                                         <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${isSelected
@@ -235,7 +235,7 @@ export function ArchiveModal({
                         onChange={(e) => setReason(e.target.value)}
                         placeholder={t('popup.archiveModal.reasonPlaceholder')}
                         rows={3}
-                        className="w-full px-4 py-3 text-sm border border-border rounded-xl bg-bg-1 text-text placeholder:text-text-muted focus:ring-2 focus:ring-primary focus:border-primary resize-none"
+                        className="w-full px-4 py-3 text-sm border border-field rounded-lg bg-bg-1 text-text placeholder:text-text-muted resize-none"
                         maxLength={200}
                         dir="auto"
                     />
@@ -295,7 +295,7 @@ export function ArchiveModal({
                                     id="archive-password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full px-4 py-2.5 text-sm border border-border rounded-lg bg-bg-0 text-text-strong placeholder:text-text-muted focus:ring-2 focus:ring-primary focus:border-primary"
+                                    className="w-full px-4 py-2.5 text-sm border border-field rounded-input bg-bg-1 text-text-strong placeholder:text-text-muted"
                                     placeholder={t('popup.archiveModal.passwordPlaceholder')}
                                     dir="ltr"
                                 />
@@ -344,7 +344,7 @@ export function ArchiveModal({
                                     id="confirm-password"
                                     value={confirmPassword}
                                     onChange={(e) => setConfirmPassword(e.target.value)}
-                                    className="w-full px-4 py-2.5 text-sm border border-border rounded-lg bg-bg-0 text-text-strong placeholder:text-text-muted focus:ring-2 focus:ring-primary focus:border-primary"
+                                    className="w-full px-4 py-2.5 text-sm border border-field rounded-input bg-bg-1 text-text-strong placeholder:text-text-muted"
                                     placeholder={t('popup.archiveModal.confirmPasswordPlaceholder')}
                                     dir="ltr"
                                 />
@@ -364,7 +364,7 @@ export function ArchiveModal({
                                     id="password-hint"
                                     value={passwordHint}
                                     onChange={(e) => setPasswordHint(e.target.value)}
-                                    className="w-full px-4 py-2.5 text-sm border border-border rounded-lg bg-bg-0 text-text-strong placeholder:text-text-muted focus:ring-2 focus:ring-primary focus:border-primary"
+                                    className="w-full px-4 py-2.5 text-sm border border-field rounded-input bg-bg-1 text-text-strong placeholder:text-text-muted"
                                     placeholder={t('popup.archiveModal.passwordHintPlaceholder')}
                                     maxLength={100}
                                     dir="auto"
@@ -391,14 +391,14 @@ export function ArchiveModal({
                         type="button"
                         onClick={onClose}
                         disabled={isArchiving}
-                        className="px-5 py-2.5 text-sm font-medium text-text bg-bg-2 hover:bg-highlight border border-border rounded-lg transition-colors disabled:opacity-50"
+                        className="px-5 py-2.5 text-sm font-medium text-text bg-bg-2 hover:bg-highlight border border-border rounded-full transition-colors disabled:opacity-50"
                     >
                         {t('common.cancel')}
                     </button>
                     <button
                         type="submit"
                         disabled={isArchiving || selectedGroups.length === 0}
-                        className="px-5 py-2.5 text-sm font-medium text-white bg-primary hover:bg-primary-hover rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                        className="px-5 py-2.5 text-sm font-medium text-white bg-primary hover:bg-primary-hover rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                     >
                         {isArchiving && <Loader2 className="w-4 h-4 animate-spin" />}
                         <Archive className="w-4 h-4" />

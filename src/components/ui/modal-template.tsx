@@ -99,7 +99,7 @@ export function ModalTemplate({
       >
         <DialogHeader
           className={cn(
-            'shrink-0 px-5 pt-5 pb-4 border-b border-border bg-bg-1/30 pe-12',
+            'shrink-0 px-6 pt-6 pb-3 pe-12',
             headerClassName
           )}
         >
@@ -126,14 +126,14 @@ export function ModalTemplate({
           </div>
         </DialogHeader>
 
-        <div className={cn('min-h-0 flex-1 overflow-y-auto px-5 py-4 space-y-4', bodyClassName)}>
+        <div className={cn('min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-3 space-y-4', bodyClassName)}>
           {children}
         </div>
 
         {footer ? (
           <DialogFooter
             className={cn(
-              'shrink-0 px-5 py-4 border-t border-border bg-bg-1/20',
+              'shrink-0 px-6 py-4 border-t border-border',
               footerClassName
             )}
           >
@@ -152,11 +152,11 @@ interface ModalTemplateSectionProps extends React.HTMLAttributes<HTMLDivElement>
 }
 
 const SECTION_TONES: Record<NonNullable<ModalTemplateSectionProps['tone']>, string> = {
-  default: 'border-border bg-bg-1/60',
-  muted: 'border-border bg-muted/20',
-  primary: 'border-primary/20 bg-primary/5',
-  danger: 'border-danger/20 bg-danger/10',
-  warning: 'border-amber-500/30 bg-amber-500/10',
+  default: 'border-border bg-bg-1',
+  muted: 'border-transparent bg-muted',
+  primary: 'border-transparent bg-primary-muted',
+  danger: 'border-transparent bg-danger-muted',
+  warning: 'border-transparent bg-warning-muted',
 }
 
 export function ModalTemplateSection({
@@ -216,10 +216,10 @@ export function ModalTemplateMetric({
 }: ModalTemplateMetricProps) {
   return (
     <div
-      className={cn('rounded-md border border-border bg-bg-2 p-3', className)}
+      className={cn('rounded-md bg-muted p-3', className)}
       {...props}
     >
-      <div className="text-xs uppercase text-text-muted">{label}</div>
+      <div className="text-xs text-text-muted">{label}</div>
       <div className="mt-1 text-lg font-semibold text-text-strong">{value}</div>
     </div>
   )

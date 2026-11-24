@@ -283,7 +283,7 @@ export function SyncSettings({ className }: SyncSettingsProps) {
                     : t('components.sync.connectDescription')}
                 </p>
                 {deviceLimitReached && (
-                  <p className="text-sm text-yellow-500 mt-3">
+                  <p className="text-sm text-warning mt-3">
                   {t('components.sync.deviceLimit')}
                 </p>
               )}
@@ -313,7 +313,7 @@ export function SyncSettings({ className }: SyncSettingsProps) {
 
       {/* Device list */}
       {(isSetUp || devices.length > 0) && (
-        <div className="p-4 rounded-lg border border-border bg-bg-1">
+        <div className="p-4 rounded-md bg-muted">
           <h4 className="font-medium text-text-strong mb-3 flex items-center gap-2">
             <Smartphone className="w-4 h-4" />
             {t('components.sync.devices', { label: deviceCountLabel })}
@@ -336,7 +336,7 @@ export function SyncSettings({ className }: SyncSettingsProps) {
                     key={device.deviceId}
                     className={cn(
                       'flex items-center justify-between p-3 rounded-md',
-                      isCurrent ? 'bg-primary/5 border border-primary/20' : 'bg-bg-2'
+                      isCurrent ? 'bg-primary-muted' : 'bg-bg-2'
                     )}
                   >
                     <div className="flex items-center gap-3">
@@ -378,7 +378,7 @@ export function SyncSettings({ className }: SyncSettingsProps) {
                     </div>
                     <div className="flex items-center gap-2">
                           {isCurrent && isConnected && (
-                            <Check className="w-4 h-4 text-green-500" />
+                            <Check className="w-4 h-4 text-success" />
                           )}
                       {isCurrent && (
                         <button
@@ -389,7 +389,7 @@ export function SyncSettings({ className }: SyncSettingsProps) {
                           onClick={() => handleDisconnectCurrentDevice(device.deviceId)}
                           className={cn(
                             'px-2.5 py-1.5 rounded-md text-xs font-medium text-text-muted transition-colors',
-                            'hover:text-amber-300 hover:bg-amber-500/10',
+                            'hover:text-warning hover:bg-warning-muted',
                             'disabled:opacity-50 disabled:cursor-not-allowed'
                           )}
                         >
@@ -405,7 +405,7 @@ export function SyncSettings({ className }: SyncSettingsProps) {
                           onClick={() => handleDeleteDevice(device.deviceId, isCurrent)}
                           className={cn(
                             'p-2 rounded-md text-text-muted transition-colors',
-                            'hover:text-red-400 hover:bg-red-500/10',
+                            'hover:text-danger hover:bg-danger-muted',
                             'disabled:opacity-50 disabled:cursor-not-allowed'
                           )}
                         >

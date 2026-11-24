@@ -65,23 +65,23 @@ export class ErrorBoundary extends Component<Props, State> {
 
             // Default error UI
             return (
-                <div className="error-boundary-container bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6 m-4">
+                <div className="error-boundary-container bg-danger-muted border border-danger/30 rounded-lg p-6 m-4">
                     <div className="flex items-start gap-3">
-                        <AlertTriangle className="w-5 h-5 text-red-500 mt-1 flex-shrink-0" />
+                        <AlertTriangle className="w-5 h-5 text-danger mt-1 flex-shrink-0" />
                         <div className="flex-1">
-                            <h3 className="text-lg font-semibold text-red-800 dark:text-red-200 mb-2">
+                            <h3 className="text-lg font-semibold text-danger mb-2">
                                 {translate('popup.errorBoundary.somethingWentWrong')}
                             </h3>
-                            <p className="text-sm text-red-700 dark:text-red-300 mb-4">
+                            <p className="text-sm text-danger mb-4">
                                 {translate('popup.errorBoundary.unexpectedArchiveError')}
                             </p>
 
                             {/* Error Details (collapsed by default) */}
                             <details className="mb-4">
-                                <summary className="text-sm text-red-600 dark:text-red-400 cursor-pointer hover:underline">
+                                <summary className="text-sm text-danger cursor-pointer hover:underline">
                                     {translate('popup.errorBoundary.showTechnicalDetails')}
                                 </summary>
-                                <div className="mt-2 p-3 bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-700 rounded text-xs font-mono text-red-800 dark:text-red-200 overflow-auto max-h-40">
+                                <div className="mt-2 p-3 bg-danger-muted border border-danger/30 rounded text-xs font-mono text-danger overflow-auto max-h-40">
                                     <div className="font-semibold mb-2">{translate('popup.errorBoundary.errorLabel')}</div>
                                     <div className="mb-3">{this.state.error?.toString()}</div>
 
@@ -98,13 +98,13 @@ export class ErrorBoundary extends Component<Props, State> {
                             <div className="flex gap-3">
                                 <button
                                     onClick={this.handleRetry}
-                                    className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
+                                    className="px-4 py-2 bg-danger text-white rounded-full hover:bg-danger transition-colors text-sm font-medium"
                                 >
                                     {translate('popup.errorBoundary.tryAgain')}
                                 </button>
                                 <button
                                     onClick={() => window.location.reload()}
-                                    className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors text-sm font-medium"
+                                    className="px-4 py-2 bg-muted text-text-strong rounded-full hover:bg-accent transition-colors text-sm font-medium"
                                 >
                                     {translate('popup.errorBoundary.reloadPage')}
                                 </button>
@@ -116,15 +116,15 @@ export class ErrorBoundary extends Component<Props, State> {
                                             ToastManager.getInstance().success({ key: 'feedback.copiedErrorDetails' });
                                         });
                                     }}
-                                    className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm font-medium"
+                                    className="px-4 py-2 bg-primary text-white rounded-full hover:bg-primary-hover transition-colors text-sm font-medium"
                                 >
                                     {translate('popup.errorBoundary.copyError')}
                                 </button>
                             </div>
 
                             {/* Support Information */}
-                            <div className="mt-4 pt-4 border-t border-red-200 dark:border-red-700">
-                                <p className="text-xs text-red-600 dark:text-red-400">
+                            <div className="mt-4 pt-4 border-t border-danger/30">
+                                <p className="text-xs text-danger">
                                     {translate('popup.errorBoundary.reportPrefix')}{' '}
                                     <a
                                         href="https://github.com/anthropics/claude-code/issues"
@@ -170,7 +170,7 @@ export function ErrorToast({
     }, [autoHide, duration, onDismiss]);
 
     return (
-        <div className="fixed bottom-4 end-4 z-50 max-w-sm bg-red-600 text-white rounded-lg shadow-lg animate-in slide-in-from-bottom-2 duration-300">
+        <div className="fixed bottom-4 end-4 z-50 max-w-sm bg-danger text-white rounded-lg shadow-lg animate-in slide-in-from-bottom-2 duration-300">
             <div className="p-4">
                 <div className="flex items-start gap-3">
                     <AlertCircle className="w-4 h-4 text-white flex-shrink-0 mt-0.5" />
@@ -190,13 +190,13 @@ export function ErrorToast({
                     <div className="mt-3 flex gap-2">
                         <button
                             onClick={onRetry}
-                            className="px-3 py-1 bg-white/20 hover:bg-white/30 rounded text-sm font-medium transition-colors"
+                            className="px-3 py-1 bg-white/20 hover:bg-white/30 rounded-full text-sm font-medium transition-colors"
                         >
                             {translate('popup.errorBoundary.retry')}
                         </button>
                         <button
                             onClick={onDismiss}
-                            className="px-3 py-1 bg-white/10 hover:bg-white/20 rounded text-sm transition-colors"
+                            className="px-3 py-1 bg-white/10 hover:bg-white/20 rounded-full text-sm transition-colors"
                         >
                             {translate('popup.errorBoundary.dismiss')}
                         </button>
@@ -263,24 +263,24 @@ export function ErrorMessage({
         switch (type) {
             case 'warning':
                 return {
-                    container: 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800',
-                    iconElement: <AlertTriangle className="w-4 h-4 text-yellow-500 flex-shrink-0" />,
-                    text: 'text-yellow-800 dark:text-yellow-200',
-                    button: 'bg-yellow-600 hover:bg-yellow-700'
+                    container: 'bg-warning-muted border-warning/30',
+                    iconElement: <AlertTriangle className="w-4 h-4 text-warning flex-shrink-0" />,
+                    text: 'text-warning',
+                    button: 'bg-warning hover:bg-warning'
                 };
             case 'info':
                 return {
-                    container: 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800',
-                    iconElement: <Info className="w-4 h-4 text-blue-500 flex-shrink-0" />,
-                    text: 'text-blue-800 dark:text-blue-200',
-                    button: 'bg-blue-600 hover:bg-blue-700'
+                    container: 'bg-primary-muted border-primary/30',
+                    iconElement: <Info className="w-4 h-4 text-primary flex-shrink-0" />,
+                    text: 'text-primary',
+                    button: 'bg-primary hover:bg-primary-hover'
                 };
             default:
                 return {
-                    container: 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800',
-                    iconElement: <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0" />,
-                    text: 'text-red-800 dark:text-red-200',
-                    button: 'bg-red-600 hover:bg-red-700'
+                    container: 'bg-danger-muted border-danger/30',
+                    iconElement: <AlertCircle className="w-4 h-4 text-danger flex-shrink-0" />,
+                    text: 'text-danger',
+                    button: 'bg-danger hover:bg-danger'
                 };
         }
     };
@@ -308,7 +308,7 @@ export function ErrorMessage({
                             {onDismiss && (
                                 <button
                                     onClick={onDismiss}
-                                    className="px-3 py-1 bg-gray-500 hover:bg-gray-600 text-white rounded text-sm font-medium transition-colors"
+                                    className="px-3 py-1 bg-muted hover:bg-accent text-text-strong rounded-full text-sm font-medium transition-colors"
                                 >
                                     {translate('popup.errorBoundary.dismiss')}
                                 </button>

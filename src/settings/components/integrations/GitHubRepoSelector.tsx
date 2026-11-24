@@ -119,7 +119,7 @@ export function GitHubRepoSelector({ accountId }: GitHubRepoSelectorProps) {
     return (
       <div className="flex flex-col gap-1">
         <label className="text-xs text-muted-foreground">{t('settings.integrations.repositoriesLabel')}</label>
-        <div className="text-xs text-red-600 dark:text-red-400">
+        <div className="text-xs text-danger">
           {t('settings.integrations.errorLoading', {
             resource: t('settings.integrations.resources.repositories'),
             message: isolateBidi(loginError),
@@ -144,7 +144,7 @@ export function GitHubRepoSelector({ accountId }: GitHubRepoSelectorProps) {
               <button
                 type="button"
                 onClick={() => handleRemoveRepo(r.fullName)}
-                className="text-muted-foreground hover:text-red-600 dark:hover:text-red-400 transition"
+                className="text-muted-foreground hover:text-danger transition"
                 aria-label={`${t('common.remove')} ${r.fullName}`}
               >
                 <X className="w-3.5 h-3.5" />
@@ -187,7 +187,7 @@ export function GitHubRepoSelector({ accountId }: GitHubRepoSelectorProps) {
                       <bdi dir="ltr" className="font-mono truncate">{r.fullName}</bdi>
                     </span>
                     {already ? (
-                      <span className="text-muted-foreground text-micro">{t('settings.integrations.addedStatus')}</span>
+                      <span className="text-muted-foreground text-xs">{t('settings.integrations.addedStatus')}</span>
                     ) : (
                       <Plus className="w-3.5 h-3.5 text-muted-foreground" />
                     )}

@@ -18,53 +18,10 @@ import {
     type ProjectIcon,
     type ProjectSearchScope
 } from '../types/models';
-import {
-    Folder,
-    Briefcase,
-    Code2,
-    BookOpen,
-    ShoppingCart,
-    Plane,
-    Gamepad2,
-    Heart,
-    Star,
-    Music,
-    GraduationCap,
-    Home,
-    Globe,
-    Camera,
-    Coffee,
-    Film,
-    Gift,
-    Lightbulb,
-    Palette,
-    Settings,
-    type LucideIcon
-} from 'lucide-react';
+import { PROJECT_ICONS } from './project-icons';
 
 // Icon mappings
-export const PROJECT_ICONS: Record<ProjectIcon, LucideIcon> = {
-    folder: Folder,
-    briefcase: Briefcase,
-    code: Code2,
-    book: BookOpen,
-    'shopping-cart': ShoppingCart,
-    plane: Plane,
-    gamepad: Gamepad2,
-    heart: Heart,
-    star: Star,
-    music: Music,
-    'graduation-cap': GraduationCap,
-    home: Home,
-    globe: Globe,
-    camera: Camera,
-    coffee: Coffee,
-    film: Film,
-    gift: Gift,
-    lightbulb: Lightbulb,
-    palette: Palette,
-    settings: Settings,
-};
+export { PROJECT_ICONS };
 
 interface ProjectModalProps {
     isOpen: boolean;
@@ -164,10 +121,10 @@ export function ProjectModal({
                             onChange={(e) => handleNameChange(e.target.value)}
                             placeholder={t('options.projectModal.namePlaceholder')}
                             autoFocus
-                            className={error ? 'border-red-500' : ''}
+                            className={error ? 'border-danger' : ''}
                         />
                         {error && (
-                            <p className="text-xs text-red-500">{error}</p>
+                            <p className="text-xs text-danger">{error}</p>
                         )}
                     </div>
 
@@ -182,7 +139,7 @@ export function ProjectModal({
                                     onClick={() => setColor(c)}
                                     className={`w-8 h-8 rounded-full transition-all ${
                                         color === c
-                                            ? 'ring-2 ring-offset-2 ring-gray-400 dark:ring-gray-500 scale-110'
+                                            ? 'ring-2 ring-offset-2 ring-border scale-110'
                                             : 'hover:scale-105'
                                     }`}
                                     style={{ backgroundColor: PROJECT_COLORS[c] }}

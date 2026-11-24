@@ -1,12 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-    Tags, StickyNote, Lock, Unlock, Brain,
-    Copy, Send, Info, Archive, FolderPlus,
-    Menu, Trash2, Check, Bell, Download,
-    Share2, X, MessageCircle, Linkedin,
-    Repeat, Mail, Globe2,
+    Tags, StickyNote, Lock, Unlock, Brain, Copy, Send, Info, Archive, FolderPlus, Menu, Trash2, Check, Bell, Download, Share2, Repeat, Mail,
 } from 'lucide-react';
+import { ShareBrandIcon } from '@/components/icons/ShareBrandIcon';
 import { toast } from '@/components/Toast';
 import {
     DropdownMenu,
@@ -450,15 +447,15 @@ export function GroupMenu({
     const renderExternalShareItems = () => (
         <>
             <DropdownMenuItem onClick={() => openShareUrl('x', shareText, bluetUrl)}>
-                <X className="w-4 h-4" />
+                <ShareBrandIcon id="x" className="w-4 h-4" />
                 X
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => openShareUrl('whatsapp', shareText, bluetUrl)}>
-                <MessageCircle className="w-4 h-4" />
+                <ShareBrandIcon id="whatsapp" className="w-4 h-4" />
                 WhatsApp
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => openShareUrl('telegram', shareText, bluetUrl)}>
-                <Send className="w-4 h-4" />
+                <ShareBrandIcon id="telegram" className="w-4 h-4" />
                 Telegram
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => openShareUrl('email', shareText, bluetUrl)}>
@@ -466,15 +463,15 @@ export function GroupMenu({
                 {t('auth.login.email')}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => openShareUrl('linkedin', shareText, bluetUrl)}>
-                <Linkedin className="w-4 h-4" />
+                <ShareBrandIcon id="linkedin" className="w-4 h-4" />
                 LinkedIn
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => openShareUrl('reddit', shareText, bluetUrl)}>
-                <MessageCircle className="w-4 h-4" />
+                <ShareBrandIcon id="reddit" className="w-4 h-4" />
                 Reddit
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => openShareUrl('facebook', shareText, bluetUrl)}>
-                <Globe2 className="w-4 h-4" />
+                <ShareBrandIcon id="facebook" className="w-4 h-4" />
                 Facebook
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => openShareUrl('clipboard', shareText, bluetUrl)}>

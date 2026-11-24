@@ -89,16 +89,16 @@ export function FlowtimeBar({ state }: FlowtimeBarProps) {
     // PomodoroBar's storage.onChanged listener picks it up and swaps to FlowtimeBreakCard.
   }, []);
 
-  const btnBase = 'flex items-center justify-center p-1.5 text-muted-foreground hover:text-foreground hover:bg-accent/50 rounded transition-colors';
+  const btnBase = 'flex items-center justify-center h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-accent rounded-full transition-colors';
 
   return (
-    <div className="mb-2 px-3 py-2" data-testid="flowtime-bar">
+    <div className="mb-2 rounded-lg border border-border bg-bg-1 px-4 py-3" data-testid="flowtime-bar">
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-0.5">
-          <span className="text-micro font-medium text-blue-500 uppercase tracking-wide">
+          <span className="text-xs font-medium text-primary">
             {t('sidepanel.flowtimeBar.elapsed')}
           </span>
-          <span className="text-lg font-mono font-semibold text-foreground tabular-nums">
+          <span className="text-lg font-mono font-medium text-foreground tabular-nums">
             {formatElapsed(elapsedMs)}
           </span>
         </div>

@@ -42,9 +42,9 @@ export function OfflineQuotaBar({ refreshSignal = 0 }: OfflineQuotaBarProps): JS
 
   const pct = Math.round(quota.percentUsed * 100);
   const colorClass = quota.isBlocked
-    ? 'bg-red-500'
+    ? 'bg-danger'
     : quota.isWarning
-      ? 'bg-amber-500'
+      ? 'bg-warning'
       : 'bg-primary';
 
   return (

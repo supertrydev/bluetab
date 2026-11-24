@@ -10,15 +10,15 @@
   --text-scale-large: 1.125;
   --text-scale-factor: var(--text-scale-medium);
 
-  --text-tiny: calc(0.5625rem * var(--text-scale-factor));   /* 9px */
-  --text-micro: calc(0.625rem * var(--text-scale-factor));   /* 10px */
-  --text-caption: calc(0.6875rem * var(--text-scale-factor)); /* 11px */
+  --text-tiny: calc(0.75rem * var(--text-scale-factor));   /* 12px */
+  --text-micro: calc(0.75rem * var(--text-scale-factor));   /* 12px */
+  --text-caption: calc(0.75rem * var(--text-scale-factor)); /* 12px */
   --text-xs: calc(0.75rem * var(--text-scale-factor));       /* 12px */
-  --text-label: calc(0.8125rem * var(--text-scale-factor));  /* 13px */
+  --text-label: calc(0.875rem * var(--text-scale-factor));  /* 14px */
   --text-sm: calc(0.875rem * var(--text-scale-factor));      /* 14px */
   --text-base: calc(1rem * var(--text-scale-factor));        /* 16px */
   --text-lg: calc(1.125rem * var(--text-scale-factor));      /* 18px */
-  --text-xl: calc(1.5rem * var(--text-scale-factor));        /* 24px */
+  --text-xl: calc(1.25rem * var(--text-scale-factor));        /* 20px */
   --text-2xl: calc(1.5rem * var(--text-scale-factor));       /* 24px */
   --text-3xl: calc(1.875rem * var(--text-scale-factor));     /* 30px */
   --text-4xl: calc(2.25rem * var(--text-scale-factor));      /* 36px */

@@ -99,8 +99,8 @@ export function PomodoroStatus() {
     <div
       className={`flex items-center justify-between px-2 py-1 border-b border-border text-xs ${
         isWork
-          ? 'bg-red-50 dark:bg-red-900/20'
-          : 'bg-green-50 dark:bg-green-900/20'
+          ? 'bg-danger-muted'
+          : 'bg-success-muted'
       }`}
     >
       <div className="flex items-center gap-1.5">
@@ -116,7 +116,7 @@ export function PomodoroStatus() {
         {state.isPaused ? (
           <button
             onClick={handleResume}
-            className="p-0.5 rounded hover:bg-accent transition-colors text-muted-foreground hover:text-foreground"
+            className="p-0.5 rounded-full hover:bg-accent transition-colors text-muted-foreground hover:text-foreground"
             title={t('sidepanel.pomodoroBar.resume')}
           >
             <Play className="w-3.5 h-3.5" />
@@ -124,7 +124,7 @@ export function PomodoroStatus() {
         ) : (
           <button
             onClick={handlePause}
-            className="p-0.5 rounded hover:bg-accent transition-colors text-muted-foreground hover:text-foreground"
+            className="p-0.5 rounded-full hover:bg-accent transition-colors text-muted-foreground hover:text-foreground"
             title={t('sidepanel.pomodoroBar.pause')}
           >
             <Pause className="w-3.5 h-3.5" />
@@ -132,7 +132,7 @@ export function PomodoroStatus() {
         )}
         <button
           onClick={handleStop}
-          className="p-0.5 rounded hover:bg-accent transition-colors text-muted-foreground hover:text-foreground"
+          className="p-0.5 rounded-full hover:bg-accent transition-colors text-muted-foreground hover:text-foreground"
           title={t('sidepanel.pomodoroBar.stop')}
         >
           <Square className="w-3.5 h-3.5" />

@@ -8,21 +8,18 @@ import { TagManager } from '../utils/tags';
 import { formatRelativeTime } from '../utils/format-time';
 import { useTabSelection } from '../hooks/useTabSelection';
 import { getHeavyListDisplayTabs, getHiddenTabCount } from './group-card-heavy-list';
-import { isolateBidi } from '@/i18n/bidi';
 import type { TabGroup, Tag, TabItem, Project } from '../types/models';
-import { PROJECT_COLORS } from '../types/models';
-import { PROJECT_ICONS, getProjectBackgroundColor } from './ProjectModal';
+import { CopyLinkButton } from './CopyLinkButton';
+import { getSearchVisibleTabs } from '@/utils/group-search';
+import { ProjectBadge, projectTint } from './ProjectBadge';
+import { RestoreGroupButton } from './RestoreGroupButton';
 import type { OfflineArticle, OfflineFailureRecord } from '../types/offline-reading';
 import {
   ChevronDown,
   ChevronRight,
   Lock,
-  Pin,
-  ExternalLink,
   Folder,
   Calendar,
-  Copy,
-  Check,
   Bell,
   BookmarkCheck,
   Loader2,
@@ -80,7 +77,7 @@ function highlightMatch(text: string, query: string): React.ReactNode {
   return (
     <>
       {text.slice(0, match.start)}
-      <mark className="bg-yellow-200/60 dark:bg-yellow-500/30 rounded-sm px-0.5">{text.slice(match.start, match.end)}</mark>
+      <mark className="bg-mark text-mark-foreground rounded-xs px-0.5">{text.slice(match.start, match.end)}</mark>
       {text.slice(match.end)}
     </>
   );
@@ -135,26 +132,17 @@ export const MasonryGroupCard = memo(function MasonryGroupCard({
   } = useTabSelection();
 
   const [isHovered, setIsHovered] = useState(false);
-  const [copiedTabId, setCopiedTabId] = useState<string | null>(null);
 
   // Search: filter tabs and highlight helper
   const q = normalizeForSearch(searchQuery);
-  const groupNameMatches = q && matchesSearch(group.name, q);
-  const displayTabs = q && !groupNameMatches
-    ? group.tabs.filter(t => matchesSearch(t.title, q) || matchesSearch(t.url, q))
-    : group.tabs;
+  const displayTabs = getSearchVisibleTabs(group, q);
+  const noteMatches = q !== '' && matchesSearch(group.notes ?? '', q);
   const shouldPreviewTabs = heavyTabPreview && tabLayout === 'grid' && !q;
   const visibleTabs = getHeavyListDisplayTabs(displayTabs, {
     enabled: shouldPreviewTabs,
     isHovered,
   });
   const hiddenTabCount = getHiddenTabCount(displayTabs.length, visibleTabs.length);
-
-  const handleCopyWithAnimation = (tabUrl: string, tabId: string) => {
-    onCopyLink(tabUrl);
-    setCopiedTabId(tabId);
-    setTimeout(() => setCopiedTabId(null), 1500);
-  };
 
   const onTabClick = useCallback(
     (e: React.MouseEvent, tab: TabItem) => {
@@ -172,42 +160,26 @@ export const MasonryGroupCard = memo(function MasonryGroupCard({
     [group.id, group.locked, handleTabClick, onOpenTab]
   );
 
-  // Get project badge - positioned on left edge top of card.
-  // Decorative label (metadata) — hidden under Default Simplify and
-  // hover-revealed under Aggressive on the Options-shell group row.
-  const ProjectBadge = project ? (
-    <div
-      className="bt-decor bt-aggressive-hide absolute -start-3 -top-[10px] flex items-center gap-1.5 px-2 py-1 rounded-full shadow-md z-10 bg-background border border-border"
-      style={{
-        color: PROJECT_COLORS[project.color],
-      }}
-      title={`${t('components.groupInfo.project')}: ${isolateBidi(project.name)}`}
-    >
-      {(() => {
-        const Icon = PROJECT_ICONS[project.icon];
-        return <Icon className="w-3.5 h-3.5" />;
-      })()}
-      <span className="text-xs font-medium max-w-[80px] truncate"><bdi dir="auto">{project.name}</bdi></span>
-    </div>
-  ) : null;
+  const groupTags = group.tags?.length ? TagManager.getTagsByIds(group.tags, tags) : [];
 
   return (
     <div
       data-group-card
       className={`
         bt-group-row
-        relative bg-bg-1 rounded-xl border border-border
-        transition-all duration-200 mb-4 sm:p-[10px] w-full mx-auto group
+        ${project ? 'project-tint' : ''}
+        relative bg-bg-1 rounded-lg border border-border
+        transition-all duration-200 mb-4 w-full mx-auto group
         ${tabLayout === 'list' ? 'sm:!w-auto sm:min-w-[450px] sm:max-w-[600px]' : ''}
         ${tabLayout === 'masonry' ? '!w-full max-w-[600px]' : ''}
         ${tabLayout === 'dashboard' ? 'h-full flex flex-col' : ''}
-        ${isHovered ? 'shadow-lg border-blue-300 dark:shadow-[10px_10px_10px_-10px_rgba(45,49,57,0.5)]' : 'shadow-sm'}
-        ${isSelected ? 'ring-2 ring-blue-500 dark:ring-blue-400' : ''}
-        ${isDragOver ? 'ring-2 ring-green-500 dark:ring-green-400 bg-green-50 dark:bg-green-900/20' : ''}
+        ${isHovered ? 'shadow-lg border-primary/40' : 'shadow-sm'}
+        ${isSelected ? 'ring-2 ring-primary' : ''}
+        ${isDragOver ? 'ring-2 ring-success bg-success-muted' : ''}
         ${isPinned ? 'group-pinned' : ''}
         ${bulkMode ? 'cursor-pointer' : ''}
       `}
-      style={project ? { backgroundColor: getProjectBackgroundColor(project.color, 0.1) } : undefined}
+      style={projectTint(project)}
       onClick={bulkMode ? onToggleSelect : undefined}
       onDragEnter={onDragEnter}
       onDragOver={onDragOver}
@@ -216,16 +188,17 @@ export const MasonryGroupCard = memo(function MasonryGroupCard({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Project Badge - left edge center */}
-      {ProjectBadge}
+      {project && (
+        <ProjectBadge project={project}><bdi dir="auto">{project.name}</bdi></ProjectBadge>
+      )}
 
       {/* Header */}
-      <div className={`p-4 relative ${group.notes ? 'border-b' : ''}`} style={{ borderBottomColor: 'var(--tab-border-color)' }}>
-        <div className="flex items-start justify-between gap-2 mb-2">
-          <div className="flex items-center gap-2 flex-1 min-w-0 overflow-hidden">
+      <div className="p-4 relative">
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex items-center gap-1.5 flex-1 min-w-0">
             {bulkMode && (
-              <label className="custom-checkbox-container" onClick={(e) => e.stopPropagation()}>
-                <input type="checkbox" checked={isSelected} onChange={onToggleSelect} />
+              <label className="custom-checkbox-container flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center" onClick={(e) => e.stopPropagation()}>
+                <input type="checkbox" checked={isSelected} onChange={onToggleSelect} className="h-4 w-4 cursor-pointer accent-primary" aria-label={group.name} />
                 <div className="custom-checkbox-button"></div>
               </label>
             )}
@@ -235,11 +208,12 @@ export const MasonryGroupCard = memo(function MasonryGroupCard({
                 e.stopPropagation();
                 onToggleCollapse();
               }}
-              className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
+              className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-text-muted hover:bg-accent hover:text-text-strong transition-colors"
+              aria-expanded={!isCollapsed}
             >
               {isCollapsed
-                ? <ChevronRight className="w-3 h-3 text-gray-500 dark:text-gray-400 rtl:rotate-180" />
-                : <ChevronDown className="w-3 h-3 text-gray-500 dark:text-gray-400" />
+                ? <ChevronRight className="w-3.5 h-3.5 rtl:rotate-180" />
+                : <ChevronDown className="w-3.5 h-3.5" />
               }
             </button>
 
@@ -262,7 +236,7 @@ export const MasonryGroupCard = memo(function MasonryGroupCard({
                   }}
                   placeholder={t('components.newGroupModal.namePlaceholder')}
                   autoFocus
-                  className="flex-1 text-sm focus-visible:ring-0 focus:ring-0 focus-visible:border-blue-500 dark:focus-visible:border-blue-400 border-gray-300 dark:border-gray-600"
+                  className="h-8 flex-1 text-sm"
                   onClick={(e) => e.stopPropagation()}
                 />
                 <Button
@@ -271,7 +245,6 @@ export const MasonryGroupCard = memo(function MasonryGroupCard({
                     onSaveEdit();
                   }}
                   size="sm"
-                  className="bg-green-600 hover:bg-green-700"
                 >
                   {t('common.save')}
                 </Button>
@@ -288,7 +261,7 @@ export const MasonryGroupCard = memo(function MasonryGroupCard({
               </div>
             ) : (
               <h3
-                className="font-semibold text-gray-900 dark:text-gray-100 truncate flex-1 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 flex items-center gap-1"
+                className="font-semibold text-text-strong truncate flex-1 min-h-8 cursor-pointer hover:text-primary transition-colors flex items-center gap-1.5"
                 onClick={(e) => {
                   e.stopPropagation();
                   if (!group.locked) {
@@ -297,13 +270,12 @@ export const MasonryGroupCard = memo(function MasonryGroupCard({
                 }}
                 title={group.locked ? t('components.masonry.lockedRename') : t('components.masonry.clickRename')}
               >
-                {isPinned && <Pin className="w-3.5 h-3.5 text-muted-foreground shrink-0 rotate-45" />}
                 <span className="truncate"><bdi dir="auto">{highlightMatch(group.name, searchQuery)}</bdi></span>
                 {group.locked && (
-                  <Lock className="w-3 h-3 text-yellow-500 shrink-0" aria-label={t('sidepanel.aiUpgradePrompt.locked')} />
+                  <Lock className="w-3 h-3 text-warning shrink-0" aria-label={t('sidepanel.aiUpgradePrompt.locked')} />
                 )}
                 {hasReminder && (
-                  <Bell className="w-3 h-3 text-amber-500 shrink-0" aria-label={t('components.masonry.hasReminder')} />
+                  <Bell className="w-3 h-3 text-warning shrink-0" aria-label={t('components.masonry.hasReminder')} />
                 )}
               </h3>
             )}
@@ -319,27 +291,10 @@ export const MasonryGroupCard = memo(function MasonryGroupCard({
                   size="small"
                 />
               </div>
-              <Button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (!group.locked) {
-                    onRestoreGroup();
-                  }
-                }}
-                disabled={group.locked}
-                size="sm"
-                className={`whitespace-nowrap text-xs ${
-                  group.locked
-                    ? 'bg-gray-400 dark:bg-gray-600 text-gray-200 dark:text-gray-400 cursor-not-allowed opacity-50'
-                    : 'bg-transparent border border-green-500 text-green-500 hover:bg-green-500/10'
-                }`}
-                title={group.locked ? t('components.masonry.unlockRestore') : t('components.masonry.restoreTabs')}
-              >
-                <ExternalLink className="w-4 h-4" />
-              </Button>
               <div onClick={(e) => e.stopPropagation()}>
                 {menuContent}
               </div>
+              <RestoreGroupButton locked={group.locked} onRestore={onRestoreGroup} />
             </div>
           )}
         </div>
@@ -348,7 +303,7 @@ export const MasonryGroupCard = memo(function MasonryGroupCard({
           <>
             {/* Decorative metadata row — tab count + timestamp. Hidden under
                 Default Simplify; hover-revealed under Aggressive. */}
-            <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400 mb-2 flex-wrap bt-decor bt-aggressive-hide">
+            <div className="flex items-center gap-4 ps-[34px] text-xs text-text-muted flex-wrap bt-decor bt-aggressive-hide">
               <div className="flex items-center gap-1">
                 <Folder className="w-3 h-3" />
                 <span>
@@ -365,18 +320,15 @@ export const MasonryGroupCard = memo(function MasonryGroupCard({
 
             {/* Tags — decorative metadata. Hidden under Default Simplify,
                 hover-revealed under Aggressive. */}
-            {group.tags && group.tags.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 bt-decor bt-aggressive-hide">
-                {TagManager.getTagsByIds(group.tags, tags).map((tag) => (
+            {groupTags.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-1.5 bt-decor bt-aggressive-hide">
+                {groupTags.map((tag) => (
                   <span
                     key={tag.id}
-                    className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium"
-                    style={{
-                      backgroundColor: `${tag.color}33`,
-                      color: tag.color,
-                    }}
+                    className="inline-flex h-6 max-w-full items-center gap-1.5 rounded-full px-2.5 text-xs font-medium text-text-strong"
+                    style={{ backgroundColor: `color-mix(in srgb, ${tag.color} 25%, var(--chip-base, transparent))` }}
                   >
-                    <bdi dir="auto">{tag.name}</bdi>
+                    <span className="truncate"><bdi dir="auto">{tag.name}</bdi></span>
                   </span>
                 ))}
               </div>
@@ -385,8 +337,8 @@ export const MasonryGroupCard = memo(function MasonryGroupCard({
             {/* Notes */}
             {group.notes && (
               <p
-                className={`text-xs text-gray-500 dark:text-gray-400 mt-3 cursor-pointer hover:text-gray-700 dark:hover:text-gray-300 break-words ${
-                  (groupNotesDisplay ?? 'preview') === 'preview' ? 'line-clamp-1' : 'whitespace-pre-wrap'
+                className={`text-sm text-text-muted mt-3 cursor-pointer hover:text-text-strong transition-colors break-words ${
+                  (groupNotesDisplay ?? 'preview') === 'preview' && !noteMatches ? 'line-clamp-1' : 'whitespace-pre-wrap'
                 }`}
                 onClick={(e) => {
                   e.stopPropagation();
@@ -394,7 +346,7 @@ export const MasonryGroupCard = memo(function MasonryGroupCard({
                 }}
                 title={t('components.masonry.editNotes')}
               >
-                    <bdi dir="auto">{group.notes}</bdi>
+                    <bdi dir="auto">{highlightMatch(group.notes, searchQuery)}</bdi>
               </p>
             )}
           </>
@@ -403,12 +355,12 @@ export const MasonryGroupCard = memo(function MasonryGroupCard({
 
       {/* Tabs List */}
       {!isCollapsed && (
-        <div className={tabLayout === 'grid' ? 'p-4' : 'p-3'}>
+        <div className="border-t border-border p-2">
           <div
             className={
               tabLayout === 'grid'
-                ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3'
-                : 'space-y-2 max-h-96 overflow-y-auto scrollbar-transparent'
+                ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1'
+                : 'space-y-0.5 max-h-96 overflow-y-auto scrollbar-transparent'
             }
           >
             {visibleTabs.map((tab) => {
@@ -424,13 +376,12 @@ export const MasonryGroupCard = memo(function MasonryGroupCard({
                   onDragEnd={onTabDragEnd}
                   onClick={(e) => onTabClick(e, tab)}
                   className={`
-                    flex items-center gap-${tabLayout === 'grid' ? '3' : '2'} p-${tabLayout === 'grid' ? '3' : '2'} rounded-xl border
+                    group/tab flex min-h-10 items-center gap-3 rounded-sm px-2.5 py-2
                     transition-all duration-200 select-none
-                    ${tabSelected ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30 ring-1 ring-blue-500' : ''}
-                    ${group.locked ? 'opacity-60 cursor-not-allowed' : 'hover:bg-gray-200/50 dark:hover:bg-gray-700/50 cursor-pointer'}
-                    ${isBeingDragged ? 'opacity-50 scale-95 ring-2 ring-blue-400 ring-offset-1 rounded-xl' : ''}
+                    ${tabSelected ? 'bg-primary-muted' : ''}
+                    ${group.locked ? 'opacity-85 cursor-not-allowed' : `cursor-pointer ${tabSelected ? '' : 'hover:bg-accent'}`}
+                    ${isBeingDragged ? 'opacity-50 scale-95 ring-2 ring-primary ring-offset-1 ring-offset-bg-1' : ''}
                   `}
-                  style={!tabSelected ? { borderColor: 'var(--tab-border-color)' } : undefined}
                 >
                   {/* Selection checkbox - show when in selection mode or tab is selected */}
                   {(isSelectionMode || tabSelected) && (
@@ -445,7 +396,7 @@ export const MasonryGroupCard = memo(function MasonryGroupCard({
                         onChange={() =>
                           handleTabClick(tab, group.id, { ctrlKey: true } as React.MouseEvent)
                         }
-                        className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        className="w-4 h-4 cursor-pointer accent-primary"
                       />
                     </label>
                   )}
@@ -455,14 +406,16 @@ export const MasonryGroupCard = memo(function MasonryGroupCard({
                       'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="gray"><circle cx="12" cy="12" r="10"/></svg>'
                     }
                     alt=""
-                    className="w-4 h-4 flex-shrink-0"
+                    width={20}
+                    height={20}
+                    className="w-5 h-5 rounded-xs flex-shrink-0"
                     onError={(e) => {
                       e.currentTarget.src =
                         'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="gray"><circle cx="12" cy="12" r="10"/></svg>';
                     }}
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate flex items-center gap-1.5">
+                    <p className="text-sm font-medium text-text-strong truncate flex items-center gap-1.5">
                           <bdi dir="auto">{highlightMatch(tab.title, searchQuery)}</bdi>
                       {/* Offline indicator */}
                       {(() => {
@@ -482,7 +435,7 @@ export const MasonryGroupCard = memo(function MasonryGroupCard({
                               aria-label={t('components.masonry.extractionRetry', { reason: t(`options.offlineReadingPage.failureBuckets.${failure.failureBucket}`) })}
                               title={t('components.masonry.extractionRetry', { reason: t(`options.offlineReadingPage.failureBuckets.${failure.failureBucket}`) })}
                             >
-                              <AlertCircle className="h-3.5 w-3.5 text-amber-500" />
+                              <AlertCircle className="h-3.5 w-3.5 text-warning" />
                             </button>
                           );
                         }
@@ -498,27 +451,13 @@ export const MasonryGroupCard = memo(function MasonryGroupCard({
                         return null;
                       })()}
                     </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                    <p className="text-xs text-text-muted truncate">
                           <bdi dir="ltr">{(tabUrlDisplay ?? 'full') === 'full' ? tab.url : new URL(tab.url).hostname}</bdi>
                     </p>
                   </div>
                   {!group.locked && (
                     <div className="flex items-center gap-1 flex-shrink-0">
-                      <Button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleCopyWithAnimation(tab.url, tab.id);
-                        }}
-                        size="sm"
-                        variant="ghost"
-                        className={`transition-all duration-200 ${tabLayout === 'grid' ? 'h-6 w-6 p-0' : 'h-auto w-auto p-1'} ${copiedTabId === tab.id ? 'text-green-500 dark:text-green-400 scale-110' : 'text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300'}`}
-                        title={copiedTabId === tab.id ? t('sidepanel.tabItem.copied') : t('sidepanel.tabItem.copyLink')}
-                      >
-                        {copiedTabId === tab.id
-                          ? <Check className="w-3 h-3 transition-transform duration-200" />
-                          : <Copy className="w-3 h-3 transition-transform duration-200" />
-                        }
-                      </Button>
+                      <CopyLinkButton onCopy={() => onCopyLink(tab.url)} />
                     </div>
                   )}
                 </div>
@@ -527,7 +466,7 @@ export const MasonryGroupCard = memo(function MasonryGroupCard({
             {hiddenTabCount > 0 && (
               <div
                 data-heavy-tab-preview-more
-                className="col-span-full rounded-xl border border-dashed border-border bg-bg-2/60 px-3 py-2 text-center text-xs text-text-muted"
+                className="col-span-full rounded-sm bg-muted px-3 py-2 text-center text-xs text-text-muted"
               >
                 {t('components.masonry.moreTabs', { count: hiddenTabCount })}
               </div>

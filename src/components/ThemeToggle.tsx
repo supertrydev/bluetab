@@ -58,7 +58,7 @@ export function ThemeToggle({ onThemeChange, className = '' }: ThemeToggleProps)
             size="icon"
             onClick={toggleTheme}
             className={cn(
-                'relative border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700',
+                'relative border-border hover:bg-accent',
                 className
             )}
             aria-label={t('settings.theme.toggleAria')}
@@ -67,11 +67,11 @@ export function ThemeToggle({ onThemeChange, className = '' }: ThemeToggleProps)
                 : t('components.themeToggle.switchToDarkMode')}
         >
             <Sun className={cn(
-                'h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all text-gray-900 dark:text-gray-100',
+                'h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all text-text-strong',
                 isDark && '-rotate-90 scale-0'
             )} />
             <Moon className={cn(
-                'absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all text-gray-900 dark:text-gray-100',
+                'absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all text-text-strong',
                 isDark && 'rotate-0 scale-100'
             )} />
         </Button>

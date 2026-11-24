@@ -113,7 +113,7 @@ export class PanelErrorBoundary extends Component<PanelErrorBoundaryProps, Panel
               {translate('sidepanel.panelError.tryAgain')}
             </Button>
             <Button size="sm" onClick={this.handleReload}>
-              <RotateCw className="h-3.5 w-3.5 me-1.5" aria-hidden="true" />
+              <RotateCw className="h-3.5 w-3.5" aria-hidden="true" />
               {translate('sidepanel.panelError.reload')}
             </Button>
           </div>

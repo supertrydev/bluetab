@@ -35,7 +35,7 @@ describe('shared product surfaces RTL contract', () => {
     expect(source('GroupInfoModal.tsx')).toContain('<bdi dir="auto">{group.name}</bdi>');
     expect(source('GroupInfoModal.tsx')).toContain('dir="ltr"');
     expect(source('MasonryGroupCard.tsx')).toContain('<bdi dir="auto">{project.name}</bdi>');
-    expect(source('MasonryGroupCard.tsx')).toContain('<bdi dir="auto">{group.notes}</bdi>');
+    expect(source('MasonryGroupCard.tsx')).toContain('<bdi dir="auto">{highlightMatch(group.notes, searchQuery)}</bdi>');
     expect(source('auth/AccountSection.tsx')).toContain('<bdi dir="ltr">{user.email}</bdi>');
     expect(source('auth/LoginModal.tsx')).toMatch(/type="email"[\s\S]*?dir="ltr"/);
     expect(source('sync/SyncSettings.tsx')).toContain('<bdi dir="auto">');

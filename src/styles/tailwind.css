@@ -26,6 +26,7 @@
  * the `.bt-decor` / `[data-simplify]` rules never shipped. Keep this block
  * above the @tailwind directives. */
 @import './simplify.css';
+@import './project-tint.css';
 
 /* Assistant UI — chat thread styles mapped to BlueTab tokens */
 @import './assistant-ui.css';
@@ -83,19 +84,19 @@
 @layer base {
   :root {
         /* Light mode - matches bg-1: hsl(220 15% 99%) */
-        --sidebar-background: 220 15% 99%;
-        --sidebar-foreground: 220 10% 30%;
+        --sidebar-background: 0 0% 100%;
+        --sidebar-foreground: 220 12% 28%;
         --sidebar-primary: 224.3 76.3% 48%;
         --sidebar-primary-foreground: 0 0% 100%;
         --sidebar-accent: 220 15% 95%;
         --sidebar-accent-foreground: 220 10% 20%;
-        --sidebar-border: 220 13% 91%;
+        --sidebar-border: 220 14% 88%;
         --sidebar-ring: 217.2 91.2% 59.8%;
     }
   .dark {
         /* Dark mode - matches bg-1: hsl(220 14% 10%) */
-        --sidebar-background: 220 14% 10%;
-        --sidebar-foreground: 220 10% 90%;
+        --sidebar-background: 222 14% 10.5%;
+        --sidebar-foreground: 220 10% 74%;
         --sidebar-primary: 224.3 76.3% 48%;
         --sidebar-primary-foreground: 0 0% 100%;
         --sidebar-accent: 220 14% 14%;

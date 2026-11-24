@@ -71,9 +71,9 @@ export function ReadingsSettings() {
 
   const pct = quota ? Math.round(quota.percentUsed * 100) : 0;
   const barTone = quota?.isBlocked
-    ? 'bg-red-500'
+    ? 'bg-danger'
     : quota?.isWarning
-      ? 'bg-amber-500'
+      ? 'bg-warning'
       : 'bg-primary';
   const librarySummary = pinnedCount > 0
     ? t('settings.readings.librarySummaryWithPinned', { count: articleCount, pinnedCount })
@@ -81,7 +81,7 @@ export function ReadingsSettings() {
 
   return (
     <div className="space-y-6">
-      <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 flex items-center gap-2">
+      <h3 className="text-base font-semibold text-text-strong flex items-center gap-2">
         <BookMarked className="h-5 w-5" />
         {t('settings.readings.title')}
       </h3>
@@ -130,7 +130,7 @@ export function ReadingsSettings() {
             onClick={() => setClearOpen(true)}
             disabled={articleCount === 0}
           >
-            <Trash2 className="h-4 w-4 me-2" />
+            <Trash2 className="h-4 w-4" />
             {t('settings.readings.clearEverything')}
           </Button>
         </div>

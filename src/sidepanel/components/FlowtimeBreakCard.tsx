@@ -68,7 +68,7 @@ export function FlowtimeBreakCard({ proposal }: FlowtimeBreakCardProps) {
             count: editMode ? editedMinutes : proposal.proposedBreakMinutes,
           })}
         </span>
-        <span className="text-micro text-muted-foreground" data-testid="work-duration">
+        <span className="text-xs text-muted-foreground" data-testid="work-duration">
           {t('sidepanel.flowtimeBreak.afterWork', { count: proposal.workMinutes })}
         </span>
       </div>
@@ -90,7 +90,7 @@ export function FlowtimeBreakCard({ proposal }: FlowtimeBreakCardProps) {
             max={60}
             value={editedMinutes}
             onChange={(e) => handleEditedMinutesChange(Number(e.target.value))}
-            className="w-16 px-2 py-1 text-sm text-center border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-primary tabular-nums"
+            className="w-16 px-3 py-1 text-sm text-center border border-field rounded-input bg-bg-1 text-foreground tabular-nums"
             aria-label={t('sidepanel.flowtimeBreak.breakMinutes')}
             data-testid="edit-input"
           />
@@ -102,7 +102,7 @@ export function FlowtimeBreakCard({ proposal }: FlowtimeBreakCardProps) {
           >
             +
           </button>
-          <span className="text-micro text-muted-foreground">{t('common.minuteShort')}</span>
+          <span className="text-xs text-muted-foreground">{t('common.minuteShort')}</span>
         </div>
       )}
 
@@ -119,7 +119,7 @@ export function FlowtimeBreakCard({ proposal }: FlowtimeBreakCardProps) {
         <button
           type="button"
           onClick={handleEditToggle}
-          className="px-3 py-1.5 text-xs font-medium rounded-lg border border-border text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors"
+          className="px-3 py-1.5 text-xs font-medium rounded-full border border-border text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors"
           data-testid="edit-btn"
           aria-pressed={editMode}
         >
@@ -128,7 +128,7 @@ export function FlowtimeBreakCard({ proposal }: FlowtimeBreakCardProps) {
         <button
           type="button"
           onClick={handleSkip}
-          className="px-3 py-1.5 text-xs font-medium rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors"
+          className="px-3 py-1.5 text-xs font-medium rounded-full text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors"
           data-testid="skip-btn"
         >
           {t('sidepanel.flowtimeBreak.skip')}

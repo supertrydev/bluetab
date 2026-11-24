@@ -13,7 +13,11 @@ describe('Settings RTL and bidi contract', () => {
       'ADHDSettings.tsx',
       'AboutSettings.tsx',
       'BackupSettings.tsx',
+      'FloatingButtonSettings.tsx',
       'GeneralSettings.tsx',
+      'GroupMemorySettings.tsx',
+      'SidePanelSettings.tsx',
+      'TabBehaviorSettings.tsx',
       'MCPServerSection.tsx',
       'PomodoroSettings.tsx',
       'ReminderSettings.tsx',
@@ -77,20 +81,20 @@ describe('Settings RTL and bidi contract', () => {
     expect(read('SessionBackupSettings.tsx')).toMatch(
       /<time dir="ltr"[^>]*>\s*\{formatSnapshotDate\(snapshot\.timestamp\)\}/,
     );
-    expect(read('GeneralSettings.tsx')).toMatch(
+    expect(read('FloatingButtonSettings.tsx')).toMatch(
       /FLOATING_BUTTON_HOST_ORIGINS[\s\S]*\.map\(\(origin\) => isolateBidi\(origin, 'ltr'\)\)/,
     );
   });
 
   it('lets validation and provider error text choose its own base direction', () => {
     expect(read('ADHDSettings.tsx')).toContain(
-      '<p dir="auto" className="text-xs text-red-500 mb-2">{domainError}</p>',
+      '<p dir="auto" className="text-xs text-danger mb-2">{domainError}</p>',
     );
     expect(read('FocusSettings.tsx')).toContain(
-      '<p dir="auto" className="text-xs text-red-500 mb-2">{domainError}</p>',
+      '<p dir="auto" className="text-xs text-danger mb-2">{domainError}</p>',
     );
     expect(read('integrations/NotionBrainDumpRouterFooter.tsx')).toContain(
-      '<p dir="auto" className="text-caption text-destructive">{loadError}</p>',
+      '<p dir="auto" className="text-xs text-destructive">{loadError}</p>',
     );
   });
 });

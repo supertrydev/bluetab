@@ -84,7 +84,7 @@ export function IntegrationAccountRow({
       <div className="flex min-w-0 flex-col">
         <bdi dir="auto" className="truncate text-foreground">{displayLabel}</bdi>
         {account.lastUsedAt > 0 && (
-          <time dir="ltr" className="truncate text-caption text-muted-foreground/70">
+          <time dir="ltr" className="truncate text-xs text-muted-foreground/70">
             {t('settings.integrations.lastUsed', {
               time: isolateBidi(formatRelativeTime(account.lastUsedAt), 'ltr'),
             })}

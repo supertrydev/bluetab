@@ -116,9 +116,9 @@ export function HardFocusButton() {
         type="button"
         onClick={handleClick}
         className={[
-          'flex items-center justify-center gap-1.5 px-2.5 py-2 text-sm font-medium transition-colors',
+          'flex items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-colors',
           isActive
-            ? 'bg-accent/30 text-foreground'
+            ? 'bg-primary-muted text-primary'
             : 'text-muted-foreground hover:text-foreground hover:bg-accent/50',
         ].join(' ')}
         aria-label={isActive ? t('sidepanel.hardFocus.stopAria') : t('sidepanel.hardFocus.startAria')}
@@ -143,7 +143,7 @@ export function HardFocusButton() {
             <DialogClose asChild>
               <button
                 type="button"
-                className="px-4 py-2 text-sm rounded-lg border border-border text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors"
+                className="px-4 py-2 text-sm font-medium rounded-full border border-border text-text-strong hover:bg-accent transition-colors"
               >
                 {t('common.cancel')}
               </button>
@@ -151,7 +151,7 @@ export function HardFocusButton() {
             <button
               type="button"
               onClick={handleStop}
-              className="px-4 py-2 text-sm font-medium rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+              className="px-4 py-2 text-sm font-medium rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
               data-testid="confirm-stop-btn"
             >
               {t('sidepanel.hardFocus.stopButton')}

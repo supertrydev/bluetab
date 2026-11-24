@@ -28,7 +28,7 @@ export function NavActions({ onSaveAllTabs, onSaveSuspendedTabs, onOrganizeGroup
           <SidebarMenuButton
             tooltip={t('navigation.actions.saveCurrentTabs')}
             onClick={onSaveAllTabs}
-            className="bg-primary text-white hover:bg-primary/90 hover:text-white"
+            className="rounded-full bg-primary text-white shadow-sm hover:bg-primary-hover hover:text-white active:bg-primary-active active:text-white"
           >
             <SquaresExclude />
             <span>{t('navigation.actions.saveCurrentTabs')}</span>

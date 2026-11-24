@@ -112,7 +112,6 @@ describe('Indonesian copy quality', () => {
     'settingsTabs.mcp',
     'settingsTabs.pomodoro',
     'sidepanel.aiPanel.chat',
-    'sidepanel.aiUpgradePrompt.assistantName',
     'sidepanel.brainDump',
     'sidepanel.teams',
     'sidepanel.teamsChat.label',

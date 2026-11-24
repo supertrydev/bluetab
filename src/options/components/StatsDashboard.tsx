@@ -289,17 +289,17 @@ function StatCard({
   trend?: Trend;
 }) {
   return (
-    <div className="relative rounded-2xl bg-glass-bg backdrop-blur-md border border-border-glass p-6 space-y-3 hover-lift transition-all duration-300 overflow-hidden">
+    <div className="relative rounded-lg bg-glass-bg backdrop-blur-md border border-border-glass p-5 space-y-2 hover-lift transition-all duration-300 overflow-hidden">
       {/* Icon — top right, subtle */}
-      <Icon className="absolute top-5 end-5 w-5 h-5 text-muted-foreground/25" />
+      <Icon className="absolute top-5 end-5 w-4 h-4 text-muted-foreground" />
 
       {/* Label */}
-      <p className="text-caption font-medium text-muted-foreground uppercase tracking-wider">
+      <p className="pe-6 text-sm text-muted-foreground">
         {label}
       </p>
 
       {/* Value */}
-      <p dir="auto" className="text-3xl font-bold font-mono text-text-strong tabular-nums">
+      <p dir="auto" className="text-2xl font-semibold tracking-tight text-text-strong tabular-nums">
         {typeof value === 'number' ? value.toLocaleString(getLocaleTag()) : value}
       </p>
 
@@ -308,10 +308,10 @@ function StatCard({
         {trend && (
           <span className={cn(
             'flex items-center gap-0.5 text-xs font-medium',
-            trend.value > 0 ? 'text-green-500' : trend.value < 0 ? 'text-red-400' : 'text-muted-foreground'
+            trend.value > 0 ? 'text-success' : trend.value < 0 ? 'text-danger' : 'text-muted-foreground'
           )}>
             {trend.value > 0 ? <TrendingUp className="w-3 h-3" /> : trend.value < 0 ? <TrendingDown className="w-3 h-3" /> : <Minus className="w-3 h-3" />}
-            {trend.value > 0 ? '+' : ''}{trend.value}%
+            {new Intl.NumberFormat(getLocaleTag(), { style: 'percent', signDisplay: 'exceptZero' }).format(trend.value / 100)}
             <span className="text-muted-foreground font-normal ms-0.5">{trend.label}</span>
           </span>
         )}
@@ -333,7 +333,7 @@ function ActivityChart({ data }: { data: ChartSlot[] }) {
     <div dir="ltr" className="flex-1 flex flex-col overflow-hidden relative">
       {/* Tooltip */}
       {hoveredIdx !== null && (
-        <div className="absolute top-0 right-0 px-2.5 py-1.5 rounded-lg bg-bg-1/95 backdrop-blur-sm border border-border-glass text-xs shadow-md z-10">
+        <div className="absolute top-0 right-0 px-2.5 py-1.5 rounded-sm bg-bg-2 border border-border-glass text-xs shadow-md z-10">
           <span className="text-muted-foreground">{data[hoveredIdx].fullLabel}</span>
           <span className="ml-2 font-mono font-semibold text-text-strong">{data[hoveredIdx].value}</span>
           <span className="ml-1 text-muted-foreground">{translate('options.stats.tabsUnit')}</span>
@@ -352,15 +352,15 @@ function ActivityChart({ data }: { data: ChartSlot[] }) {
               onMouseLeave={() => setHoveredIdx(null)}
             >
               {/* Label */}
-              <span className="w-10 text-micro text-muted-foreground text-right shrink-0 tabular-nums">
+              <span className="w-10 text-xs text-muted-foreground text-right shrink-0 tabular-nums">
                 {d.label}
               </span>
               {/* Bar */}
               <div className="flex-1 flex items-center">
                 <div
                   className={cn(
-                    'rounded-r-sm transition-all duration-200',
-                    d.value === 0 ? 'bg-[hsl(220,10%,25%)]' : hoveredIdx === i ? 'bg-primary' : 'bg-[hsl(226,68%,50%)]',
+                    'rounded-r-[4px] transition-all duration-200',
+                    d.value === 0 ? 'bg-border' : hoveredIdx === null || hoveredIdx === i ? 'bg-chart' : 'bg-chart/40',
                   )}
                   style={{
                     width: d.value === 0 ? '2px' : `${pct}%`,
@@ -530,7 +530,7 @@ export function StatsDashboard({
           <>
             {/* Hero Section */}
             <div className="space-y-2">
-              <h2 className="text-3xl font-bold text-text-strong">{translate('options.stats.heroTitle')}</h2>
+              <h2 className="text-2xl font-semibold tracking-tight text-text-strong">{translate('options.stats.heroTitle')}</h2>
               <p className="text-sm text-muted-foreground max-w-lg leading-relaxed">
                 {translate('options.stats.heroDescription')}
               </p>
@@ -616,13 +616,13 @@ export function StatsDashboard({
 
             {/* Pill Period Switcher */}
             <Tabs.Root value={period} onValueChange={(v) => setPeriod(v as Period)}>
-              <div className="flex justify-center">
-                <Tabs.List className="inline-flex gap-1 rounded-full bg-muted/30 p-1">
+              <div className="flex">
+                <Tabs.List className="inline-flex h-10 items-stretch gap-0.5 rounded-full border border-border-glass bg-accent p-1">
                   {(['day', 'week', 'month', 'year'] as Period[]).map((p) => (
                     <Tabs.Trigger
                       key={p}
                       value={p}
-                      className="px-5 py-1.5 text-sm font-medium capitalize rounded-full transition-all duration-300 text-muted-foreground data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-sm"
+                      className="px-5 py-1.5 text-sm font-medium capitalize rounded-full transition-all duration-300 text-muted-foreground hover:text-text-strong data-[state=active]:bg-segment data-[state=active]:text-text-strong data-[state=active]:shadow-sm"
                     >
                       {translate(`options.stats.periods.${p}`)}
                     </Tabs.Trigger>
@@ -635,7 +635,7 @@ export function StatsDashboard({
                   {/* Chart + Domains side by side */}
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     {/* Activity Chart */}
-                    <div className="rounded-2xl bg-glass-bg backdrop-blur-md border border-border-glass p-6 flex flex-col min-h-[320px]">
+                    <div className="rounded-lg bg-glass-bg backdrop-blur-md border border-border-glass p-5 flex flex-col min-h-[320px]">
                       <div className="flex items-center justify-between mb-4">
                         <div>
                           <h3 className="text-sm font-semibold text-text-strong">{translate('options.stats.dailyTabActivity')}</h3>
@@ -654,7 +654,7 @@ export function StatsDashboard({
                     </div>
 
                     {/* Top Sites */}
-                    <div className="rounded-2xl bg-glass-bg backdrop-blur-md border border-border-glass p-6">
+                    <div className="rounded-lg bg-glass-bg backdrop-blur-md border border-border-glass p-5">
                       <div className="mb-4">
                         <h3 className="text-sm font-semibold text-text-strong">{translate('options.stats.topSites')}</h3>
                         <p className="text-xs text-muted-foreground mt-0.5">
@@ -673,18 +673,18 @@ export function StatsDashboard({
                                       <img
                                           src={`https://www.google.com/s2/favicons?domain=${d.domain}&sz=16`}
                                           alt=""
-                                          className="w-4 h-4 rounded-sm"
+                                          className="w-4 h-4 rounded-xs"
                                           onError={(e) => { e.currentTarget.style.display = 'none' }}
                                         />
                                         <bdi dir="auto">{resolveDomainDisplayTitle(d.domain, groups)}</bdi>
                                       </span>
-                                      <span dir="ltr" className="text-muted-foreground font-mono text-xs tabular-nums">
+                                      <span dir="ltr" className="text-muted-foreground text-sm tabular-nums">
                                         {d.count}
                                   </span>
                                 </div>
-                                <div className="bg-muted/40 rounded-full h-1 overflow-hidden">
+                                <div className="bg-muted h-2 overflow-hidden rounded-e-[4px]">
                                   <div
-                                    className="bg-primary/70 h-full rounded-full transition-all duration-500"
+                                    className="bg-chart h-full rounded-e-[4px] transition-all duration-500"
                                     style={{ width: `${pct}%` }}
                                   />
                                 </div>

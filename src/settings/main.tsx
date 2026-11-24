@@ -1,5 +1,5 @@
-import { matchesSearch, normalizeForSearch } from '@/utils/search-text';
-import { StrictMode, useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { normalizeForSearch } from '@/utils/search-text';
+import { StrictMode, type KeyboardEvent, useState, useEffect, useLayoutEffect, useRef, useCallback, useMemo } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ThemeManager } from '../utils/theme';
 import { Storage } from '../utils/storage';
@@ -13,7 +13,7 @@ import { AppSidebar } from '../components/app-sidebar';
 import { SidebarProvider, SidebarInset, SidebarTrigger } from '../components/ui/sidebar';
 import { Separator } from '../components/ui/separator';
 import { AboutSettings } from './components/AboutSettings';
-import { Info, Palette, Cloud, Timer, Shield, Sparkles, BarChart2, Bell, Rss, HardDrive, Settings2, Menu, Download, Search, X, Brain, BookMarked, Server, Plug2, StickyNote } from 'lucide-react';
+import { AppWindow, BrainCircuit, CirclePlus, Info, PanelRight, Palette, Cloud, Timer, Shield, Sparkles, BarChart2, Bell, Rss, HardDrive, Settings2, Menu, Download, Search, X, Brain, BookMarked, Server, Plug2, StickyNote } from 'lucide-react';
 import { useAuth } from '../components/auth/useAuth';
 import { ThemeSettings } from './components/ThemeSettings';
 import { TextSizeSettings } from './components/TextSizeSettings';
@@ -28,6 +28,12 @@ import { ReminderSettings } from './components/ReminderSettings';
 import { RSSNotificationSettings } from './components/RSSNotificationSettings';
 import { SessionBackupSettings } from './components/SessionBackupSettings';
 import { GeneralSettings } from './components/GeneralSettings';
+import { TabBehaviorSettings } from './components/TabBehaviorSettings';
+import { SidePanelSettings } from './components/SidePanelSettings';
+import { GroupMemorySettings } from './components/GroupMemorySettings';
+import { FloatingButtonSettings } from './components/FloatingButtonSettings';
+import { buildSectionSearchText, matchesSectionSearch } from './search-index';
+import { clearSearchHits, findSearchHits, paintSearchHits, scrollToHit, type SearchHit } from './search-highlight';
 import { ADHDSettings } from './components/ADHDSettings';
 import { BrainDumpSettings } from './components/BrainDumpSettings';
 import { ReadingsSettings } from './components/ReadingsSettings';
@@ -41,7 +47,11 @@ import '../styles/tailwind.css';
 function buildSettingsTabs(t: (key: string, options?: Record<string, unknown>) => string) {
     return [
         { id: 'appearance', label: t('settingsTabs.appearance'), icon: Palette, keywords: 'theme color dark light appearance gorunum text size font zoom' },
-        { id: 'general', label: t('settingsTabs.general'), icon: Settings2, keywords: 'general genel tab restore pinned startup new tab context menu save url notes memory floating duplicate language dil archive auto-archive inactive arsiv time format clock 12 24 hour saat' },
+        { id: 'general', label: t('settingsTabs.general'), icon: Settings2, keywords: 'general genel startup new tab context menu url notes language dil archive auto-archive inactive arsiv time format clock 12 24 hour saat' },
+        { id: 'tabs', label: t('settingsTabs.tabs'), icon: AppWindow, keywords: 'tab sekme restore pinned window group save open duplicate geri yukle sabit kaydet yinelenen' },
+        { id: 'side-panel', label: t('settingsTabs.sidePanel'), icon: PanelRight, keywords: 'side panel sidepanel sidebar browser tabs border inactive yan panel kenarlik' },
+        { id: 'group-memory', label: t('settings.general.groupMemory.title'), icon: BrainCircuit, keywords: 'group memory remember browser group hafiza hatirla' },
+        { id: 'floating-button', label: t('settings.general.floatingButton.title'), icon: CirclePlus, keywords: 'floating button save page site access position yuzer dugme konum' },
         { id: 'pomodoro', label: t('settingsTabs.pomodoro'), icon: Timer, keywords: 'pomodoro timer focus work break session odak mola' },
         { id: 'focus', label: t('settingsTabs.focus'), icon: Shield, keywords: 'focus block distraction sites domain odak engel site' },
         { id: 'brain-dump', label: t('settingsTabs.brainDump'), icon: StickyNote, keywords: 'brain dump capture thought inbox shortcut quick note dusunce not' },
@@ -85,6 +95,9 @@ function SettingsPage() {
     const sectionRefs = useRef<Map<string, HTMLDivElement>>(new Map());
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const contentCardRef = useRef<HTMLDivElement>(null);
+    const navListRef = useRef<HTMLDivElement>(null);
+    const searchHitsRef = useRef<SearchHit[]>([]);
+    const currentHitRef = useRef<SearchHit | undefined>(undefined);
     const isScrollingToRef = useRef(false);
     const scrollAnimationFrameRef = useRef<number | null>(null);
     const [sectionSearchIndex, setSectionSearchIndex] = useState<Record<string, string>>({});
@@ -148,9 +161,11 @@ function SettingsPage() {
         const nextIndex: Record<string, string> = {};
 
         settingsTabs.forEach((tab) => {
-            const section = sectionRefs.current.get(tab.id);
-            const textContent = normalizeForSearch(section?.textContent ?? '');
-            nextIndex[tab.id] = textContent.replace(/\s+/g, ' ').trim();
+            nextIndex[tab.id] = buildSectionSearchText(
+                tab.id,
+                sectionRefs.current.get(tab.id),
+                (key) => i18n.getResource(i18n.resolvedLanguage ?? i18n.language, 'translation', key),
+            );
         });
 
         setSectionSearchIndex((prev) => {
@@ -163,7 +178,7 @@ function SettingsPage() {
 
             return nextIndex;
         });
-    }, [settingsTabs]);
+    }, [settingsTabs, i18n]);
 
     // Scroll to section when tab clicked
     const scrollToSection = useCallback((tabId: string) => {
@@ -281,16 +296,27 @@ function SettingsPage() {
         };
     }, [searchQuery]);
 
+    // Keep the active entry in view when the list is taller than the window.
     useEffect(() => {
+        const list = navListRef.current;
+        const item = list?.querySelector<HTMLElement>(`[data-nav-id="${activeTab}"]`);
+        if (!list || !item) return;
+        const listRect = list.getBoundingClientRect();
+        const itemRect = item.getBoundingClientRect();
+        if (itemRect.top < listRect.top) list.scrollTop -= listRect.top - itemRect.top;
+        else if (itemRect.bottom > listRect.bottom) list.scrollTop += itemRect.bottom - listRect.bottom;
+    }, [activeTab]);
+
+    // Only indexed while a search is open; nothing is read on a normal visit.
+    const q = normalizeForSearch(searchQuery);
+    const isSearching = q !== '';
+    useLayoutEffect(() => {
         const contentCard = contentCardRef.current;
-        if (!contentCard) return;
+        if (!isSearching || !contentCard) return;
 
         rebuildSectionSearchIndex();
 
-        const observer = new MutationObserver(() => {
-            rebuildSectionSearchIndex();
-        });
-
+        const observer = new MutationObserver(rebuildSectionSearchIndex);
         observer.observe(contentCard, {
             childList: true,
             subtree: true,
@@ -298,18 +324,106 @@ function SettingsPage() {
         });
 
         return () => observer.disconnect();
-    }, [rebuildSectionSearchIndex]);
+    }, [isSearching, rebuildSectionSearchIndex]);
 
-    // Filter tabs by search query
-    const q = normalizeForSearch(searchQuery);
-    const visibleTabs = q
-        ? settingsTabs.filter(tab => {
-            const indexedContent = sectionSearchIndex[tab.id] ?? '';
-            return matchesSearch(tab.label, q)
-                || matchesSearch(tab.keywords, q)
-                || indexedContent.includes(q);
-        })
+    const visibleTabs = isSearching
+        ? settingsTabs.filter((tab) => matchesSectionSearch(
+            `${tab.label} ${tab.keywords} ${sectionSearchIndex[tab.id] ?? ''}`,
+            q,
+        ))
         : settingsTabs;
+    /** Goes to a match, marks it and the rest, and points the list at its section. */
+    const goToHit = useCallback((hit: SearchHit | undefined) => {
+        currentHitRef.current = hit;
+        paintSearchHits(searchHitsRef.current, hit);
+        if (!hit) return;
+        setActiveTab(hit.sectionId as SettingsTabId);
+        if (scrollContainerRef.current) scrollToHit(hit, scrollContainerRef.current);
+    }, []);
+
+    const collectHits = useCallback((query: string): SearchHit[] => {
+        const hits: SearchHit[] = [];
+        sectionRefs.current.forEach((section, id) => {
+            if (!section.hidden) hits.push(...findSearchHits(section, id, query));
+        });
+        return hits;
+    }, []);
+
+    // Runs after the sections are filtered, so a match is where it will stay.
+    const visibleTabKey = visibleTabs.map((tab) => tab.id).join(',');
+    useEffect(() => {
+        if (!q) return;
+        searchHitsRef.current = collectHits(q);
+        const first = searchHitsRef.current[0];
+        const firstSection = visibleTabKey.split(',')[0];
+        goToHit(first);
+        // The words are in something closed (a list or a window): show its section.
+        if (!first && firstSection) {
+            setActiveTab(firstSection as SettingsTabId);
+            // It is the first one listed, so the top of the page is where it starts.
+            if (scrollContainerRef.current) scrollContainerRef.current.scrollTop = 0;
+        }
+    }, [q, visibleTabKey, collectHits, goToHit]);
+
+    // Sections can change while a search is open; repaint without moving the page.
+    useEffect(() => {
+        const contentCard = contentCardRef.current;
+        if (!q || !contentCard) return;
+        const observer = new MutationObserver(() => {
+            searchHitsRef.current = collectHits(q);
+            const current = currentHitRef.current;
+            currentHitRef.current = current && (searchHitsRef.current.find((hit) => hit.element === current.element
+                && hit.range?.startOffset === current.range?.startOffset) ?? searchHitsRef.current[0]);
+            paintSearchHits(searchHitsRef.current, currentHitRef.current);
+        });
+        observer.observe(contentCard, { childList: true, subtree: true, characterData: true });
+        return () => observer.disconnect();
+    }, [q, collectHits]);
+
+    /** Closes the search and stays at the match the user was on. */
+    const closeSearch = useCallback(() => {
+        const hit = currentHitRef.current;
+        setSearchQuery('');
+        const container = scrollContainerRef.current;
+        if (hit && container) requestAnimationFrame(() => requestAnimationFrame(() => scrollToHit(hit, container)));
+    }, []);
+
+    useEffect(() => {
+        if (q) return;
+        searchHitsRef.current = [];
+        currentHitRef.current = undefined;
+        clearSearchHits();
+    }, [q]);
+
+    const handleSearchKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Escape' && q) {
+            event.preventDefault();
+            closeSearch();
+            return;
+        }
+        if (event.key !== 'Enter' || event.nativeEvent.isComposing) return;
+        event.preventDefault();
+        const hits = searchHitsRef.current;
+        if (!hits.length) return;
+        const index = currentHitRef.current ? hits.indexOf(currentHitRef.current) : -1;
+        goToHit(hits[(index + (event.shiftKey ? -1 : 1) + hits.length) % hits.length]);
+    };
+
+    /** In a search, a section in the list leads to its first match. */
+    const handleSectionClick = (tabId: string) => {
+        if (!q) {
+            scrollToSection(tabId);
+            return;
+        }
+        const hit = searchHitsRef.current.find((item) => item.sectionId === tabId);
+        if (hit) {
+            goToHit(hit);
+            return;
+        }
+        setSearchQuery('');
+        setTimeout(() => scrollToSection(tabId), 50);
+    };
+
     const visibleTabIds = new Set(visibleTabs.map((tab) => tab.id));
 
     const setSectionRef = useCallback((id: string, el: HTMLDivElement | null) => {
@@ -339,6 +453,10 @@ function SettingsPage() {
             case 'rss': return <RSSNotificationSettings />;
             case 'backup-sessions': return <SessionBackupSettings />;
             case 'general': return <GeneralSettings settings={settings} onSettingsChange={setSettings} />;
+            case 'tabs': return <TabBehaviorSettings settings={settings} onSettingsChange={setSettings} />;
+            case 'side-panel': return <SidePanelSettings settings={settings} onSettingsChange={setSettings} />;
+            case 'group-memory': return <GroupMemorySettings settings={settings} onSettingsChange={setSettings} />;
+            case 'floating-button': return <FloatingButtonSettings settings={settings} onSettingsChange={setSettings} />;
             case 'group-menu': return <GroupMenuSettings settings={settings} isPro={isPro} onSettingsChange={setSettings} />;
             case 'backup': return <BackupSettings settings={settings} groups={groups} onSettingsChange={setSettings} onGroupsChange={setGroups} />;
             case 'about': return <AboutSettings />;
@@ -359,7 +477,7 @@ function SettingsPage() {
                 }}
             />
             <SidebarInset style={{ overflow: 'hidden', height: '100vh' }}>
-                <header className="flex h-16 shrink-0 items-center gap-2 border-b border-border-glass px-4 bg-glass-bg">
+                <header className="flex h-16 shrink-0 items-center gap-2 border-b border-border-glass px-4 bg-glass-bg backdrop-blur-md">
                     <SidebarTrigger className="-ms-1" />
                     <Separator orientation="vertical" className="me-2 h-4" />
                     <div className="flex items-center gap-2">
@@ -380,11 +498,12 @@ function SettingsPage() {
                                 dir="auto"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
+                                onKeyDown={handleSearchKeyDown}
                                 placeholder={t('settings.page.searchPlaceholder')}
-                                className="w-full h-8 ps-8 pe-8 text-xs rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                                className="w-full h-9 ps-8 pe-8 text-sm rounded-input border border-field bg-bg-1 text-foreground transition-colors placeholder:text-muted-foreground hover:border-text-muted"
                             />
                             {searchQuery && (
-                                <button onClick={() => setSearchQuery('')} className="absolute end-2 top-1/2 -translate-y-1/2 p-0.5 rounded hover:bg-muted">
+                                <button onClick={closeSearch} className="absolute end-2 top-1/2 -translate-y-1/2 p-0.5 rounded-full hover:bg-muted">
                                     <X className="w-3 h-3 text-muted-foreground" />
                                 </button>
                             )}
@@ -396,12 +515,9 @@ function SettingsPage() {
                                 return (
                                     <button
                                         key={tab.id}
-                                        onClick={() => {
-                                            if (q) { setSearchQuery(''); setTimeout(() => scrollToSection(tab.id), 50); }
-                                            else scrollToSection(tab.id);
-                                        }}
-                                        className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium whitespace-nowrap transition-colors ${
-                                            isActive && !q ? 'bg-primary/10 text-primary' : 'text-text-muted hover:text-text-strong hover:bg-bg-2'
+                                        onClick={() => handleSectionClick(tab.id)}
+                                        className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${
+                                            isActive ? 'bg-primary-muted text-primary' : 'text-text-muted hover:text-text-strong hover:bg-accent'
                                         }`}
                                     >
                                         <Icon className="w-3.5 h-3.5 shrink-0" />
@@ -415,37 +531,36 @@ function SettingsPage() {
                     <div ref={scrollContainerRef} className="flex-1 min-h-0 overflow-y-auto scrollbar-transparent">
                         <div className="max-w-5xl mx-auto w-full flex gap-6 px-4 min-h-full">
                             {/* Desktop: inline-start tab navigation — fixed, never scrolls */}
-                            <nav className="hidden md:block w-[220px] shrink-0 py-3 sticky top-0 self-start">
-                            <div className="relative mb-3">
+                            <nav className="hidden md:flex md:flex-col w-[220px] shrink-0 py-3 sticky top-0 self-start max-h-[calc(100vh-4rem)]">
+                            <div className="relative mb-3 shrink-0">
                                 <Search className="absolute start-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
                                 <input
                                     type="text"
                                     dir="auto"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
+                                    onKeyDown={handleSearchKeyDown}
                                     placeholder={t('settings.page.searchPlaceholder')}
-                                    className="w-full h-8 ps-8 pe-8 text-xs rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                                    className="w-full h-9 ps-8 pe-8 text-sm rounded-input border border-field bg-bg-1 text-foreground transition-colors placeholder:text-muted-foreground hover:border-text-muted"
                                 />
                                 {searchQuery && (
-                                    <button onClick={() => setSearchQuery('')} className="absolute end-2 top-1/2 -translate-y-1/2 p-0.5 rounded hover:bg-muted">
+                                    <button onClick={closeSearch} className="absolute end-2 top-1/2 -translate-y-1/2 p-0.5 rounded-full hover:bg-muted">
                                         <X className="w-3 h-3 text-muted-foreground" />
                                     </button>
                                 )}
                             </div>
 
-                            <div className="flex flex-col gap-0.5">
+                            <div ref={navListRef} className="flex min-h-0 flex-col gap-0.5 overflow-y-auto scrollbar-transparent">
                                 {(q ? visibleTabs : settingsTabs).map((tab) => {
                                     const Icon = tab.icon;
                                     const isActive = activeTab === tab.id;
                                     return (
                                         <button
                                             key={tab.id}
-                                            onClick={() => {
-                                                if (q) { setSearchQuery(''); setTimeout(() => scrollToSection(tab.id), 50); }
-                                                else scrollToSection(tab.id);
-                                            }}
-                                            className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors text-start w-full ${
-                                                isActive && !q ? 'bg-primary/10 text-primary' : 'text-text-muted hover:text-text-strong hover:bg-bg-2'
+                                            data-nav-id={tab.id}
+                                            onClick={() => handleSectionClick(tab.id)}
+                                            className={`flex shrink-0 min-h-9 items-center gap-3 px-3 py-1.5 rounded-sm text-sm font-medium transition-colors text-start w-full ${
+                                                isActive ? 'bg-primary-muted text-primary' : 'text-text-muted hover:text-text-strong hover:bg-accent'
                                             }`}
                                         >
                                             <Icon className="w-4 h-4 shrink-0" />
@@ -470,14 +585,14 @@ function SettingsPage() {
                                                 ref={(el) => setSectionRef(tab.id, el)}
                                                 data-section-id={tab.id}
                                                 hidden={!isVisible}
-                                                className="scroll-mt-[5rem] rounded-lg border border-border bg-bg-1 p-4 shadow-sm sm:p-6 [&>*:first-child]:border-t-0 [&>*:first-child]:pt-0"
+                                                className="scroll-mt-[5rem] rounded-lg border border-border bg-bg-1 p-5 sm:p-6 [&>*:first-child]:border-t-0 [&>*:first-child]:pt-0"
                                             >
                                                 {renderSection(tab.id)}
                                             </div>
                                         );
                                     })}
                                     {q && visibleTabs.length === 0 && (
-                                        <div className="rounded-lg border border-border bg-bg-1 p-6 text-center text-sm text-muted-foreground shadow-sm">
+                                        <div className="rounded-lg border border-border bg-bg-1 p-6 text-center text-sm text-muted-foreground">
                                             {t('settings.page.noResults')}
                                         </div>
                                     )}

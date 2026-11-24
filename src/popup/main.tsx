@@ -417,7 +417,7 @@ function App() {
             </div>
 
             {/* Divider */}
-            {/* <div className="h-px bg-gray-200 dark:bg-gray-700 mb-3 mx-1" style={{ marginTop: '0.5rem', marginBottom: '1rem' }}></div> */}
+            {/* <div className="h-px bg-accent mb-3 mx-1" style={{ marginTop: '0.5rem', marginBottom: '1rem' }}></div> */}
 
             {/* Search */}
             <div className="flex gap-2 mb-3">
@@ -431,7 +431,7 @@ function App() {
             </div>
 
             {/* Content Section - Scrollable */}
-            <div className="flex-1 overflow-y-auto min-h-0 space-y-2 pe-1 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300/60 dark:[&::-webkit-scrollbar-thumb]:bg-gray-600/60 hover:[&::-webkit-scrollbar-thumb]:bg-gray-400/80 dark:hover:[&::-webkit-scrollbar-thumb]:bg-gray-500/80">
+            <div className="flex-1 overflow-y-auto min-h-0 space-y-2 pe-1 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-accent hover:[&::-webkit-scrollbar-thumb]:bg-accent">
                 {/* Pinned Groups Section */}
                 {pinnedGroups.length > 0 && (
                     <>
@@ -460,7 +460,7 @@ function App() {
                                                     saveEdit();
                                                 }}
                                                 size="sm"
-                                                className="h-8 bg-green-600 hover:bg-green-700"
+                                                className="h-8 bg-success hover:bg-success"
                                             >
                                                 {t('common.save')}
                                             </Button>
@@ -491,7 +491,7 @@ function App() {
                                                             toggleCollapse(group.id);
                                                         }
                                                     }}
-                                                    className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
+                                                    className="p-1 hover:bg-accent rounded-full transition-colors"
                                                     title={collapsedGroups.get(group.id)
                                                         ? t('popup.expandGroup')
                                                         : t('popup.collapseGroup')}
@@ -501,17 +501,17 @@ function App() {
                                                         ? t('popup.expandGroupAria', { name: isolateBidi(group.name), count: group.tabs.length })
                                                         : t('popup.collapseGroupAria', { name: isolateBidi(group.name), count: group.tabs.length })}
                                                 >
-                                                    {collapsedGroups.get(group.id) ? <ChevronRight className="w-3 h-3 text-gray-500 dark:text-gray-400 transition-transform duration-200 rtl:rotate-180" /> : <ChevronDown className="w-3 h-3 text-gray-500 dark:text-gray-400 transition-transform duration-200" />}
+                                                    {collapsedGroups.get(group.id) ? <ChevronRight className="w-3 h-3 text-text-muted transition-transform duration-200 rtl:rotate-180" /> : <ChevronDown className="w-3 h-3 text-text-muted transition-transform duration-200" />}
                                                 </button>
                                                 <h3
-                                                    className="font-medium text-sm cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 text-gray-900 dark:text-gray-100 flex-1 truncate flex items-center gap-1"
+                                                    className="font-medium text-sm cursor-pointer hover:text-primary text-text-strong flex-1 truncate flex items-center gap-1"
                                                     onClick={() => startEdit(group)}
                                                     title={t('popup.clickToRename')}
                                                 >
                                                     {pinManagement.isPinned(group.id) && <Pin className="w-3 h-3 text-muted-foreground shrink-0 rotate-45" />}
                                                     <bdi dir="auto">{group.name}</bdi>
                                                     {collapsedGroups.get(group.id) && (
-                                                        <span dir="ltr" className="text-xs text-gray-500 dark:text-gray-400 ms-1 font-normal">
+                                                        <span dir="ltr" className="text-xs text-text-muted ms-1 font-normal">
                                                             ({group.tabs.length})
                                                         </span>
                                                     )}
@@ -528,7 +528,7 @@ function App() {
                                                     onClick={() => restoreGroup(group)}
                                                     size="sm"
                                                     variant="ghost"
-                                                    className="h-7 w-7 p-0 text-green-600 hover:text-green-700 hover:bg-green-50 dark:text-green-400 dark:hover:text-green-300 dark:hover:bg-green-950"
+                                                    className="h-7 w-7 p-0 text-success hover:text-success hover:bg-success-muted"
                                                     title={t('popup.restoreGroup')}
                                                 >
                                                     <RotateCcw className="w-3 h-3" />
@@ -544,7 +544,7 @@ function App() {
                                     aria-hidden={collapsedGroups.get(group.id)}
                                 >
                                     <div className="space-y-1 pt-1">
-                                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                                        <p className="text-xs text-text-muted">
                                             {t('popup.tabsCount', { count: group.tabs.length })}
                                         </p>
                                         {group.tags && group.tags.length > 0 && (
@@ -562,7 +562,7 @@ function App() {
                                                     </span>
                                                 ))}
                                                 {group.tags.length > 3 && (
-                                                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                                                    <span className="text-xs text-text-muted">
                                                         {t('popup.moreTags', { count: group.tags.length - 3 })}
                                                     </span>
                                                 )}
@@ -578,13 +578,13 @@ function App() {
                                                         e.currentTarget.src = '/icons/default-favicon.png';
                                                     }}
                                                 />
-                                                <span className="truncate text-gray-700 dark:text-gray-300" title={isolateBidi(tab.title)}>
+                                                <span className="truncate text-text-strong" title={isolateBidi(tab.title)}>
                                                     <bdi dir="auto">{tab.title}</bdi>
                                                 </span>
                                             </div>
                                         ))}
                                         {group.tabs.length > 3 && (
-                                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                                            <p className="text-xs text-text-muted">
                                                 {t('popup.moreTabs', { count: group.tabs.length - 3 })}
                                             </p>
                                         )}
@@ -623,7 +623,7 @@ function App() {
                                             saveEdit();
                                         }}
                                         size="sm"
-                                        className="h-8 bg-green-600 hover:bg-green-700"
+                                        className="h-8 bg-success hover:bg-success"
                                     >
                                         {t('common.save')}
                                     </Button>
@@ -654,7 +654,7 @@ function App() {
                                                     toggleCollapse(group.id);
                                                 }
                                             }}
-                                            className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
+                                            className="p-1 hover:bg-accent rounded-full transition-colors"
                                             title={collapsedGroups.get(group.id)
                                                 ? t('popup.expandGroup')
                                                 : t('popup.collapseGroup')}
@@ -664,16 +664,16 @@ function App() {
                                                 ? t('popup.expandGroupAria', { name: isolateBidi(group.name), count: group.tabs.length })
                                                 : t('popup.collapseGroupAria', { name: isolateBidi(group.name), count: group.tabs.length })}
                                         >
-                                            {collapsedGroups.get(group.id) ? <ChevronRight className="w-3 h-3 text-gray-500 dark:text-gray-400 transition-transform duration-200 rtl:rotate-180" /> : <ChevronDown className="w-3 h-3 text-gray-500 dark:text-gray-400 transition-transform duration-200" />}
+                                            {collapsedGroups.get(group.id) ? <ChevronRight className="w-3 h-3 text-text-muted transition-transform duration-200 rtl:rotate-180" /> : <ChevronDown className="w-3 h-3 text-text-muted transition-transform duration-200" />}
                                         </button>
                                         <h3
-                                            className="font-medium text-sm cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 text-gray-900 dark:text-gray-100 flex-1 truncate"
+                                            className="font-medium text-sm cursor-pointer hover:text-primary text-text-strong flex-1 truncate"
                                             onClick={() => startEdit(group)}
                                             title={t('popup.clickToRename')}
                                         >
                                             <bdi dir="auto">{group.name}</bdi>
                                             {collapsedGroups.get(group.id) && (
-                                                <span dir="ltr" className="text-xs text-gray-500 dark:text-gray-400 ms-1 font-normal">
+                                                <span dir="ltr" className="text-xs text-text-muted ms-1 font-normal">
                                                     ({group.tabs.length})
                                                 </span>
                                             )}
@@ -690,7 +690,7 @@ function App() {
                                             onClick={() => restoreGroup(group)}
                                             size="sm"
                                             variant="ghost"
-                                            className="h-7 w-7 p-0 text-green-600 hover:text-green-700 hover:bg-green-50 dark:text-green-400 dark:hover:text-green-300 dark:hover:bg-green-950"
+                                            className="h-7 w-7 p-0 text-success hover:text-success hover:bg-success-muted"
                                             title={t('popup.restoreGroup')}
                                         >
                                             <RotateCcw className="w-3 h-3" />
@@ -706,7 +706,7 @@ function App() {
                             aria-hidden={collapsedGroups.get(group.id)}
                         >
                             <div className="space-y-1 pt-1">
-                                <p className="text-xs text-gray-500 dark:text-gray-400">
+                                <p className="text-xs text-text-muted">
                                     {t('popup.tabsCount', { count: group.tabs.length })}
                                 </p>
                                 {group.tags && group.tags.length > 0 && (
@@ -724,7 +724,7 @@ function App() {
                                             </span>
                                         ))}
                                         {group.tags.length > 3 && (
-                                            <span className="text-xs text-gray-400">
+                                            <span className="text-xs text-text-muted">
                                                 {t('popup.moreTags', { count: group.tags.length - 3 })}
                                             </span>
                                         )}

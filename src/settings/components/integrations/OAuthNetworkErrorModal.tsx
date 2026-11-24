@@ -34,7 +34,7 @@ export function OAuthNetworkErrorModal({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <div className="flex items-start gap-4">
-            <Info className="h-6 w-6 shrink-0 text-blue-500" aria-hidden="true" />
+            <Info className="h-6 w-6 shrink-0 text-primary" aria-hidden="true" />
             <div className="min-w-0 flex-1 space-y-2">
               <DialogTitle>
                 {t('settings.integrations.oauthNetworkErrorTitle', { name: isolatedProviderName })}

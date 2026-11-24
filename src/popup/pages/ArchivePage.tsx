@@ -67,12 +67,12 @@ export function ArchivePage({ onBack }: ArchivePageProps) {
                 <div className="flex items-center gap-2">
                     <button
                         onClick={onBack}
-                        className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
+                        className="p-1 hover:bg-accent rounded-full transition-colors"
                         title={t('archive.page.backToGroups')}
                     >
-                        <ArrowLeft className="w-4 h-4 text-gray-500 dark:text-gray-400 rtl:rotate-180" />
+                        <ArrowLeft className="w-4 h-4 text-text-muted rtl:rotate-180" />
                     </button>
-                    <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                    <h2 className="text-lg font-semibold text-text-strong">
                         {t('archive.page.title')}
                     </h2>
                 </div>
@@ -82,7 +82,7 @@ export function ArchivePage({ onBack }: ArchivePageProps) {
                             // Navigate back to options page where user can create new archives via dropdown
                             window.location.href = chrome.runtime.getURL('src/options/index.html');
                         }}
-                        className="px-3 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                        className="px-3 py-1 text-xs bg-primary text-white rounded-full hover:bg-primary-hover transition-colors"
                     >
                         <Plus className="w-3 h-3 me-1 inline" />
                         {t('archive.page.newArchive')}
@@ -91,7 +91,7 @@ export function ArchivePage({ onBack }: ArchivePageProps) {
                         onClick={() => {
                             window.location.href = chrome.runtime.getURL('src/options/index.html#settings');
                         }}
-                        className="px-3 py-1 text-xs bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
+                        className="px-3 py-1 text-xs bg-muted text-text-strong rounded-full hover:bg-accent transition-colors"
                     >
                         <Settings className="w-3 h-3 me-1 inline" />
                         {t('archive.page.settings')}
@@ -111,17 +111,17 @@ export function ArchivePage({ onBack }: ArchivePageProps) {
 
             {/* Archive Stats */}
             <div className="grid grid-cols-3 gap-2 mb-4">
-                <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 text-center">
-                    <div dir="ltr" className="text-lg font-semibold text-blue-700 dark:text-blue-300">{stats.totalArchives}</div>
-                    <div className="text-xs text-blue-600 dark:text-blue-400">{t('archive.page.totalArchives')}</div>
+                <div className="bg-primary-muted border border-primary/30 rounded-lg p-3 text-center">
+                    <div dir="ltr" className="text-lg font-semibold text-primary">{stats.totalArchives}</div>
+                    <div className="text-xs text-primary">{t('archive.page.totalArchives')}</div>
                 </div>
-                <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3 text-center">
-                    <div dir="ltr" className="text-lg font-semibold text-green-700 dark:text-green-300">{stats.protectedArchives}</div>
-                    <div className="text-xs text-green-600 dark:text-green-400">{t('archive.page.protected')}</div>
+                <div className="bg-success-muted border border-success/30 rounded-lg p-3 text-center">
+                    <div dir="ltr" className="text-lg font-semibold text-success">{stats.protectedArchives}</div>
+                    <div className="text-xs text-success">{t('archive.page.protected')}</div>
                 </div>
-                <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-3 text-center">
-                    <div dir="ltr" className="text-lg font-semibold text-purple-700 dark:text-purple-300">{formatFileSize(stats.totalSizeBytes)}</div>
-                    <div className="text-xs text-purple-600 dark:text-purple-400">{t('archive.page.storageUsed')}</div>
+                <div className="bg-primary-muted border border-primary/30 rounded-lg p-3 text-center">
+                    <div dir="ltr" className="text-lg font-semibold text-primary">{formatFileSize(stats.totalSizeBytes)}</div>
+                    <div className="text-xs text-primary">{t('archive.page.storageUsed')}</div>
                 </div>
             </div>
 

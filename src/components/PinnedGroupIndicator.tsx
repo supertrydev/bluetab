@@ -42,10 +42,10 @@ export function PinnedSectionHeader({
     if (count === 0) return null;
 
     return (
-        <div className="flex items-center justify-between px-2 py-2 bg-gray-100 dark:bg-gray-800 rounded-md mb-2">
+        <div className="flex items-center justify-between px-2 py-2 bg-muted rounded-md mb-2">
             <div className="flex items-center gap-2">
-                <Pin className="h-3 w-3 text-gray-600 dark:text-gray-400" />
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                <Pin className="h-3 w-3 text-text-muted" />
+                <span className="text-sm font-medium text-text-strong">
                     {t('sidepanel.pinned.section', { count })}
                 </span>
             </div>

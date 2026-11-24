@@ -28,8 +28,8 @@ describe('IntegrationReauthBanner — static source contract (RED stub)', () => 
     expect(source).toContain('Reconnect');
   });
 
-  it('uses amber styling (bg-amber-500/10 or border-amber-500/30)', () => {
-    expect(source).toMatch(/amber-500/);
+  it('uses warning styling (bg-warning-muted or border-warning)', () => {
+    expect(source).toMatch(/(?:bg|border)-warning/);
   });
 
   it('body copy does not use expired/broken/failed (SAFETY-02)', () => {

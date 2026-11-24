@@ -76,7 +76,7 @@ function TimeOfDayHeatmap({ timeOfDay }: TimeOfDayHeatmapProps) {
         {tickHours.map(hour => (
           <span
             key={hour}
-            className="absolute text-micro text-muted-foreground"
+            className="absolute text-xs text-muted-foreground"
             style={{ left: `${(hour / 24) * 100}%` }}
           >
             {String(hour).padStart(2, '0')}
@@ -130,7 +130,7 @@ function CandidateCard({ candidate, selected, onToggle }: CandidateCardProps) {
             onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
           />
           <bdi dir="ltr" className="text-sm font-medium text-foreground truncate">{domain}</bdi>
-          <span className="ms-auto shrink-0 inline-flex items-center text-micro font-semibold px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground">
+          <span className="ms-auto shrink-0 inline-flex items-center text-xs font-semibold px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground">
             {t('settings.distractionScan.forReview')}
           </span>
         </div>
@@ -367,7 +367,7 @@ export function DistractionScanModal({ open, onClose }: DistractionScanModalProp
               )}
               <Dialog.Close asChild>
                 <button
-                  className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                  className="p-1.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
                   aria-label={t('common.close')}
                 >
                   <X className="w-4 h-4" />
@@ -416,9 +416,9 @@ export function DistractionScanModal({ open, onClose }: DistractionScanModalProp
 
             {/* Error / blocked state */}
             {modalState.phase === 'error' && (
-              <div className="flex items-start gap-3 p-3 rounded-lg border border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-900/20">
-                <AlertCircle className="w-4 h-4 text-amber-600 dark:text-amber-400 mt-0.5 shrink-0" />
-                <p className="text-sm text-amber-800 dark:text-amber-300">
+              <div className="flex items-start gap-3 p-3 rounded-lg border border-warning/30 bg-warning-muted">
+                <AlertCircle className="w-4 h-4 text-warning mt-0.5 shrink-0" />
+                <p className="text-sm text-warning">
                   {getBlockMessage(modalState.reason, translate)}
                 </p>
               </div>

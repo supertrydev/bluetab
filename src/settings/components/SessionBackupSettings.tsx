@@ -127,7 +127,7 @@ export function SessionBackupSettings() {
 
   return (
     <div className="pt-4 border-t border-border">
-      <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 flex items-center gap-2 mb-4">
+      <h3 className="text-base font-semibold text-text-strong flex items-center gap-2 mb-4">
         <HardDrive className="w-5 h-5" />
         {t('settings.sessionBackup.title')}
       </h3>
@@ -138,7 +138,7 @@ export function SessionBackupSettings() {
           <div>
             <label
               htmlFor="backup-toggle"
-              className="text-sm font-medium text-gray-700 dark:text-gray-300"
+              className="text-sm font-medium text-text-strong"
             >
               {t('settings.sessionBackup.enableTitle')}
             </label>
@@ -156,7 +156,7 @@ export function SessionBackupSettings() {
 
         {/* Frequency Selector */}
         <div>
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+          <label className="text-sm font-medium text-text-strong mb-2 block">
             {t('settings.sessionBackup.frequency')}
           </label>
           <div className="flex flex-wrap gap-2">
@@ -190,12 +190,12 @@ export function SessionBackupSettings() {
 
         {/* Backup History */}
         <div>
-          <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <h4 className="text-sm font-medium text-text-strong mb-2">
             {t('settings.sessionBackup.history')}
           </h4>
 
           {snapshots.length === 0 ? (
-            <div className="p-4 border border-border rounded-lg text-center">
+            <div className="p-4 rounded-md bg-muted text-center">
               <p className="text-sm text-muted-foreground">
                 {settings.enabled
                   ? t('settings.sessionBackup.emptyEnabled')
@@ -221,7 +221,7 @@ export function SessionBackupSettings() {
                   </div>
                   <button
                     onClick={() => setRestoreTarget(snapshot)}
-                    className="flex-shrink-0 flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-md border border-border text-muted-foreground hover:text-foreground hover:border-primary/50 transition-colors"
+                    className="flex-shrink-0 flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-full border border-border text-muted-foreground hover:text-foreground hover:border-primary/50 transition-colors"
                   >
                     <RotateCw className="w-3 h-3" />
                     {t('common.restore')}

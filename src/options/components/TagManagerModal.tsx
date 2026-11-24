@@ -196,7 +196,7 @@ export function TagManagerModal({
                                                     addTagToGroup(groupId!, tag.id);
                                                 }
                                             }}
-                                            className="group/tag relative px-2.5 py-1 rounded-md text-xs font-medium transition-all duration-150 hover:scale-105"
+                                            className="group/tag relative px-2.5 py-1 rounded-full text-xs font-medium transition-all duration-150 hover:scale-105"
                                             style={{
                                                 backgroundColor: `${tag.color}33`,
                                                 color: tag.color,

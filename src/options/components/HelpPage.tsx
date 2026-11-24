@@ -162,7 +162,7 @@ export function HelpPage({ sidebarTrigger }: HelpPageProps) {
       <div className="flex flex-1 flex-col gap-4 p-4">
         <div className="max-w-3xl mx-auto w-full">
           {/* Onboarding re-trigger */}
-          <div className="flex items-center justify-between mb-6 py-3 px-4 rounded-lg border border-border bg-muted/30">
+          <div className="flex items-center justify-between mb-6 py-4 px-5 rounded-md bg-primary-muted">
             <div>
               <p className="text-sm font-medium">{t('options.helpPage.firstTimeTitle')}</p>
               <p className="text-xs text-muted-foreground">{t('options.helpPage.firstTimeDescription')}</p>
@@ -178,12 +178,12 @@ export function HelpPage({ sidebarTrigger }: HelpPageProps) {
 
           {/* Tabs */}
           <Tabs.Root defaultValue="faq">
-            <Tabs.List className="flex border-b border-border mb-4 gap-0">
+            <Tabs.List className="mb-2 inline-flex h-10 max-w-full items-stretch gap-0.5 overflow-x-auto rounded-full border border-border-glass bg-accent p-1">
               {(['faq', 'shortcuts', 'changelog', 'feedback'] as const).map((tab) => (
                 <Tabs.Trigger
                   key={tab}
                   value={tab}
-                  className="px-4 py-2 text-sm font-medium capitalize text-muted-foreground border-b-2 border-transparent hover:text-foreground transition-colors data-[state=active]:text-foreground data-[state=active]:border-primary -mb-px"
+                  className="whitespace-nowrap rounded-full px-4 text-sm font-medium capitalize text-muted-foreground transition-all duration-300 hover:text-foreground data-[state=active]:bg-segment data-[state=active]:text-foreground data-[state=active]:shadow-md"
                 >
                   {tabLabels[tab]}
                 </Tabs.Trigger>
@@ -192,7 +192,7 @@ export function HelpPage({ sidebarTrigger }: HelpPageProps) {
 
             {/* FAQ Tab */}
             <Tabs.Content value="faq" className="py-4">
-              <div className="rounded-lg border border-border bg-card px-4">
+              <div className="rounded-lg border border-border bg-card px-5">
                 {faqItems.map((item) => (
                   <FAQItem
                     key={item.id}
@@ -218,7 +218,7 @@ export function HelpPage({ sidebarTrigger }: HelpPageProps) {
                 <button
                   type="button"
                   onClick={openShortcutSettings}
-                  className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-accent"
                 >
                   <Keyboard className="h-4 w-4" />
                   {t('options.helpPage.editShortcuts')}
@@ -229,14 +229,14 @@ export function HelpPage({ sidebarTrigger }: HelpPageProps) {
                 {SHORTCUTS.map(({ keys, actionKey }) => (
                   <div
                     key={actionKey}
-                    className="flex items-center justify-between p-3 rounded-lg border border-border bg-card"
+                    className="flex items-center justify-between gap-3 rounded-md bg-muted px-4 py-3"
                   >
                     <span className="text-sm">{translate(actionKey)}</span>
                     <div className="flex items-center gap-1">
                       {keys.map((k, i) => (
                         <Fragment key={k}>
                           {i > 0 && <span className="text-muted-foreground text-xs">+</span>}
-                          <kbd dir="ltr" className="px-2 py-1 rounded bg-muted border border-border text-xs font-mono">
+                          <kbd dir="ltr" className="inline-flex h-6 min-w-6 items-center justify-center rounded-xs bg-bg-1 border border-border px-1.5 text-xs font-mono text-text-muted">
                             {k}
                           </kbd>
                         </Fragment>
@@ -294,7 +294,7 @@ export function HelpPage({ sidebarTrigger }: HelpPageProps) {
                   </p>
                   <a
                     href={`mailto:${SUPPORT_EMAIL}`}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm"
+                    className="inline-flex items-center gap-2 h-10 px-4 rounded-full bg-primary text-primary-foreground shadow-sm hover:bg-primary-hover hover:text-primary-foreground transition-colors text-sm font-medium"
                   >
                     <Mail className="w-4 h-4" />
                     <bdi dir="ltr">{SUPPORT_EMAIL}</bdi>
@@ -310,7 +310,7 @@ export function HelpPage({ sidebarTrigger }: HelpPageProps) {
                     href="https://github.com/supertrydev/bluetab/issues/new?template=bug.yml"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm"
+                    className="inline-flex items-center gap-2 h-10 px-4 rounded-full bg-primary text-primary-foreground shadow-sm hover:bg-primary-hover hover:text-primary-foreground transition-colors text-sm font-medium"
                   >
                     <ExternalLink className="w-4 h-4" />
                     {t('options.helpPage.feedback.bugButton')}

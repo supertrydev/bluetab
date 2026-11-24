@@ -611,7 +611,7 @@ export function BrainDumpPanel() {
   if (!featureActive) {
     return (
       <div className="h-full flex flex-col items-center justify-center p-6 text-center gap-3">
-        <StickyNote className="w-10 h-10 text-muted-foreground opacity-60" />
+        <StickyNote className="w-6 h-6 text-muted-foreground" />
         <p className="text-sm text-foreground">{t('sidepanel.brainDumpPanel.featureOffTitle')}</p>
         <p className="text-xs text-muted-foreground max-w-xs">
           {t('sidepanel.brainDumpPanel.featureOffDescription')}
@@ -629,7 +629,7 @@ export function BrainDumpPanel() {
   }
 
   const controlBar = (
-    <div className="sticky top-0 z-10 flex items-center gap-2 p-2 bg-bg-0/90 backdrop-blur-md border-b border-border">
+    <div className="sticky top-0 z-10 flex items-center gap-2 p-2 bg-glass-bg backdrop-blur-md border-b border-border-glass">
       <div className="flex-1">
         <SearchBar
           value={query}
@@ -642,7 +642,7 @@ export function BrainDumpPanel() {
       <Button
         onClick={openAdd}
         size="sm"
-        className="h-8 text-xs gap-1"
+        className="h-9 text-xs gap-1.5"
         title={t('sidepanel.brainDumpPanel.addThoughtTitle')}
       >
         <Plus className="w-3 h-3" />
@@ -680,7 +680,7 @@ export function BrainDumpPanel() {
               value={destinationKey}
               onChange={(e) => void handleDestinationChange(e.target.value)}
               disabled={isAdding}
-              className="w-full h-8 text-xs rounded-md border border-border-glass bg-glass-bg backdrop-blur-md px-2 py-1.5 text-foreground focus:outline-none focus:ring-1 focus:ring-primary [&>option]:bg-[hsl(var(--bg-1))] [&>option]:text-foreground"
+              className="w-full h-8 text-xs rounded-input border border-border-glass bg-glass-bg backdrop-blur-md px-3 py-1.5 text-foreground [&>option]:bg-[hsl(var(--bg-1))] [&>option]:text-foreground"
             >
               <option value={BLUETAB_INBOX_DEST}>{t('brainDumpModal.inbox')}</option>
               {unavailableDestinationMessage && (
@@ -719,31 +719,31 @@ export function BrainDumpPanel() {
             placeholder={t('brainDumpModal.textareaPlaceholder')}
             disabled={isAdding}
             aria-label={t('brainDumpModal.textareaAria')}
-            className="w-full min-h-[120px] p-3 rounded-lg border border-border bg-bg-0 text-sm text-text-strong placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 resize-y"
+            className="w-full min-h-[120px] p-3 rounded-lg border border-field bg-bg-1 text-sm text-text-strong placeholder:text-text-muted resize-y"
           />
         </div>
 
         {/* Calendar-specific: date/time picker + duration when destination is a calendar */}
         {isCalendarDest && (
-          <div className="mt-2 space-y-2 p-3 rounded-lg border border-border bg-bg-1/40">
+          <div className="mt-2 space-y-2 p-3 rounded-lg border border-border bg-bg-1">
             <div className="flex items-center gap-1.5 text-xs font-medium text-foreground">
               <Calendar className="w-3.5 h-3.5" />
               {t('brainDumpModal.eventTiming')}
             </div>
             <div className="flex items-center gap-2">
               <div className="flex-1 space-y-1">
-                <label htmlFor="cal-start" className="text-caption text-muted-foreground">{t('brainDumpModal.start')}</label>
+                <label htmlFor="cal-start" className="text-xs text-muted-foreground">{t('brainDumpModal.start')}</label>
                 <input
                   id="cal-start"
                   type="datetime-local"
                   value={calendarStart}
                   onChange={(e) => setCalendarStart(e.target.value)}
                   disabled={isAdding}
-                  className="w-full h-8 text-xs rounded-md border border-border bg-bg-1/60 px-2 py-1 text-foreground focus:outline-none focus:ring-1 focus:ring-primary [color-scheme:dark]"
+                  className="w-full h-8 text-xs rounded-input border border-field bg-bg-1 px-3 py-1 text-foreground"
                 />
               </div>
               <div className="w-24 space-y-1">
-                <label htmlFor="cal-duration" className="text-caption text-muted-foreground flex items-center gap-1">
+                <label htmlFor="cal-duration" className="text-xs text-muted-foreground flex items-center gap-1">
                   <Clock className="w-3 h-3" /> {t('brainDumpModal.duration')}
                 </label>
                 <select
@@ -751,7 +751,7 @@ export function BrainDumpPanel() {
                   value={calendarDuration}
                   onChange={(e) => setCalendarDuration(Number(e.target.value))}
                   disabled={isAdding}
-                  className="w-full h-8 text-xs rounded-md border border-border bg-bg-1/60 px-2 py-1 text-foreground focus:outline-none focus:ring-1 focus:ring-primary [&>option]:bg-[hsl(var(--bg-1))] [&>option]:text-foreground"
+                  className="w-full h-8 text-xs rounded-input border border-field bg-bg-1 px-3 py-1 text-foreground [&>option]:bg-[hsl(var(--bg-1))] [&>option]:text-foreground"
                 >
                   <option value={15}>{t('brainDumpModal.duration15m')}</option>
                   <option value={30}>{t('brainDumpModal.duration30m')}</option>
@@ -770,7 +770,7 @@ export function BrainDumpPanel() {
             type="button"
             onClick={closeAdd}
             disabled={isAdding}
-            className="px-3 py-1.5 text-sm rounded-md border border-border text-foreground hover:bg-accent transition-colors disabled:opacity-50"
+            className="px-3 py-1.5 text-sm rounded-full border border-border text-foreground hover:bg-accent transition-colors disabled:opacity-50"
           >
             {t('common.cancel')}
           </button>
@@ -778,7 +778,7 @@ export function BrainDumpPanel() {
             type="button"
             onClick={() => void commitAdd()}
             disabled={isAdding || addDraft.trim().length === 0}
-            className="px-3 py-1.5 text-sm font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-3 py-1.5 text-sm font-medium rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {t('common.save')}
           </button>
@@ -792,7 +792,7 @@ export function BrainDumpPanel() {
       <div className="h-full flex flex-col">
         {controlBar}
         <div className="flex-1 flex flex-col items-center justify-center p-6 text-center gap-3">
-          <StickyNote className="w-10 h-10 text-muted-foreground opacity-60" />
+          <StickyNote className="w-6 h-6 text-muted-foreground" />
           <p className="text-sm text-foreground">{t('sidepanel.brainDumpPanel.emptyTitle')}</p>
           <p className="text-xs text-muted-foreground max-w-xs">
             {t('sidepanel.brainDumpPanel.emptyDescription')}

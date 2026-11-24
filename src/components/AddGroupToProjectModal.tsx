@@ -126,7 +126,7 @@ export function AddGroupToProjectModal({
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                     dir="auto"
-                                    className="ps-8 pe-3 py-1.5 text-sm border border-border rounded-lg bg-bg-1 text-text focus:ring-2 focus:ring-primary focus:border-primary w-40"
+                                    className="ps-8 pe-3 py-1.5 text-sm border border-field rounded-input bg-bg-1 text-text w-40"
                                 />
                             </div>
                         </div>
@@ -146,7 +146,7 @@ export function AddGroupToProjectModal({
                                         className={`flex items-center gap-3 p-3 cursor-pointer select-none border-s-3 transition-colors duration-150 focus-within:outline-none ${
                                             selectedGroupIds.size === filteredGroups.length
                                                 ? 'border-s-primary bg-primary-muted/30'
-                                                : 'border-s-transparent hover:bg-bg-2'
+                                                : 'border-s-transparent hover:bg-accent'
                                         } border-b border-border`}
                                         onMouseDown={(event) => event.preventDefault()}
                                         onClick={handleSelectAll}
@@ -175,7 +175,7 @@ export function AddGroupToProjectModal({
                                                 className={`flex items-center gap-3 p-3 cursor-pointer select-none border-s-3 transition-colors duration-150 focus-within:outline-none ${
                                                     isSelected
                                                         ? 'border-s-primary bg-primary-muted/30'
-                                                        : 'border-s-transparent hover:bg-bg-2'
+                                                        : 'border-s-transparent hover:bg-accent'
                                                 } border-b border-border last:border-b-0`}
                                             >
                                                 <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors duration-150 ${

@@ -102,11 +102,11 @@ export const TextSizeSetting: React.FC<TextSizeSettingProps> = ({
     return (
       <div className={`${className}`}>
         <div className="animate-pulse">
-          <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded w-24 mb-2"></div>
+          <div className="h-4 bg-accent rounded w-24 mb-2"></div>
           <div className="space-y-2">
-            <div className="h-12 bg-gray-200 dark:bg-gray-800 rounded"></div>
-            <div className="h-12 bg-gray-200 dark:bg-gray-800 rounded"></div>
-            <div className="h-12 bg-gray-200 dark:bg-gray-800 rounded"></div>
+            <div className="h-12 bg-accent rounded"></div>
+            <div className="h-12 bg-accent rounded"></div>
+            <div className="h-12 bg-accent rounded"></div>
           </div>
         </div>
       </div>
@@ -117,18 +117,18 @@ export const TextSizeSetting: React.FC<TextSizeSettingProps> = ({
     <div className={className}>
       {showLabels && (
         <div className="mb-4">
-          <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 flex items-center gap-2">
+          <h3 className="text-base font-semibold text-text-strong flex items-center gap-2">
             <ALargeSmall className="w-5 h-5" />
             {t('textSize.title')}
           </h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+          <p className="text-sm text-text-muted mt-1">
             {t('textSize.description')}
           </p>
         </div>
       )}
 
       {state.hasError && (
-        <div className="mb-3 p-3 bg-destructive/10 border border-destructive/20 text-destructive rounded-lg text-sm">
+        <div className="mb-3 p-3 bg-danger-muted border border-destructive/20 text-destructive rounded-lg text-sm">
           {state.errorMessage || t('textSize.error')}
         </div>
       )}
@@ -144,23 +144,23 @@ export const TextSizeSetting: React.FC<TextSizeSettingProps> = ({
           return (
             <div
               key={size}
-              className="flex items-start gap-3 p-3 border border-border rounded-lg hover:bg-accent transition-colors"
+              className="flex items-start gap-3 p-4 rounded-md bg-muted hover:bg-accent transition-colors has-[[data-state=checked]]:bg-primary-muted"
             >
               <RadioGroupItem
                 value={size}
                 id={`text-size-${size}`}
-                className="mt-1"
+                className="mt-0.5"
               />
               <Label
                 htmlFor={`text-size-${size}`}
                 className="flex-1 cursor-pointer space-y-1"
               >
-                <div className="font-medium text-gray-900 dark:text-gray-100">
+                <div className="font-medium text-text-strong">
                   {label}
                 </div>
                 <div
                   id={`text-size-${size}-description`}
-                  className="text-sm text-gray-600 dark:text-gray-400"
+                  className="text-sm text-text-muted"
                 >
                   {textSizeDescriptions[sizeOption]}
                 </div>

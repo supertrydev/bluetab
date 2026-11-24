@@ -155,9 +155,9 @@ export function JiraProjectSelector({ accountId, cloudId }: JiraProjectSelectorP
       <div className="flex flex-col gap-1">
         <label className="text-xs text-muted-foreground">{t('settings.integrations.jiraProject')}</label>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-amber-600 dark:text-amber-400">{t('settings.integrations.sessionExpired')}</span>
+          <span className="text-xs text-warning">{t('settings.integrations.sessionExpired')}</span>
           <button
-            className="text-xs font-medium text-amber-600 underline dark:text-amber-400 hover:no-underline"
+            className="text-xs font-medium text-warning underline hover:no-underline"
             onClick={handleReconnect}
           >
             {t('common.reconnect')}
@@ -173,7 +173,7 @@ export function JiraProjectSelector({ accountId, cloudId }: JiraProjectSelectorP
       <div className="flex flex-col gap-1">
         <label className="text-xs text-muted-foreground">{t('settings.integrations.jiraProject')}</label>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-red-600 dark:text-red-400">
+          <span className="text-xs text-danger">
             {needsReconnect
               ? loadError
               : t('settings.integrations.errorLoading', {
@@ -183,7 +183,7 @@ export function JiraProjectSelector({ accountId, cloudId }: JiraProjectSelectorP
           </span>
           {needsReconnect && (
             <button
-              className="text-xs font-medium text-amber-600 underline dark:text-amber-400 hover:no-underline"
+              className="text-xs font-medium text-warning underline hover:no-underline"
               onClick={handleReconnect}
             >
               {t('common.reconnect')}

@@ -59,7 +59,7 @@ export function NotesModal({ groups, groupId, onSave, onClose }: NotesModalProps
                         value={notesText}
                         onChange={(e) => setNotesText(e.target.value)}
                         placeholder={t('options.notesModal.placeholder')}
-                        className="w-full min-h-[120px] p-3 rounded-lg border border-border bg-bg-0 text-sm text-text-strong placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 resize-y"
+                        className="w-full min-h-[120px] p-3 rounded-lg border border-field bg-bg-1 text-sm text-text-strong placeholder:text-text-muted resize-y"
                         dir="auto"
                         autoFocus
                     />

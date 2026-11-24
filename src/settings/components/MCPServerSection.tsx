@@ -281,7 +281,7 @@ export function MCPServerSection() {
   if (!isPro) {
     return (
       <div className="space-y-4">
-        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 flex items-center gap-2">
+        <h3 className="text-base font-semibold text-text-strong flex items-center gap-2">
           <Server className="w-5 h-5" />
           {t('settings.mcp.title')}
         </h3>
@@ -296,7 +296,7 @@ export function MCPServerSection() {
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 flex items-center gap-2">
+        <h3 className="text-base font-semibold text-text-strong flex items-center gap-2">
           <Server className="w-5 h-5" />
           {t('settings.mcp.title')}
         </h3>
@@ -308,10 +308,10 @@ export function MCPServerSection() {
         <UrlField url={readOnlyMcpUrl(config.supertry.mcpUrl)} label={t('settings.mcp.readOnlyUrl')} />
       </div>
 
-      <div className="rounded-lg border border-border-glass bg-bg-1/60 backdrop-blur-sm p-4 space-y-3">
+      <div className="rounded-md border border-border bg-bg-1 border-border-glass backdrop-blur-sm p-4 space-y-3">
         <div className="flex items-center justify-between gap-3">
           <div>
-            <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            <p className="text-sm font-medium text-text-strong">
               {t('settings.mcp.enableLabel')}
             </p>
             <p className="text-xs text-muted-foreground">
@@ -353,14 +353,14 @@ export function MCPServerSection() {
       </div>
 
       <div className="space-y-3">
-        <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100">
+        <h4 className="text-sm font-medium text-text-strong">
           {t('settings.mcp.connectApp')}
         </h4>
         <McpConnectGuide url={config.supertry.mcpUrl} />
       </div>
 
       <div className="space-y-3">
-        <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 flex items-center gap-1.5">
+        <h4 className="text-sm font-medium text-text-strong flex items-center gap-1.5">
           <Plug className="w-4 h-4" />
           {t('settings.mcp.connectedClients')}
         </h4>
@@ -441,7 +441,7 @@ export function MCPServerSection() {
             value={personalClientName}
             onChange={(event) => setPersonalClientName(event.target.value)}
             placeholder={t('settings.mcp.clientNamePlaceholder')}
-            className="bg-bg-0 text-text-strong placeholder:text-gray-400 focus-visible:ring-primary/50 focus-visible:ring-offset-0"
+            className="bg-bg-0 text-text-strong placeholder:text-text-muted focus-visible:ring-primary/50 focus-visible:ring-offset-0"
           />
         </div>
 

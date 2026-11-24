@@ -9,10 +9,9 @@ const english = JSON.parse(fs.readFileSync(
 ));
 
 describe('AIUpgradePrompt free state design contract', () => {
-  it('presents a locked chat preview instead of a generic feature card stack', () => {
+  it('presents one chat message instead of a generic feature card stack', () => {
     expect(source).toContain('LockedPreviewMessage');
-    expect(source).toContain("t('sidepanel.aiUpgradePrompt.inputPlaceholder')");
-    expect(english.sidepanel.aiUpgradePrompt.inputPlaceholder).toBe('Ask Bluetab AI...');
+    expect(source).toContain('bluetabAvatar');
     expect(source).not.toContain("from '@/components/ui/card'");
     expect(source).not.toContain("from '@/components/ui/input'");
   });
@@ -20,6 +19,8 @@ describe('AIUpgradePrompt free state design contract', () => {
   it('keeps the free state minimal without the helper command grid', () => {
     expect(source).not.toContain('It can help with');
     expect(source).not.toContain('EXAMPLE_COMMANDS');
+    expect(source).not.toContain('gradient');
+    expect(source).not.toContain('LockKeyhole');
   });
 
   it('keeps the upgrade action wired to the feature gate URL', () => {

@@ -33,7 +33,7 @@ export function PinButton({
         }
     };
 
-    const iconSize = size === 'small' ? 12 : 16;
+    const iconSize = size === 'small' ? 14 : 16;
 
     return (
         <Button
@@ -41,9 +41,10 @@ export function PinButton({
             size={size === 'small' ? 'sm' : 'md'}
             className={cn(
                 'transition-all duration-200',
+                size === 'small' && 'h-8 w-8 px-0',
                 isPinned
-                    ? 'text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/30'
-                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700'
+                    ? 'text-primary hover:text-primary hover:bg-primary-muted'
+                    : 'text-text-muted hover:text-text-strong hover:bg-accent'
             )}
             onClick={handleToggle}
             disabled={disabled || isLoading}
@@ -54,7 +55,7 @@ export function PinButton({
                 size={iconSize}
                 className={cn(
                     'transition-transform',
-                    isPinned && 'rotate-45'
+                    isPinned && 'rotate-45 fill-current'
                 )}
             />
         </Button>

@@ -217,7 +217,7 @@ export function BrowserGroupCard({
         <Collapsible open={effectiveOpen} onOpenChange={handleOpenChange}>
             <div
                 className={cn(
-                    "rounded-xl bg-bg-1 overflow-hidden transition-shadow duration-200 hover:shadow-md",
+                    "rounded-lg bg-bg-1 overflow-hidden transition-shadow duration-200 hover:shadow-md",
                     !showGroupBorder && "border border-border",
                     isDropTarget && "ring-2 ring-primary/40"
                 )}
@@ -226,9 +226,9 @@ export function BrowserGroupCard({
                 onDrop={(e) => { e.preventDefault(); onContainerDrop?.(e, `group-${group.id}`); }}
             >
                 {/* Header */}
-                <div className="flex items-center gap-2 px-3 py-2.5 min-w-0">
+                <div className="flex min-h-12 items-center gap-1.5 px-2 py-1 min-w-0">
                     <CollapsibleTrigger asChild>
-                        <button className="p-1 hover:bg-bg-2 rounded-md transition-colors duration-150 flex-shrink-0">
+                        <button className="flex h-7 w-7 items-center justify-center hover:bg-accent rounded-full transition-colors duration-150 flex-shrink-0">
                             {effectiveOpen ? (
                                 <ChevronDown className="w-4 h-4 text-text-muted" />
                             ) : (
@@ -311,7 +311,7 @@ export function BrowserGroupCard({
                     {!isEditing && onNewTab && (
                         <button
                             onClick={onNewTab}
-                            className="p-1 hover:bg-bg-2 rounded-md transition-colors duration-150 flex-shrink-0 text-text-muted hover:text-text-strong"
+                            className="flex h-7 w-7 items-center justify-center hover:bg-accent rounded-full transition-colors duration-150 flex-shrink-0 text-text-muted hover:text-text-strong"
                             title={t('sidepanel.browserGroup.newTabInGroup')}
                         >
                             <Plus className="w-4 h-4" />
@@ -322,7 +322,7 @@ export function BrowserGroupCard({
                     {!isEditing && onSaveToBlueTab && (
                         <button
                             onClick={() => onSaveToBlueTab(group, tabs)}
-                            className="p-1 hover:bg-bg-2 rounded-md transition-colors duration-150 flex-shrink-0 text-text-muted hover:text-text-strong"
+                            className="flex h-7 w-7 items-center justify-center hover:bg-accent rounded-full transition-colors duration-150 flex-shrink-0 text-text-muted hover:text-text-strong"
                             title={t('sidepanel.browserGroup.saveToBlueTab')}
                         >
                             <LayersPlus className="w-4 h-4" />
@@ -333,7 +333,7 @@ export function BrowserGroupCard({
                     {!isEditing && (
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <button className="p-1 hover:bg-bg-2 rounded-md transition-all duration-150 flex-shrink-0 text-text-muted hover:text-text-strong">
+                                <button className="flex h-7 w-7 items-center justify-center hover:bg-accent rounded-full transition-all duration-150 flex-shrink-0 text-text-muted hover:text-text-strong">
                                     <MoreHorizontal className="w-4 h-4" />
                                 </button>
                             </DropdownMenuTrigger>
@@ -341,18 +341,18 @@ export function BrowserGroupCard({
                                 {onSaveToArchive && (
                                     <DropdownMenuItem
                                         onClick={() => onSaveToArchive(tabs)}
-                                        className="focus:bg-gray-100 dark:focus:bg-gray-700"
+                                        className="focus:bg-accent"
                                     >
-                                        <Archive className="w-4 h-4 me-2" />
+                                        <Archive className="w-4 h-4" />
                                         {t('sidepanel.browserGroup.saveToArchive')}
                                     </DropdownMenuItem>
                                 )}
                                 {onCopyLinks && (
                                     <DropdownMenuItem
                                         onClick={() => onCopyLinks(tabs)}
-                                        className="focus:bg-gray-100 dark:focus:bg-gray-700"
+                                        className="focus:bg-accent"
                                     >
-                                        <Copy className="w-4 h-4 me-2" />
+                                        <Copy className="w-4 h-4" />
                                         {t('sidepanel.browserGroup.copyLinks')}
                                     </DropdownMenuItem>
                                 )}
@@ -366,9 +366,9 @@ export function BrowserGroupCard({
                                 {onSaveSuspendedAsGroup && (
                                     <DropdownMenuItem
                                         onClick={() => onSaveSuspendedAsGroup(group, tabs)}
-                                        className="focus:bg-gray-100 dark:focus:bg-gray-700"
+                                        className="focus:bg-accent"
                                     >
-                                        <BedDouble className="w-4 h-4 me-2" />
+                                        <BedDouble className="w-4 h-4" />
                                         {t('sidepanel.browserGroup.saveAndCloseSuspendedTabs')}
                                     </DropdownMenuItem>
                                 )}
@@ -378,9 +378,9 @@ export function BrowserGroupCard({
                                         <DropdownMenuSeparator />
                                         <DropdownMenuItem
                                             onClick={() => onDeleteGroup(group.id)}
-                                            className="focus:bg-gray-100 dark:focus:bg-gray-700"
+                                            className="focus:bg-accent"
                                         >
-                                            <Ungroup className="w-4 h-4 me-2" />
+                                            <Ungroup className="w-4 h-4" />
                                             {t('sidepanel.browserGroup.ungroupAll')}
                                         </DropdownMenuItem>
                                     </>
@@ -391,9 +391,9 @@ export function BrowserGroupCard({
                                         <DropdownMenuSeparator />
                                         <DropdownMenuItem
                                             onClick={() => setShowDeleteAllModal(true)}
-                                            className="text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-900/20"
+                                            className="text-danger focus:text-danger focus:bg-danger-muted"
                                         >
-                                            <Trash2 className="w-4 h-4 me-2" />
+                                            <Trash2 className="w-4 h-4" />
                                             {t('sidepanel.browserGroup.deleteAll')}
                                         </DropdownMenuItem>
                                     </>
@@ -405,7 +405,7 @@ export function BrowserGroupCard({
 
                 {/* Tabs */}
                 <CollapsibleContent>
-                    <div className="px-1.5 pb-2 space-y-0.5">
+                    <div className="px-2 pb-2 space-y-0.5">
                         {tabs.map(tab => (
                             <TabItem
                                 key={tab.id}

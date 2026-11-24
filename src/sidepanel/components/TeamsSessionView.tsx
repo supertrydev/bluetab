@@ -50,7 +50,7 @@ interface OwnTab {
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
     return (
-        <p className="px-1 pb-1 text-micro font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+        <p className="px-1 pb-1 text-xs font-semibold text-muted-foreground">
             {children}
         </p>
     )
@@ -282,7 +282,7 @@ export function TeamsSessionView({ state }: TeamsSessionViewProps) {
                 </div>
                 <button
                     onClick={() => { if (session?.code) TeamsService.joinSession(session.code).catch(() => {}) }}
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary text-secondary-foreground text-sm font-medium hover:bg-secondary/80 transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 rounded-full bg-secondary text-secondary-foreground text-sm font-medium hover:bg-secondary/80 transition-colors"
                 >
                     <RefreshCw className="w-3.5 h-3.5" />
                     {t('sidepanel.teamsSession.retry')}
@@ -311,28 +311,28 @@ export function TeamsSessionView({ state }: TeamsSessionViewProps) {
                     type="button"
                     data-testid="session-code-button"
                     onClick={handleCopyCode}
-                    className="flex min-w-0 max-w-[96px] items-center gap-1 rounded-md bg-muted px-1.5 py-1 font-mono text-xs font-semibold tracking-wider hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="flex min-w-0 max-w-[96px] items-center gap-1 rounded-full bg-muted px-1.5 py-1 font-mono text-xs font-semibold tracking-wider hover:bg-accent"
                     title={`${t('sidepanel.teamsSession.copySessionCode')}: ${isolatedSessionCode}`}
                     aria-label={`${t('sidepanel.teamsSession.copySessionCode')}: ${isolatedSessionCode}`}
                 >
                     <span data-testid="session-code-text" dir="ltr" className="min-w-0 truncate">{session?.code}</span>
                     {codeCopied
-                        ? <CheckCircle2 className="w-3 h-3 text-green-500" />
+                        ? <CheckCircle2 className="w-3 h-3 text-success" />
                         : <Copy className="w-3 h-3 text-muted-foreground" />
                     }
                 </button>
 
                 {/* Connection status */}
                 <span className={cn(
-                    'flex flex-shrink-0 items-center gap-1 text-caption',
-                    connectionState === 'connected' && 'text-green-600 dark:text-green-400',
-                    connectionState === 'connecting' && 'text-yellow-600 dark:text-yellow-400',
+                    'flex flex-shrink-0 items-center gap-1 text-xs',
+                    connectionState === 'connected' && 'text-success',
+                    connectionState === 'connecting' && 'text-warning',
                     connectionState === 'disconnected' && 'text-muted-foreground'
                 )}>
                     <span className={cn(
                         'w-1.5 h-1.5 rounded-full',
-                        connectionState === 'connected' && 'bg-green-500',
-                        connectionState === 'connecting' && 'bg-yellow-400 animate-pulse',
+                        connectionState === 'connected' && 'bg-success',
+                        connectionState === 'connecting' && 'bg-warning animate-pulse',
                         connectionState === 'disconnected' && 'bg-muted-foreground/40'
                     )} />
                     {connectionState === 'connected'
@@ -359,9 +359,9 @@ export function TeamsSessionView({ state }: TeamsSessionViewProps) {
                     data-testid="end-session-button"
                     onClick={handleEndOrLeave}
                     className={cn(
-                        'flex flex-shrink-0 items-center gap-1 rounded-md px-1.5 py-1 text-caption transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                        'flex flex-shrink-0 items-center gap-1 rounded-md px-1.5 py-1 text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                         isHost
-                            ? 'text-destructive hover:bg-destructive/10'
+                            ? 'text-destructive hover:bg-danger-muted'
                             : 'text-muted-foreground hover:bg-accent'
                     )}
                 >
@@ -430,7 +430,7 @@ export function TeamsSessionView({ state }: TeamsSessionViewProps) {
                                 <button
                                     type="button"
                                     data-testid="select-individual-tabs-trigger"
-                                    className="mx-0 flex w-full items-center gap-2 rounded-md px-1 py-1.5 text-start hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                                    className="mx-0 flex w-full items-center gap-2 rounded-md px-1 py-1.5 text-start hover:bg-accent"
                                 >
                                     <span className="flex-1 text-xs text-muted-foreground">
                                         {t('sidepanel.teamsSession.selectIndividualTabs')}
@@ -449,7 +449,7 @@ export function TeamsSessionView({ state }: TeamsSessionViewProps) {
                                     <div className="flex justify-end py-0.5">
                                         <button
                                             onClick={allSelected ? handleDeselectAll : handleSelectAll}
-                                            className="text-micro text-primary hover:text-primary/80 transition-colors"
+                                            className="text-xs text-primary hover:text-primary/80 transition-colors"
                                         >
                                             {allSelected ? t('sidepanel.teamsSession.deselectAll') : t('sidepanel.teamsSession.selectAll')}
                                         </button>
@@ -491,11 +491,11 @@ export function TeamsSessionView({ state }: TeamsSessionViewProps) {
                                 <div key={key} className="space-y-1.5 rounded-lg border border-border p-2.5">
                                     <div className="flex items-center justify-between">
                                         <bdi dir="auto" className="text-xs font-medium truncate">{share.group.name}</bdi>
-                                        <span className="text-micro text-muted-foreground flex-shrink-0 ms-2">
+                                        <span className="text-xs text-muted-foreground flex-shrink-0 ms-2">
                                             {t('common.tabsCount', { count: share.group.tabs.length })}
                                         </span>
                                     </div>
-                                    <p dir="auto" className="text-micro text-muted-foreground">
+                                    <p dir="auto" className="text-xs text-muted-foreground">
                                         {isOwnShare
                                             ? t('sidepanel.teamsSession.sharedByYou')
                                             : t('sidepanel.teamsSession.sharedByOther', {
@@ -509,7 +509,7 @@ export function TeamsSessionView({ state }: TeamsSessionViewProps) {
                                             className={cn(
                                                 'w-full flex items-center justify-center gap-1.5 text-xs px-3 py-1.5 rounded-lg font-medium transition-all',
                                                 isSaved
-                                                    ? 'bg-green-500/10 text-green-600 dark:text-green-400'
+                                                    ? 'bg-success-muted text-success'
                                                     : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
                                             )}
                                         >
@@ -534,7 +534,7 @@ export function TeamsSessionView({ state }: TeamsSessionViewProps) {
                                     type="button"
                                     data-testid="share-group-button"
                                     onClick={() => setShowGroupPicker(true)}
-                                    className="flex flex-shrink-0 items-center gap-1.5 rounded-md bg-secondary px-2 py-1.5 text-xs font-medium text-secondary-foreground hover:bg-secondary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                                    className="flex flex-shrink-0 items-center gap-1.5 rounded-full bg-secondary px-2 py-1.5 text-xs font-medium text-secondary-foreground hover:bg-secondary/80"
                                 >
                                     <Share2 className="h-3.5 w-3.5" />
                                     {t('sidepanel.teamsSession.shareGroupTitle')}
@@ -545,7 +545,7 @@ export function TeamsSessionView({ state }: TeamsSessionViewProps) {
                                 type="button"
                                 data-testid="share-group-button"
                                 onClick={() => setShowGroupPicker(true)}
-                                className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-dashed border-border px-3 py-1.5 text-xs text-muted-foreground hover:border-border hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                                className="flex w-full items-center justify-center gap-1.5 rounded-full border border-dashed border-border px-3 py-1.5 text-xs text-muted-foreground hover:border-border hover:bg-accent"
                             >
                                 <Share2 className="h-3.5 w-3.5" />
                                 {t('sidepanel.teamsSession.shareGroupTitle')}
@@ -597,7 +597,7 @@ export function TeamsSessionView({ state }: TeamsSessionViewProps) {
                             <button
                                 type="button"
                                 onClick={() => setSidebarOpen(false)}
-                                className="rounded-md p-1 hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                                className="rounded-full p-1 hover:bg-accent"
                                 aria-label={t('common.close')}
                             >
                                 <X className="w-3.5 h-3.5 text-muted-foreground" />

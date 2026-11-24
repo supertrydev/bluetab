@@ -222,20 +222,20 @@ const BlockedPage = () => {
   // Session ended state
   if (sessionEnded) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-900">
+      <div className="min-h-screen flex items-center justify-center bg-bg-0">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.4, ease: 'easeOut' }}
           className="text-center"
         >
-          <div className="w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/40 flex items-center justify-center mx-auto mb-6">
-            <ShieldAlert className="w-8 h-8 text-green-600 dark:text-green-400" />
+          <div className="w-16 h-16 rounded-full bg-success-muted flex items-center justify-center mx-auto mb-6">
+            <ShieldAlert className="w-8 h-8 text-success" />
           </div>
-          <h1 className="text-2xl font-semibold text-slate-900 dark:text-white mb-2">
+          <h1 className="text-2xl font-semibold text-text-strong mb-2">
             {t('blocked.sessionCompleteTitle')}
           </h1>
-          <p className="text-slate-500 dark:text-slate-400">
+          <p className="text-text-muted">
             {t('blocked.redirecting', { domain: isolateBidi(domain, 'auto') })}
           </p>
         </motion.div>
@@ -244,19 +244,19 @@ const BlockedPage = () => {
   }
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center bg-zinc-50 dark:bg-zinc-900 overflow-hidden">
+    <div className="min-h-screen relative flex items-center justify-center bg-bg-0 overflow-hidden">
       {/* Subtle gradient background effect */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div
           className="absolute -top-1/2 -left-1/2 w-full h-full rounded-full opacity-[0.08] dark:opacity-[0.06]"
           style={{
-            background: 'radial-gradient(circle, #3b82f6 0%, transparent 70%)',
+            background: 'radial-gradient(circle, var(--primary) 0%, transparent 70%)',
           }}
         />
         <div
           className="absolute -bottom-1/2 -right-1/2 w-full h-full rounded-full opacity-[0.06] dark:opacity-[0.04]"
           style={{
-            background: 'radial-gradient(circle, #8b5cf6 0%, transparent 70%)',
+            background: 'radial-gradient(circle, var(--primary) 0%, transparent 70%)',
           }}
         />
       </div>
@@ -273,9 +273,9 @@ const BlockedPage = () => {
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.5, ease: 'easeOut' }}
-          className="w-20 h-20 rounded-2xl bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center mb-8 shadow-sm"
+          className="w-20 h-20 rounded-2xl bg-warning-muted flex items-center justify-center mb-8 shadow-sm"
         >
-          <ShieldAlert className="w-10 h-10 text-orange-600 dark:text-orange-400" />
+          <ShieldAlert className="w-10 h-10 text-warning" />
         </motion.div>
 
         {/* Heading */}
@@ -283,10 +283,10 @@ const BlockedPage = () => {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, duration: 0.5 }}
-          className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-3"
+          className="text-2xl md:text-3xl font-semibold text-text-strong mb-3"
         >
           {headingParts[0]}
-          <span className="text-orange-600 dark:text-orange-400"><bdi dir="auto">{domain}</bdi></span>
+          <span className="text-warning"><bdi dir="auto">{domain}</bdi></span>
           {headingParts.slice(1).join(domain)}
         </motion.h1>
 
@@ -298,12 +298,12 @@ const BlockedPage = () => {
             transition={{ delay: 0.4, duration: 0.5 }}
             className="mb-6"
           >
-            <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">
+            <p className="text-sm text-text-muted mb-1">
               {pomodoroState.isPaused
                 ? t('blocked.timerPaused')
                 : t('blocked.remainingInSession')}
             </p>
-            <div dir="ltr" className="text-5xl md:text-6xl font-mono font-bold text-slate-900 dark:text-white tracking-tight">
+            <div dir="ltr" className="text-5xl md:text-6xl font-mono font-semibold text-text-strong tracking-tight">
               {formatCountdown(remaining)}
             </div>
           </motion.div>
@@ -314,9 +314,9 @@ const BlockedPage = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 0.5 }}
-          className="text-lg text-slate-500 dark:text-slate-400 italic mb-10 max-w-md"
+          className="text-lg text-text-muted mb-10 max-w-md"
         >
-          "{motivationalMessage}"
+          “{motivationalMessage}”
         </motion.p>
 
         {/* Action buttons */}
@@ -329,8 +329,8 @@ const BlockedPage = () => {
           {/* Go Back button */}
           <button
             onClick={handleGoBack}
-            className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl
-              bg-blue-600 hover:bg-blue-700 active:bg-blue-800
+            className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-full
+              bg-primary hover:bg-primary-hover active:bg-primary-active
               text-white font-medium text-sm
               transition-colors shadow-sm hover:shadow-md"
           >
@@ -342,10 +342,10 @@ const BlockedPage = () => {
           {!showEndConfirm ? (
             <button
               onClick={() => setShowEndConfirm(true)}
-              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl
-                bg-transparent border border-slate-300 dark:border-slate-600
-                text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200
-                hover:border-slate-400 dark:hover:border-slate-500
+              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-full
+                bg-transparent border border-border
+                text-text-strong hover:text-text-strong
+                hover:bg-accent
                 font-medium text-sm transition-colors"
             >
               <XCircle className="w-4 h-4" />
@@ -358,7 +358,7 @@ const BlockedPage = () => {
               transition={{ duration: 0.2 }}
               className="flex-1 flex flex-col gap-2"
             >
-              <p className="text-xs text-red-600 dark:text-red-400 font-medium">
+              <p className="text-xs text-danger font-medium">
                 {t('blocked.confirmEnd', {
                   remaining: isolateBidi(formatRemainingText(remaining), 'ltr'),
                 })}
@@ -366,13 +366,13 @@ const BlockedPage = () => {
               <div className="flex gap-2">
                 <button
                   onClick={handleEndFocus}
-                  className="flex-1 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-medium transition-colors"
+                  className="flex-1 px-4 py-2 rounded-full bg-danger hover:bg-danger text-white text-sm font-medium transition-colors"
                 >
                   {t('blocked.confirmEndButton')}
                 </button>
                 <button
                   onClick={() => setShowEndConfirm(false)}
-                  className="flex-1 px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-400 text-sm font-medium transition-colors hover:border-slate-400"
+                  className="flex-1 px-4 py-2 rounded-full border border-border text-text-muted text-sm font-medium transition-colors hover:border-border"
                 >
                   {t('common.cancel')}
                 </button>

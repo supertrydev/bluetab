@@ -45,7 +45,7 @@ export function PastWrappedSection({ onReplay }: PastWrappedSectionProps) {
       {/* Heading */}
       <div className="flex items-center gap-2 mb-4">
         <Gift className="w-5 h-5 text-violet-400" strokeWidth={1.5} />
-        <h2 className="text-base font-bold text-foreground tracking-tight">{t('options.pastWrapped.title')}</h2>
+        <h2 className="text-base font-semibold text-foreground tracking-tight">{t('options.pastWrapped.title')}</h2>
       </div>
 
       {snapshots.length === 0 ? (
@@ -58,7 +58,7 @@ export function PastWrappedSection({ onReplay }: PastWrappedSectionProps) {
               className="flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3"
             >
               <div className="flex flex-col">
-                <span dir="ltr" className="font-bold text-foreground text-sm">{snap.year}</span>
+                <span dir="ltr" className="font-semibold text-foreground text-sm">{snap.year}</span>
                 {snap.personalityTitle ? (
                   <span className="text-xs text-violet-500 font-medium mt-0.5">
                     <bdi dir="auto">{snap.personalityTitle.title}</bdi>
@@ -71,7 +71,7 @@ export function PastWrappedSection({ onReplay }: PastWrappedSectionProps) {
               </div>
               <button
                 onClick={() => onReplay(snap.year)}
-                className="flex items-center gap-1.5 text-xs font-semibold text-violet-600 hover:text-violet-500 transition-colors bg-violet-50 dark:bg-violet-950/40 hover:bg-violet-100 dark:hover:bg-violet-900/40 px-3 py-1.5 rounded-lg"
+                className="flex items-center gap-1.5 text-xs font-semibold text-violet-600 hover:text-violet-500 transition-colors bg-violet-50 dark:bg-violet-950/40 hover:bg-violet-100 dark:hover:bg-violet-900/40 px-3 py-1.5 rounded-full"
               >
                 <RotateCcw className="w-3 h-3" />
                 {t('options.pastWrapped.replay')}

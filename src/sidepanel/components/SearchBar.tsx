@@ -46,14 +46,14 @@ export function SearchBar({
                 onChange={(e) => onChange(e.target.value)}
                 placeholder={resolvedPlaceholder}
                 aria-label={ariaLabel ?? resolvedPlaceholder}
-                className="ps-8 pe-8 h-8 text-xs"
+                className="ps-8 pe-8 h-9 text-sm"
             />
             {value && (
                 <button
                     type="button"
                     onClick={handleClear}
                     aria-label={clearLabel ?? t('options.feedsPage.clearSearch')}
-                    className="absolute end-2 top-1/2 -translate-y-1/2 p-0.5 rounded hover:bg-muted"
+                    className="absolute end-2 top-1/2 -translate-y-1/2 flex h-6 w-6 items-center justify-center rounded-full hover:bg-accent"
                 >
                     <X className="w-3.5 h-3.5 text-muted-foreground" />
                 </button>

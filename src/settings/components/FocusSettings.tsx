@@ -276,7 +276,7 @@ export function FocusSettings() {
 
   return (
     <div className="pt-4 border-t border-border">
-      <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 flex items-center gap-2 mb-4">
+      <h3 className="text-base font-semibold text-text-strong flex items-center gap-2 mb-4">
         <Shield className="w-5 h-5" />
         {t('settings.focus.title')}
       </h3>
@@ -285,7 +285,7 @@ export function FocusSettings() {
         {/* Master Toggle */}
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            <p className="text-sm font-medium text-text-strong">
               {t('settings.focus.masterLabel')}
             </p>
             <p className="text-xs text-muted-foreground">
@@ -308,14 +308,14 @@ export function FocusSettings() {
           <>
             {/* Preset Categories */}
             <div>
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3 block">
+              <label className="text-sm font-medium text-text-strong mb-3 block">
                 {t('settings.focus.blockedCategories')}
               </label>
               <div className="space-y-2">
                 {PRESET_KEYS.map((key) => (
                   <div
                     key={key}
-                    className="flex items-center justify-between p-3 border border-border rounded-lg"
+                    className="flex items-center justify-between p-3 rounded-md border border-border bg-bg-1"
                   >
                     <div className="min-w-0 flex-1 me-3">
                       <p className="text-sm font-medium text-foreground">
@@ -333,7 +333,7 @@ export function FocusSettings() {
 
             {/* Custom Domains */}
             <div>
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3 block">
+              <label className="text-sm font-medium text-text-strong mb-3 block">
                 {t('settings.focus.customBlockedDomains')}
               </label>
               <div className="flex gap-2 mb-2">
@@ -347,18 +347,18 @@ export function FocusSettings() {
                   }}
                   onKeyDown={handleDomainKeyDown}
                   placeholder={t('settings.focus.domainPlaceholder')}
-                  className="flex-1 px-3 py-1.5 text-sm border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                  className="flex-1 px-3.5 py-1.5 text-sm border border-field rounded-input bg-bg-1 text-foreground placeholder:text-muted-foreground"
                 />
                 <button
                   onClick={handleAddDomain}
-                  className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-lg border border-border text-foreground hover:bg-accent transition-colors"
+                  className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-full border border-border text-foreground hover:bg-accent transition-colors"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   {t('common.add')}
                 </button>
               </div>
               {domainError && (
-                <p dir="auto" className="text-xs text-red-500 mb-2">{domainError}</p>
+                <p dir="auto" className="text-xs text-danger mb-2">{domainError}</p>
               )}
               {settings.customDomains.length > 0 && (
                 <div className="border border-border rounded-lg divide-y divide-border">
@@ -370,7 +370,7 @@ export function FocusSettings() {
                       <bdi dir="ltr" className="text-foreground">{domain}</bdi>
                       <button
                         onClick={() => handleRemoveDomain(domain)}
-                        className="p-1 text-muted-foreground hover:text-red-500 transition-colors"
+                        className="p-1 text-muted-foreground hover:text-danger transition-colors"
                         title={t('settings.focus.removeDomainTitle', { domain: isolateBidi(domain, 'ltr') })}
                       >
                         <X className="w-3.5 h-3.5" />
@@ -382,7 +382,7 @@ export function FocusSettings() {
             </div>
 
             <div>
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3 block">
+              <label className="text-sm font-medium text-text-strong mb-3 block">
                 {t('settings.focus.blockedPhrasesTitle')}
               </label>
               <p className="text-xs text-muted-foreground mb-2">
@@ -404,7 +404,7 @@ export function FocusSettings() {
                 }}
                 placeholder={t('settings.focus.blockedPhrasesPlaceholder')}
                 rows={4}
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                className="w-full rounded-lg border border-field bg-bg-1 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground"
               />
             </div>
 
@@ -418,7 +418,7 @@ export function FocusSettings() {
             {/* AI-suggested domains subsection (DETECT-01, DETECT-09, DETECT-10) */}
             <div className="border-t border-border pt-4">
               <div className="mb-2">
-                <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                <p className="text-sm font-medium text-text-strong">
                   {t('settings.focus.aiSuggestedTitle')}
                 </p>
                 <p className="text-xs text-muted-foreground mt-0.5">

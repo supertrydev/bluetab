@@ -84,7 +84,7 @@ function FlowTemplateCard({
     onRemove: () => void;
 }) {
     return (
-        <div className="flex items-center justify-between p-4 rounded-lg border border-border bg-bg-1 hover:bg-bg-2 transition-colors">
+        <div className="flex items-center justify-between p-4 rounded-lg border border-border bg-bg-1 hover:bg-accent transition-colors">
             <div className="flex items-center gap-3">
                 <div
                     className="w-10 h-10 rounded-lg flex items-center justify-center text-white text-lg"
@@ -108,7 +108,7 @@ function FlowTemplateCard({
                 </Button>
             ) : (
                 <Button size="sm" onClick={onImport}>
-                    <Plus className="h-4 w-4 me-1" />
+                    <Plus className="h-4 w-4" />
                     {translate('common.add')}
                 </Button>
             )}
@@ -177,7 +177,7 @@ function SortableFlowRuleCard({
                 <button
                     ref={setActivatorNodeRef}
                     {...listeners}
-                    className="touch-none p-1 rounded hover:bg-bg-2 cursor-grab active:cursor-grabbing text-text-muted hover:text-text-strong transition-colors"
+                    className="touch-none p-1 rounded-full hover:bg-accent cursor-grab active:cursor-grabbing text-text-muted hover:text-text-strong transition-colors"
                     aria-label={translate('flow.ruleCard.dragToReorder')}
                 >
                     <GripVertical className="h-4 w-4" />
@@ -309,7 +309,7 @@ function ConditionEditor({ condition, index, onChange, onRemove, canRemove }: Co
                             value={condition.value}
                             onChange={(e) => onChange({ ...condition, value: e.target.value })}
                             placeholder={getConditionPlaceholder(condition)}
-                            className="border-border bg-bg-0 text-text-strong placeholder:text-gray-400 focus-visible:ring-primary/50 focus-visible:ring-offset-0"
+                            className="border-border bg-bg-0 text-text-strong placeholder:text-text-muted focus-visible:ring-primary/50 focus-visible:ring-offset-0"
                             dir={condition.type.includes('title') ? 'auto' : 'ltr'}
                         />
                     </div>
@@ -463,7 +463,7 @@ function FlowRuleEditor({
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                                 placeholder={translate('flow.editor.ruleNamePlaceholder')}
-                                className="border-border bg-bg-0 text-text-strong placeholder:text-gray-400 focus-visible:ring-primary/50 focus-visible:ring-offset-0"
+                                className="border-border bg-bg-0 text-text-strong placeholder:text-text-muted focus-visible:ring-primary/50 focus-visible:ring-offset-0"
                                 dir="auto"
                             />
                         </div>
@@ -475,7 +475,7 @@ function FlowRuleEditor({
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                                 placeholder={translate('flow.proposalModal.descriptionPlaceholder')}
-                                className="border-border bg-bg-0 text-text-strong placeholder:text-gray-400 focus-visible:ring-primary/50 focus-visible:ring-offset-0"
+                                className="border-border bg-bg-0 text-text-strong placeholder:text-text-muted focus-visible:ring-primary/50 focus-visible:ring-offset-0"
                                 dir="auto"
                             />
                         </div>
@@ -494,13 +494,13 @@ function FlowRuleEditor({
                         </div>
                         <div className="flex items-center gap-2">
                             {conditions.length > 1 && (
-                                <div className="flex rounded-lg border border-border bg-bg-1 p-0.5">
+                                <div className="flex rounded-full border border-border-glass bg-accent p-0.5">
                                     <Button
                                         type="button"
                                         variant={conditionOperator === 'AND' ? 'primary' : 'ghost'}
                                         size="sm"
                                         onClick={() => setConditionOperator('AND')}
-                                        className="h-7 rounded-lg px-3"
+                                        className="h-7 rounded-full px-3"
                                     >
                                         AND
                                     </Button>
@@ -509,7 +509,7 @@ function FlowRuleEditor({
                                         variant={conditionOperator === 'OR' ? 'primary' : 'ghost'}
                                         size="sm"
                                         onClick={() => setConditionOperator('OR')}
-                                        className="h-7 rounded-lg px-3"
+                                        className="h-7 rounded-full px-3"
                                     >
                                         OR
                                     </Button>
@@ -553,7 +553,7 @@ function FlowRuleEditor({
                         }}
                         className="grid gap-2 sm:grid-cols-2"
                     >
-                        <div className={`flex items-start gap-3 rounded-lg border p-3 transition-all ${targetMode === 'existing' ? 'border-primary bg-primary-muted/30' : 'border-border bg-bg-2'} ${!hasExistingGroups ? 'opacity-50' : ''}`}>
+                        <div className={`flex items-start gap-3 rounded-lg border p-3 transition-all ${targetMode === 'existing' ? 'border-primary bg-primary-muted' : 'border-border bg-bg-2'} ${!hasExistingGroups ? 'opacity-50' : ''}`}>
                             <RadioGroupItem
                                 id="flow-target-existing"
                                 value="existing"
@@ -567,7 +567,7 @@ function FlowRuleEditor({
                                 </span>
                             </Label>
                         </div>
-                        <div className={`flex items-start gap-3 rounded-lg border p-3 transition-all ${targetMode === 'new' ? 'border-primary bg-primary-muted/30' : 'border-border bg-bg-2'}`}>
+                        <div className={`flex items-start gap-3 rounded-lg border p-3 transition-all ${targetMode === 'new' ? 'border-primary bg-primary-muted' : 'border-border bg-bg-2'}`}>
                             <RadioGroupItem id="flow-target-new" value="new" className="mt-0.5" />
                             <Label htmlFor="flow-target-new" className="grid cursor-pointer gap-1">
                                 <span className="text-text-strong">{translate('flow.editor.newGroup')}</span>
@@ -607,7 +607,7 @@ function FlowRuleEditor({
                                 value={newGroupName}
                                 onChange={(e) => setNewGroupName(e.target.value)}
                                 placeholder={translate('flow.editor.enterNewGroupName')}
-                                className="border-border bg-bg-0 text-text-strong placeholder:text-gray-400 focus-visible:ring-primary/50 focus-visible:ring-offset-0"
+                                className="border-border bg-bg-0 text-text-strong placeholder:text-text-muted focus-visible:ring-primary/50 focus-visible:ring-offset-0"
                                 dir="auto"
                             />
                             <p className="text-xs text-text-muted">
@@ -733,7 +733,7 @@ function RuleTestPanel({ rules }: { rules: FlowRule[] }) {
                     value={testUrl}
                     onChange={(e) => setTestUrl(e.target.value)}
                     placeholder={translate('flow.testPanel.urlPlaceholder')}
-                    className="w-full px-3 py-2 rounded-md border border-border bg-bg-0 text-text-strong placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    className="w-full px-3.5 py-2 rounded-input border border-field bg-bg-1 text-text-strong placeholder:text-text-muted"
                     dir="ltr"
                 />
                 <input
@@ -741,7 +741,7 @@ function RuleTestPanel({ rules }: { rules: FlowRule[] }) {
                     value={testTitle}
                     onChange={(e) => setTestTitle(e.target.value)}
                     placeholder={translate('flow.testPanel.titlePlaceholder')}
-                    className="w-full px-3 py-2 rounded-md border border-border bg-bg-0 text-text-strong placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    className="w-full px-3.5 py-2 rounded-input border border-field bg-bg-1 text-text-strong placeholder:text-text-muted"
                     dir="auto"
                 />
 
@@ -1179,11 +1179,11 @@ function FlowPage() {
                     {/* Pro Gate */}
                     {!isAuthLoading && !isPro && (
                         <div className="max-w-4xl mx-auto w-full">
-                            <div className="bg-gradient-to-br from-primary/10 via-bg-1 to-warning/10 border border-primary/20 rounded-xl p-8 text-center">
-                                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <CircleStar className="h-8 w-8 text-primary" />
+                            <div className="bg-bg-1 border border-border rounded-lg p-8 text-center">
+                                <div className="w-12 h-12 bg-primary-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <CircleStar className="h-6 w-6 text-primary" />
                                 </div>
-                                <h2 className="text-2xl font-bold text-text-strong mb-2">
+                                <h2 className="text-xl font-semibold text-text-strong mb-2">
                                     {translate('flow.page.proTitle')}
                                 </h2>
                                 <p className="text-text-muted mb-6 max-w-md mx-auto">
@@ -1248,7 +1248,7 @@ function FlowPage() {
                                         </span>
                                     </div>
                                     <Button onClick={handleCreateRule} size="sm">
-                                        <Plus className="h-4 w-4 me-1" />
+                                        <Plus className="h-4 w-4" />
                                         {translate('flow.editor.createRule')}
                                     </Button>
                                 </div>
@@ -1265,7 +1265,7 @@ function FlowPage() {
                                             {translate('flow.page.noRulesDescription')}
                                         </p>
                                         <Button onClick={handleCreateRule} variant="outline" size="sm">
-                                            <Plus className="h-4 w-4 me-1" />
+                                            <Plus className="h-4 w-4" />
                                             {translate('flow.editor.createRule')}
                                         </Button>
                                     </div>
@@ -1273,7 +1273,7 @@ function FlowPage() {
                                     <div className="space-y-3">
                                         {/* Rule Conflicts Warning - inside rules section */}
                                         {ruleConflicts.length > 0 && (
-                                            <div className="bg-warning/10 border border-warning/50 rounded-lg p-3">
+                                            <div className="bg-warning-muted rounded-lg p-3">
                                                 <div className="flex items-center gap-2 mb-2">
                                                     <AlertTriangle className="h-4 w-4 text-warning" />
                                                     <span className="text-sm font-medium text-text-strong">

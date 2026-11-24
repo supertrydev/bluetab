@@ -14,6 +14,9 @@ import { GroupMemoryStorageService } from '../../utils/group-memory-storage';
 import { recordGroupActivity } from '../../utils/group-activity';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import PinButton from '../../components/PinButton';
+import { CopyLinkButton } from '@/components/CopyLinkButton';
+import { ProjectBadge, projectTint } from '@/components/ProjectBadge';
+import { RestoreGroupButton } from '@/components/RestoreGroupButton';
 import usePinManagement from '../../hooks/usePinManagement';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
@@ -26,8 +29,9 @@ import {
     DropdownMenuTrigger,
 } from '../../components/ui/dropdown-menu';
 import { SearchBar } from './SearchBar';
-import type { TabGroup, Tag, Settings } from '../../types/models';
-import { ChevronRight, ChevronDown, Undo2, Trash2, MoreHorizontal, Pin, Send, Repeat } from 'lucide-react';
+import { getSearchVisibleTabs, groupMatchesSearch } from '../../utils/group-search';
+import type { TabGroup, Tag, Settings, Project } from '../../types/models';
+import { ChevronRight, ChevronDown, Lock, Trash2, MoreHorizontal, Send, Repeat } from 'lucide-react';
 // Plan 14-07 — INTEG-10 + INTEG-12: dynamic Save-to / Mirror entries on the
 // group context menu. Pulls connected accounts via listConnectedAccounts and
 // dispatches the registry verb send_group_to_<integrationId> on click.
@@ -85,7 +89,7 @@ function highlightMatch(text: string, query: string): React.ReactNode {
     return (
         <>
             {text.slice(0, match.start)}
-            <mark className="bg-yellow-200/60 dark:bg-yellow-500/30 rounded-sm px-0.5">{text.slice(match.start, match.end)}</mark>
+            <mark className="bg-mark text-mark-foreground rounded-xs px-0.5">{text.slice(match.start, match.end)}</mark>
             {text.slice(match.end)}
         </>
     );
@@ -95,6 +99,8 @@ export function GroupsPanel() {
     const { t } = useTranslation();
     const [groups, setGroups] = useState<TabGroup[]>([]);
     const [tags, setTags] = useState<Tag[]>([]);
+    const [projects, setProjects] = useState<Project[]>([]);
+    const [notesDisplay, setNotesDisplay] = useState<Settings['groupNotesDisplay']>('preview');
     const [search, setSearch] = useState('');
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
@@ -295,6 +301,8 @@ export function GroupsPanel() {
                 await cleanupOrphanedStates(validIds);
             }
             if (changes.tags) setTags(changes.tags.newValue || []);
+            if (changes.settings) setNotesDisplay((changes.settings.newValue as Partial<Settings> | undefined)?.groupNotesDisplay ?? 'preview');
+            if (changes.projects) setProjects(changes.projects.newValue || []);
             if (changes.pinSettings) await loadGroups();
             if (changes.collapsedGroups) {
                 setCollapsedGroups(new Map(Object.entries(changes.collapsedGroups.newValue || {})));
@@ -308,9 +316,13 @@ export function GroupsPanel() {
     const loadGroups = async () => {
         const stored = await Storage.get<TabGroup[]>('groups') || [];
         const storedTags = await Storage.get<Tag[]>('tags') || [];
+        const storedProjects = await Storage.get<Project[]>('projects') || [];
         const migrated = await Storage.migrateExistingGroups(stored);
         setGroups(migrated);
         setTags(storedTags);
+        setProjects(storedProjects);
+        const storedSettings = await Storage.get<Partial<Settings>>('settings');
+        setNotesDisplay(storedSettings?.groupNotesDisplay ?? 'preview');
 
         try {
             const states = await loadCollapsedStates();
@@ -342,6 +354,7 @@ export function GroupsPanel() {
     };
 
     const restoreGroup = async (group: TabGroup) => {
+        if (group.locked) return;
         try {
             const settings = (await Storage.get<Partial<Settings>>('settings')) ?? {};
             const currentTabs = await chrome.tabs.query({ currentWindow: true });
@@ -376,6 +389,7 @@ export function GroupsPanel() {
     };
 
     const restoreGroupTab = async (url: string, tabId: string, groupId: string) => {
+        if (groups.find(g => g.id === groupId)?.locked) return;
         try {
             const { updatedGroups } = await restoreSavedTabWithBehavior({
                 url,
@@ -406,12 +420,16 @@ export function GroupsPanel() {
         }
     };
 
-    const startEdit = (group: TabGroup) => { setEditingId(group.id); setEditName(group.name); };
+    const startEdit = (group: TabGroup) => {
+        if (group.locked) return;
+        setEditingId(group.id);
+        setEditName(group.name);
+    };
     const cancelEdit = () => { setEditingId(null); setEditName(''); };
     const saveEdit = async () => {
         if (!editingId || !editName.trim()) return;
         try {
-            const updated = groups.map(g => g.id === editingId ? { ...g, name: editName.trim(), modified: Date.now() } : g);
+            const updated = groups.map(g => g.id === editingId && !g.locked ? { ...g, name: editName.trim(), modified: Date.now() } : g);
             await Storage.set('groups', updated);
             setGroups(updated);
             setEditingId(null); setEditName('');
@@ -432,14 +450,7 @@ export function GroupsPanel() {
 
     // Filter & sort
     const { pinnedGroups, unpinnedGroups } = (() => {
-        const filtered = groups.filter(group => {
-            const q = normalizeForSearch(search);
-            if (!q) return true;
-            const matchesName = matchesSearch(group.name, q);
-            const matchesTabs = group.tabs.some(t => matchesSearch(t.title, q) || matchesSearch(t.url, q));
-            const matchesTags = group.tags?.length ? TagManager.getTagsByIds(group.tags, tags).some(t => matchesSearch(t.name, q)) : false;
-            return matchesName || matchesTabs || matchesTags;
-        });
+        const filtered = groups.filter(group => groupMatchesSearch(group, tags, search));
         const sorted = sortGroupsWithPinning(filtered, 'newest');
         return {
             pinnedGroups: sorted.filter(g => pinManagement.isPinned(g.id)),
@@ -449,12 +460,14 @@ export function GroupsPanel() {
 
     const renderGroupCard = (group: TabGroup, isPinned: boolean) => {
         const q = normalizeForSearch(search);
-        const groupNameMatches = q && matchesSearch(group.name, q);
-        const displayTabs = q && !groupNameMatches
-            ? group.tabs.filter(t => matchesSearch(t.title, q) || matchesSearch(t.url, q))
-            : group.tabs;
+        const displayTabs = getSearchVisibleTabs(group, q);
+        const showFullNote = notesDisplay === 'full' || (q !== '' && matchesSearch(group.notes ?? '', q));
+        const project = group.projectId ? projects.find(p => p.id === group.projectId) : undefined;
         return (
-        <div className={`border border-border rounded-lg p-3 bg-card hover-lift ${isPinned ? 'group-pinned' : ''}`}>
+        <div className={`bt-group-row ${project ? 'project-tint' : ''} relative border border-border rounded-lg p-3.5 bg-card hover-lift ${isPinned ? 'group-pinned' : ''}`} style={projectTint(project)}>
+            {project && (
+                <ProjectBadge project={project} className="-start-1.5"><bdi dir="auto">{project.name}</bdi></ProjectBadge>
+            )}
             <div className="flex justify-between items-center mb-1.5">
                 {editingId === group.id ? (
                     <div className="flex-1 flex items-center gap-1.5">
@@ -468,7 +481,7 @@ export function GroupsPanel() {
                             autoFocus
                             className="flex-1 h-7 text-xs"
                         />
-                        <Button onClick={(e) => { e.stopPropagation(); saveEdit(); }} size="sm" className="h-7 text-xs bg-green-600 hover:bg-green-700">{t('common.save')}</Button>
+                        <Button onClick={(e) => { e.stopPropagation(); saveEdit(); }} size="sm" className="h-7 text-xs">{t('common.save')}</Button>
                         <Button onClick={(e) => { e.stopPropagation(); cancelEdit(); }} size="sm" variant="secondary" className="h-7 text-xs">{t('common.cancel')}</Button>
                     </div>
                 ) : (
@@ -476,7 +489,7 @@ export function GroupsPanel() {
                         <div className="flex items-center gap-1.5 flex-1 min-w-0">
                             <button
                                 onClick={(e) => { e.stopPropagation(); toggleCollapse(group.id); }}
-                                className="p-0.5 hover:bg-muted rounded transition-colors"
+                                className="flex h-6 w-6 items-center justify-center hover:bg-accent rounded-full transition-colors"
                                 title={collapsedGroups.get(group.id) ? t('sidepanel.groupsPanel.expand') : t('sidepanel.groupsPanel.collapse')}
                             >
                                 {collapsedGroups.get(group.id)
@@ -485,11 +498,13 @@ export function GroupsPanel() {
                                 }
                             </button>
                             <h3
-                                className="font-medium text-xs cursor-pointer hover:text-primary text-foreground flex-1 truncate flex items-center gap-1"
+                                className={`font-medium text-sm text-foreground flex-1 truncate flex items-center gap-1 ${group.locked ? 'cursor-not-allowed' : 'cursor-pointer hover:text-primary'}`}
                                 onClick={() => startEdit(group)}
-                                title={t('sidepanel.groupsPanel.clickToRename')}
+                                title={group.locked ? t('components.masonry.lockedRename') : t('sidepanel.groupsPanel.clickToRename')}
                             >
-                                {isPinned && <Pin className="w-3 h-3 text-muted-foreground shrink-0 rotate-45" />}
+                                {group.locked && (
+                                    <Lock className="w-3 h-3 text-warning shrink-0" aria-label={t('sidepanel.aiUpgradePrompt.locked')} />
+                                )}
                                 <bdi dir="auto">{highlightMatch(group.name, search)}</bdi>
                                 {collapsedGroups.get(group.id) && (
                                     <span className="text-muted-foreground ms-1 font-normal bt-decor">({group.tabs.length})</span>
@@ -498,12 +513,10 @@ export function GroupsPanel() {
                         </div>
                         <div className="flex gap-0.5 items-center">
                             <PinButton groupId={group.id} isPinned={pinManagement.isPinned(group.id)} onToggle={pinManagement.togglePin} size="small" />
-                            <Button onClick={() => restoreGroup(group)} size="sm" variant="ghost" className="h-6 w-6 p-0 text-green-600 hover:text-green-700 hover:bg-green-50 dark:text-green-400 dark:hover:text-green-300 dark:hover:bg-green-950" title={t('sidepanel.groupsPanel.restore')}>
-                                <Undo2 className="w-3 h-3" />
-                            </Button>
+                            <RestoreGroupButton locked={group.locked} onRestore={() => { void restoreGroup(group); }} />
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <Button size="sm" variant="ghost" className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground" title={t('common.more')}>
+                                    <Button size="sm" variant="ghost" className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground" title={t('common.more')}>
                                         <MoreHorizontal className="w-3.5 h-3.5" />
                                     </Button>
                                 </DropdownMenuTrigger>
@@ -543,7 +556,7 @@ export function GroupsPanel() {
                                         return (
                                             <>
                                                 <DropdownMenuLabel className="flex items-center text-xs font-medium text-muted-foreground">
-                                                    <Send className="w-3.5 h-3.5 me-2" />
+                                                    <Send className="w-3.5 h-3.5" />
                                                     {t('settingsTabs.integrations')}
                                                 </DropdownMenuLabel>
                                                     {availableAccounts.map((account) => {
@@ -557,7 +570,7 @@ export function GroupsPanel() {
                                                                 key={`save:${account.integrationId}:${account.accountId}`}
                                                                 onClick={() => handleSendGroupToIntegration(group, account)}
                                                             >
-                                                                <Send className="w-3.5 h-3.5 me-2 flex-shrink-0" />
+                                                                <Send className="w-3.5 h-3.5 flex-shrink-0" />
                                                                 <span className="min-w-0 truncate">
                                                                     {formatIntegrationActionLabel(
                                                                         actionText,
@@ -601,32 +614,32 @@ export function GroupsPanel() {
                                                                 key={`stop:${mirror.integrationId}:${mirror.accountId}`}
                                                                 onClick={() => handleStopMirroring(group.id, mirror.integrationId)}
                                                             >
-                                                                <Repeat className="w-3.5 h-3.5 me-2" />
+                                                                <Repeat className="w-3.5 h-3.5" />
                                                                 {t('options.groupMenu.stopMirroringProvider', { provider: isolateBidi(provider) })}
                                                             </DropdownMenuItem>
                                                         );
                                                     })}
                                                     {linearMirrored && (
                                                         <DropdownMenuItem onClick={() => handleStopMirroring(group.id, 'linear')}>
-                                                            <Repeat className="w-3.5 h-3.5 me-2" />
+                                                            <Repeat className="w-3.5 h-3.5" />
                                                             {t('options.groupMenu.stopMirroringProvider', { provider: isolateBidi('Linear') })}
                                                         </DropdownMenuItem>
                                                     )}
                                                     {todoistMirrored && (
                                                         <DropdownMenuItem onClick={() => handleStopMirroring(group.id, 'todoist')}>
-                                                            <Repeat className="w-3.5 h-3.5 me-2" />
+                                                            <Repeat className="w-3.5 h-3.5" />
                                                             {t('options.groupMenu.stopMirroringProvider', { provider: isolateBidi('Todoist') })}
                                                         </DropdownMenuItem>
                                                     )}
                                                     {slackMirrored && (
                                                         <DropdownMenuItem onClick={() => handleStopMirroring(group.id, 'slack')}>
-                                                            <Repeat className="w-3.5 h-3.5 me-2" />
+                                                            <Repeat className="w-3.5 h-3.5" />
                                                             {t('options.groupMenu.stopMirroringSlack')}
                                                         </DropdownMenuItem>
                                                     )}
                                                     {discordMirrored && (
                                                         <DropdownMenuItem onClick={() => handleStopMirroring(group.id, 'discord')}>
-                                                            <Repeat className="w-3.5 h-3.5 me-2" />
+                                                            <Repeat className="w-3.5 h-3.5" />
                                                             {t('options.groupMenu.stopMirroringDiscord')}
                                                         </DropdownMenuItem>
                                                     )}
@@ -635,10 +648,11 @@ export function GroupsPanel() {
                                         );
                                     })()}
                                     <DropdownMenuItem
+                                        disabled={group.locked}
                                         onClick={() => { setDeleteTarget(group.id); setShowDeleteModal(true); }}
-                                        className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400"
+                                        className="text-danger focus:text-danger"
                                     >
-                                        <Trash2 className="w-3.5 h-3.5 me-2" />
+                                        <Trash2 className="w-3.5 h-3.5" />
                                         {t('common.delete')}
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
@@ -647,30 +661,43 @@ export function GroupsPanel() {
                     </>
                 )}
             </div>
-            <div className={`transition-all duration-300 ease-out overflow-hidden ${collapsedGroups.get(group.id) ? 'max-h-0' : 'max-h-96'}`}>
+            <div className={`transition-all duration-300 ease-out overflow-hidden ${collapsedGroups.get(group.id) ? 'max-h-0' : 'max-h-[32rem]'}`}>
                 <div className="space-y-1.5 pt-1">
                     <p className="text-xs text-muted-foreground bt-decor">{t('common.tabsCount', { count: group.tabs.length })}</p>
                     {group.tags && group.tags.length > 0 && (
                         <div className="flex flex-wrap gap-1 bt-decor">
                             {TagManager.getTagsByIds(group.tags, tags).slice(0, 3).map(tag => (
-                                <span key={tag.id} className="px-1.5 py-0.5 text-caption rounded font-medium" style={{ backgroundColor: `${tag.color}33`, color: tag.color }}>
+                                <span key={tag.id} className="inline-flex h-5 items-center rounded-full px-2 text-xs font-medium text-text-strong" style={{ backgroundColor: `color-mix(in srgb, ${tag.color} 25%, var(--chip-base, transparent))` }}>
                                     <bdi dir="auto">{tag.name}</bdi>
                                 </span>
                             ))}
-                            {group.tags.length > 3 && <span className="text-caption text-muted-foreground">+{group.tags.length - 3}</span>}
+                            {group.tags.length > 3 && <span className="text-xs text-muted-foreground">+{group.tags.length - 3}</span>}
                         </div>
+                    )}
+                    {group.notes && (
+                        <p className={`text-xs text-muted-foreground break-words ${showFullNote ? 'max-h-32 overflow-y-auto whitespace-pre-wrap' : 'line-clamp-1'}`}>
+                            <bdi dir="auto">{highlightMatch(group.notes, search)}</bdi>
+                        </p>
                     )}
                     <div className="max-h-40 overflow-y-auto space-y-1">
                         {displayTabs.map(tab => (
-                            <button
+                            <div
                                 key={tab.id}
-                                onClick={() => { void restoreGroupTab(tab.url, tab.id, group.id); }}
-                                className="flex items-center gap-1.5 text-xs w-full text-start hover:bg-accent hover:text-accent-foreground rounded px-1 py-0.5 transition-colors cursor-pointer"
-                                title={isolateBidi(tab.url, 'ltr')}
+                                className={`group/tab flex items-center rounded-sm pe-1 transition-colors ${group.locked ? 'opacity-85' : 'hover:bg-accent hover:text-accent-foreground'}`}
                             >
-                                <img src={tab.favicon || '/icons/default-favicon.png'} alt="" className="w-3.5 h-3.5 flex-shrink-0" onError={(e) => { e.currentTarget.src = '/icons/default-favicon.png'; }} />
-                                <span className="truncate text-muted-foreground"><bdi dir="auto">{highlightMatch(tab.title, search)}</bdi></span>
-                            </button>
+                                <button
+                                    onClick={() => { void restoreGroupTab(tab.url, tab.id, group.id); }}
+                                    disabled={group.locked}
+                                    className="flex min-h-7 min-w-0 flex-1 items-center gap-1.5 rounded-sm px-2 py-1.5 text-start text-xs cursor-pointer disabled:cursor-not-allowed"
+                                    title={group.locked ? t('components.masonry.unlockRestore') : isolateBidi(tab.url, 'ltr')}
+                                >
+                                    <img src={tab.favicon || '/icons/default-favicon.png'} alt="" className="w-3.5 h-3.5 flex-shrink-0" onError={(e) => { e.currentTarget.src = '/icons/default-favicon.png'; }} />
+                                    <span className="truncate text-muted-foreground"><bdi dir="auto">{highlightMatch(tab.title, search)}</bdi></span>
+                                </button>
+                                {!group.locked && (
+                                    <CopyLinkButton onCopy={() => { void navigator.clipboard.writeText(tab.url); }} />
+                                )}
+                            </div>
                         ))}
                     </div>
                 </div>
@@ -686,7 +713,7 @@ export function GroupsPanel() {
             </div>
 
             <motion.div
-                className="flex-1 overflow-y-auto overflow-x-hidden scrollbar-transparent px-2 pb-2 space-y-3"
+                className="flex-1 overflow-y-auto overflow-x-hidden scrollbar-transparent px-2 pb-2 pt-3 space-y-4"
                 variants={listVariants}
                 initial="hidden"
                 animate="visible"

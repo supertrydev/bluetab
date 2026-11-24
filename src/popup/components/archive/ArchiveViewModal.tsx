@@ -96,7 +96,7 @@ export function ArchiveViewModal({ isOpen, onClose, archive }: ArchiveViewModalP
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent className="w-auto min-w-[320px] sm:min-w-[500px] max-w-[90vw] max-h-[85vh] overflow-y-auto scrollbar-transparent">
                 <DialogHeader className="mb-2">
-                    <DialogTitle className="text-xl text-gray-900 dark:text-gray-100">
+                    <DialogTitle className="text-xl text-text-strong">
                         <bdi dir="auto">
                             {decryptedArchive
                                 ? (typeof decryptedArchive.originalGroup === 'string' ? t('archive.item.protectedArchive') : decryptedArchive.originalGroup.name)
@@ -108,16 +108,16 @@ export function ArchiveViewModal({ isOpen, onClose, archive }: ArchiveViewModalP
                 {shouldShowPassword ? (
                     // Password Form
                     <form onSubmit={handlePasswordSubmit} className="space-y-4">
-                        <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-4">
-                            <div className="flex items-center gap-2 text-amber-700 dark:text-amber-200 mb-2">
+                        <div className="rounded-xl border border-warning/30 bg-warning-muted p-4">
+                            <div className="flex items-center gap-2 text-warning mb-2">
                                 <Lock className="w-4 h-4" />
                                 <span className="font-medium">{t('archive.view.passwordProtected')}</span>
                             </div>
-                            <p className="text-sm text-amber-700 dark:text-amber-200">
+                            <p className="text-sm text-warning">
                                 {t('archive.view.encryptedDescription')}
                             </p>
                             {getPasswordHint(archive.protection.passwordHint) && (
-                                <p className="mt-2 text-sm text-amber-700 dark:text-amber-200">
+                                <p className="mt-2 text-sm text-warning">
                                     <strong>{t('archive.view.hint')}:</strong>{' '}
                                     <bdi dir="auto">{getPasswordHint(archive.protection.passwordHint)}</bdi>
                                 </p>
@@ -125,7 +125,7 @@ export function ArchiveViewModal({ isOpen, onClose, archive }: ArchiveViewModalP
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="password" className="text-gray-900 dark:text-gray-100">{t('archive.view.password')}</Label>
+                            <Label htmlFor="password" className="text-text-strong">{t('archive.view.password')}</Label>
                             <div className="relative">
                                 <Input
                                     id="password"
@@ -133,20 +133,20 @@ export function ArchiveViewModal({ isOpen, onClose, archive }: ArchiveViewModalP
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     placeholder={t('archive.view.passwordPlaceholder')}
-                                    className="pe-10 bg-bg-0 text-text-strong placeholder:text-gray-400 focus-visible:ring-primary/50 focus-visible:ring-offset-0"
+                                    className="pe-10 bg-bg-0 text-text-strong placeholder:text-text-muted focus-visible:ring-primary/50 focus-visible:ring-offset-0"
                                     dir="ltr"
                                     autoFocus
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute end-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                                    className="absolute end-2 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-strong"
                                 >
                                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                                 </button>
                             </div>
                             {error && (
-                                <p dir="auto" className="text-sm text-red-600 dark:text-red-400">{error}</p>
+                                <p dir="auto" className="text-sm text-danger">{error}</p>
                             )}
                         </div>
 
@@ -154,10 +154,10 @@ export function ArchiveViewModal({ isOpen, onClose, archive }: ArchiveViewModalP
                             <Button type="button" variant="secondary" onClick={onClose} className="w-full sm:w-auto">
                                 {t('common.cancel')}
                             </Button>
-                            <Button type="submit" disabled={isVerifying || !password.trim()} className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white">
+                            <Button type="submit" disabled={isVerifying || !password.trim()} className="w-full sm:w-auto bg-primary hover:bg-primary-hover text-white">
                                 {isVerifying ? (
                                     <>
-                                        <Loader2 className="w-4 h-4 animate-spin me-2" />
+                                        <Loader2 className="w-4 h-4 animate-spin" />
                                         {t('archive.view.verifying')}
                                     </>
                                 ) : (
@@ -170,18 +170,18 @@ export function ArchiveViewModal({ isOpen, onClose, archive }: ArchiveViewModalP
                     // Archive Content
                     <div className="space-y-4">
                         {/* Archive Info */}
-                        <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                        <div className="bg-muted rounded-lg p-4">
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
                                 <div>
-                                    <span className="text-gray-500 dark:text-gray-400">{t('archive.view.archived')}</span>
-                                    <span dir="ltr" className="ms-2 text-gray-900 dark:text-gray-100">
+                                    <span className="text-text-muted">{t('archive.view.archived')}</span>
+                                    <span dir="ltr" className="ms-2 text-text-strong">
                                         {formatDate(decryptedArchive.metadata.archivedDate)}
                                     </span>
                                 </div>
                                 {decryptedArchive.metadata.archiveReason && (
                                     <div className="col-span-2">
-                                        <span className="text-gray-500 dark:text-gray-400">{t('archive.view.reason')}</span>
-                                        <span className="ms-2 text-gray-900 dark:text-gray-100 italic">
+                                        <span className="text-text-muted">{t('archive.view.reason')}</span>
+                                        <span className="ms-2 text-text-strong italic">
                                             <bdi dir="auto">"{decryptedArchive.metadata.archiveReason}"</bdi>
                                         </span>
                                     </div>
@@ -191,12 +191,12 @@ export function ArchiveViewModal({ isOpen, onClose, archive }: ArchiveViewModalP
 
                         {/* Notes */}
                         {decryptedArchive.originalGroup.notes && (
-                            <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
-                                <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-1">
+                            <div className="bg-muted rounded-lg p-4">
+                                <div className="flex items-center gap-2 text-sm text-text-muted mb-1">
                                     <StickyNote className="w-4 h-4" />
                                     <span>{t('archive.view.note')}</span>
                                 </div>
-                                <p dir="auto" className="text-sm text-gray-900 dark:text-gray-100 whitespace-pre-wrap break-words">
+                                <p dir="auto" className="text-sm text-text-strong whitespace-pre-wrap break-words">
                                     {decryptedArchive.originalGroup.notes}
                                 </p>
                             </div>
@@ -204,14 +204,14 @@ export function ArchiveViewModal({ isOpen, onClose, archive }: ArchiveViewModalP
 
                         {/* Tabs List */}
                         <div>
-                            <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-3">
+                            <h3 className="text-sm font-medium text-text-strong mb-3">
                                 {t('archive.view.tabsTitle', { count: decryptedArchive.originalGroup.tabs.length })}
                             </h3>
                             <div className="space-y-2 max-h-[400px] overflow-y-auto scrollbar-transparent">
                                 {decryptedArchive.originalGroup.tabs.map((tab, index) => (
                                     <div
                                         key={index}
-                                        className="flex items-start gap-2 sm:gap-3 p-3 sm:p-4 bg-bg-1 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                                        className="flex items-start gap-2 sm:gap-3 p-3 sm:p-4 bg-bg-1 rounded-lg hover:bg-accent transition-colors"
                                     >
                                         <img
                                             src={tab.favicon || '/icons/default-favicon.png'}
@@ -222,14 +222,14 @@ export function ArchiveViewModal({ isOpen, onClose, archive }: ArchiveViewModalP
                                             }}
                                         />
                                         <div className="flex-1 min-w-0">
-                                            <div className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                                            <div className="text-sm font-medium text-text-strong truncate">
                                                 <bdi dir="auto">{tab.title}</bdi>
                                             </div>
                                             <a
                                                 href={tab.url}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="text-xs text-blue-600 dark:text-blue-400 hover:underline truncate block"
+                                                className="text-xs text-primary hover:underline truncate block"
                                             >
                                                 <bdi dir="ltr">{tab.url}</bdi>
                                             </a>

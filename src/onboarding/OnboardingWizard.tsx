@@ -97,7 +97,7 @@ function WelcomeContent({
         </p>
       </div>
       {/* Language and theme side by side, so the welcome step fits the fixed card height. */}
-      <div className="w-full rounded-xl border border-border bg-muted/30 p-4 space-y-3">
+      <div className="w-full rounded-md bg-muted p-4 space-y-3">
         <div className="grid grid-cols-2 gap-3 text-start">
           <div className="space-y-1.5">
             <label htmlFor="onboarding-language" className="text-sm font-medium text-foreground">{t('onboarding.welcome.languageTitle')}</label>
@@ -151,7 +151,7 @@ function FloatingButtonAccessContent({
 
   return (
     <div className="flex flex-col items-center gap-4 py-4">
-      <div className="w-full rounded-xl border border-border bg-muted/30 p-4 space-y-3">
+      <div className="w-full rounded-md bg-muted p-4 space-y-3">
         <div className="space-y-2 text-center">
           <p className="text-sm font-medium text-foreground">{t('onboarding.floatingButton.cardTitle')}</p>
           <p className="text-sm text-muted-foreground">
@@ -159,7 +159,7 @@ function FloatingButtonAccessContent({
           </p>
         </div>
         {floatingButtonAccessGranted ? (
-          <div className="rounded-lg border border-green-500/20 bg-green-500/10 px-3 py-2 text-xs text-green-600 dark:text-green-400 text-center">
+          <div className="rounded-lg border border-success/30 bg-success-muted px-3 py-2 text-xs text-success text-center">
             {t('onboarding.floatingButton.enabled')}
           </div>
         ) : (
@@ -167,7 +167,7 @@ function FloatingButtonAccessContent({
             <button
               onClick={onEnableFloatingButtonAccess}
               disabled={floatingButtonAccessLoading}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-xs font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-70"
+              className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-2 text-xs font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-70"
             >
               <MousePointerClick className="w-3.5 h-3.5" />
               {floatingButtonAccessLoading ? t('onboarding.floatingButton.requesting') : t('onboarding.floatingButton.enableCta')}
@@ -187,8 +187,8 @@ function SaveContent() {
 
   return (
     <div className="flex flex-col items-center gap-4 py-2">
-      <div className="w-full rounded-xl border border-border bg-muted/30 p-4 space-y-2">
-        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t('onboarding.save.label')}</p>
+      <div className="w-full rounded-md bg-muted p-4 space-y-2">
+        <p className="text-xs font-semibold text-muted-foreground">{t('onboarding.save.label')}</p>
         <p className="text-sm text-muted-foreground">
           {t('onboarding.save.body')}
         </p>
@@ -204,16 +204,16 @@ function BrainDumpContent() {
 
   return (
     <div className="flex flex-col items-center gap-4 py-2">
-      <div className="w-full rounded-xl border border-border bg-muted/30 p-4 space-y-3">
+      <div className="w-full rounded-md bg-muted p-4 space-y-3">
         <p className="text-sm text-muted-foreground">
           {t('onboarding.brainDump.body')}
         </p>
-        <div className="rounded-lg border border-border/70 bg-background/70 px-3 py-2 text-sm text-foreground">
+        <div className="rounded-sm bg-bg-1 px-3 py-2 text-sm text-foreground">
           {beforeShortcut}<bdi dir="ltr">Alt+Q</bdi>{afterShortcut}
         </div>
       </div>
-      <div className="w-full rounded-xl border border-border bg-muted/30 p-4 space-y-2">
-        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+      <div className="w-full rounded-md bg-muted p-4 space-y-2">
+        <p className="text-xs font-semibold text-muted-foreground">
           {t('onboarding.brainDump.goodFor')}
         </p>
         <ul className="space-y-2 text-sm text-muted-foreground">
@@ -236,7 +236,7 @@ function OrganizeContent() {
 
   return (
     <div className="flex flex-col gap-3 py-2">
-      <div className="rounded-xl border border-border bg-muted/30 p-4 space-y-3">
+      <div className="rounded-md bg-muted p-4 space-y-3">
         <div className="flex items-start gap-3">
           <div className="w-2 h-2 mt-2 rounded-full bg-primary shrink-0" />
           <div>
@@ -247,7 +247,7 @@ function OrganizeContent() {
           </div>
         </div>
         <div className="flex items-start gap-3">
-          <div className="w-2 h-2 mt-2 rounded-full bg-blue-500 shrink-0" />
+          <div className="w-2 h-2 mt-2 rounded-full bg-primary shrink-0" />
           <div>
             <p className="text-sm font-medium text-foreground">{t('onboarding.organize.projectsTitle')}</p>
             <p className="text-xs text-muted-foreground mt-0.5">
@@ -256,7 +256,7 @@ function OrganizeContent() {
           </div>
         </div>
         <div className="flex items-start gap-3">
-          <div className="w-2 h-2 mt-2 rounded-full bg-green-500 shrink-0" />
+          <div className="w-2 h-2 mt-2 rounded-full bg-success shrink-0" />
           <div>
             <p className="text-sm font-medium text-foreground">{t('onboarding.organize.restoreTitle')}</p>
             <p className="text-xs text-muted-foreground mt-0.5">
@@ -274,18 +274,18 @@ function SidepanelContent() {
 
   return (
     <div className="flex flex-col gap-3 py-2">
-      <div className="rounded-xl border border-border bg-muted/30 p-4 space-y-3">
+      <div className="rounded-md bg-muted p-4 space-y-3">
         <div className="space-y-1">
           <p className="text-sm font-medium text-foreground">{t('onboarding.sidepanel.pinTitle')}</p>
           <p className="text-sm text-muted-foreground">
             {t('onboarding.sidepanel.pinDescription')}
           </p>
         </div>
-        <div className="rounded-lg border border-border/70 bg-background/70 p-3 text-xs text-muted-foreground">
+        <div className="rounded-sm bg-bg-1 p-3 text-xs text-muted-foreground">
           {t('onboarding.sidepanel.pinHint')}
         </div>
       </div>
-      <div className="rounded-xl border border-border bg-muted/30 p-4 space-y-3">
+      <div className="rounded-md bg-muted p-4 space-y-3">
         <p className="text-sm font-medium text-foreground">{t('onboarding.sidepanel.usesTitle')}</p>
         <div className="space-y-2 text-sm text-muted-foreground">
           <div className="flex items-start gap-2">
@@ -754,7 +754,7 @@ export function OnboardingWizard() {
                       <StepIcon className="w-6 h-6 text-primary" />
                     </div>
                   )}
-                  <h1 className="text-2xl font-bold text-foreground">{focusStep !== null ? t('onboarding.focus.title') : step.title}</h1>
+                  <h1 className="text-2xl font-semibold text-foreground">{focusStep !== null ? t('onboarding.focus.title') : step.title}</h1>
                   <p className="mt-1 text-sm text-muted-foreground">{focusStep === null ? step.description : null}</p>
                 </div>
 
@@ -800,7 +800,7 @@ export function OnboardingWizard() {
               <button
                 onClick={handleNext}
                 disabled={finishing}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
               >
                 {nextLabel}
                 {!isLastStep && <ArrowRight className="w-4 h-4 rtl:rotate-180" />}

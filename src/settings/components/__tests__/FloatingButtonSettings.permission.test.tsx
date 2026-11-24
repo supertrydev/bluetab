@@ -2,14 +2,14 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { FLOATING_BUTTON_HOST_ORIGINS } from '@/services/floating-button-content-script';
 
-const COMPONENT_FILE = path.resolve(__dirname, '../GeneralSettings.tsx');
+const COMPONENT_FILE = path.resolve(__dirname, '../FloatingButtonSettings.tsx');
 const source = fs.readFileSync(COMPONENT_FILE, 'utf-8');
 const english = JSON.parse(fs.readFileSync(
   path.resolve(__dirname, '../../../i18n/locales/en.json'),
   'utf-8',
 ));
 
-describe('GeneralSettings floating button site access contract', () => {
+describe('FloatingButtonSettings floating button site access contract', () => {
   it('checks optional host access before presenting the enabled state', () => {
     expect(source).toContain('hasFloatingButtonHostAccess');
     expect(source).toContain('floatingButtonSiteAccess');

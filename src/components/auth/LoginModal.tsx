@@ -174,7 +174,7 @@ export function LoginModal({ isOpen, onClose, onSuccess }: LoginModalProps) {
                     <Button
                         type="button"
                         variant="outline"
-                        className="w-full border-border text-text hover:bg-bg-2 hover:text-text-strong"
+                        className="w-full border-border text-text hover:bg-accent hover:text-text-strong"
                         onClick={handleOpenSupertry}
                     >
                         <ExternalLink className="me-2 h-4 w-4" />

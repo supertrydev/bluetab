@@ -18,24 +18,24 @@
      xs/sm/base/lg/xl: extension body hierarchy
      2xl/3xl/4xl: larger headings and numeric callouts
      ============================================ */
-    --text-tiny: 0.5625rem;
-    /* 9px */
-    --text-micro: 0.625rem;
-    /* 10px */
-    --text-caption: 0.6875rem;
-    /* 11px */
+    --text-tiny: 0.75rem;
+    /* 12px, the smallest size in the UI */
+    --text-micro: 0.75rem;
+    /* 12px, the smallest size in the UI */
+    --text-caption: 0.75rem;
+    /* 12px, the smallest size in the UI */
     --text-xs: 0.75rem;
     /* 12px */
-    --text-label: 0.8125rem;
-    /* 13px */
+    --text-label: 0.875rem;
+    /* 14px */
     --text-sm: 0.875rem;
     /* 14px */
     --text-base: 1rem;
     /* 16px */
     --text-lg: 1.125rem;
     /* 18px */
-    --text-xl: 1.5rem;
-    /* 24px */
+    --text-xl: 1.25rem;
+    /* 20px */
     --text-2xl: 1.5rem;
     /* 24px */
     --text-3xl: 1.875rem;

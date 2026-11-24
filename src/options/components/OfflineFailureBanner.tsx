@@ -41,11 +41,11 @@ export function OfflineFailureBanner({
     .join(' · ');
 
   return (
-    <div className="border border-amber-500/60 bg-amber-50 dark:bg-amber-950/30 rounded-md p-3 text-sm mb-3">
+    <div className="border border-warning/30 bg-warning-muted rounded-md p-3 text-sm mb-3">
       <div className="flex items-start gap-2">
-        <AlertCircle className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" aria-hidden="true" />
+        <AlertCircle className="h-4 w-4 text-warning mt-0.5 shrink-0" aria-hidden="true" />
         <div className="flex-1 min-w-0">
-          <div className="font-medium text-amber-900 dark:text-amber-200">
+          <div className="font-medium text-warning">
             {t('options.offlineReadingPage.failureTitle')}
           </div>
           <div dir="auto" className="text-xs text-muted-foreground mt-1">{summary}</div>
@@ -59,7 +59,7 @@ export function OfflineFailureBanner({
               onClick={() => onRetryAll(failures.map(f => f.articleId))}
               className="h-7 px-2 text-xs"
             >
-              <RefreshCw className="h-3.5 w-3.5 me-1" />
+              <RefreshCw className="h-3.5 w-3.5" />
               {t('options.offlineReadingPage.retryAll')}
             </Button>
           )}
@@ -70,7 +70,7 @@ export function OfflineFailureBanner({
             onClick={() => setOpen(o => !o)}
             className="h-7 px-2 text-xs"
           >
-            {open ? <ChevronUp className="h-3.5 w-3.5 me-1" /> : <ChevronDown className="h-3.5 w-3.5 me-1" />}
+            {open ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
             {open ? t('options.offlineReadingPage.hideDetails') : t('options.offlineReadingPage.seeDetails')}
           </Button>
           {onDismiss && (
@@ -100,7 +100,7 @@ export function OfflineFailureBanner({
                 onClick={() => onRetry(f.articleId)}
                 className="h-6 px-2 text-xs shrink-0"
               >
-                <RefreshCw className="h-3 w-3 me-1" />
+                <RefreshCw className="h-3 w-3" />
                 {t('common.repeat')}
               </Button>
             </li>

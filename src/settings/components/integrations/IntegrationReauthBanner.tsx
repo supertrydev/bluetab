@@ -120,16 +120,16 @@ export function IntegrationReauthBanner() {
         return (
           <div
             key={`${item.integrationId}:${item.accountId}`}
-            className="flex items-center justify-between rounded-md border border-amber-500/30 bg-amber-500/10 px-4 py-3"
+            className="flex items-center justify-between rounded-md border border-warning/30 bg-warning-muted px-4 py-3"
           >
-            <p dir="auto" className="text-sm text-amber-700 dark:text-amber-400">
+            <p dir="auto" className="text-sm text-warning">
               {t('components.integrations.reauth', {
                 name: isolateBidi(displayName),
                 account: isolateBidi(accountLabel, accountDirection),
               })}
             </p>
             <button
-              className="ms-4 shrink-0 text-sm font-medium text-amber-700 underline dark:text-amber-400 hover:no-underline"
+              className="ms-4 shrink-0 text-sm font-medium text-warning underline hover:no-underline"
               onClick={() => handleReconnect(item)}
             >
               {t('common.reconnect')}

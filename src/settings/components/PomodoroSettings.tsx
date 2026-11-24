@@ -161,7 +161,7 @@ function PomodoroHeatmap({ sessions }: { sessions: PomodoroSession[] }) {
           {monthLabels.map(({ col, label }, i) => (
             <span
               key={i}
-              className="text-micro text-muted-foreground"
+              className="text-xs text-muted-foreground"
               style={{
                 position: 'absolute' as const,
                 left: 30 + col * (cellSize + gap),
@@ -182,7 +182,7 @@ function PomodoroHeatmap({ sessions }: { sessions: PomodoroSession[] }) {
               return new Intl.DateTimeFormat(getLocaleTag(), { weekday: 'short' }).format(new Date(2026, 5, 7 + weekday));
             }).map((label, i) => (
               <div key={i} style={{ height: cellSize }} className="flex items-center">
-                <span className="text-micro text-muted-foreground leading-none">{label}</span>
+                <span className="text-xs text-muted-foreground leading-none">{label}</span>
               </div>
             ))}
           </div>
@@ -215,7 +215,7 @@ function PomodoroHeatmap({ sessions }: { sessions: PomodoroSession[] }) {
 
         {/* Legend */}
         <div className="flex items-center justify-end gap-1 mt-1 pe-1">
-          <span className="text-micro text-muted-foreground me-1">{t('settings.pomodoro.heatmap.less')}</span>
+          <span className="text-xs text-muted-foreground me-1">{t('settings.pomodoro.heatmap.less')}</span>
           <div className="rounded-sm bg-muted border border-border/40" style={{ width: cellSize, height: cellSize }} />
           {[0.4, 0.6, 0.8, 1].map((alpha, i) => (
             <div
@@ -224,7 +224,7 @@ function PomodoroHeatmap({ sessions }: { sessions: PomodoroSession[] }) {
               style={{ width: cellSize, height: cellSize, backgroundColor: `hsl(217 91% 60% / ${alpha})` }}
             />
           ))}
-          <span className="text-micro text-muted-foreground ms-1">{t('settings.pomodoro.heatmap.more')}</span>
+          <span className="text-xs text-muted-foreground ms-1">{t('settings.pomodoro.heatmap.more')}</span>
         </div>
       </div>
     </div>
@@ -281,7 +281,7 @@ function DebouncedNumberInput({
 
   return (
     <div className="flex items-center gap-2">
-      <label className="text-sm text-gray-600 dark:text-gray-400 min-w-[120px]">
+      <label className="text-sm text-text-muted min-w-[120px]">
         {label}
       </label>
       <input
@@ -291,7 +291,7 @@ function DebouncedNumberInput({
         max={max}
         value={localValue}
         onChange={handleChange}
-        className="w-20 px-2 py-1 text-sm border border-border rounded bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+        className="w-20 px-3 py-1 text-sm border border-field rounded-input bg-bg-1 text-foreground"
       />
       <span className="text-xs text-muted-foreground">{t('common.minuteShort')}</span>
     </div>
@@ -401,7 +401,7 @@ export function PomodoroSettings() {
 
   return (
     <div className="pt-4 border-t border-border">
-      <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 flex items-center gap-2 mb-4">
+      <h3 className="text-base font-semibold text-text-strong flex items-center gap-2 mb-4">
         <Timer className="w-5 h-5" />
         {t('settings.pomodoro.title')}
       </h3>
@@ -409,7 +409,7 @@ export function PomodoroSettings() {
       <div className="space-y-6">
         {/* Preset Selector */}
         <div>
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3 block">
+          <label className="text-sm font-medium text-text-strong mb-3 block">
             {t('settings.pomodoro.timerPreset')}
           </label>
           <div className="flex flex-wrap gap-2">
@@ -432,7 +432,7 @@ export function PomodoroSettings() {
 
         {/* Custom Duration Inputs (only when Custom preset selected) */}
         {settings.preset === 'custom' && (
-          <div className="space-y-3 p-4 border border-border rounded-lg bg-gray-50 dark:bg-gray-800/50">
+          <div className="space-y-3 p-4 rounded-md bg-muted">
             <DebouncedNumberInput
               label={t('settings.pomodoro.custom.workDuration')}
               value={settings.customWork}
@@ -462,7 +462,7 @@ export function PomodoroSettings() {
         )}
 
         {/* Auto-enable Focus Mode */}
-        <div className="flex items-center justify-between p-3 border border-border rounded-lg">
+        <div className="flex items-center justify-between p-3 rounded-md border border-border bg-bg-1">
           <div className="min-w-0 flex-1 me-3">
             <p className="text-sm font-medium text-foreground flex items-center gap-1.5">
               <Shield className="w-3.5 h-3.5" />
@@ -491,7 +491,7 @@ export function PomodoroSettings() {
         </div>
 
         {autoFocus && (
-          <div className="flex items-center justify-between p-3 border border-border rounded-lg ms-4">
+          <div className="flex items-center justify-between p-3 rounded-md border border-border bg-bg-1 ms-4">
             <div className="min-w-0 flex-1 me-3">
               <p className="text-sm font-medium text-foreground">
                 {t('settings.pomodoro.blockDuringBreaksTitle')}
@@ -514,7 +514,7 @@ export function PomodoroSettings() {
 
         {/* Session Sounds */}
         <div>
-          <div className="flex items-center justify-between p-3 border border-border rounded-lg">
+          <div className="flex items-center justify-between p-3 rounded-md border border-border bg-bg-1">
             <div className="min-w-0 flex-1 me-3">
               <p className="text-sm font-medium text-foreground flex items-center gap-1.5">
                 <Volume2 className="w-3.5 h-3.5" />
@@ -535,10 +535,10 @@ export function PomodoroSettings() {
           </div>
 
           {soundsEnabled && (
-            <div className="mt-2 ms-4 p-3 border border-border rounded-lg space-y-3">
+            <div className="mt-2 ms-4 p-3 rounded-md bg-muted space-y-3">
               {/* Work Start */}
               <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300 block mb-1.5">
+                <label className="text-sm font-medium text-text-strong block mb-1.5">
                   {t('settings.pomodoro.sounds.workStart')}
                 </label>
                 <div className="flex items-center gap-2">
@@ -576,7 +576,7 @@ export function PomodoroSettings() {
 
               {/* Short Break */}
               <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300 block mb-1.5">
+                <label className="text-sm font-medium text-text-strong block mb-1.5">
                   {t('settings.pomodoro.sounds.shortBreak')}
                 </label>
                 <div className="flex items-center gap-2">
@@ -614,7 +614,7 @@ export function PomodoroSettings() {
 
               {/* Long Break */}
               <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300 block mb-1.5">
+                <label className="text-sm font-medium text-text-strong block mb-1.5">
                   {t('settings.pomodoro.sounds.longBreak')}
                 </label>
                 <div className="flex items-center gap-2">
@@ -655,10 +655,10 @@ export function PomodoroSettings() {
 
         {/* Today's Summary */}
         <div>
-          <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <h4 className="text-sm font-medium text-text-strong mb-2">
             {t('settings.pomodoro.todaySummary')}
           </h4>
-          <div className="flex gap-6 p-3 border border-border rounded-lg bg-gray-50 dark:bg-gray-800/50">
+          <div className="flex gap-6 p-3 rounded-md bg-muted">
             <div>
               <span dir="ltr" className="text-2xl font-semibold text-foreground">
                 {todaySummary.sessionsCompleted}
@@ -681,7 +681,7 @@ export function PomodoroSettings() {
 
         {/* Session Activity (30-day heatmap) */}
         <div>
-          <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <h4 className="text-sm font-medium text-text-strong mb-2">
             {t('settings.pomodoro.sessionActivity')}
           </h4>
           <PomodoroHeatmap sessions={history} />

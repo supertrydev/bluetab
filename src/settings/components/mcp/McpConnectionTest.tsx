@@ -112,7 +112,7 @@ export function McpConnectionTest({ url, authToken, enabled, onFinished }: McpCo
   return (
     <div className="space-y-2">
       <Button variant="outline" size="sm" onClick={run} disabled={running}>
-        {running && <Loader2 className="h-3.5 w-3.5 me-1.5 animate-spin" aria-hidden="true" />}
+        {running && <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />}
         {running ? t('settings.mcp.testing') : t('settings.mcp.testConnection')}
       </Button>
       {results && (

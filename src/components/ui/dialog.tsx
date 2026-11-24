@@ -27,7 +27,7 @@ const DialogOverlay = React.forwardRef<
   <DialogPrimitive.Overlay
     ref={ref}
     className={cn(
-      "fixed inset-0 z-modal-backdrop bg-black/60",
+      "fixed inset-0 z-modal-backdrop bg-black/55",
       "data-[state=open]:animate-in data-[state=closed]:animate-out",
       "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
       className
@@ -54,11 +54,11 @@ const DialogContent = React.forwardRef<
       className={cn(
         // Positioning
         "fixed left-1/2 top-1/2 z-modal",
-        "w-full max-w-lg max-h-[90vh]",
+        "w-[calc(100vw-1.5rem)] max-w-lg max-h-[90vh]",
         "-translate-x-1/2 -translate-y-1/2",
         // Appearance
-        "rounded-lg border border-border bg-bg-1 shadow-xl outline-none",
-        "p-6 overflow-y-auto",
+        "rounded-2xl border border-border bg-bg-2 shadow-xl outline-none",
+        "p-6 overflow-y-auto overscroll-contain",
         // Animation
         "duration-normal",
         "data-[state=open]:animate-in data-[state=closed]:animate-out",
@@ -77,9 +77,8 @@ const DialogContent = React.forwardRef<
             "absolute end-4 top-4",
             "h-8 w-8 rounded-full",
             "flex items-center justify-center",
-            "text-text-muted hover:text-text-strong",
+            "text-text-muted hover:bg-accent hover:text-text-strong",
             "transition-colors duration-fast",
-            "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-bg-2",
             "disabled:pointer-events-none"
           )}
         >
@@ -97,7 +96,7 @@ const DialogHeader = ({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={cn("flex flex-col gap-2 text-center sm:text-start", className)}
+    className={cn("flex flex-col gap-2 text-start sm:text-start", className)}
     {...props}
   />
 )
@@ -124,7 +123,7 @@ const DialogTitle = React.forwardRef<
   <DialogPrimitive.Title
     ref={ref}
     className={cn(
-      "text-lg font-semibold text-text-strong leading-tight tracking-tight",
+      "text-lg font-semibold text-text-strong tracking-tight",
       className
     )}
     {...props}

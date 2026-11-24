@@ -107,16 +107,16 @@ export function ArchiveRestoreModal({ isOpen, onClose, archive, onRestore }: Arc
 
                         {isPasswordProtected && (
                             <>
-                                <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-4">
-                                    <div className="flex items-center gap-2 text-amber-700 dark:text-amber-200 mb-2">
+                                <div className="rounded-md bg-warning-muted p-4">
+                                    <div className="flex items-center gap-2 text-warning mb-2">
                                         <Lock className="w-4 h-4" />
                                         <span className="font-medium">{t('archive.item.passwordProtected')}</span>
                                     </div>
-                                    <p className="text-sm text-amber-700 dark:text-amber-200">
+                                    <p className="text-sm text-warning">
                                         {t('components.archive.encryptedRestore')}
                                     </p>
                                     {getPasswordHint(archive.protection.passwordHint) && (
-                                        <p className="mt-2 text-sm text-amber-700 dark:text-amber-200">
+                                        <p className="mt-2 text-sm text-warning">
                                             <strong>{t('components.archive.hint')}</strong> {getPasswordHint(archive.protection.passwordHint)}
                                         </p>
                                     )}
@@ -138,7 +138,7 @@ export function ArchiveRestoreModal({ isOpen, onClose, archive, onRestore }: Arc
                                         <button
                                             type="button"
                                             onClick={() => setShowPassword(!showPassword)}
-                                            className="absolute end-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                                            className="absolute end-2 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-strong"
                                         >
                                             {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                                         </button>
@@ -148,7 +148,7 @@ export function ArchiveRestoreModal({ isOpen, onClose, archive, onRestore }: Arc
                         )}
 
                         {error && (
-                            <p dir="auto" className="text-sm text-red-600 dark:text-red-400">{error}</p>
+                            <p dir="auto" className="text-sm text-danger">{error}</p>
                         )}
                     </div>
 
@@ -162,12 +162,12 @@ export function ArchiveRestoreModal({ isOpen, onClose, archive, onRestore }: Arc
                         >
                             {isRestoring ? (
                                 <>
-                                    <Loader2 className="w-4 h-4 me-2 animate-spin" />
+                                    <Loader2 className="w-4 h-4 animate-spin" />
                                     {t('popup.restoreModal.restoring')}
                                 </>
                             ) : (
                                 <>
-                                    <RotateCcw className="w-4 h-4 me-2" />
+                                    <RotateCcw className="w-4 h-4" />
                                     {t('common.restore')}
                                 </>
                             )}

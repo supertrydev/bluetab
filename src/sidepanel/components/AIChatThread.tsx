@@ -116,7 +116,7 @@ function ComposerWithSafetyNote() {
       </Composer.Root>
       <div className="px-2 pt-1">
         <p
-          className="block w-full truncate text-center text-micro leading-none text-text-muted"
+          className="block w-full truncate text-center text-xs leading-none text-text-muted"
           title={t('sidepanel.aiChatThread.safetyNote')}
         >
           {t('sidepanel.aiChatThread.safetyNote')}
@@ -261,7 +261,7 @@ function ChatThreadInner({ aiChat }: AIChatThreadProps) {
       {error && !isLoading && (
         <div className="flex items-start gap-2 p-2 mx-3 mb-2 rounded-md bg-danger-muted border border-danger/30">
           <AlertCircle className="w-3.5 h-3.5 text-danger shrink-0 mt-0.5" />
-          <p className="text-caption text-danger leading-relaxed">
+          <p className="text-xs text-danger leading-relaxed">
             {error.message || t('sidepanel.aiChatThread.errorFallback')}
           </p>
         </div>

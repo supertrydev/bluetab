@@ -135,14 +135,14 @@ export function ConnectedClientCard({
 
   return (
     <>
-      <div className="rounded-lg border border-border-glass bg-bg-1/60 backdrop-blur-sm p-3 space-y-3">
+      <div className="rounded-md bg-muted border-border-glass backdrop-blur-sm p-3 space-y-3">
         {/* Top row: name + last used */}
         <div className="flex items-center justify-between">
           <div className="min-w-0 space-y-1">
             <bdi dir="auto" className="block text-sm font-medium text-text-strong truncate">
               {client.name}
             </bdi>
-            <span className="inline-flex items-center gap-1 rounded-full border border-border bg-bg-0/70 px-2 py-0.5 text-micro text-muted-foreground">
+            <span className="inline-flex items-center gap-1 rounded-full border border-border bg-bg-0/70 px-2 py-0.5 text-xs text-muted-foreground">
               {client.authMode === 'personal_token' ? (
                 <KeyRound className="h-3 w-3" />
               ) : (
@@ -153,12 +153,12 @@ export function ConnectedClientCard({
                 : <bdi dir="ltr">OAuth</bdi>}
             </span>
             {client.readOnly && (
-              <span className="ms-1 inline-flex items-center rounded-full border border-border bg-bg-0/70 px-2 py-0.5 text-micro text-muted-foreground">
+              <span className="ms-1 inline-flex items-center rounded-full border border-border bg-bg-0/70 px-2 py-0.5 text-xs text-muted-foreground">
                 {t('settings.mcp.connectedClient.readOnly')}
               </span>
             )}
           </div>
-          <time dir="ltr" className="text-micro text-muted-foreground shrink-0 ms-2">
+          <time dir="ltr" className="text-xs text-muted-foreground shrink-0 ms-2">
             {formatRelativeTime(client.lastUsedAt)}
           </time>
         </div>
@@ -171,7 +171,7 @@ export function ConnectedClientCard({
 
         {/* Toolset toggles */}
         <div className="space-y-2">
-          <p className="text-micro text-muted-foreground">{t('settings.mcp.connectedClient.toolsetsHint')}</p>
+          <p className="text-xs text-muted-foreground">{t('settings.mcp.connectedClient.toolsetsHint')}</p>
           {ALL_TOOLSETS.map((ts) => (
             <div key={ts} className="flex items-center justify-between">
               <span className="text-xs text-text-muted">
@@ -200,7 +200,7 @@ export function ConnectedClientCard({
               onClick={() => onRotatePersonalToken(client)}
               className="text-xs"
             >
-              <KeyRound className="h-3 w-3 me-1" />
+              <KeyRound className="h-3 w-3" />
               {t('settings.mcp.connectedClient.replaceToken')}
             </Button>
           )}
@@ -208,9 +208,9 @@ export function ConnectedClientCard({
             variant="ghost"
             size="sm"
             onClick={() => setRevokeOpen(true)}
-            className="text-xs text-red-500 hover:text-red-600"
+            className="text-xs text-danger hover:text-danger"
           >
-            <UserX className="h-3 w-3 me-1" />
+            <UserX className="h-3 w-3" />
             {t('settings.mcp.connectedClient.revoke')}
           </Button>
         </div>

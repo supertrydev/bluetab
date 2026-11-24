@@ -124,13 +124,13 @@ export function SlackChannelSelector({ accountId }: SlackChannelSelectorProps) {
       <div className="flex flex-col gap-1">
         <label className="text-xs text-muted-foreground">{t('settings.integrations.defaultChannel')}</label>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-amber-600 dark:text-amber-400">
+          <span className="text-xs text-warning">
             {t('settings.integrations.reconnectNeeded', {
               resource: t('settings.integrations.resources.channels'),
             })}
           </span>
           <button
-            className="text-xs font-medium text-amber-600 underline dark:text-amber-400 hover:no-underline"
+            className="text-xs font-medium text-warning underline hover:no-underline"
             onClick={() => void handleReconnect()}
           >
             {t('common.reconnect')}
@@ -144,7 +144,7 @@ export function SlackChannelSelector({ accountId }: SlackChannelSelectorProps) {
     return (
       <div className="flex flex-col gap-1">
         <label className="text-xs text-muted-foreground">{t('settings.integrations.defaultChannel')}</label>
-        <div className="text-xs text-red-600 dark:text-red-400">
+        <div className="text-xs text-danger">
           {t('settings.integrations.errorLoading', {
             resource: t('settings.integrations.resources.channels'),
             message: isolateBidi(loadError),

@@ -1,4 +1,4 @@
-import { matchesSearch, normalizeForSearch } from '@/utils/search-text';
+import { groupMatchesSearch } from '@/utils/group-search';
 import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChevronDown, Grid3X3, LayoutGrid, LayoutDashboard, Pencil, X, Layers } from 'lucide-react';
@@ -266,23 +266,7 @@ export function GroupListView({
             }
         }
 
-        filtered = filtered.filter(group => {
-            if (search === '') return true;
-            const searchLower = normalizeForSearch(search);
-
-            const matchesText = matchesSearch(group.name, searchLower) ||
-                group.tabs.some(tab =>
-                    matchesSearch(tab.title, searchLower) ||
-                    matchesSearch(tab.url, searchLower)
-                );
-
-            const matchesTag = group.tags && group.tags.some(tagId => {
-                const tag = tags.find(t => t.id === tagId);
-                return tag && matchesSearch(tag.name, searchLower);
-            });
-
-            return matchesText || matchesTag;
-        });
+        filtered = filtered.filter(group => groupMatchesSearch(group, tags, search));
 
         return sortGroupsWithPinning(filtered, currentSortOrder);
     }, [groups, tags, search, currentSortOrder, activeProjectId, projects]);
@@ -385,8 +369,9 @@ export function GroupListView({
     ), [t]);
 
     const emptyState = (
-        <div className="bg-bg-1 rounded-lg shadow-sm p-8 text-center border border-border">
-            <p className="text-gray-500 dark:text-gray-400">{t('options.groupList.empty')}</p>
+        <div className="flex flex-col items-center px-6 py-16 text-center">
+            <Layers className="mb-3 h-6 w-6 text-text-muted" />
+            <p className="text-sm text-text-muted">{t('options.groupList.empty')}</p>
         </div>
     );
 
@@ -398,7 +383,7 @@ export function GroupListView({
                 <div className="flex items-center gap-2">
                     <Layers className="h-5 w-5 text-primary" />
                     <div>
-                        <h1 className="text-lg font-semibold text-text-strong leading-tight">{t('options.groupList.title')}</h1>
+                        <h1 className="text-lg font-semibold text-text-strong">{t('options.groupList.title')}</h1>
                         {/* Header stats are decorative metadata — hidden under
                             Default Simplify. Action buttons in the header row
                             stay visible. */}
@@ -414,33 +399,36 @@ export function GroupListView({
                 <div className="flex items-center gap-2 w-full lg:w-auto lg:ms-auto">
 
                     {/* Layout Toggle */}
-                    <div className="flex items-center gap-1 lg:ms-4">
+                    <div className="flex h-9 items-center gap-0.5 rounded-full border border-border-glass bg-accent p-1 lg:ms-4">
                         <button
                             onClick={() => setLayoutMode('grid')}
-                            className={`p-2 rounded transition-colors ${layoutMode === 'grid'
-                                ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300'
-                                : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+                            className={`flex h-7 w-9 items-center justify-center rounded-full transition-all duration-slow ${layoutMode === 'grid'
+                                ? 'bg-segment text-text-strong shadow-md'
+                                : 'text-text-muted hover:text-text-strong'
                                 }`}
+                            aria-pressed={layoutMode === 'grid'}
                             title={t('options.groupList.layoutGrid')}
                         >
                             <Grid3X3 className="w-4 h-4" />
                         </button>
                         <button
                             onClick={() => setLayoutMode('masonry')}
-                            className={`p-2 rounded transition-colors ${layoutMode === 'masonry'
-                                ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300'
-                                : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+                            className={`flex h-7 w-9 items-center justify-center rounded-full transition-all duration-slow ${layoutMode === 'masonry'
+                                ? 'bg-segment text-text-strong shadow-md'
+                                : 'text-text-muted hover:text-text-strong'
                                 }`}
+                            aria-pressed={layoutMode === 'masonry'}
                             title={t('options.groupList.layoutMasonry')}
                         >
                             <LayoutDashboard className="w-4 h-4" />
                         </button>
                         <button
                             onClick={() => setLayoutMode('dashboard')}
-                            className={`p-2 rounded transition-colors ${layoutMode === 'dashboard'
-                                ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300'
-                                : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+                            className={`flex h-7 w-9 items-center justify-center rounded-full transition-all duration-slow ${layoutMode === 'dashboard'
+                                ? 'bg-segment text-text-strong shadow-md'
+                                : 'text-text-muted hover:text-text-strong'
                                 }`}
+                            aria-pressed={layoutMode === 'dashboard'}
                             title={t('options.groupList.layoutDashboard')}
                         >
                             <LayoutGrid className="w-4 h-4" />
@@ -462,7 +450,7 @@ export function GroupListView({
                             <InputGroupAddon align="inline-end">
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
-                                        <button className="flex items-center gap-1 text-xs font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors px-2">
+                                        <button className="flex items-center gap-1 text-xs font-medium text-text-strong hover:text-text-strong transition-colors px-2">
                                             {localizedSortOptions.find(opt => opt.value === currentSortOrder)?.label || t('options.groupList.sortFallback')}
                                             <ChevronDown className="size-3" />
                                         </button>
@@ -500,9 +488,8 @@ export function GroupListView({
 
             {/* Groups List */}
             <div
-                style={{ padding: '2rem' }}
                 data-layout-mode={layoutMode}
-                className={`options-groups-list mx-auto py-4 sm:py-6 ${layoutMode === 'grid' ? 'max-w-7xl px-4 sm:px-6 lg:px-8' : 'px-4 sm:px-6'}`}
+                className={`options-groups-list mx-auto py-6 sm:py-8 ${layoutMode === 'grid' ? 'max-w-7xl px-4 sm:px-6 lg:px-8' : 'px-4 sm:px-6 lg:px-8'}`}
             >
                 {layoutMode === 'dashboard' ? (
                     <div className="grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">

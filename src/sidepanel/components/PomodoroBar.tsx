@@ -246,7 +246,7 @@ export function PomodoroBar() {
             <div className="flex-1 min-w-0">
               <FlowtimeBreakCard proposal={flowtimeBreakProposal} />
             </div>
-            <div className="flex items-stretch border-s border-border/40" data-testid="hard-focus-slot">
+            <div className="flex items-stretch items-center border-s border-border px-1" data-testid="hard-focus-slot">
               <HardFocusButton />
             </div>
           </div>
@@ -266,7 +266,7 @@ export function PomodoroBar() {
             <div className="flex-1 min-w-0">
               <FlowtimeBar state={state} />
             </div>
-            <div className="flex items-stretch border-s border-border/40" data-testid="hard-focus-slot">
+            <div className="flex items-stretch items-center border-s border-border px-1" data-testid="hard-focus-slot">
               <HardFocusButton />
             </div>
           </div>
@@ -288,7 +288,7 @@ export function PomodoroBar() {
             <div className="flex-1 min-w-0">
               <FlowtimeBreakRunning state={state} />
             </div>
-            <div className="flex items-stretch border-s border-border/40" data-testid="hard-focus-slot">
+            <div className="flex items-stretch items-center border-s border-border px-1" data-testid="hard-focus-slot">
               <HardFocusButton />
             </div>
           </div>
@@ -320,10 +320,10 @@ export function PomodoroBar() {
           <div className="flex flex-col gap-1 min-w-0 flex-1">
             <div className="flex items-center gap-2">
               <span
-                className={`text-xs font-medium px-1.5 py-0.5 rounded ${
+                className={`inline-flex h-6 items-center rounded-full px-2.5 text-xs font-medium ${
                   isWork
-                    ? 'bg-red-500/10 text-red-500'
-                    : 'bg-green-500/10 text-green-500'
+                    ? 'bg-danger-muted text-danger'
+                    : 'bg-success-muted text-success'
                 }`}
               >
                 {getSessionLabel(state.sessionType, translate)}
@@ -338,7 +338,7 @@ export function PomodoroBar() {
               {state.isPaused ? (
                 <button
                   onClick={handleResume}
-                  className="p-1 rounded hover:bg-accent transition-colors text-muted-foreground hover:text-foreground"
+                  className="flex h-7 w-7 items-center justify-center rounded-full hover:bg-accent transition-colors text-muted-foreground hover:text-foreground"
                   title={t('sidepanel.pomodoroBar.resume')}
                   aria-label={t('sidepanel.pomodoroBar.resumePomodoro')}
                 >
@@ -347,7 +347,7 @@ export function PomodoroBar() {
               ) : (
                 <button
                   onClick={handlePause}
-                  className="p-1 rounded hover:bg-accent transition-colors text-muted-foreground hover:text-foreground"
+                  className="flex h-7 w-7 items-center justify-center rounded-full hover:bg-accent transition-colors text-muted-foreground hover:text-foreground"
                   title={t('sidepanel.pomodoroBar.pause')}
                   aria-label={t('sidepanel.pomodoroBar.pausePomodoro')}
                 >
@@ -356,7 +356,7 @@ export function PomodoroBar() {
               )}
               <button
                 onClick={handleStop}
-                className="p-1 rounded hover:bg-accent transition-colors text-muted-foreground hover:text-foreground"
+                className="flex h-7 w-7 items-center justify-center rounded-full hover:bg-accent transition-colors text-muted-foreground hover:text-foreground"
                 title={t('sidepanel.pomodoroBar.stop')}
                 aria-label={t('sidepanel.pomodoroBar.stopPomodoro')}
               >
@@ -381,7 +381,7 @@ export function PomodoroBar() {
             <div className="flex-1 min-w-0">
               {visualTimeContent}
             </div>
-            <div className="flex items-stretch border-s border-border/40" data-testid="hard-focus-slot">
+            <div className="flex items-stretch items-center border-s border-border px-1" data-testid="hard-focus-slot">
               <HardFocusButton />
             </div>
           </div>
@@ -415,7 +415,7 @@ export function PomodoroBar() {
                 /* M2-fix: natural width button (no flex-1 stretch). */
                 <button
                   onClick={handleStartFlowtime}
-                  className="flex items-center gap-1.5 px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors"
+                  className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
                   title={t('sidepanel.pomodoroBar.startFlowtime')}
                   aria-label={t('sidepanel.pomodoroBar.startFlowtimeAria')}
                   data-testid="start-flowtime-btn"
@@ -428,7 +428,7 @@ export function PomodoroBar() {
                 <>
                   <button
                     onClick={() => handleStart('work')}
-                    className="flex items-center justify-center px-2 py-2 text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors"
+                    className="flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
                     title={t('sidepanel.pomodoroBar.startPomodoro')}
                     aria-label={t('sidepanel.pomodoroBar.startPomodoroAria')}
                     data-testid="start-pomodoro-btn"
@@ -437,7 +437,7 @@ export function PomodoroBar() {
                   </button>
                   <button
                     onClick={() => handleStart('shortBreak')}
-                    className="flex items-center justify-center px-2 py-2 text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors"
+                    className="flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
                     title={t('sidepanel.pomodoroBar.startShortBreak')}
                     aria-label={t('sidepanel.pomodoroBar.startShortBreakAria')}
                     data-testid="start-short-break-btn"
@@ -446,7 +446,7 @@ export function PomodoroBar() {
                   </button>
                   <button
                     onClick={() => handleStart('longBreak')}
-                    className="flex items-center justify-center px-2 py-2 text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors"
+                    className="flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
                     title={t('sidepanel.pomodoroBar.startLongBreak')}
                     aria-label={t('sidepanel.pomodoroBar.startLongBreakAria')}
                     data-testid="start-long-break-btn"
@@ -471,19 +471,19 @@ export function PomodoroBar() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.2 }}
-            className="flex items-stretch w-full"
+            className="flex items-stretch w-full overflow-hidden rounded-lg border border-border bg-bg-1"
           >
             {/* G-fix: active Pomodoro timer in left half; HardFocusButton in right half
                 when hardFocusEnabled. Both halves visible during active session. */}
-            <div className="flex-1 min-w-0 px-3 py-2 space-y-1">
+            <div className="flex-1 min-w-0 px-4 py-3 space-y-1">
               {/* Session type + countdown */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span
-                    className={`text-xs font-medium px-1.5 py-0.5 rounded ${
+                    className={`inline-flex h-6 items-center rounded-full px-2.5 text-xs font-medium ${
                       isWork
-                        ? 'bg-red-500/10 text-red-500'
-                        : 'bg-green-500/10 text-green-500'
+                        ? 'bg-danger-muted text-danger'
+                        : 'bg-success-muted text-success'
                     }`}
                   >
                     {state ? getSessionLabel(state.sessionType, translate) : ''}
@@ -496,7 +496,7 @@ export function PomodoroBar() {
                       />
                     </span>
                   )}
-                  <span dir="ltr" className="text-sm font-mono font-semibold text-foreground">
+                  <span dir="ltr" className="text-lg font-mono font-medium tabular-nums text-foreground">
                     {formatTime(remaining)}
                   </span>
                 </div>
@@ -506,7 +506,7 @@ export function PomodoroBar() {
                   {state?.isPaused ? (
                     <button
                       onClick={handleResume}
-                      className="p-1 rounded hover:bg-accent transition-colors text-muted-foreground hover:text-foreground"
+                      className="flex h-7 w-7 items-center justify-center rounded-full hover:bg-accent transition-colors text-muted-foreground hover:text-foreground"
                       title={t('sidepanel.pomodoroBar.resume')}
                     >
                       <Play className="w-3.5 h-3.5" />
@@ -514,7 +514,7 @@ export function PomodoroBar() {
                   ) : (
                     <button
                       onClick={handlePause}
-                      className="p-1 rounded hover:bg-accent transition-colors text-muted-foreground hover:text-foreground"
+                      className="flex h-7 w-7 items-center justify-center rounded-full hover:bg-accent transition-colors text-muted-foreground hover:text-foreground"
                       title={t('sidepanel.pomodoroBar.pause')}
                     >
                       <Pause className="w-3.5 h-3.5" />
@@ -522,7 +522,7 @@ export function PomodoroBar() {
                   )}
                   <button
                     onClick={handleStop}
-                    className="p-1 rounded hover:bg-accent transition-colors text-muted-foreground hover:text-foreground"
+                    className="flex h-7 w-7 items-center justify-center rounded-full hover:bg-accent transition-colors text-muted-foreground hover:text-foreground"
                     title={t('sidepanel.pomodoroBar.stop')}
                   >
                     <Square className="w-3.5 h-3.5" />
@@ -539,7 +539,7 @@ export function PomodoroBar() {
               </div>
             </div>
             {hardFocusEnabled && (
-              <div className="flex items-stretch border-s border-border/40" data-testid="hard-focus-slot">
+              <div className="flex items-stretch items-center border-s border-border px-1" data-testid="hard-focus-slot">
                 <HardFocusButton />
               </div>
             )}

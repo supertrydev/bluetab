@@ -1177,29 +1177,29 @@ function TabManagerContent({ groups, setGroups }: TabManagerContentProps) {
                             </DialogHeader>
                             <div className="grid gap-3 sm:grid-cols-2">
                                 <div className="rounded-xl border border-border bg-bg-1/60 p-4">
-                                    <div className="text-micro uppercase tracking-wide text-text-muted">{translate('options.manager.organizeDialog.eligibleGroups')}</div>
+                                    <div className="text-xs text-text-muted">{translate('options.manager.organizeDialog.eligibleGroups')}</div>
                                     <div className="mt-1 text-lg font-semibold text-text-strong">{organizePreview?.eligibleGroupCount ?? 0}</div>
                                 </div>
                                 <div className="rounded-xl border border-border bg-bg-1/60 p-4">
-                                    <div className="text-micro uppercase tracking-wide text-text-muted">{translate('options.manager.organizeDialog.eligibleTabs')}</div>
+                                    <div className="text-xs text-text-muted">{translate('options.manager.organizeDialog.eligibleTabs')}</div>
                                     <div className="mt-1 text-lg font-semibold text-text-strong">{organizePreview?.eligibleTabCount ?? 0}</div>
                                 </div>
                                 <div className="rounded-xl border border-border bg-bg-1/60 p-4">
-                                    <div className="text-micro uppercase tracking-wide text-text-muted">{translate('options.manager.organizeDialog.lockedGroupsSkipped')}</div>
+                                    <div className="text-xs text-text-muted">{translate('options.manager.organizeDialog.lockedGroupsSkipped')}</div>
                                     <div className="mt-1 text-lg font-semibold text-text-strong">{organizePreview?.skippedLockedGroupCount ?? 0}</div>
                                 </div>
                                 <div className="rounded-xl border border-border bg-bg-1/60 p-4">
-                                    <div className="text-micro uppercase tracking-wide text-text-muted">{translate('options.manager.organizeDialog.estimatedBatches')}</div>
+                                    <div className="text-xs text-text-muted">{translate('options.manager.organizeDialog.estimatedBatches')}</div>
                                     <div className="mt-1 text-lg font-semibold text-text-strong">{organizePreview?.batchCount ?? 0}</div>
                                 </div>
                             </div>
-                            <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-100">
+                            <div className="rounded-xl border border-warning/30 bg-warning-muted p-4 text-sm text-warning">
                                 <div className="flex items-start gap-2">
-                                    <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-300" />
+                                    <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-warning" />
                                     <div className="space-y-1.5">
                                         <p>{translate('options.manager.organizeDialog.allowanceWarning')}</p>
                                         {organizeAllowanceLabel && (
-                                            <p className="text-amber-200/90">
+                                            <p className="text-warning">
                                                 {translate('options.manager.organizeDialog.currentAllowance', { value: organizeAllowanceLabel })}
                                             </p>
                                         )}

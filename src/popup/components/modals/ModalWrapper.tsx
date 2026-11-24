@@ -82,7 +82,7 @@ export function ModalWrapper({
                     {showCloseButton && (
                         <button
                             onClick={onClose}
-                            className="p-1.5 hover:bg-bg-2 rounded-lg transition-colors ms-4"
+                            className="p-1.5 hover:bg-accent rounded-full transition-colors ms-4"
                             title={t('common.close')}
                         >
                             <X className="w-4 h-4 text-text-muted" />

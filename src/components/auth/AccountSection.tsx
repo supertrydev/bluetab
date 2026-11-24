@@ -103,14 +103,14 @@ export function AccountSection() {
         <div className="space-y-6">
             {/* Section Header */}
             <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-primary/10">
+                <div className="p-2 rounded-full bg-primary-muted">
                     <User className="h-5 w-5 text-primary" />
                 </div>
-                <h3 className="text-lg font-medium text-text-strong">{t('auth.account.title')}</h3>
+                <h3 className="text-base font-semibold text-text-strong">{t('auth.account.title')}</h3>
             </div>
 
             {/* Main Account Card */}
-            <div className="rounded-xl bg-bg-1 border border-border shadow-sm overflow-hidden">
+            <div className="rounded-lg bg-bg-1 border border-border overflow-hidden">
                 {isLoading ? (
                     <div className="flex items-center justify-center py-12">
                         <RefreshCw className="h-6 w-6 animate-spin text-text-muted" />
@@ -122,7 +122,7 @@ export function AccountSection() {
                             <div className="flex items-center gap-4">
                                 {/* Avatar */}
                                 <div className="relative">
-                                    <div className="w-14 h-14 rounded-full bg-gradient-to-br from-primary to-primary-hover flex items-center justify-center text-white text-xl font-semibold shadow-md">
+                                    <div className="w-14 h-14 rounded-full bg-primary flex items-center justify-center text-white text-xl font-semibold shadow-md">
                                         {user.name?.[0]?.toUpperCase() || user.email[0].toUpperCase()}
                                     </div>
                                     {isPro && (
@@ -152,7 +152,7 @@ export function AccountSection() {
                                     size="icon"
                                     onClick={handleRefresh}
                                     disabled={isRefreshing}
-                                    className="text-text-muted hover:text-text-strong hover:bg-bg-2 flex-shrink-0"
+                                    className="text-text-muted hover:text-text-strong hover:bg-accent flex-shrink-0"
                                 >
                                     <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
                                 </Button>
@@ -191,18 +191,18 @@ export function AccountSection() {
                                         variant="outline"
                                         size="sm"
                                         onClick={handleManageSubscription}
-                                        className="border-border text-text hover:bg-bg-2 hover:text-text-strong"
+                                        className="border-border text-text hover:bg-accent hover:text-text-strong"
                                     >
-                                        <ExternalLink className="h-3.5 w-3.5 me-1.5" />
+                                        <ExternalLink className="h-3.5 w-3.5" />
                                         {t('auth.account.manage')}
                                     </Button>
                                 ) : (
                                     <Button
                                         size="sm"
                                         onClick={handleUpgrade}
-                                        className="bg-primary hover:bg-primary-hover text-white shadow-sm"
+                                        className=""
                                     >
-                                        <CircleStar className="h-3.5 w-3.5 me-1.5" />
+                                        <CircleStar className="h-3.5 w-3.5" />
                                         {t('auth.account.upgrade')}
                                     </Button>
                                 )}
@@ -217,7 +217,7 @@ export function AccountSection() {
                                 onClick={logout}
                                 className="text-danger hover:text-danger hover:bg-danger-muted"
                             >
-                                <LogOut className="h-4 w-4 me-2" />
+                                <LogOut className="h-4 w-4" />
                                 {t('auth.account.signOut')}
                             </Button>
                         </div>
@@ -225,7 +225,7 @@ export function AccountSection() {
                 ) : (
                     /* Logged Out State */
                     <div className="p-8 text-center">
-                        <div className="w-16 h-16 rounded-full bg-bg-2 flex items-center justify-center mx-auto mb-4 shadow-inner">
+                        <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
                             <User className="h-8 w-8 text-text-muted" />
                         </div>
                         <h4 className="text-text-strong font-semibold text-lg mb-1">{t('auth.account.notSignedIn')}</h4>
@@ -234,9 +234,9 @@ export function AccountSection() {
                         </p>
                         <Button
                             onClick={() => setShowLoginModal(true)}
-                            className="bg-primary hover:bg-primary-hover text-white shadow-sm"
+                            className=""
                         >
-                            <LogIn className="h-4 w-4 me-2" />
+                            <LogIn className="h-4 w-4" />
                             {t('auth.account.signIn')}
                         </Button>
                     </div>
@@ -245,7 +245,7 @@ export function AccountSection() {
 
             {/* Premium Features Card - Only show when not Pro */}
             {!isPro && (
-                <div className="rounded-xl overflow-hidden border border-border bg-bg-1 shadow-sm">
+                <div className="rounded-lg overflow-hidden border border-border bg-bg-1">
                     {/* Header */}
                     <div className="px-5 py-4 border-b border-border">
                         <div className="flex items-center gap-2">
@@ -300,7 +300,7 @@ function FeatureItem({
     description: string
 }) {
     return (
-        <div className="flex items-start gap-3 p-3 rounded-lg bg-bg-2/50 border border-border-subtle">
+        <div className="flex items-start gap-3 p-4 rounded-md bg-muted">
             <div className="p-1 rounded bg-primary/10 mt-0.5 flex-shrink-0">
                 <Icon className="h-3.5 w-3.5 text-primary" />
             </div>

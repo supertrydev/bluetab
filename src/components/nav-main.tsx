@@ -77,7 +77,7 @@ export function NavMain({
               {item.icon && <item.icon />}
               <span>{item.title}</span>
               {item.badgeActive && (
-                <span className="ms-auto h-2 w-2 rounded-full bg-yellow-400 animate-pulse" />
+                <span className="ms-auto h-2 w-2 rounded-full bg-warning animate-pulse" />
               )}
             </SidebarMenuButton>
           </SidebarMenuItem>

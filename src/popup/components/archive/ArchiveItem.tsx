@@ -84,21 +84,21 @@ export function ArchiveItem({
             className={`
                 border rounded-lg p-3 sm:p-4 transition-all duration-200 cursor-pointer
                 ${isSelected
-                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                    ? 'border-primary bg-primary-muted'
                     : 'border-border bg-bg-1'
                 }
                 ${isHovered
                     ? 'shadow-md sm:transform sm:scale-[1.02]'
                     : 'shadow-sm'
                 }
-                hover:bg-gray-50 dark:hover:bg-gray-700
+                hover:bg-accent
             `}
         >
             <div className="flex items-start justify-between">
                 <div className="flex-1 min-w-0">
                     {/* Header */}
                     <div className="flex items-center gap-2 mb-3">
-                        <h3 className="font-medium text-sm text-gray-900 dark:text-gray-100 truncate">
+                        <h3 className="font-medium text-sm text-text-strong truncate">
                             <bdi dir="auto">{getGroupName(archive)}</bdi>
                         </h3>
 
@@ -106,14 +106,14 @@ export function ArchiveItem({
                         <div className="flex items-center gap-1">
                             {archive.protection.passwordProtected && (
                                 <Lock
-                                    className="w-3 h-3 text-yellow-500"
+                                    className="w-3 h-3 text-warning"
                                     aria-label={t('archive.item.passwordProtected')}
                                 />
                             )}
 
                             {archive.metadata.restoredCount > 0 && (
                                 <RotateCcw
-                                    className="w-3 h-3 text-green-500"
+                                    className="w-3 h-3 text-success"
                                     aria-label={t('archive.item.restoredCount', { count: archive.metadata.restoredCount })}
                                 />
                             )}
@@ -121,7 +121,7 @@ export function ArchiveItem({
                     </div>
 
                     {/* Metadata */}
-                    <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400 mb-3">
+                    <div className="flex items-center gap-4 text-xs text-text-muted mb-3">
                         <span dir="ltr" title={t('archive.item.archiveDate')} className="flex items-center gap-1.5">
                             <Calendar className="w-3 h-3" />
                             {formatDate(archive.metadata.archivedDate)}
@@ -136,7 +136,7 @@ export function ArchiveItem({
                     {/* Archive Reason */}
                     {archive.metadata.archiveReason && (
                         <p
-                            className="text-xs text-gray-600 dark:text-gray-300 mb-3 italic"
+                            className="text-xs text-text-muted mb-3 italic"
                             title={archive.metadata.archiveReason}
                         >
                             <bdi dir="auto">"{archive.metadata.archiveReason}"</bdi>
@@ -157,7 +157,7 @@ export function ArchiveItem({
                                         }}
                                     />
                                     <span
-                                        className="truncate text-gray-600 dark:text-gray-400"
+                                        className="truncate text-text-muted"
                                         title={isolateBidi(tab.title)}
                                     >
                                         <bdi dir="auto">{tab.title}</bdi>
@@ -166,7 +166,7 @@ export function ArchiveItem({
                             ))}
 
                             {getTabCount(archive) > 3 && (
-                                <p className="text-xs text-gray-500 dark:text-gray-400 ps-5">
+                                <p className="text-xs text-text-muted ps-5">
                                     {t('archive.item.moreTabs', { count: getTabCount(archive) - 3 })}
                                 </p>
                             )}
@@ -175,7 +175,7 @@ export function ArchiveItem({
 
                     {/* Last Accessed */}
                     {archive.metadata.lastAccessed && (
-                        <div className="text-xs text-gray-400 dark:text-gray-500 mt-2">
+                        <div className="text-xs text-text-muted mt-2">
                             {t('archive.item.lastAccessed', {
                                 date: isolateBidi(formatDate(archive.metadata.lastAccessed), 'ltr'),
                             })}
@@ -190,7 +190,7 @@ export function ArchiveItem({
                     }`}>
                         <button
                             onClick={handleView}
-                            className="min-h-[44px] min-w-[44px] sm:min-h-[36px] sm:min-w-[36px] flex items-center justify-center text-xs bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                            className="min-h-[44px] min-w-[44px] sm:min-h-[36px] sm:min-w-[36px] flex items-center justify-center text-xs bg-primary text-white rounded hover:bg-primary-hover transition-colors"
                             title={t('archive.item.viewArchive')}
                         >
                             <Eye className="w-4 h-4" />
@@ -198,7 +198,7 @@ export function ArchiveItem({
 
                         <button
                             onClick={handleRestore}
-                            className="min-h-[44px] min-w-[44px] sm:min-h-[36px] sm:min-w-[36px] flex items-center justify-center text-xs bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
+                            className="min-h-[44px] min-w-[44px] sm:min-h-[36px] sm:min-w-[36px] flex items-center justify-center text-xs bg-success text-white rounded hover:bg-success transition-colors"
                             title={t('archive.item.restoreArchive')}
                         >
                             <RotateCcw className="w-4 h-4" />
@@ -206,7 +206,7 @@ export function ArchiveItem({
 
                         <button
                             onClick={handleDelete}
-                            className="min-h-[44px] min-w-[44px] sm:min-h-[36px] sm:min-w-[36px] flex items-center justify-center text-xs bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+                            className="min-h-[44px] min-w-[44px] sm:min-h-[36px] sm:min-w-[36px] flex items-center justify-center text-xs bg-danger text-white rounded hover:bg-danger transition-colors"
                             title={t('archive.item.deleteArchive')}
                         >
                             <Trash2 className="w-4 h-4" />

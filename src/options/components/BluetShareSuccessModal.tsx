@@ -5,7 +5,10 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, X, MessageCircle, Linkedin, Copy, ExternalLink, Send, Mail, Globe2 } from 'lucide-react';
+import {
+    CheckCircle, Copy, ExternalLink, Mail,
+} from 'lucide-react';
+import { ShareBrandIcon } from '@/components/icons/ShareBrandIcon';
 import { useTranslation } from 'react-i18next';
 import { buildShareText, openShareUrl } from '@/utils/social-share';
 import type { SharePlatformId } from '@/utils/social-share';
@@ -44,8 +47,8 @@ export function BluetShareSuccessModal({
             <DialogContent className="sm:max-w-sm">
                 <DialogHeader>
                     <div className="flex flex-col items-center gap-3 pt-2">
-                        <CheckCircle className="h-10 w-10 text-green-500" />
-                        <DialogTitle className="text-center text-gray-900 dark:text-gray-100">
+                        <CheckCircle className="h-10 w-10 text-success" />
+                        <DialogTitle className="text-center text-text-strong">
                             {isUpdate ? t('options.bluetShareSuccess.updated') : t('options.bluetShareSuccess.shared')}
                         </DialogTitle>
                     </div>
@@ -60,7 +63,7 @@ export function BluetShareSuccessModal({
                             chrome.tabs.create({ url: bluetUrl, active: true });
                             onClose();
                         }}
-                        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-sm text-blue-600 dark:text-blue-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors truncate"
+                        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-muted text-sm text-primary hover:bg-accent transition-colors truncate"
                     >
                         <ExternalLink className="w-4 h-4 flex-shrink-0" />
                         <span className="truncate"><bdi dir="ltr">{bluetUrl}</bdi></span>
@@ -68,7 +71,7 @@ export function BluetShareSuccessModal({
 
                     {/* Share buttons */}
                     <div className="space-y-2">
-                        <p className="text-sm text-gray-500 dark:text-gray-400 text-center">{t('options.bluetShareSuccess.shareTo')}</p>
+                        <p className="text-sm text-text-muted text-center">{t('options.bluetShareSuccess.shareTo')}</p>
                         <div className="grid grid-cols-2 gap-2">
                             <Button
                                 variant="secondary"
@@ -76,7 +79,7 @@ export function BluetShareSuccessModal({
                                 onClick={() => handleShare('x')}
                                 className="flex items-center gap-2"
                             >
-                                <X className="w-4 h-4" />
+                                <ShareBrandIcon id="x" className="w-4 h-4" />
                                 X
                             </Button>
                             <Button
@@ -85,7 +88,7 @@ export function BluetShareSuccessModal({
                                 onClick={() => handleShare('whatsapp')}
                                 className="flex items-center gap-2"
                             >
-                                <MessageCircle className="w-4 h-4" />
+                                <ShareBrandIcon id="whatsapp" className="w-4 h-4" />
                                 WhatsApp
                             </Button>
                             <Button
@@ -94,7 +97,7 @@ export function BluetShareSuccessModal({
                                 onClick={() => handleShare('telegram')}
                                 className="flex items-center gap-2"
                             >
-                                <Send className="w-4 h-4" />
+                                <ShareBrandIcon id="telegram" className="w-4 h-4" />
                                 Telegram
                             </Button>
                             <Button
@@ -112,7 +115,7 @@ export function BluetShareSuccessModal({
                                 onClick={() => handleShare('linkedin')}
                                 className="flex items-center gap-2"
                             >
-                                <Linkedin className="w-4 h-4" />
+                                <ShareBrandIcon id="linkedin" className="w-4 h-4" />
                                 LinkedIn
                             </Button>
                             <Button
@@ -121,7 +124,7 @@ export function BluetShareSuccessModal({
                                 onClick={() => handleShare('reddit')}
                                 className="flex items-center gap-2"
                             >
-                                <MessageCircle className="w-4 h-4" />
+                                <ShareBrandIcon id="reddit" className="w-4 h-4" />
                                 Reddit
                             </Button>
                             <Button
@@ -130,7 +133,7 @@ export function BluetShareSuccessModal({
                                 onClick={() => handleShare('facebook')}
                                 className="flex items-center gap-2"
                             >
-                                <Globe2 className="w-4 h-4" />
+                                <ShareBrandIcon id="facebook" className="w-4 h-4" />
                                 Facebook
                             </Button>
                             <Button

@@ -131,8 +131,8 @@ export function NotionBrainDumpRouterFooter({ accountId }: NotionBrainDumpRouter
           aria-label={t('settings.integrations.autoRouteAria')}
         />
       </div>
-      {loadError && <p dir="auto" className="text-caption text-destructive">{loadError}</p>}
-      <p className="text-caption text-muted-foreground leading-tight">
+      {loadError && <p dir="auto" className="text-xs text-destructive">{loadError}</p>}
+      <p className="text-xs text-muted-foreground leading-tight">
         {t('settings.integrations.brainDumpRouteHint')}
       </p>
     </div>

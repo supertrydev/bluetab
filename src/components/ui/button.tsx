@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils"
  * Button Component
  * 
  * Uses design tokens for consistent styling across themes.
- * Variants: primary, secondary, ghost, danger, link
+ * Variants: primary, secondary, outline, soft, ghost, danger, link
  * Sizes: sm, md, lg, icon
  */
 const buttonVariants = cva(
@@ -16,8 +16,7 @@ const buttonVariants = cva(
   [
     "inline-flex items-center justify-center gap-2",
     "whitespace-nowrap font-medium",
-    "rounded-full transition-all duration-normal",
-    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-0",
+    "rounded-full transition-all duration-normal select-none",
     "disabled:pointer-events-none disabled:opacity-50",
     "[&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   ].join(" "),
@@ -33,18 +32,24 @@ const buttonVariants = cva(
         // Secondary - subtle action
         secondary: [
           "bg-bg-2 text-text-strong border border-border",
-          "hover:bg-highlight hover:border-highlight",
+          "shadow-sm hover:bg-[color-mix(in_srgb,var(--text-strong)_6%,var(--bg-2))]",
         ].join(" "),
 
         // Outline - bordered button
         outline: [
           "border border-border bg-transparent text-text-strong",
-          "hover:bg-bg-2 hover:border-primary hover:text-primary",
+          "hover:bg-accent hover:border-primary hover:text-primary",
         ].join(" "),
 
         // Ghost - minimal
         ghost: [
-          "text-text hover:bg-bg-2 hover:text-text-strong",
+          "text-text-default hover:bg-accent hover:text-text-strong",
+        ].join(" "),
+
+        // Soft - tinted action inside cards and rows
+        soft: [
+          "bg-primary-muted text-primary",
+          "hover:bg-primary/20",
         ].join(" "),
 
         // Danger - destructive action
@@ -60,7 +65,7 @@ const buttonVariants = cva(
         ].join(" "),
       },
       size: {
-        sm: "h-8 px-4 text-xs",
+        sm: "h-8 px-3.5 text-xs",
         md: "h-10 px-4 text-sm",
         lg: "h-12 px-6 text-base",
         icon: "h-10 w-10",

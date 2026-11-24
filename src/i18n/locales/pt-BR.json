@@ -149,6 +149,8 @@
   "settingsTabs": {
     "appearance": "Aparência",
     "general": "Geral",
+    "tabs": "Comportamento das abas",
+    "sidePanel": "Painel lateral",
     "pomodoro": "Pomodoro",
     "focus": "Modo Foco",
     "brainDump": "Brain Dump",
@@ -326,7 +328,6 @@
         }
       },
       "browserTabs": {
-        "title": "Abas do navegador",
         "groupBorderLabel": "Borda colorida do grupo",
         "groupBorderDescription": "Mostra no painel lateral uma borda ao redor dos grupos de abas do navegador que combina com a cor do grupo.",
         "closeOnSaveLabel": "Fechar abas após salvar",
@@ -1504,7 +1505,7 @@
       "layoutGrid": "Layout em grade",
       "layoutMasonry": "Layout em mosaico",
       "layoutDashboard": "Layout de painel",
-      "searchPlaceholder": "Pesquisar grupos, abas ou etiquetas...",
+      "searchPlaceholder": "Pesquisar grupos, abas, etiquetas ou notas...",
       "sortFallback": "Ordenar",
       "sort": {
         "newest": "Mais recentes primeiro",
@@ -2302,12 +2303,9 @@
       "messages_other": "{{count}} msgs"
     },
     "aiUpgradePrompt": {
-      "assistantName": "Bluetab AI",
       "preview": "Posso organizar suas abas, renomear grupos e preparar ações antes que qualquer coisa seja alterada.",
-      "title": "Assistente de IA",
-      "subtitle": "Organize suas abas conversando naturalmente.",
+      "title": "Assistente de IA do Bluetab",
       "locked": "Bloqueado",
-      "inputPlaceholder": "Pergunte ao Bluetab AI...",
       "upgrade": "Fazer upgrade para o Pro"
     },
     "aiChatThread": {

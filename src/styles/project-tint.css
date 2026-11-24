@@ -1,0 +1,34 @@
+/* Group card that belongs to a project. Values: src/config/project-tints.ts.
+   Text tones are redefined for the stronger background; every pair on it is at
+   least 4.5:1 (see project-tints.test.ts). */
+
+.project-tint {
+    /* Half of the project color over the card surface. */
+    --tint-bg: color-mix(in srgb, var(--tint-dark-bg) 50%, var(--bg-1));
+    --tint-text: var(--tint-dark-text);
+    --border: var(--tint-dark-border);
+    --text-strong: hsl(220 14% 96%);
+    --text-muted: hsl(220 16% 82%);
+    --muted-foreground: hsl(220 16% 82%);
+    --foreground: hsl(220 14% 96%);
+    --primary-text: hsl(226 100% 88%);
+    --primary-muted: hsl(226 80% 70% / 0.22);
+    --warning-text: hsl(42 95% 74%);
+    --success-text: hsl(150 60% 74%);
+    --chip-base: var(--bg-1);
+}
+
+[data-theme="light"] .project-tint,
+html:not(.dark) .project-tint {
+    --tint-bg: color-mix(in srgb, var(--tint-light-bg) 50%, var(--bg-1));
+    --tint-text: var(--tint-light-text);
+    --border: var(--tint-light-border);
+    --text-strong: hsl(222 22% 12%);
+    --text-muted: hsl(222 16% 26%);
+    --muted-foreground: hsl(222 16% 26%);
+    --foreground: hsl(222 22% 12%);
+    --primary-text: hsl(226 72% 40%);
+    --primary-muted: hsl(226 68% 50% / 0.13);
+    --warning-text: hsl(26 92% 25%);
+    --success-text: hsl(150 70% 19%);
+}

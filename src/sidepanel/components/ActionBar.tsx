@@ -74,7 +74,7 @@ export function ActionBar({
 
     return (
         <TooltipProvider delayDuration={300}>
-            <div className="flex gap-1.5 px-1 py-2">
+            <div className="flex gap-2 px-2 py-2">
                 {isSelectionMode ? (
                     <>
                         {/* Selection info */}
@@ -101,7 +101,7 @@ export function ActionBar({
                                     onClick={onNewGroup}
                                     aria-label={newGroupLabel}
                                     size="sm"
-                                    className="h-7 w-7 p-0"
+                                    className="h-8 w-8 p-0"
                                     disabled={!hasSelection}
                                 >
                                     <Plus className="w-3.5 h-3.5" />
@@ -118,7 +118,7 @@ export function ActionBar({
                                 <Button
                                     onClick={() => onSaveToBlueTab(selectedTabs)}
                                     size="sm"
-                                    className="h-7 w-7 p-0"
+                                    className="h-8 w-8 p-0"
                                     disabled={!hasSelection}
                                 >
                                     <LayersPlus className="w-3.5 h-3.5" />
@@ -139,7 +139,7 @@ export function ActionBar({
                                         <Button
                                             size="sm"
                                             variant="secondary"
-                                            className="h-7 w-7 p-0"
+                                            className="h-8 w-8 p-0"
                                             disabled={!hasSelection || groups.length === 0}
                                         >
                                             <FileSliders className="w-3.5 h-3.5" />
@@ -162,7 +162,7 @@ export function ActionBar({
                                             const tabIds = selectedTabs.map(t => t.id);
                                             onMoveToGroup(tabIds, group.id);
                                         }}
-                                        className="flex items-center gap-2 focus:bg-gray-100 dark:focus:bg-gray-700"
+                                        className="flex items-center gap-2 focus:bg-accent"
                                     >
                                         <span
                                             className="w-3 h-3 rounded-full flex-shrink-0"
@@ -181,7 +181,7 @@ export function ActionBar({
                                     onClick={onToggleSelectionMode}
                                     size="sm"
                                     variant="secondary"
-                                    className="h-7 w-7 p-0"
+                                    className="h-8 w-8 p-0"
                                 >
                                     <Check className="w-3.5 h-3.5" />
                                 </Button>
@@ -197,9 +197,9 @@ export function ActionBar({
                                 <Button
                                     onClick={onToggleSelectionMode}
                                     size="sm"
-                                    className="flex-1 h-7 text-xs gap-1"
+                                    className="flex-1 h-8 text-xs gap-1.5"
                                 >
-                                    <SquareMousePointer className="w-3 h-3" />
+                                    <SquareMousePointer className="w-3.5 h-3.5" />
                                     {t('sidepanel.actionBar.select')}
                                 </Button>
                             </TooltipTrigger>
@@ -214,7 +214,7 @@ export function ActionBar({
                                     size="sm"
                                     variant="secondary"
                                     className={cn(
-                                        "flex-1 h-7 text-xs gap-1 transition-all duration-300",
+                                        "flex-1 h-8 text-xs gap-1.5 transition-all duration-300",
                                         noRulesMessage && "text-warning border-warning/30"
                                     )}
                                 >
@@ -241,11 +241,11 @@ export function ActionBar({
             {showProModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowProModal(false)}>
                     <div
-                        className="bg-bg-1 border border-border rounded-xl shadow-xl max-w-sm mx-4 overflow-hidden animate-in fade-in zoom-in-95 duration-200"
+                        className="bg-bg-1 border border-border rounded-2xl shadow-xl max-w-sm mx-4 overflow-hidden animate-in fade-in zoom-in-95 duration-200"
                         onClick={e => e.stopPropagation()}
                     >
                         <div className="p-6 text-center">
-                            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                            <div className="w-12 h-12 rounded-full bg-primary-muted flex items-center justify-center mx-auto mb-4">
                                 <CircleStar className="w-6 h-6 text-primary" />
                             </div>
                             <h3 className="text-lg font-semibold text-text-strong mb-2">
@@ -261,7 +261,7 @@ export function ActionBar({
                         <div className="flex border-t border-border">
                             <button
                                 onClick={() => setShowProModal(false)}
-                                className="flex-1 py-3 text-sm text-text-muted hover:bg-bg-2 transition-colors"
+                                className="flex-1 py-3 text-sm text-text-muted hover:bg-accent transition-colors"
                             >
                                 {t('common.cancel')}
                             </button>
@@ -270,7 +270,7 @@ export function ActionBar({
                                     setShowProModal(false);
                                     chrome.tabs.create({ url: chrome.runtime.getURL('src/flow/index.html') });
                                 }}
-                                className="flex-1 py-3 text-sm font-medium text-text hover:bg-bg-2 transition-colors border-s border-border"
+                                className="flex-1 py-3 text-sm font-medium text-text hover:bg-accent transition-colors border-s border-border"
                             >
                                 {t('components.actionBar.viewFlow')}
                             </button>

@@ -79,7 +79,6 @@ describe('Arabic copy quality', () => {
     'settingsTabs.brainDump',
     'settingsTabs.mcp',
     'settingsTabs.pomodoro',
-    'sidepanel.aiUpgradePrompt.assistantName',
     'sidepanel.brainDump',
     'sidepanel.teams',
     'sidepanel.teamsPreSession.codePlaceholder',

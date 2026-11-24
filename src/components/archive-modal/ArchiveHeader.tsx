@@ -28,14 +28,14 @@ export function ArchiveHeader({ filters, onFiltersChange }: ArchiveHeaderProps) 
 
     return (
         <div className="flex items-center justify-between gap-4 p-4 pe-14 border-b border-border">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 whitespace-nowrap flex items-center gap-2">
+            <h2 className="text-lg font-semibold text-text-strong whitespace-nowrap flex items-center gap-2">
                 <Archive className="h-5 w-5" />
                 {t('archive.page.title')}
             </h2>
 
             {/* Search Bar */}
             <div className="flex-1 max-w-xs relative">
-                <Search className="absolute start-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Search className="absolute start-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-text-muted" />
                 <Input
                     type="text"
                     placeholder={t('components.archive.searchPlaceholder')}

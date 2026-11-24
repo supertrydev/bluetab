@@ -731,13 +731,13 @@ export function TabsPanel() {
                     <div className="flex gap-1">
                         <button
                             onClick={() => setMatchIndex(i => (i - 1 + matchingTabIds.length) % matchingTabIds.length)}
-                            className="p-0.5 rounded hover:bg-bg-2 transition-colors"
+                            className="p-0.5 rounded-full hover:bg-accent transition-colors"
                         >
                             <ChevronUp className="w-3.5 h-3.5" />
                         </button>
                         <button
                             onClick={() => setMatchIndex(i => (i + 1) % matchingTabIds.length)}
-                            className="p-0.5 rounded hover:bg-bg-2 transition-colors"
+                            className="p-0.5 rounded-full hover:bg-accent transition-colors"
                         >
                             <ChevronDown className="w-3.5 h-3.5" />
                         </button>

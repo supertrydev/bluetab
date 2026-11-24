@@ -102,7 +102,6 @@ describe('Spanish copy quality', () => {
     'settingsTabs.mcp',
     'settingsTabs.pomodoro',
     'sidepanel.aiPanel.chat',
-    'sidepanel.aiUpgradePrompt.assistantName',
     'sidepanel.brainDump',
     'sidepanel.tabsPanel.loadError',
     'sidepanel.teams',

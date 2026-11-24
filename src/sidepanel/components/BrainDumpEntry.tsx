@@ -132,11 +132,11 @@ export function BrainDumpEntry({
 
   return (
     <div
-      className="group flex gap-2 px-3 py-2.5 rounded-lg border border-border bg-bg-0/60 hover:bg-bg-1/80 transition-colors"
+      className="group flex gap-2 p-4 rounded-lg border border-border bg-bg-1 hover:border-field/60 transition-colors"
       data-bluetab-brain-dump-entry
     >
       <div className="flex-1 min-w-0 space-y-1.5">
-        <div className="flex items-center gap-2 text-caption text-muted-foreground">
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <span dir="ltr">{formatRelativeTime(entry.createdAt)}</span>
           {entry.updatedAt ? <span className="opacity-60">· {t('sidepanel.brainDumpEntry.edited')}</span> : null}
         </div>
@@ -164,7 +164,7 @@ export function BrainDumpEntry({
             disabled={isSaving}
             dir="auto"
             aria-label={t('sidepanel.brainDumpEntry.editThoughtAria')}
-            className="block w-full min-h-[3.25rem] overflow-hidden text-sm text-foreground bg-bg-1 border border-border rounded-md px-2 py-1.5 leading-snug resize-none focus:outline-none focus:ring-1 focus:ring-primary"
+            className="block w-full min-h-[3.25rem] overflow-hidden text-sm text-foreground bg-bg-1 border border-field rounded-md px-3 py-2 leading-snug resize-none"
           />
         ) : (
           <p
@@ -189,7 +189,7 @@ export function BrainDumpEntry({
           <button
             type="button"
             onClick={() => openInNewTab(tabContext.url)}
-            className="inline-flex items-center gap-1.5 max-w-full px-2 py-1 rounded-full border border-border text-caption text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
+            className="inline-flex items-center gap-1.5 max-w-full px-2 py-1 rounded-full border border-border text-xs text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
             title={isolateBidi(tabContext.url, 'ltr')}
           >
             {tabContext.favicon ? (
@@ -213,7 +213,7 @@ export function BrainDumpEntry({
           <button
             type="button"
             aria-label={t('sidepanel.brainDumpEntry.entryActions')}
-            className="flex-shrink-0 self-start p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors opacity-60 group-hover:opacity-100"
+            className="flex-shrink-0 self-start p-1 rounded-full text-muted-foreground hover:text-foreground hover:bg-accent transition-colors opacity-60 group-hover:opacity-100"
           >
             <MoreVertical className="w-4 h-4" />
           </button>
@@ -227,20 +227,20 @@ export function BrainDumpEntry({
            */}
           {hasUrl && (
             <DropdownMenuItem onClick={() => onConvertToGroup(entry)}>
-              <FolderPlus className="w-4 h-4 me-2" />
+              <FolderPlus className="w-4 h-4" />
               {t('sidepanel.brainDumpEntry.convertToGroup')}
             </DropdownMenuItem>
           )}
           <DropdownMenuItem onClick={() => onConvertToReminder(entry)}>
-            <Bell className="w-4 h-4 me-2" />
+            <Bell className="w-4 h-4" />
             {t('sidepanel.brainDumpEntry.convertToReminder')}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
             onClick={() => onDelete(entry)}
-            className="text-red-500 focus:text-red-500"
+            className="text-danger focus:text-danger"
           >
-            <Trash2 className="w-4 h-4 me-2" />
+            <Trash2 className="w-4 h-4" />
             {t('common.delete')}
           </DropdownMenuItem>
         </DropdownMenuContent>

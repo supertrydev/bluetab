@@ -160,7 +160,7 @@ function SortableMenuRow({
                 type="button"
                 ref={setActivatorNodeRef}
                 {...listeners}
-                className="touch-none rounded p-1 text-text-muted opacity-50 transition-opacity hover:opacity-100 group-hover:opacity-100 focus-visible:opacity-100 cursor-grab active:cursor-grabbing"
+                className="touch-none rounded-full p-1 text-text-muted opacity-50 transition-opacity hover:opacity-100 group-hover:opacity-100 focus-visible:opacity-100 cursor-grab active:cursor-grabbing"
                 aria-label={t('settings.groupMenu.dragAria')}
             >
                 <GripVertical className="h-4 w-4" />
@@ -481,7 +481,7 @@ export function GroupMenuSettings({ settings, isPro, onSettingsChange }: GroupMe
         <div>
             <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
                 <div className="min-w-0">
-                    <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                    <h3 className="text-base font-semibold text-text-strong flex items-center gap-2">
                         <EllipsisVertical className="w-5 h-5" />
                         {t('settings.groupMenu.title')}
                     </h3>
@@ -546,7 +546,7 @@ export function GroupMenuSettings({ settings, isPro, onSettingsChange }: GroupMe
                                                 value={getGroupSubmenuLabel(submenu, t)}
                                                 onDebouncedChange={(val) => renameSubmenu(submenuId, val)}
                                                 ariaLabel={t('settings.groupMenu.renameAria')}
-                                                className="w-full min-w-0 rounded bg-transparent px-1 -mx-1 text-sm font-medium text-text-strong hover:bg-bg-2 focus:bg-bg-2 focus:outline-none focus-visible:ring-1 focus-visible:ring-primary/60"
+                                                className="w-full min-w-0 rounded bg-transparent px-1 -mx-1 text-sm font-medium text-text-strong hover:bg-accent focus:bg-bg-2 focus:outline-none focus-visible:ring-1 focus-visible:ring-primary/60"
                                             />
                                         }
                                         hint={isShare ? t('settings.groupMenu.shareExtrasHint') : undefined}
@@ -556,7 +556,7 @@ export function GroupMenuSettings({ settings, isPro, onSettingsChange }: GroupMe
                                             <button
                                                 type="button"
                                                 onClick={() => removeSubmenu(submenuId)}
-                                                className="rounded p-1.5 text-text-muted opacity-0 transition-opacity hover:bg-danger/10 hover:text-danger group-hover:opacity-100 focus-visible:opacity-100"
+                                                className="rounded-full p-1.5 text-text-muted opacity-0 transition-opacity hover:bg-danger/10 hover:text-danger group-hover:opacity-100 focus-visible:opacity-100"
                                                 aria-label={t('settings.groupMenu.removeSubmenu')}
                                                 title={t('settings.groupMenu.removeSubmenu')}
                                             >

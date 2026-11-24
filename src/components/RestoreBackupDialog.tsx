@@ -118,7 +118,7 @@ export function RestoreBackupDialog({
           <div className="mt-4 space-y-3">
             <button
               onClick={() => handleRestore('group')}
-              className="w-full flex items-start gap-3 p-4 border border-border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors text-start"
+              className="w-full flex items-start gap-3 p-4 border border-border rounded-lg hover:bg-accent transition-colors text-start"
             >
               <FolderPlus className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
               <div>
@@ -133,7 +133,7 @@ export function RestoreBackupDialog({
 
             <button
               onClick={() => handleRestore('window')}
-              className="w-full flex items-start gap-3 p-4 border border-border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors text-start"
+              className="w-full flex items-start gap-3 p-4 border border-border rounded-lg hover:bg-accent transition-colors text-start"
             >
               <ExternalLink className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
               <div>

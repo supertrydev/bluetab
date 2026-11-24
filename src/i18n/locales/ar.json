@@ -149,6 +149,8 @@
   "settingsTabs": {
     "appearance": "المظهر",
     "general": "عام",
+    "tabs": "سلوك علامات التبويب",
+    "sidePanel": "اللوحة الجانبية",
     "pomodoro": "Pomodoro",
     "focus": "وضع التركيز",
     "brainDump": "Brain Dump",
@@ -326,7 +328,6 @@
         }
       },
       "browserTabs": {
-        "title": "علامات تبويب المتصفح",
         "groupBorderLabel": "حد ملوّن للمجموعة",
         "groupBorderDescription": "إظهار حد ملوّن حول مجموعات علامات تبويب المتصفح في اللوحة الجانبية يطابق لون المجموعة.",
         "closeOnSaveLabel": "إغلاق علامات التبويب بعد الحفظ",
@@ -1644,7 +1645,7 @@
       "layoutGrid": "تخطيط شبكي",
       "layoutMasonry": "تخطيط متراص",
       "layoutDashboard": "تخطيط لوحة المعلومات",
-      "searchPlaceholder": "ابحث في المجموعات أو علامات التبويب أو الوسوم...",
+      "searchPlaceholder": "ابحث في المجموعات أو علامات التبويب أو الوسوم أو الملاحظات...",
       "sortFallback": "فرز",
       "sort": {
         "newest": "الأحدث أولًا",
@@ -2554,12 +2555,9 @@
       "messages_other": "{{count}} رسالة"
     },
     "aiUpgradePrompt": {
-      "assistantName": "Bluetab AI",
       "preview": "يمكنني تنظيم علامات تبويبك وإعادة تسمية المجموعات وإعداد الإجراءات قبل تغيير أي شيء.",
-      "title": "مساعد الذكاء الاصطناعي",
-      "subtitle": "أعمال علامات التبويب بلغة طبيعية.",
+      "title": "مساعد Bluetab للذكاء الاصطناعي",
       "locked": "مقفل",
-      "inputPlaceholder": "اسأل Bluetab AI...",
       "upgrade": "الترقية إلى Pro"
     },
     "aiChatThread": {

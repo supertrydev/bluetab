@@ -26,11 +26,11 @@ import { isolateBidi } from '@/i18n/bidi';
 // ============================================================================
 
 const PROJECT_COLORS: Record<string, string> = {
-  red: 'bg-red-500',
-  orange: 'bg-orange-500',
-  yellow: 'bg-yellow-500',
-  green: 'bg-green-500',
-  blue: 'bg-blue-500',
+  red: 'bg-danger',
+  orange: 'bg-warning',
+  yellow: 'bg-warning',
+  green: 'bg-success',
+  blue: 'bg-primary',
   purple: 'bg-purple-500',
   pink: 'bg-pink-500',
 };
@@ -98,7 +98,7 @@ export function ConfirmationCard({
           {!isResolved ? (
             <div className="flex flex-wrap gap-2 pt-0.5">
               <Button size="sm" variant="primary" onClick={onConfirm} className="h-7 text-xs">
-                <Check className="w-3 h-3 me-1" />
+                <Check className="w-3 h-3" />
                 {t('components.confirmation.allow')}
               </Button>
               {onAlwaysAllow && (
@@ -146,7 +146,7 @@ export function ConfirmationCard({
             <div className="flex gap-2 pt-0.5">
               <Button size="sm" variant="ghost" onClick={onConfirm}
                 className="h-7 text-xs text-danger hover:text-danger hover:bg-danger-muted">
-                <Trash2 className="w-3 h-3 me-1" />
+                <Trash2 className="w-3 h-3" />
                 {t('components.confirmation.deleteNotes', { count })}
               </Button>
               <Button size="sm" variant="ghost" onClick={onCancel}
@@ -189,7 +189,7 @@ export function ConfirmationCard({
             <div className="flex gap-2 pt-0.5">
               <Button size="sm" variant="ghost" onClick={onConfirm}
                 className="h-7 text-xs text-danger hover:text-danger hover:bg-danger-muted">
-                <Trash2 className="w-3 h-3 me-1" />
+                <Trash2 className="w-3 h-3" />
                 {t('components.confirmation.deleteProjects', { count })}
               </Button>
               <Button size="sm" variant="ghost" onClick={onCancel}
@@ -210,7 +210,7 @@ export function ConfirmationCard({
 
   // Single project delete card
   if (isSingleProjectDelete) {
-    const colorClass = PROJECT_COLORS[projectMeta.color] ?? 'bg-blue-500';
+    const colorClass = PROJECT_COLORS[projectMeta.color] ?? 'bg-primary';
 
     return (
       <Card className="shadow-lg border-danger/30">
@@ -223,7 +223,7 @@ export function ConfirmationCard({
               <p className="text-sm font-medium text-text-strong">
                 {t('components.confirmation.deleteNamed', { name: isolateBidi(projectMeta.name) })}
               </p>
-              <p className="text-caption text-text-muted">
+              <p className="text-xs text-text-muted">
                 {projectMeta.groupCount > 0
                   ? t('components.confirmation.groupsUnassigned', { count: projectMeta.groupCount })
                   : t('components.confirmation.noGroupsAssigned')}
@@ -235,7 +235,7 @@ export function ConfirmationCard({
             <div className="flex gap-2 pt-1">
               <Button size="sm" variant="ghost" onClick={onConfirm}
                 className="h-7 text-xs text-danger hover:text-danger hover:bg-danger-muted">
-                <Trash2 className="w-3 h-3 me-1" />
+                <Trash2 className="w-3 h-3" />
                 {t('components.confirmation.deleteProject')}
               </Button>
               <Button size="sm" variant="ghost" onClick={onCancel}
@@ -284,7 +284,7 @@ export function ConfirmationCard({
         {!isResolved ? (
           <div className="flex gap-2 pt-0.5">
             <Button size="sm" variant="primary" onClick={onConfirm} className="h-7 text-xs">
-              <Check className="w-3 h-3 me-1" />
+              <Check className="w-3 h-3" />
               {isGroupDelete ? t('components.confirmation.deleteGroup') : t('components.confirmation.closeTabs')}
             </Button>
             <Button size="sm" variant="ghost" onClick={onCancel}

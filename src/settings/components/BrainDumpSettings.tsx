@@ -65,7 +65,7 @@ export function BrainDumpSettings() {
 
   return (
     <div className="pt-4 border-t border-border">
-      <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 flex items-center gap-2 mb-4">
+      <h3 className="text-base font-semibold text-text-strong flex items-center gap-2 mb-4">
         <StickyNote className="w-5 h-5" />
         {t('settings.brainDump.title')}
       </h3>
@@ -77,7 +77,7 @@ export function BrainDumpSettings() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div className="pe-4">
-            <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            <p className="text-sm font-medium text-text-strong">
               {t('settings.brainDump.enableLabel')}
             </p>
             <p className="text-xs text-muted-foreground">
@@ -94,7 +94,7 @@ export function BrainDumpSettings() {
         <div className={`space-y-5 ${prefs.enabled ? '' : 'opacity-50'}`}>
           <div className="flex items-start justify-between">
             <div className="pe-4">
-              <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <p className="text-sm font-medium text-text-strong">
                 {t('settings.brainDump.includeActiveTabLabel')}
               </p>
               <p className="text-xs text-muted-foreground mt-1 max-w-prose">
@@ -111,7 +111,7 @@ export function BrainDumpSettings() {
 
           <div className="flex items-start justify-between">
             <div className="pe-4">
-              <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <p className="text-sm font-medium text-text-strong">
                 {t('settings.brainDump.highlightExactPagesLabel')}
               </p>
               <p className="text-xs text-muted-foreground mt-1 max-w-prose">
@@ -126,7 +126,7 @@ export function BrainDumpSettings() {
             />
           </div>
 
-          <p className="text-caption text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             {t('settings.brainDump.storageNote', { key: isolateBidi(BRAIN_DUMP_PREFS_KEY, 'ltr') })}
           </p>
         </div>

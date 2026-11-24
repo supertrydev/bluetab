@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toLocalDateKey } from '@/utils/local-date';
 import { Button } from '@/components/ui/button';
 import { ToastManager } from '@/components/Toast';
-import { getLocaleTag, t as translate } from '@/i18n';
+import { getLanguageDirection, getLocaleTag, t as translate } from '@/i18n';
 import { isolateBidi } from '@/i18n/bidi';
 import { formatDate, formatDateTime } from '@/i18n/format';
 import { ConfirmModal } from '@/components/ConfirmModal';
@@ -17,7 +17,8 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Storage } from '@/utils/storage';
-import type { Settings, TabGroup, Tag } from '@/types/models';
+import { buildHtmlExport } from '../html-export';
+import type { Project, Settings, TabGroup, Tag } from '@/types/models';
 import type { FlowSettings } from '@/types/flow';
 import {
     AlertCircle,
@@ -80,7 +81,7 @@ function BookmarkFolderItem({ node, selectedIds, onToggle, depth }: BookmarkFold
     return (
         <div>
             <div
-                className="flex items-center gap-1 rounded px-2 py-1 hover:bg-bg-2"
+                className="flex items-center gap-1 rounded px-2 py-1 hover:bg-accent"
                 style={{ paddingInlineStart: `${8 + depth * 16}px` }}
             >
                 <button
@@ -100,11 +101,11 @@ function BookmarkFolderItem({ node, selectedIds, onToggle, depth }: BookmarkFold
                         type="checkbox"
                         checked={isSelected}
                         onChange={() => onToggle(node.id)}
-                        className="h-4 w-4 shrink-0 cursor-pointer accent-blue-500"
+                        className="h-4 w-4 shrink-0 cursor-pointer accent-primary"
                     />
                     {expanded && subFolders.length > 0
-                        ? <FolderOpen className="h-4 w-4 shrink-0 text-amber-500" />
-                        : <Folder className="h-4 w-4 shrink-0 text-amber-400" />
+                        ? <FolderOpen className="h-4 w-4 shrink-0 text-warning" />
+                        : <Folder className="h-4 w-4 shrink-0 text-warning" />
                     }
                     <bdi dir="auto" className="truncate text-sm text-text-strong">{node.title}</bdi>
                     <span dir="ltr" className="ms-auto shrink-0 text-xs tabular-nums text-text-muted">{bookmarkCount}</span>
@@ -204,28 +205,6 @@ export function BackupSettings({ settings, groups, onSettingsChange, onGroupsCha
     const [bookmarkLoading, setBookmarkLoading] = useState(false);
     const [bookmarkError, setBookmarkError] = useState<string | null>(null);
 
-    const escapeHtml = (text: string): string => {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    };
-
-    const isSafeExportUrl = (url: string | undefined): url is string => {
-        if (!url) return false;
-        try {
-            const parsed = new URL(url);
-            return parsed.protocol === 'http:' || parsed.protocol === 'https:';
-        } catch {
-            return false;
-        }
-    };
-
-    const isSafeFaviconUrl = (url: string | undefined): url is string => {
-        if (!url) return false;
-        if (/^data:image\/(?:png|gif|jpeg|jpg|webp);/i.test(url)) return true;
-        return isSafeExportUrl(url);
-    };
-
     const exportData = async () => {
         try {
             const allTags = await Storage.get<Tag[]>('tags') || [];
@@ -322,220 +301,36 @@ export function BackupSettings({ settings, groups, onSettingsChange, onGroupsCha
 
     const exportAsHTML = async () => {
         try {
-            const exportDate = new Date().toISOString();
-            const totalTabs = groups.reduce((sum, group) => sum + group.tabs.length, 0);
-            const currentTheme = settings.theme === 'dark' ? 'dark' : (settings.theme === 'light' ? 'light' : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+            const [tags, projects] = await Promise.all([
+                Storage.get<Tag[]>('tags'),
+                Storage.get<Project[]>('projects'),
+            ]);
+            const theme = settings.theme === 'dark' || settings.theme === 'light'
+                ? settings.theme
+                : window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
             const locale = getLocaleTag();
-            const exportTitleDate = new Intl.DateTimeFormat(locale).format(new Date());
-            const exportSubtitleDate = new Intl.DateTimeFormat(locale, {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-            }).format(new Date());
-
-            const html = `<!DOCTYPE html>
-<html lang="${locale}" class="${currentTheme}">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BlueTab Export - ${exportTitleDate}</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-0: hsl(220 15% 97%);
-            --bg-1: hsl(220 15% 99%);
-            --bg-2: hsl(0 0% 100%);
-            --text-strong: hsl(220 15% 10%);
-            --text: hsl(220 10% 35%);
-            --text-muted: hsl(220 8% 55%);
-            --border: hsl(220 12% 88%);
-            --border-subtle: hsl(220 12% 92%);
-            --primary: hsl(215 90% 55%);
-            --primary-hover: hsl(215 90% 60%);
-            --gradient-start: hsl(215 90% 55%);
-            --gradient-end: hsl(250 80% 60%);
-            --card-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
-            --card-shadow-hover: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
-        }
-
-        html.dark {
-            --bg-0: hsl(220 15% 6%);
-            --bg-1: hsl(220 14% 10%);
-            --bg-2: hsl(220 13% 14%);
-            --text-strong: hsl(220 10% 94%);
-            --text: hsl(220 10% 75%);
-            --text-muted: hsl(220 10% 55%);
-            --border: hsl(220 12% 20%);
-            --border-subtle: hsl(220 12% 16%);
-            --card-shadow: 0 4px 6px -1px rgba(0,0,0,0.4), 0 2px 4px -2px rgba(0,0,0,0.3);
-            --card-shadow-hover: 0 20px 25px -5px rgba(0,0,0,0.4), 0 8px 10px -6px rgba(0,0,0,0.3);
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.6;
-            color: var(--text);
-            background: var(--bg-0);
-            min-height: 100vh;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        .header {
-            background: var(--bg-1);
-            border-bottom: 1px solid var(--border);
-            color: var(--text-strong);
-            padding: 3rem 2rem;
-        }
-
-        .header-content { max-width: 1200px; margin: 0 auto; }
-
-        .logo { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; }
-        .logo-icon { width: 48px; height: 48px; }
-        .logo-icon svg { width: 100%; height: 100%; }
-        .logo-text { font-size: 1.75rem; font-weight: 700; letter-spacing: -0.02em; color: var(--text-strong); }
-        .header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.02em; }
-        .header .subtitle { font-size: 1rem; opacity: 0.9; }
-
-        .stats { display: flex; gap: 1rem; margin-top: 2rem; }
-        .stat-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem 1.5rem; min-width: 140px; }
-        .stat-value { font-size: 2.5rem; font-weight: 700; line-height: 1; margin-bottom: 0.25rem; color: var(--primary); }
-        .stat-label { font-size: 0.875rem; color: var(--text-muted); font-weight: 500; }
-
-        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
-        .section-title { font-size: 1.25rem; font-weight: 600; color: var(--text-strong); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; }
-
-        .groups-grid { display: grid; gap: 1.5rem; }
-        .group-card { background: var(--bg-1); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; box-shadow: var(--card-shadow); transition: all 0.3s ease; }
-        .group-card:hover { box-shadow: var(--card-shadow-hover); transform: translateY(-2px); }
-        .group-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center; }
-        .group-info { display: flex; align-items: center; gap: 1rem; }
-        .group-icon { width: 40px; height: 40px; background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1rem; }
-        .group-title { font-size: 1.125rem; font-weight: 600; color: var(--text-strong); }
-        .group-meta { display: flex; gap: 1rem; font-size: 0.8125rem; color: var(--text-muted); }
-        .group-meta span { display: flex; align-items: center; gap: 0.25rem; }
-        .group-badge { background: var(--primary); color: white; padding: 0.25rem 0.75rem; border-radius: 50px; font-size: 0.75rem; font-weight: 600; }
-
-        .tabs-list { list-style: none; }
-        .tab-item { padding: 1rem 1.5rem; display: flex; align-items: center; gap: 1rem; border-bottom: 1px solid var(--border-subtle); transition: background-color 0.2s ease; }
-        .tab-item:last-child { border-bottom: none; }
-        .tab-item:hover { background: var(--bg-2); }
-        .tab-favicon { width: 24px; height: 24px; border-radius: 6px; flex-shrink: 0; background: var(--bg-2); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; }
-        .tab-info { flex: 1; min-width: 0; }
-        .tab-title { font-weight: 500; color: var(--text-strong); margin-bottom: 0.125rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .tab-url { font-size: 0.8125rem; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .tab-url a { color: var(--primary); text-decoration: none; transition: color 0.2s ease; }
-        .tab-url a:hover { color: var(--primary-hover); text-decoration: underline; }
-        .empty-group { padding: 3rem 2rem; text-align: center; color: var(--text-muted); }
-
-        .footer { text-align: center; padding: 3rem 2rem; color: var(--text-muted); font-size: 0.875rem; border-top: 1px solid var(--border-subtle); margin-top: 2rem; }
-        .footer-brand { display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.5rem; color: var(--text); font-weight: 500; }
-
-        @media (max-width: 768px) {
-            .header { padding: 2rem 1rem; }
-            .logo-row { flex-direction: column; gap: 1rem; }
-            .header h1 { font-size: 1.5rem; }
-            .stats { flex-direction: column; }
-            .stat-card { min-width: 100%; }
-            .container { padding: 1rem; }
-            .group-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
-            .tab-item { padding: 0.875rem 1rem; }
-        }
-
-        @media print {
-            .group-card { break-inside: avoid; box-shadow: none; }
-            .group-card:hover { transform: none; }
-        }
-    </style>
-</head>
-<body>
-    <header class="header">
-        <div class="header-content">
-            <div class="logo">
-                <div class="logo-icon">
-                    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="4" y="4" width="40" height="40" rx="10" fill="#234FD7"/>
-                        <rect x="8" y="8" width="32" height="32" rx="8" stroke="white" stroke-width="2"/>
-                        <rect x="12" y="12" width="24" height="24" rx="6" fill="#234FD7" stroke="white" stroke-width="2"/>
-                        <path d="M24 18C22.5 18 21.2 18.8 20.5 20C19.8 18.8 18.5 18 17 18C14.8 18 13 19.8 13 22C13 26 20 30 24 32C28 30 35 26 35 22C35 19.8 33.2 18 31 18C29.5 18 28.2 18.8 27.5 20C26.8 18.8 25.5 18 24 18Z" fill="white"/>
-                    </svg>
-                </div>
-                <span class="logo-text">Bluetab</span>
-            </div>
-            <h1>${translate('settings.backup.exportTitle')}</h1>
-            <p class="subtitle">${exportSubtitleDate}</p>
-            <div class="stats">
-                <div class="stat-card">
-                    <div class="stat-value">${groups.length}</div>
-                    <div class="stat-label">${translate('settings.backup.groups')}</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">${totalTabs}</div>
-                    <div class="stat-label">${translate('settings.backup.totalTabs')}</div>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <main class="container">
-        <h2 class="section-title">&#128193; ${translate('settings.backup.yourGroups')}</h2>
-        <div class="groups-grid">
-            ${groups.map((group) => `
-                <article class="group-card">
-                    <div class="group-header">
-                        <div class="group-info">
-                            <div class="group-icon">&#128209;</div>
-                            <div>
-                                <h3 class="group-title">${escapeHtml(group.name)}</h3>
-                                <div class="group-meta">
-                                    <span>&#128197; ${escapeHtml(formatDate(group.created))}</span>
-                                    <span>&#128260; ${escapeHtml(formatDate(group.modified))}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <span class="group-badge">${group.tabs.length} tab${group.tabs.length !== 1 ? 's' : ''}</span>
-                    </div>
-                    ${group.tabs.length > 0 ? `
-                        <ul class="tabs-list">
-                            ${group.tabs.map(tab => `
-                                <li class="tab-item">
-                                    ${isSafeFaviconUrl(tab.favicon)
-                    ? `<img src="${escapeHtml(tab.favicon)}" alt="" class="tab-favicon">`
-                    : '<div class="tab-favicon">&#128279;</div>'
-                }
-                                    <div class="tab-info">
-                                        <div class="tab-title">${escapeHtml(tab.title || t('settings.integrations.untitled'))}</div>
-                                        <div class="tab-url">${isSafeExportUrl(tab.url)
-                    ? `<a href="${escapeHtml(tab.url)}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">${escapeHtml(tab.url)}</a>`
-                    : escapeHtml(tab.url || '')}</div>
-                                    </div>
-                                </li>
-                            `).join('')}
-                        </ul>
-                    ` : `
-                        <div class="empty-group">${translate('settings.backup.noTabsInGroup')}</div>
-                    `}
-                </article>
-            `).join('')}
-        </div>
-    </main>
-
-    <footer class="footer">
-        <div class="footer-brand">
-            <svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="4" y="4" width="40" height="40" rx="10" fill="#234FD7"/>
-                <rect x="12" y="12" width="24" height="24" rx="6" stroke="white" stroke-width="2"/>
-            </svg>
-            <span>${translate('settings.backup.exportedFrom')}</span>
-        </div>
-        <p>${escapeHtml(formatDateTime(new Date(exportDate)))}</p>
-    </footer>
-</body>
-</html>`;
+            const now = new Date();
+            const html = buildHtmlExport({
+                groups,
+                tags: tags ?? [],
+                projects: projects ?? [],
+                theme,
+                locale,
+                direction: getLanguageDirection(locale),
+                labels: {
+                    title: translate('settings.backup.exportTitle'),
+                    groups: translate('settings.backup.groups'),
+                    totalTabs: translate('settings.backup.totalTabs'),
+                    emptyGroup: translate('settings.backup.noTabsInGroup'),
+                    untitled: t('settings.integrations.untitled'),
+                    exportedFrom: translate('settings.backup.exportedFrom'),
+                },
+                dateLabel: new Intl.DateTimeFormat(locale, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).format(now),
+                exportedAt: formatDateTime(now),
+                tabsCount: (count) => translate('common.tabsCount', { count }),
+                formatDate: (timestamp) => formatDate(timestamp),
+                formatNumber: (value) => new Intl.NumberFormat(locale).format(value),
+            });
 
             const blob = new Blob([html], { type: 'text/html' });
             const url = URL.createObjectURL(blob);
@@ -751,7 +546,7 @@ export function BackupSettings({ settings, groups, onSettingsChange, onGroupsCha
     return (
         <>
             <div>
-                <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 flex items-center gap-2 mb-4">
+                <h3 className="text-base font-semibold text-text-strong flex items-center gap-2 mb-4">
                     <Shield className="w-5 h-5" />
                     {t('components.backupStatus.title')}
                 </h3>
@@ -759,34 +554,36 @@ export function BackupSettings({ settings, groups, onSettingsChange, onGroupsCha
                 <div className="flex flex-wrap gap-3">
                     <Button
                         onClick={exportData}
-                        className="flex-1 min-w-[150px] bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white"
+                        className="flex-none"
                     >
-                        <Download className="w-4 h-4 me-2" />
+                        <Download className="w-4 h-4" />
                         {t('settings.backup.exportBackup')}
                     </Button>
 
                     <Button
                         onClick={exportAsHTML}
-                        className="flex-1 min-w-[150px] bg-purple-600 hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-800 text-white"
+                        variant="secondary"
+                        className="flex-none"
                     >
-                        <FileCode className="w-4 h-4 me-2" />
+                        <FileCode className="w-4 h-4" />
                         {t('settings.backup.exportHtml')}
                     </Button>
 
                     <Button
                         onClick={() => setShowImportModal(true)}
-                        className="flex-1 min-w-[150px] bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 text-white"
+                        variant="secondary"
+                        className="flex-none"
                     >
-                        <Upload className="w-4 h-4 me-2" />
+                        <Upload className="w-4 h-4" />
                         {t('settings.backup.importBackup')}
                     </Button>
 
                     <Button
                         onClick={() => setShowClearModal(true)}
                         variant="danger"
-                        className="flex-1 min-w-[150px]"
+                        className="flex-none"
                     >
-                        <Trash2 className="w-4 h-4 me-2" />
+                        <Trash2 className="w-4 h-4" />
                         {t('settings.backup.clearAllData')}
                     </Button>
                 </div>
@@ -851,7 +648,7 @@ export function BackupSettings({ settings, groups, onSettingsChange, onGroupsCha
                                             {importPreview?.format === 'bluetab-backup'
                                                 ? <FileJson className="h-4 w-4" />
                                                 : importPreview?.format === 'unsupported'
-                                                    ? <AlertCircle className="h-4 w-4 text-red-500" />
+                                                    ? <AlertCircle className="h-4 w-4 text-danger" />
                                                     : <CheckCircle2 className="h-4 w-4" />
                                             }
                                         </div>
@@ -866,7 +663,7 @@ export function BackupSettings({ settings, groups, onSettingsChange, onGroupsCha
                                             </div>
 
                                             {importPreview?.format === 'unsupported' ? (
-                                                <p dir="auto" className="mt-2 text-sm text-red-600 dark:text-red-400">
+                                                <p dir="auto" className="mt-2 text-sm text-danger">
                                                     {importPreview.error}
                                                 </p>
                                             ) : importPreview ? (
@@ -881,7 +678,7 @@ export function BackupSettings({ settings, groups, onSettingsChange, onGroupsCha
                                                     ))}
 
                                                     {(importPreview.skippedInvalidUrls.length > 0 || importPreview.skippedDuplicates.length > 0) && (
-                                                        <div className="rounded-md border border-amber-500/30 bg-amber-500/10 p-3 text-xs text-amber-700 dark:text-amber-200">
+                                                        <div className="rounded-md border border-warning/30 bg-warning-muted p-3 text-xs text-warning">
                                                             {importPreview.skippedInvalidUrls.length > 0 && (
                                                                 <p>
                                                                     {t('components.backupStatus.skippedInvalid', { count: importPreview.skippedInvalidUrls.length })}
@@ -910,8 +707,8 @@ export function BackupSettings({ settings, groups, onSettingsChange, onGroupsCha
                             )}
 
                             {bookmarkError && (
-                                <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4">
-                                    <div className="flex items-start gap-2 text-sm text-red-600 dark:text-red-300">
+                                <div className="rounded-lg border border-danger/30 bg-danger-muted p-4">
+                                    <div className="flex items-start gap-2 text-sm text-danger">
                                         <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
                                         <span dir="auto">{bookmarkError}</span>
                                     </div>

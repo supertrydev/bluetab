@@ -54,7 +54,7 @@ function SettingToggle({ checked, onChange, label, description }: ToggleProps) {
   return (
     <div className="flex items-center justify-between">
       <div>
-        <p className="text-sm font-medium text-gray-700 dark:text-gray-300">{label}</p>
+        <p className="text-sm font-medium text-text-strong">{label}</p>
         <p className="text-xs text-muted-foreground">{description}</p>
       </div>
       <Switch checked={checked} onCheckedChange={onChange} aria-label={label} />
@@ -128,7 +128,7 @@ export function AISettings() {
 
   return (
     <div className="pt-4 border-t border-border">
-      <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 flex items-center gap-2 mb-4">
+      <h3 className="text-base font-semibold text-text-strong flex items-center gap-2 mb-4">
         <Sparkles className="w-5 h-5" />
         {t('settings.ai.title')}
       </h3>
@@ -155,7 +155,7 @@ export function AISettings() {
         {/* Clear AI History */}
         <div className="flex items-center justify-between gap-4">
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            <p className="text-sm font-medium text-text-strong">
               {t('settings.ai.clearHistoryLabel')}
             </p>
             <p className="text-xs text-muted-foreground">
@@ -164,11 +164,11 @@ export function AISettings() {
           </div>
           <div className="shrink-0 flex items-center gap-2">
             {historyCleared && (
-              <span className="text-xs text-green-600 dark:text-green-400">{t('settings.ai.historyCleared')}</span>
+              <span className="text-xs text-success">{t('settings.ai.historyCleared')}</span>
             )}
             <button
               onClick={handleClearHistory}
-              className="px-3 py-1.5 text-sm font-medium rounded-lg border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
+              className="px-3 py-1.5 text-sm font-medium rounded-full border border-danger/30 text-danger hover:bg-danger-muted transition-colors"
             >
               {t('settings.ai.clearHistoryButton')}
             </button>
@@ -179,7 +179,7 @@ export function AISettings() {
         {/* Usage & privacy — server-backed allowance summary + history access guidance */}
         {/* ----------------------------------------------------------------- */}
         <div className="pt-4 border-t border-border space-y-3">
-          <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 flex items-center gap-1.5">
+          <h4 className="text-sm font-medium text-text-strong flex items-center gap-1.5">
             <ShieldCheck className="w-4 h-4 text-primary" />
             {t('settings.ai.usageAndPrivacy')}
           </h4>
@@ -187,9 +187,9 @@ export function AISettings() {
           {/* AI allowance summary */}
           {allowance?.eligible && (() => {
             const colorClass = allowance.percentUsed > 95
-              ? 'text-red-500'
+              ? 'text-danger'
               : allowance.percentUsed > 80
-              ? 'text-amber-500'
+              ? 'text-warning'
               : 'text-muted-foreground';
             return (
               <div className="flex items-center justify-between gap-3 text-sm">

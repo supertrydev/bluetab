@@ -99,7 +99,6 @@ const INTENTIONAL_IDENTICAL_COPY = new Set([
     'managerWelcome.tabs.bluetab', // Product name stays unchanged in every locale.
     'sidepanel.brainDump',
     'sidepanel.teams',
-    'sidepanel.aiUpgradePrompt.assistantName',
     'sidepanel.hardFocus.label',
     'sidepanel.hardFocus.idleTitle',
     'sidepanel.teamsPreSession.codePlaceholder',

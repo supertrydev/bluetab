@@ -87,7 +87,7 @@ function ProAIPanel() {
               <MessageSquare className="w-3.5 h-3.5 shrink-0 text-text-muted" />
               <div className="flex-1 min-w-0">
                 <p className="text-xs truncate"><bdi dir="auto">{thread.title}</bdi></p>
-                <p className="text-micro text-text-muted">
+                <p className="text-xs text-text-muted">
                   <span dir="ltr">{formatDate(thread.modified, { day: 'numeric', month: 'short' })}</span>
                   {' · '}
                   {t('sidepanel.aiPanel.messages', { count: thread.messages.length })}
@@ -99,7 +99,7 @@ function ProAIPanel() {
                     e.stopPropagation();
                     aiChat.deleteThread(thread.id);
                   }}
-                  className="opacity-0 group-hover:opacity-100 p-1 rounded text-text-muted hover:text-danger transition-all"
+                  className="opacity-0 group-hover:opacity-100 p-1 rounded-full text-text-muted hover:text-danger transition-all"
                   title={t('sidepanel.aiPanel.deleteChat')}
                 >
                   <Trash2 className="w-3 h-3" />
@@ -119,7 +119,7 @@ function ProAIPanel() {
       <div className="flex items-center justify-between px-3 py-1.5 border-b border-border">
         <button
           onClick={() => setShowThreadList(true)}
-          className="flex items-center gap-1.5 text-caption text-text-muted hover:text-text-strong transition-colors"
+          className="flex items-center gap-1.5 text-xs text-text-muted hover:text-text-strong transition-colors"
           title={t('sidepanel.aiPanel.chatHistory')}
         >
           <MessageSquare className="w-3.5 h-3.5" />

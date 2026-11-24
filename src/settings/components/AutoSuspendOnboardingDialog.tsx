@@ -100,7 +100,7 @@ function OnboardingDemoSvg() {
   `;
 
   return (
-    <div className="bluetab-as-demo w-full rounded-lg border border-border bg-bg-1/50 p-4">
+    <div className="bluetab-as-demo w-full rounded-md bg-muted p-4">
       <style>{styles}</style>
       <svg
         viewBox="0 0 320 120"

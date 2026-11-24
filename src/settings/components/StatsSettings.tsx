@@ -36,13 +36,13 @@ export function StatsSettings() {
 
   return (
     <div className="pt-4 border-t border-border">
-      <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 flex items-center gap-2 mb-4">
+      <h3 className="text-base font-semibold text-text-strong flex items-center gap-2 mb-4">
         <BarChart2 className="w-5 h-5" />
         {t('settings.stats.title')}
       </h3>
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          <p className="text-sm font-medium text-text-strong">
             {t('settings.stats.trackingLabel')}
           </p>
           <p className="text-xs text-muted-foreground">

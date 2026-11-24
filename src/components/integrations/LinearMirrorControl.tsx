@@ -123,11 +123,11 @@ export function LinearMirrorControl({ group, onSyncStatusChange }: LinearMirrorC
 
     switch (syncGroup.syncStatus) {
       case 'active':
-        return <CheckCircle className="h-3 w-3 text-green-500" />;
+        return <CheckCircle className="h-3 w-3 text-success" />;
       case 'error':
-        return <AlertTriangle className="h-3 w-3 text-red-500" />;
+        return <AlertTriangle className="h-3 w-3 text-danger" />;
       case 'paused':
-        return <Link2Off className="h-3 w-3 text-gray-500" />;
+        return <Link2Off className="h-3 w-3 text-text-muted" />;
       default:
         return null;
     }
@@ -189,9 +189,9 @@ export function LinearMirrorControl({ group, onSyncStatusChange }: LinearMirrorC
             className="text-xs"
           >
             {isLoading ? (
-              <Loader2 className="h-3 w-3 animate-spin me-1" />
+              <Loader2 className="h-3 w-3 animate-spin" />
             ) : (
-              <Link2Off className="h-3 w-3 me-1" />
+              <Link2Off className="h-3 w-3" />
             )}
             {t('components.linearMirror.stop')}
           </Button>
@@ -205,9 +205,9 @@ export function LinearMirrorControl({ group, onSyncStatusChange }: LinearMirrorC
           className="text-xs"
         >
           {isLoading ? (
-            <Loader2 className="h-3 w-3 animate-spin me-1" />
+            <Loader2 className="h-3 w-3 animate-spin" />
           ) : (
-            <Link className="h-3 w-3 me-1" />
+            <Link className="h-3 w-3" />
           )}
           {t('components.linearMirror.start')}
         </Button>

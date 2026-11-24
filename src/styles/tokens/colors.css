@@ -1,119 +1,132 @@
 /**
- * BlueTab Design Tokens - Colors
+ * Bluetab Design Tokens - Colors
  *
- * Philosophy: 3-layer surfaces + 3-level text contrast
- * Based on: DesignPromptsBook "The Easy Way to Pick UI Colors"
+ * Three surfaces, two text levels plus one body tone, one accent, and a fill/text pair for every
+ * status colour. Every text pair is at least 4.5:1 in both themes; control
+ * boundaries are at least 3:1.
  */
 
 :root {
-  /* ============================================
-     SURFACES - 3 Layer System
-     bg-0: deepest (page background)
-     bg-1: elevated (cards, panels)
-     bg-2: raised (hover states, tooltips)
-     ============================================ */
-  --bg-0: hsl(220 15% 6%);
-  --bg-1: hsl(220 14% 10%);
-  --bg-2: hsl(220 13% 14%);
+  color-scheme: dark;
 
-  /* ============================================
-     TEXT - 3 Contrast Levels
-     strong: headings, primary content
-     default: body text
-     muted: secondary, meta info
-     ============================================ */
-  --text-strong: hsl(220 10% 85%);
-  --text: hsl(220 10% 65%);
-  --text-muted: hsl(220 10% 48%);
+  /* Surfaces: page, card, raised layer */
+  --bg-0: hsl(222 16% 7%);
+  --bg-1: hsl(222 14% 10.5%);
+  --bg-2: hsl(222 13% 14%);
 
-  /* ============================================
-     BORDERS & HIGHLIGHTS
-     ============================================ */
-  --border: hsl(220 12% 20%);
-  --border-subtle: hsl(220 12% 16%);
+  /* Text */
+  --text-strong: hsl(220 14% 92%);
+  --text: hsl(220 10% 74%);
+  --text-muted: hsl(220 9% 66%);
+
+  /* Translucent fills: visible on any surface */
+  --fill-muted: hsl(220 40% 90% / 0.07);
+  --fill-accent: hsl(220 40% 90% / 0.1);
+
+  /* Lines: border separates, field outlines a control */
+  --border: hsl(220 11% 20%);
+  --border-subtle: hsl(220 11% 16%);
   --border-glass: hsla(220, 15%, 50%, 0.12);
-  --highlight: hsl(220 12% 25%);
-  --tab-border-color: rgba(87, 87, 87, 0.5);
+  --field: hsl(220 8% 46%);
+  --highlight: var(--fill-accent);
+  /* Selected part of a segmented control */
+  --segment: hsl(221 11% 27%);
+  --tab-border-color: var(--border);
 
-  /* ============================================
-     GLASS SURFACES
-     ============================================ */
+  /* Glass */
   --glass-bg: hsla(220, 14%, 10%, 0.7);
   --glass-blur: 12px;
 
-  /* ============================================
-     BRAND - Blue (BlueTab identity)
-     ============================================ */
+  /* Brand */
   --primary: hsl(226, 68%, 50%);
   --primary-hover: hsl(226, 72%, 60%);
   --primary-active: hsl(226, 68%, 42%);
   --primary-foreground: hsl(0, 0%, 100%);
-  --primary-muted: hsl(215 50% 20%);
+  --primary-text: hsl(226 82% 74%);
+  --primary-muted: hsl(226 68% 50% / 0.22);
 
-  /* ============================================
-     SEMANTIC COLORS
-     ============================================ */
-  --success: hsl(142, 55%, 45%);
-  --success-muted: hsl(142 40% 15%);
+  /* Status: fill, text, soft background */
+  --success: hsl(150 62% 27%);
+  --success-text: hsl(150 50% 60%);
+  --success-muted: hsl(150 50% 60% / 0.12);
 
-  --warning: hsl(38, 72%, 50%);
-  --warning-muted: hsl(38 50% 15%);
+  --warning: hsl(30 88% 33%);
+  --warning-text: hsl(40 85% 62%);
+  --warning-muted: hsl(40 85% 62% / 0.12);
 
-  --danger: hsl(0, 65%, 55%);
-  --danger-muted: hsl(0 50% 15%);
+  --danger: hsl(0 62% 47%);
+  --danger-text: hsl(0 84% 74%);
+  --danger-muted: hsl(0 84% 70% / 0.13);
 
-  --info: hsl(200, 65%, 50%);
-  --info-muted: hsl(200 50% 15%);
+  --info: hsl(202 78% 33%);
+  --info-text: hsl(202 78% 68%);
+  --info-muted: hsl(202 78% 68% / 0.12);
 
-  /* ============================================
-     SHADCN COMPATIBILITY ALIASES
-     Maps old shadcn vars to new token system
-     ============================================ */
+  /* Chart */
+  --chart-1: #3987e5;
+
+  /* Search match; the same yellow in both themes. */
+  --mark: hsl(50 100% 68%);
+  --mark-foreground: hsl(222 22% 12%);
+
+  /* shadcn aliases */
   --background: var(--bg-0);
-  --foreground: var(--text);
+  --foreground: var(--text-strong);
   --card: var(--bg-1);
   --card-foreground: var(--text-strong);
-  --popover: var(--bg-1);
+  --popover: var(--bg-2);
   --popover-foreground: var(--text-strong);
-  --muted: var(--bg-2);
+  --muted: var(--fill-muted);
   --muted-foreground: var(--text-muted);
-  --accent: var(--highlight);
+  --accent: var(--fill-accent);
   --accent-foreground: var(--text-strong);
   --destructive: var(--danger);
-  --destructive-foreground: var(--text-strong);
+  --destructive-foreground: hsl(0 0% 100%);
   --secondary: var(--bg-2);
   --secondary-foreground: var(--text-strong);
-  --input: var(--border);
-  --ring: var(--primary);
+  /* Switch track when off. Kept at its original value so the switch does not change. */
+  --input: hsl(220 12% 20%);
+  --ring: var(--primary-text);
   --radius: 0.5rem;
 }
 
-/* ============================================
-   LIGHT MODE OVERRIDES
-   Using data-theme for explicit control
-   ============================================ */
 [data-theme="light"],
 html:not(.dark) {
-  --bg-0: hsl(220 15% 97%);
-  --bg-1: hsl(220 15% 99%);
+  color-scheme: light;
+
+  --bg-0: hsl(220 20% 97%);
+  --bg-1: hsl(0 0% 100%);
   --bg-2: hsl(0 0% 100%);
 
-  --text-strong: hsl(220 15% 10%);
-  --text: hsl(220 10% 35%);
-  --text-muted: hsl(220 8% 50%);
+  --text-strong: hsl(222 22% 12%);
+  --text: hsl(220 12% 28%);
+  --text-muted: hsl(220 10% 36%);
 
-  --border: hsl(220 12% 88%);
-  --border-subtle: hsl(220 12% 92%);
+  --fill-muted: hsl(220 30% 20% / 0.06);
+  --fill-accent: hsl(220 30% 20% / 0.08);
+  --segment: hsl(0 0% 100%);
+
+  --border: hsl(220 14% 88%);
+  --border-subtle: hsl(220 14% 92%);
   --border-glass: hsla(220, 15%, 20%, 0.15);
-  --highlight: hsl(220 12% 95%);
-  --tab-border-color: #c7c7c7b3;
+  --field: hsl(220 8% 56%);
 
   --glass-bg: hsla(220, 15%, 97%, 0.75);
 
-  /* Semantic muted states for light mode */
-  --primary-muted: hsl(215 80% 95%);
-  --success-muted: hsl(142 60% 95%);
-  --warning-muted: hsl(38 80% 95%);
-  --danger-muted: hsl(0 70% 95%);
-  --info-muted: hsl(200 70% 95%);
+  --primary-text: hsl(226 68% 46%);
+  --primary-muted: hsl(226 68% 50% / 0.1);
+
+  --success-text: hsl(150 66% 25%);
+  --success-muted: hsl(150 85% 38% / 0.14);
+  --warning-text: hsl(30 90% 30%);
+  --warning-muted: hsl(40 100% 50% / 0.17);
+  --danger: hsl(0 66% 45%);
+  --danger-text: hsl(0 68% 42%);
+  --danger-muted: hsl(0 90% 55% / 0.1);
+  --info-text: hsl(202 80% 30%);
+  --info-muted: hsl(204 95% 48% / 0.12);
+
+  --chart-1: #2a78d6;
+
+  --input: hsl(220 12% 88%);
 }

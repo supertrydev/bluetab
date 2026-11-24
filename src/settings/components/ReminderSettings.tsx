@@ -118,50 +118,50 @@ export function ReminderSettings() {
 
   return (
     <div className="pt-4 border-t border-border">
-      <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 flex items-center gap-2 mb-4">
+      <h3 className="text-base font-semibold text-text-strong flex items-center gap-2 mb-4">
         <Bell className="w-5 h-5" />
         {t('settings.reminders.title')}
       </h3>
 
       {/* Show Badge Toggle */}
       <div className="space-y-4 mb-4">
-        <div className="flex items-start gap-3 p-3 border border-border rounded-lg">
+        <div className="flex items-start gap-3 p-3 rounded-md border border-border bg-bg-1">
           <Switch
             id="reminder-show-badge"
             checked={reminderConfig.showBadge}
             onCheckedChange={(checked) => updateSettings({ showBadge: checked })}
           />
           <Label htmlFor="reminder-show-badge" className="flex-1 cursor-pointer space-y-1">
-            <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
+            <div className="text-sm font-medium text-text-strong">
               {t('settings.reminders.showBadgeTitle')}
             </div>
-            <div className="text-xs text-gray-500 dark:text-gray-400">
+            <div className="text-xs text-text-muted">
               {t('settings.reminders.showBadgeDescription')}
             </div>
           </Label>
         </div>
 
         {/* Sound Toggle */}
-        <div className="flex items-start gap-3 p-3 border border-border rounded-lg">
+        <div className="flex items-start gap-3 p-3 rounded-md border border-border bg-bg-1">
           <Switch
             id="reminder-sound"
             checked={reminderConfig.soundEnabled}
             onCheckedChange={(checked) => updateSettings({ soundEnabled: checked })}
           />
           <Label htmlFor="reminder-sound" className="flex-1 cursor-pointer space-y-1">
-            <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
+            <div className="text-sm font-medium text-text-strong">
               {t('settings.reminders.notificationSoundTitle')}
             </div>
-            <div className="text-xs text-gray-500 dark:text-gray-400">
+            <div className="text-xs text-text-muted">
               {t('settings.reminders.notificationSoundDescription')}
             </div>
           </Label>
         </div>
 
         {reminderConfig.soundEnabled && (
-          <div className="flex items-center gap-3 p-3 border border-border rounded-lg ms-4">
+          <div className="flex items-center gap-3 p-3 rounded-md bg-muted ms-4">
             <div className="flex-1">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300 block mb-1.5">
+              <label className="text-sm font-medium text-text-strong block mb-1.5">
                 {t('settings.reminders.soundLabel')}
               </label>
               <Select
@@ -197,12 +197,12 @@ export function ReminderSettings() {
       </div>
 
       <div>
-        <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <h4 className="text-sm font-medium text-text-strong mb-2">
           {t('settings.reminders.activeReminders')}
         </h4>
 
         {reminders.length === 0 ? (
-          <div className="p-4 border border-border rounded-lg text-center">
+          <div className="p-4 rounded-md bg-muted text-center">
             <p className="text-sm text-muted-foreground">{t('settings.reminders.noActiveReminders')}</p>
           </div>
         ) : (
@@ -216,7 +216,7 @@ export function ReminderSettings() {
                   <span className="font-medium text-foreground truncate flex items-center gap-1">
                     <bdi dir="auto">{reminder.targetName}</bdi>
                     {reminder.recurring && (
-                      <span dir="ltr" className="text-micro px-1.5 py-0.5 rounded bg-primary/10 text-primary font-medium ms-1">
+                      <span dir="ltr" className="text-xs px-1.5 py-0.5 rounded bg-primary/10 text-primary font-medium ms-1">
                         {reminder.recurring.interval}
                       </span>
                     )}
@@ -228,7 +228,7 @@ export function ReminderSettings() {
                 <button
                   onClick={() => handleDelete(reminder.id, reminder.targetName)}
                   disabled={deletingId === reminder.id}
-                  className="flex-shrink-0 p-1.5 text-muted-foreground hover:text-red-500 transition-colors disabled:opacity-50"
+                  className="flex-shrink-0 p-1.5 text-muted-foreground hover:text-danger transition-colors disabled:opacity-50"
                   title={t('settings.reminders.deleteTitle')}
                 >
                   <Trash2 className="w-4 h-4" />

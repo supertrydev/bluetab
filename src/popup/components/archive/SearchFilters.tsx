@@ -96,7 +96,7 @@ export function SearchFilters({
                         onChange={(e) => handleSearchChange(e.target.value)}
                         className="pe-8"
                     />
-                    <Search className="w-4 h-4 absolute end-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                    <Search className="w-4 h-4 absolute end-3 top-1/2 transform -translate-y-1/2 text-text-muted" />
                 </div>
 
                 <Button
@@ -122,12 +122,12 @@ export function SearchFilters({
 
             {/* Advanced Filters Panel */}
             {showAdvancedFilters && (
-                <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 space-y-4 border border-border">
+                <div className="bg-muted rounded-lg p-4 space-y-4 border border-border">
                     <div className="flex items-center justify-between">
-                        <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                        <h4 className="text-sm font-medium text-text-strong">
                             {t('archive.search.advancedFilters')}
                         </h4>
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                        <span className="text-xs text-text-muted">
                             {t('archive.search.totalArchives', { count: totalArchives })}
                         </span>
                     </div>
@@ -135,13 +135,13 @@ export function SearchFilters({
                     {/* Sort Options */}
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            <label className="block text-xs font-medium text-text-strong mb-1">
                                 {t('archive.search.sortBy')}
                             </label>
                             <select
                                 value={filters.sortBy}
                                 onChange={(e) => handleSortByChange(e.target.value as ArchiveFilters['sortBy'])}
-                                className="w-full px-2 py-1 text-xs border border-border rounded-md bg-bg-1/60 text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                                className="w-full px-3 py-1 text-xs border border-field rounded-input bg-bg-1 text-foreground"
                             >
                                 <option value="date">{t('archive.search.archiveDate')}</option>
                                 <option value="name">{t('archive.search.name')}</option>
@@ -151,13 +151,13 @@ export function SearchFilters({
                         </div>
 
                         <div>
-                            <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            <label className="block text-xs font-medium text-text-strong mb-1">
                                 {t('archive.search.order')}
                             </label>
                             <select
                                 value={filters.sortOrder}
                                 onChange={(e) => handleSortOrderChange(e.target.value as ArchiveFilters['sortOrder'])}
-                                className="w-full px-2 py-1 text-xs border border-border rounded-md bg-bg-1/60 text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                                className="w-full px-3 py-1 text-xs border border-field rounded-input bg-bg-1 text-foreground"
                             >
                                 <option value="desc">{t('archive.search.newestFirst')}</option>
                                 <option value="asc">{t('archive.search.oldestFirst')}</option>
@@ -167,7 +167,7 @@ export function SearchFilters({
 
                     {/* Protection Status Filter */}
                     <div>
-                        <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label className="block text-xs font-medium text-text-strong mb-2">
                             {t('archive.search.protectionStatus')}
                         </label>
                         <div className="flex gap-2">
@@ -175,8 +175,8 @@ export function SearchFilters({
                                 onClick={() => handleProtectionFilterChange('all')}
                                 className={`px-3 py-1 text-xs rounded transition-colors ${
                                     filters.protectionStatus === 'all' || !filters.protectionStatus
-                                        ? 'bg-blue-500 text-white'
-                                        : 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300'
+                                        ? 'bg-primary text-white'
+                                        : 'bg-accent text-text-strong'
                                 }`}
                             >
                                 {t('archive.search.all', { count: totalArchives })}
@@ -185,8 +185,8 @@ export function SearchFilters({
                                 onClick={() => handleProtectionFilterChange('protected')}
                                 className={`px-3 py-1 text-xs rounded transition-colors ${
                                     filters.protectionStatus === 'protected'
-                                        ? 'bg-yellow-500 text-white'
-                                        : 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300'
+                                        ? 'bg-warning text-white'
+                                        : 'bg-accent text-text-strong'
                                 }`}
                             >
                                 <Lock className="w-3 h-3 me-1 inline" />
@@ -196,8 +196,8 @@ export function SearchFilters({
                                 onClick={() => handleProtectionFilterChange('unprotected')}
                                 className={`px-3 py-1 text-xs rounded transition-colors ${
                                     filters.protectionStatus === 'unprotected'
-                                        ? 'bg-green-500 text-white'
-                                        : 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300'
+                                        ? 'bg-success text-white'
+                                        : 'bg-accent text-text-strong'
                                 }`}
                             >
                                 <Unlock className="w-3 h-3 me-1 inline" />
@@ -208,7 +208,7 @@ export function SearchFilters({
 
                     {/* Date Range Filter */}
                     <div>
-                        <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label className="block text-xs font-medium text-text-strong mb-2">
                             {t('archive.search.archiveDateRange')}
                         </label>
                         <div className="grid grid-cols-2 gap-2">
@@ -255,7 +255,7 @@ export function SearchFilters({
                         {filters.dateRange && (
                             <button
                                 onClick={() => handleDateRangeChange(undefined)}
-                                className="mt-1 text-xs text-blue-600 dark:text-blue-400 hover:underline"
+                                className="mt-1 text-xs text-primary hover:underline"
                             >
                                 {t('archive.search.clearDateRange')}
                             </button>
@@ -264,7 +264,7 @@ export function SearchFilters({
 
                     {/* Quick Date Filters */}
                     <div>
-                        <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label className="block text-xs font-medium text-text-strong mb-2">
                             {t('archive.search.quickFilters')}
                         </label>
                         <div className="flex gap-2 flex-wrap">
@@ -281,7 +281,7 @@ export function SearchFilters({
                                         const startDate = endDate - (days * 24 * 60 * 60 * 1000);
                                         handleDateRangeChange({ start: startDate, end: endDate });
                                     }}
-                                    className="px-2 py-1 text-xs bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors"
+                                    className="px-2 py-1 text-xs bg-accent text-text-strong rounded-full hover:bg-accent transition-colors"
                                 >
                                     {label}
                                 </button>
@@ -293,22 +293,22 @@ export function SearchFilters({
 
             {/* Active Filters Summary */}
             {hasActiveFilters && (
-                <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
+                <div className="flex items-center gap-2 text-xs text-text-muted">
                     <span>{t('archive.search.activeFilters')}</span>
                     {filters.searchQuery && (
-                        <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded">
+                        <span className="px-2 py-1 bg-primary-muted text-primary rounded">
                             {t('archive.search.activeSearch', { query: filters.searchQuery })}
                         </span>
                     )}
                     {filters.protectionStatus && filters.protectionStatus !== 'all' && (
-                        <span className="px-2 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 rounded">
+                        <span className="px-2 py-1 bg-warning-muted text-warning rounded">
                             {filters.protectionStatus === 'protected'
                                 ? t('archive.search.protectedOnly')
                                 : t('archive.search.unprotectedOnly')}
                         </span>
                     )}
                     {filters.dateRange && (
-                        <span className="px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded">
+                        <span className="px-2 py-1 bg-success-muted text-success rounded">
                             {t('archive.search.dateRangeSet')}
                         </span>
                     )}

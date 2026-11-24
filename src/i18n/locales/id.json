@@ -149,6 +149,8 @@
   "settingsTabs": {
     "appearance": "Tampilan",
     "general": "Umum",
+    "tabs": "Perilaku Tab",
+    "sidePanel": "Panel Samping",
     "pomodoro": "Pomodoro",
     "focus": "Mode Fokus",
     "brainDump": "Brain Dump",
@@ -326,7 +328,6 @@
         }
       },
       "browserTabs": {
-        "title": "Tab Browser",
         "groupBorderLabel": "Bingkai berwarna grup",
         "groupBorderDescription": "Tampilkan bingkai berwarna di sekitar grup tab browser pada panel samping sesuai warna grup.",
         "closeOnSaveLabel": "Tutup tab setelah disimpan",
@@ -1504,7 +1505,7 @@
       "layoutGrid": "Tata Letak Grid",
       "layoutMasonry": "Tata Letak Masonry",
       "layoutDashboard": "Tata Letak Dasbor",
-      "searchPlaceholder": "Cari grup, tab, atau tag...",
+      "searchPlaceholder": "Cari grup, tab, tag, atau catatan...",
       "sortFallback": "Urutkan",
       "sort": {
         "newest": "Terbaru Dulu",
@@ -2302,12 +2303,9 @@
       "messages_other": "{{count}} pesan"
     },
     "aiUpgradePrompt": {
-      "assistantName": "Bluetab AI",
       "preview": "Saya dapat mengatur tab, mengganti nama grup, dan menyiapkan tindakan sebelum perubahan diterapkan.",
-      "title": "Asisten AI",
-      "subtitle": "Kelola tab dengan bahasa alami.",
+      "title": "Asisten AI Bluetab",
       "locked": "Terkunci",
-      "inputPlaceholder": "Tanya Bluetab AI...",
       "upgrade": "Tingkatkan ke Pro"
     },
     "aiChatThread": {

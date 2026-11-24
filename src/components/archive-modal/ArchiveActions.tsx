@@ -31,7 +31,7 @@ export function ArchiveActions({ archive, onRestore, onDelete }: ArchiveActionsP
                 onClick={handleRestore}
                 variant="primary"
                 size="sm"
-                className="bg-green-600 hover:bg-green-700"
+                className="bg-success hover:bg-success"
                 title={t('archive.item.restoreArchive')}
             >
                 <RotateCcw className="me-1 h-3 w-3" />

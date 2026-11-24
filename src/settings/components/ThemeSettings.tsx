@@ -45,7 +45,7 @@ export function ThemeSettings({ settings, onSettingsChange }: ThemeSettingsProps
 
     return (
         <div>
-            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 flex items-center gap-2 mb-4">
+            <h3 className="text-base font-semibold text-text-strong flex items-center gap-2 mb-4">
                 <Palette className="w-5 h-5" />
                 {t('settingsTabs.appearance')}
             </h3>
@@ -53,13 +53,13 @@ export function ThemeSettings({ settings, onSettingsChange }: ThemeSettingsProps
             <div className="space-y-4">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <Palette className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-                        <span className="text-base font-medium text-gray-900 dark:text-gray-100">
+                        <Palette className="h-4 w-4 text-text-muted" />
+                        <span className="text-base font-medium text-text-strong">
                             {t('settings.theme.label')}
                         </span>
                     </div>
                     <div className="flex items-center gap-3">
-                        <span className="text-sm text-gray-600 dark:text-gray-400">
+                        <span className="text-sm text-text-muted">
                             {isDarkMode ? t('common.dark') : t('common.light')}
                         </span>
                         <Switch
@@ -68,9 +68,9 @@ export function ThemeSettings({ settings, onSettingsChange }: ThemeSettingsProps
                             aria-label={t('settings.theme.toggleAria')}
                         />
                         {isDarkMode ? (
-                            <Moon className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+                            <Moon className="h-4 w-4 text-text-muted" />
                         ) : (
-                            <Sun className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+                            <Sun className="h-4 w-4 text-text-muted" />
                         )}
                     </div>
                 </div>

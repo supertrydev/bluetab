@@ -150,6 +150,8 @@ export const EN_RESOURCES = {
   "settingsTabs": {
     "appearance": "Appearance",
     "general": "General",
+    "tabs": "Tab Behavior",
+    "sidePanel": "Side Panel",
     "pomodoro": "Pomodoro",
     "focus": "Focus Mode",
     "brainDump": "Brain Dump",
@@ -327,7 +329,6 @@ export const EN_RESOURCES = {
         }
       },
       "browserTabs": {
-        "title": "Browser Tabs",
         "groupBorderLabel": "Group colored border",
         "groupBorderDescription": "Show a colored border around browser tab groups in the sidepanel that matches the group color.",
         "closeOnSaveLabel": "Close tabs after saving",
@@ -1505,7 +1506,7 @@ export const EN_RESOURCES = {
       "layoutGrid": "Grid Layout",
       "layoutMasonry": "Masonry Layout",
       "layoutDashboard": "Dashboard Layout",
-      "searchPlaceholder": "Search groups, tabs, or tags...",
+      "searchPlaceholder": "Search groups, tabs, tags, or notes...",
       "sortFallback": "Sort",
       "sort": {
         "newest": "Newest First",
@@ -2303,12 +2304,9 @@ export const EN_RESOURCES = {
       "messages_other": "{{count}} msgs"
     },
     "aiUpgradePrompt": {
-      "assistantName": "Bluetab AI",
       "preview": "I can organize your tabs, rename groups, and prepare actions before anything changes.",
-      "title": "AI Assistant",
-      "subtitle": "Tab work, spoken naturally.",
+      "title": "Bluetab AI Assistant",
       "locked": "Locked",
-      "inputPlaceholder": "Ask Bluetab AI...",
       "upgrade": "Upgrade to Pro"
     },
     "aiChatThread": {

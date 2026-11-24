@@ -89,7 +89,7 @@ export function useDragDrop({ groups, setGroups, bluet_sharedRefs = [] }: UseDra
 
             selectedTabsList.slice(0, maxPreviewTabs).forEach(t => {
                 const tabEl = document.createElement('div');
-                tabEl.className = 'flex items-center gap-2 px-2 py-1 bg-blue-50 dark:bg-blue-900/30 rounded text-sm';
+                tabEl.className = 'flex items-center gap-2 px-2 py-1 bg-primary-muted rounded text-sm';
                 const img = document.createElement('img');
                 img.src = safeFaviconSrc(t.favicon);
                 img.className = 'w-4 h-4';
@@ -99,7 +99,7 @@ export function useDragDrop({ groups, setGroups, bluet_sharedRefs = [] }: UseDra
                 }, { once: true });
 
                 const title = document.createElement('span');
-                title.className = 'truncate text-gray-700 dark:text-gray-200';
+                title.className = 'truncate text-text-strong';
                 title.dir = 'auto';
                 title.textContent = `${t.title.substring(0, 30)}${t.title.length > 30 ? '...' : ''}`;
 
@@ -109,14 +109,14 @@ export function useDragDrop({ groups, setGroups, bluet_sharedRefs = [] }: UseDra
 
             if (selectedTabs.size > maxPreviewTabs) {
                 const moreEl = document.createElement('div');
-                moreEl.className = 'text-xs text-gray-500 dark:text-gray-400 text-center py-1';
+                moreEl.className = 'text-xs text-text-muted text-center py-1';
                 moreEl.dir = 'auto';
                 moreEl.textContent = t('components.masonry.moreTabs', { count: selectedTabs.size - maxPreviewTabs });
                 dragPreview.appendChild(moreEl);
             }
 
             const badge = document.createElement('div');
-            badge.className = 'absolute -top-2 -right-2 w-6 h-6 bg-blue-500 text-white text-xs font-bold rounded-full flex items-center justify-center';
+            badge.className = 'absolute -top-2 -right-2 w-6 h-6 bg-primary text-white text-xs font-semibold rounded-full flex items-center justify-center';
             badge.dir = 'ltr';
             badge.textContent = String(selectedTabs.size);
             dragPreview.appendChild(badge);
@@ -465,7 +465,7 @@ export function useDragDrop({ groups, setGroups, bluet_sharedRefs = [] }: UseDra
 
     const OverlayElement = isDraggingTabs ? (
         <div data-drop-zone className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-4 py-3 bg-bg-1 border border-border rounded-xl shadow-lg transition-all duration-200 ${dragOverTarget ? 'scale-105 shadow-xl' : ''}`}>
-            <span className={`text-sm font-medium me-2 transition-opacity ${dragOverTarget ? 'opacity-50' : 'text-gray-500 dark:text-gray-400'}`}>
+            <span className={`text-sm font-medium me-2 transition-opacity ${dragOverTarget ? 'opacity-50' : 'text-text-muted'}`}>
                 {t('options.dragDrop.tabCount', { count: isDragging && selectedTabs.size > 1 ? selectedTabs.size : 1 })}
             </span>
 
@@ -478,8 +478,8 @@ export function useDragDrop({ groups, setGroups, bluet_sharedRefs = [] }: UseDra
                 onDrop={handleNewGroupDrop}
                 className={`flex items-center gap-2 px-5 py-3 rounded-lg border-2 border-dashed transition-all cursor-pointer
                     ${dragOverTarget === 'new-group'
-                        ? 'border-blue-500 bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 scale-110 shadow-lg ring-2 ring-blue-300 dark:ring-blue-600'
-                        : 'border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-blue-400 hover:bg-blue-50/50 dark:hover:bg-blue-900/20'
+                        ? 'border-primary bg-primary-muted text-primary scale-110 shadow-lg ring-2 ring-primary'
+                        : 'border-border text-text-muted hover:border-primary hover:bg-primary-muted'
                     }`}
             >
                 <FolderPlus className={`w-5 h-5 ${dragOverTarget === 'new-group' ? 'animate-pulse' : ''}`} />
@@ -493,8 +493,8 @@ export function useDragDrop({ groups, setGroups, bluet_sharedRefs = [] }: UseDra
                 onDrop={handleTrashDrop}
                 className={`flex items-center gap-2 px-5 py-3 rounded-lg border-2 border-dashed transition-all cursor-pointer
                     ${dragOverTarget === 'trash'
-                        ? 'border-red-500 bg-red-100 dark:bg-red-900/50 text-red-600 dark:text-red-400 scale-110 shadow-lg ring-2 ring-red-300 dark:ring-red-600'
-                        : 'border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-red-400 hover:bg-red-50/50 dark:hover:bg-red-900/20'
+                        ? 'border-danger bg-danger-muted text-danger scale-110 shadow-lg ring-2 ring-danger'
+                        : 'border-border text-text-muted hover:border-danger hover:bg-danger-muted'
                     }`}
             >
                 <Trash2 className={`w-5 h-5 ${dragOverTarget === 'trash' ? 'animate-pulse' : ''}`} />

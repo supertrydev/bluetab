@@ -133,7 +133,7 @@ export function BluetConnectionSection() {
                 <div className="p-2 rounded-lg bg-primary/10">
                     <Link2 className="h-5 w-5 text-primary" />
                 </div>
-                <h3 className="text-lg font-medium text-text-strong">{t('components.bluetConnection.title')}</h3>
+                <h3 className="text-base font-semibold text-text-strong">{t('components.bluetConnection.title')}</h3>
             </div>
 
             <div className="rounded-xl bg-bg-1 border border-border shadow-sm overflow-hidden">
@@ -159,7 +159,7 @@ export function BluetConnectionSection() {
                             <div className="flex items-center justify-between">
                                 <div className="space-y-1">
                                     <div className="flex items-center gap-2">
-                                        <div className="w-2 h-2 rounded-full bg-green-500" />
+                                        <div className="w-2 h-2 rounded-full bg-success" />
                                         <span className="font-medium text-text-strong">
                                             {t('components.bluetConnection.connectedAs', {
                                                 username: isolateBidi(status.username ?? '', 'auto'),
@@ -178,9 +178,9 @@ export function BluetConnectionSection() {
                                     variant="outline"
                                     size="sm"
                                     onClick={() => setConfirmDisconnect(true)}
-                                    className="border-border text-text hover:bg-bg-2 hover:text-text-strong"
+                                    className="border-border text-text hover:bg-accent hover:text-text-strong"
                                 >
-                                    <Link2Off className="h-3.5 w-3.5 me-1.5" />
+                                    <Link2Off className="h-3.5 w-3.5" />
                                     {t('components.bluetConnection.disconnect')}
                                 </Button>
                             </div>
@@ -189,7 +189,7 @@ export function BluetConnectionSection() {
                         {status.access === false && status.accessReason !== 'unavailable' ? (
                             <div
                                 role="status"
-                                className="px-5 py-3 flex items-start gap-2 text-sm text-amber-700 dark:text-amber-400 bg-amber-500/10"
+                                className="px-5 py-3 flex items-start gap-2 text-sm text-warning bg-warning-muted"
                             >
                                 <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0" aria-hidden="true" />
                                 <span>
@@ -231,7 +231,7 @@ export function BluetConnectionSection() {
                         <div className="flex items-center gap-2">
                             <button
                                 onClick={() => setView('status')}
-                                className="p-1 rounded hover:bg-bg-2 text-text-muted"
+                                className="p-1 rounded-full hover:bg-accent text-text-muted"
                             >
                                 <ArrowLeft className="h-4 w-4 rtl:rotate-180" />
                             </button>
@@ -281,7 +281,7 @@ export function BluetConnectionSection() {
                             onClick={handleOpenAuthPage}
                             className="bg-primary hover:bg-primary-hover text-white shadow-sm"
                         >
-                            <Link2 className="h-4 w-4 me-2" />
+                            <Link2 className="h-4 w-4" />
                             {t('components.bluetConnection.connect')}
                         </Button>
                     </div>

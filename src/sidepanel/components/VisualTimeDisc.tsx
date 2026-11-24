@@ -57,8 +57,8 @@ export function VisualTimeDisc({ remainingMs, totalMs, colorBlindSafe }: Props) 
   const dashoffset = CIRCUMFERENCE * (1 - progress);
   const minutes = Math.max(0, Math.ceil(remainingMs / 60_000));
 
-  const fill = colorBlindSafe ? OKABE_ITO_FILL : 'var(--primary)';
-  const track = colorBlindSafe ? OKABE_ITO_TRACK : 'var(--bg-2)';
+  const fill = colorBlindSafe ? OKABE_ITO_FILL : 'var(--primary-text)';
+  const track = colorBlindSafe ? OKABE_ITO_TRACK : 'var(--fill-accent)';
 
   const label = `${minutes} ${minutes === 1 ? 'minute' : 'minutes'} remaining`;
 

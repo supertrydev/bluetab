@@ -79,12 +79,13 @@ small {
 }
 
 a {
-    color: var(--primary);
+    color: var(--primary-text);
     text-decoration: none;
     transition: color var(--transition-fast);
 }
 
-a:hover {
+/* :where keeps this below utility classes such as text-white on button links. */
+:where(a):hover {
     color: var(--primary-hover);
 }
 
@@ -92,8 +93,15 @@ a:hover {
    FOCUS STATES
    ============================================ */
 :focus-visible {
-    outline: 2px solid var(--primary);
+    outline: 2px solid var(--ring);
     outline-offset: 2px;
+}
+
+/* Text fields show focus on their border, not as an outline. */
+input:not([type="checkbox"], [type="radio"], [type="range"], [type="color"], [type="file"]):focus-visible,
+textarea:focus-visible {
+    outline: none;
+    border-color: var(--ring);
 }
 
 /* Remove default focus for mouse users */
@@ -149,7 +157,7 @@ button:disabled {
    does not reliably paint the track in Chromium/WebKit.
    ============================================ */
 .settings-range {
-    --settings-range-track: var(--highlight);
+    --settings-range-track: color-mix(in srgb, var(--field) 45%, transparent);
     --settings-range-thumb: var(--primary);
 
     width: 100%;
@@ -169,7 +177,7 @@ button:disabled {
 
 .settings-range::-webkit-slider-runnable-track {
     height: 0.375rem;
-    border: 1px solid var(--border);
+    border: 1px solid transparent;
     border-radius: var(--radius-full);
     background: var(--settings-range-track);
 }
@@ -194,7 +202,7 @@ button:disabled {
 
 .settings-range::-moz-range-track {
     height: 0.375rem;
-    border: 1px solid var(--border);
+    border: 1px solid transparent;
     border-radius: var(--radius-full);
     background: var(--settings-range-track);
 }
@@ -335,4 +343,19 @@ button:disabled {
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
     border-width: 0;
+}
+
+/* Settings search matches (src/settings/search-highlight.ts). Literal colors:
+   custom properties are not reliable inside ::highlight. */
+::highlight(settings-search) {
+    background-color: hsl(50 100% 68%);
+    color: hsl(222 22% 12%);
+}
+::highlight(settings-search-current) {
+    background-color: hsl(42 100% 52%);
+    color: hsl(222 22% 12%);
+}
+[data-search-hit] {
+    outline: 2px solid hsl(42 100% 52%);
+    outline-offset: 2px;
 }

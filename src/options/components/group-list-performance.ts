@@ -1,4 +1,4 @@
-import { matchesSearch, normalizeForSearch } from '@/utils/search-text';
+import { getSearchVisibleTabs } from '@/utils/group-search';
 import type { TabGroup } from '@/types/models';
 
 export type OptionsGroupLayoutMode = 'grid' | 'masonry' | 'dashboard';
@@ -35,16 +35,8 @@ export function countVisibleTabRowsForGroupList(
   groups: TabGroup[],
   { collapsedGroups, search }: CountVisibleRowsOptions,
 ): number {
-  const q = normalizeForSearch(search);
-
   return groups.reduce((total, group) => {
     if (collapsedGroups.get(group.id)) return total;
-    if (!q || matchesSearch(group.name, q)) {
-      return total + group.tabs.length;
-    }
-
-    return total + group.tabs.filter((tab) =>
-      matchesSearch(tab.title, q) || matchesSearch(tab.url, q),
-    ).length;
+    return total + getSearchVisibleTabs(group, search).length;
   }, 0);
 }

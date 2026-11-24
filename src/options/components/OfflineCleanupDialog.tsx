@@ -85,7 +85,7 @@ export function OfflineCleanupDialog({
                   aria-label={t('options.offlineCleanup.deleteAria', {
                     title: isolateBidi(c.title || c.url, c.title ? 'auto' : 'ltr'),
                   })}
-                  className="h-4 w-4 rounded border-gray-300 shrink-0"
+                  className="h-4 w-4 rounded border-border shrink-0"
                 />
                 <label
                   htmlFor={`cleanup-${c.id}`}

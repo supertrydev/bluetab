@@ -200,7 +200,7 @@ function SidePanel() {
                     >
                         <Gift className="w-3.5 h-3.5 flex-shrink-0" />
                         <span>{t('sidepanel.wrappedReady')}</span>
-                        <span className="ms-auto h-2 w-2 rounded-full bg-yellow-400 animate-pulse flex-shrink-0" />
+                        <span className="ms-auto h-2 w-2 rounded-full bg-warning animate-pulse flex-shrink-0" />
                     </button>
                 )}
                 <div className="pb-2" />

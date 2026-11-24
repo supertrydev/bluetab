@@ -133,7 +133,7 @@ function getConditionTypeLabels(): Record<FlowConditionType, string> {
 
 const PROPOSAL_CONTROL_CLASSNAME =
     'w-full rounded-lg border border-border bg-bg-0 px-3 py-2 text-sm text-text-strong shadow-sm ' +
-    'placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-0';
+    'placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-0';
 
 const PROPOSAL_SELECT_CLASSNAME = PROPOSAL_CONTROL_CLASSNAME;
 
@@ -225,7 +225,7 @@ function ProposalEditor({ proposal, onChange }: ProposalEditorProps) {
                 {conditions.map((condition, index) => (
                     <div key={condition.id ?? index} className="space-y-2">
                         {conditions.length > 1 && (
-                            <div dir="ltr" className="text-caption text-text-muted">
+                            <div dir="ltr" className="text-xs text-text-muted">
                                 #{index + 1}
                             </div>
                         )}
@@ -339,7 +339,7 @@ function ProposalCard({
     };
 
     return (
-        <div className="relative rounded-xl border border-dashed border-primary/40 bg-bg-1/70 p-4 backdrop-blur-sm shadow-sm">
+        <div className="relative rounded-lg border border-border-glass bg-glass-bg p-4 backdrop-blur-sm shadow-sm">
             {/* "Proposed" badge */}
             <span className="absolute top-2 end-2 text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
                 {t('flow.proposalModal.proposed')}

@@ -157,7 +157,7 @@ export function ReminderQuickPicker({ open, onOpenChange, group }: ReminderQuick
         <div className="mt-4 space-y-3">
           {/* Existing reminder replacement warning */}
           {existingReminder && (
-            <div className="text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg px-3 py-2">
+            <div className="text-xs text-warning bg-warning-muted border border-warning/30 rounded-lg px-3 py-2">
               {t('options.reminderQuickPicker.existingWarning', {
                 time: isolateBidi(formatReminderAbsoluteTime(existingReminder.fireAt), 'ltr'),
               })}
@@ -171,7 +171,7 @@ export function ReminderQuickPicker({ open, onOpenChange, group }: ReminderQuick
                 key={preset.label}
                 onClick={() => handleSelect(preset.getFireAt())}
                 disabled={isSubmitting}
-                className="flex items-center gap-2 px-3 py-2.5 text-sm font-medium rounded-lg border border-border bg-bg-1 text-foreground hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center gap-2 px-3 py-2.5 text-sm font-medium rounded-full border border-border bg-bg-1 text-foreground hover:bg-accent transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <preset.icon className="w-4 h-4 text-muted-foreground" />
                 {preset.label}
@@ -180,7 +180,7 @@ export function ReminderQuickPicker({ open, onOpenChange, group }: ReminderQuick
           </div>
 
           {/* Custom date selection */}
-          <div className="space-y-2 rounded-lg border border-dashed border-border bg-gray-50 dark:bg-gray-800/50 p-3">
+          <div className="space-y-2 rounded-lg border border-dashed border-border bg-muted p-3">
             <div className="flex items-center gap-2 text-sm font-medium text-foreground">
               <Calendar className="w-4 h-4 text-muted-foreground" />
               {t('options.reminderQuickPicker.customDateTime')}
@@ -192,12 +192,12 @@ export function ReminderQuickPicker({ open, onOpenChange, group }: ReminderQuick
                 onChange={(e) => setCustomDateTime(e.target.value)}
                 min={minDateTime}
                 dir="ltr"
-                className="flex-1 px-2 py-1.5 text-sm border border-border rounded bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                className="flex-1 px-3 py-1.5 text-sm border border-field rounded-input bg-bg-1 text-foreground"
               />
               <button
                 onClick={handleCustomSubmit}
                 disabled={!customDateTime || isSubmitting}
-                className="px-3 py-1.5 text-sm font-medium rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-3 py-1.5 text-sm font-medium rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {t('common.set')}
               </button>

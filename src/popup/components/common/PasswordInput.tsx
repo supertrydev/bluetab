@@ -173,12 +173,12 @@ export function PasswordInput({
     const baseInputClasses = `
         w-full pe-10 px-3 py-2 text-sm border rounded-md transition-colors
         bg-bg-1
-        text-gray-900 dark:text-gray-100
-        focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-        disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed
+        text-text-strong
+        focus:ring-2 focus:ring-primary focus:border-primary
+        disabled:bg-muted disabled:cursor-not-allowed
         ${validation.errors.length > 0 && value
-            ? 'border-red-300 dark:border-red-600'
-            : 'border-gray-300 dark:border-gray-600'
+            ? 'border-danger/30'
+            : 'border-border'
         }
     `;
 
@@ -212,7 +212,7 @@ export function PasswordInput({
                     <button
                         type="button"
                         onClick={toggleVisibility}
-                        className="absolute end-3 top-1/2 transform -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                        className="absolute end-3 top-1/2 transform -translate-y-1/2 p-1 text-text-muted hover:text-text-muted transition-colors"
                         title={isVisible ? t('popup.passwordInput.hidePassword') : t('popup.passwordInput.showPassword')}
                         tabIndex={-1}
                     >
@@ -226,22 +226,22 @@ export function PasswordInput({
                 <div className="mt-2 space-y-2">
                     {/* Strength Bar */}
                     <div className="flex items-center gap-2">
-                        <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                        <div className="flex-1 bg-accent rounded-full h-2">
                             <div
                                 className={`h-2 rounded-full transition-all duration-300 ${
-                                    passwordStrength.color === 'red' ? 'bg-red-500' :
-                                    passwordStrength.color === 'yellow' ? 'bg-yellow-500' :
-                                    passwordStrength.color === 'green' ? 'bg-green-500' :
-                                    'bg-gray-400'
+                                    passwordStrength.color === 'red' ? 'bg-danger' :
+                                    passwordStrength.color === 'yellow' ? 'bg-warning' :
+                                    passwordStrength.color === 'green' ? 'bg-success' :
+                                    'bg-accent'
                                 }`}
                                 style={{ width: `${(passwordStrength.score / 6) * 100}%` }}
                             />
                         </div>
                         <span className={`text-xs font-medium ${
-                            passwordStrength.color === 'red' ? 'text-red-600 dark:text-red-400' :
-                            passwordStrength.color === 'yellow' ? 'text-yellow-600 dark:text-yellow-400' :
-                            passwordStrength.color === 'green' ? 'text-green-600 dark:text-green-400' :
-                            'text-gray-600 dark:text-gray-400'
+                            passwordStrength.color === 'red' ? 'text-danger' :
+                            passwordStrength.color === 'yellow' ? 'text-warning' :
+                            passwordStrength.color === 'green' ? 'text-success' :
+                            'text-text-muted'
                         }`}>
                             {passwordStrength.label}
                         </span>
@@ -251,7 +251,7 @@ export function PasswordInput({
                     {passwordStrength.suggestions.length > 0 && (
                         <div className="space-y-1">
                             {passwordStrength.suggestions.slice(0, 3).map((suggestion, index) => (
-                                <div key={index} className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
+                                <div key={index} className="flex items-center gap-2 text-xs text-text-muted">
                                     <Circle className="w-2 h-2 opacity-50 fill-current" />
                                     <span>{suggestion}</span>
                                 </div>
@@ -265,7 +265,7 @@ export function PasswordInput({
             {validation.errors.length > 0 && value && (
                 <div className="mt-1 space-y-1">
                     {validation.errors.map((error, index) => (
-                        <p key={index} className="text-sm text-red-600 dark:text-red-400 flex items-center gap-2">
+                        <p key={index} className="text-sm text-danger flex items-center gap-2">
                             <AlertCircle className="w-3 h-3 flex-shrink-0" />
                             {error}
                         </p>
@@ -275,8 +275,8 @@ export function PasswordInput({
 
             {/* Security Recommendations */}
             {isFocused && !value && (
-                <div className="mt-2 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-                    <div className="text-sm text-blue-800 dark:text-blue-200 space-y-1">
+                <div className="mt-2 p-3 bg-primary-muted border border-primary/30 rounded-lg">
+                    <div className="text-sm text-primary space-y-1">
                         <div className="font-medium mb-2">{t('popup.passwordInput.securityTipsTitle')}</div>
                         <div className="text-xs space-y-1">
                             <div>{t('popup.passwordInput.securityTips.minLength', { count: minLength })}</div>

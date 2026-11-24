@@ -68,7 +68,7 @@ export const TabSelectionToolbar = memo(function TabSelectionToolbar({
       <Button
         size="sm"
         variant="ghost"
-        className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 gap-1.5"
+        className="text-danger hover:text-danger hover:bg-danger-muted gap-1.5"
         onClick={deleteSelectedTabs}
         title={t('components.tabSelection.deleteSelected')}
       >

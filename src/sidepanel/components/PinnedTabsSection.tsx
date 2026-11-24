@@ -72,11 +72,11 @@ export function PinnedTabsSection({
 
     return (
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-            <div className="rounded-xl border border-border bg-bg-1 overflow-hidden">
+            <div className="rounded-lg border border-border bg-bg-1 overflow-hidden">
                 {/* Header */}
-                <div className="flex items-center gap-2 px-3 py-2.5 min-w-0">
+                <div className="flex min-h-12 items-center gap-1.5 px-2 py-1 min-w-0">
                     <CollapsibleTrigger asChild>
-                        <button className="p-1 hover:bg-bg-2 rounded-md transition-colors duration-150 flex-shrink-0">
+                        <button className="flex h-7 w-7 items-center justify-center hover:bg-accent rounded-full transition-colors duration-150 flex-shrink-0">
                             {isOpen ? (
                                 <ChevronDown className="w-4 h-4 text-text-muted" />
                             ) : (
@@ -85,11 +85,11 @@ export function PinnedTabsSection({
                         </button>
                     </CollapsibleTrigger>
 
-                    <Pin className="w-3.5 h-3.5 text-blue-500 dark:text-blue-400 flex-shrink-0" />
+                    <Pin className="w-3.5 h-3.5 text-primary flex-shrink-0" />
 
                     <div className="flex-1 min-w-0 flex items-center gap-1.5">
                         <CollapsibleTrigger asChild>
-                            <span className="text-label font-medium text-text-muted truncate cursor-pointer">
+                            <span className="text-sm font-medium text-text-strong truncate cursor-pointer">
                                 {t('sidepanel.pinned.label')}
                             </span>
                         </CollapsibleTrigger>
@@ -102,7 +102,7 @@ export function PinnedTabsSection({
                     {onNewTab && (
                         <button
                             onClick={onNewTab}
-                            className="p-1 hover:bg-bg-2 rounded-md transition-colors duration-150 flex-shrink-0 text-text-muted hover:text-text-strong"
+                            className="flex h-7 w-7 items-center justify-center hover:bg-accent rounded-full transition-colors duration-150 flex-shrink-0 text-text-muted hover:text-text-strong"
                             title={t('sidepanel.pinnedSection.newPinnedTab')}
                         >
                             <Plus className="w-4 h-4" />
@@ -113,7 +113,7 @@ export function PinnedTabsSection({
                     {onSaveToBlueTab && (
                         <button
                             onClick={() => onSaveToBlueTab(tabs)}
-                            className="p-1 hover:bg-bg-2 rounded-md transition-colors duration-150 flex-shrink-0 text-text-muted hover:text-text-strong"
+                            className="flex h-7 w-7 items-center justify-center hover:bg-accent rounded-full transition-colors duration-150 flex-shrink-0 text-text-muted hover:text-text-strong"
                             title={t('sidepanel.browserGroup.saveToBlueTab')}
                         >
                             <LayersPlus className="w-4 h-4" />
@@ -123,7 +123,7 @@ export function PinnedTabsSection({
                     {/* 3-dot menu */}
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <button className="p-1 hover:bg-bg-2 rounded-md transition-all duration-150 flex-shrink-0 text-text-muted hover:text-text-strong">
+                            <button className="flex h-7 w-7 items-center justify-center hover:bg-accent rounded-full transition-all duration-150 flex-shrink-0 text-text-muted hover:text-text-strong">
                                 <MoreHorizontal className="w-4 h-4" />
                             </button>
                         </DropdownMenuTrigger>
@@ -131,18 +131,18 @@ export function PinnedTabsSection({
                             {onSaveToArchive && (
                                 <DropdownMenuItem
                                     onClick={() => onSaveToArchive(tabs)}
-                                    className="focus:bg-gray-100 dark:focus:bg-gray-700"
+                                    className="focus:bg-accent"
                                 >
-                                    <Archive className="w-4 h-4 me-2" />
+                                    <Archive className="w-4 h-4" />
                                     {t('sidepanel.browserGroup.saveToArchive')}
                                 </DropdownMenuItem>
                             )}
                             {onCopyLinks && (
                                 <DropdownMenuItem
                                     onClick={() => onCopyLinks(tabs)}
-                                    className="focus:bg-gray-100 dark:focus:bg-gray-700"
+                                    className="focus:bg-accent"
                                 >
-                                    <Copy className="w-4 h-4 me-2" />
+                                    <Copy className="w-4 h-4" />
                                     {t('sidepanel.browserGroup.copyLinks')}
                                 </DropdownMenuItem>
                             )}
@@ -151,9 +151,9 @@ export function PinnedTabsSection({
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem
                                         onClick={() => setShowDeleteAllModal(true)}
-                                        className="text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-900/20"
+                                        className="text-danger focus:text-danger focus:bg-danger-muted"
                                     >
-                                        <Trash2 className="w-4 h-4 me-2" />
+                                        <Trash2 className="w-4 h-4" />
                                         {t('sidepanel.browserGroup.deleteAll')}
                                     </DropdownMenuItem>
                                 </>
@@ -164,7 +164,7 @@ export function PinnedTabsSection({
 
                 {/* Tabs */}
                 <CollapsibleContent>
-                    <div className="px-1.5 pb-2 space-y-0.5">
+                    <div className="px-2 pb-2 space-y-0.5">
                         {tabs.map(tab => (
                             <TabItem
                                 key={tab.id}

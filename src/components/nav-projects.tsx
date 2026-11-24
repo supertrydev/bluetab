@@ -105,7 +105,7 @@ export function NavProjects({
                 <span>{t('navigation.projects.label')}</span>
                 <button
                     onClick={onCreateProject}
-                    className="p-1 rounded hover:bg-sidebar-accent transition-colors"
+                    className="p-1 rounded-full hover:bg-sidebar-accent transition-colors"
                     title={t('navigation.projects.newProject')}
                 >
                     <Plus className="w-4 h-4" />
@@ -154,9 +154,9 @@ export function NavProjects({
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem
                                         onClick={() => onDeleteProject(project.id)}
-                                        className="text-red-600 focus:text-red-600"
+                                        className="text-danger focus:text-danger"
                                     >
-                                        <Trash2 className="text-red-600" />
+                                        <Trash2 className="text-danger" />
                                         <span>{t('navigation.projects.deleteProject')}</span>
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>

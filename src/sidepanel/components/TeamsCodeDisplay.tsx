@@ -79,7 +79,7 @@ export function TeamsCodeDisplay({ code, participantCount, sessionStartedAt }: T
             {/* Session code */}
             <div className="text-center">
                 <p className="text-xs text-muted-foreground mb-1">{t('sidepanel.teamsCode.yourCode')}</p>
-                <p dir="ltr" className="text-4xl font-mono font-bold tracking-widest text-foreground select-all">
+                <p dir="ltr" className="text-4xl font-mono font-semibold tracking-widest text-foreground select-all">
                     {code}
                 </p>
             </div>
@@ -88,10 +88,10 @@ export function TeamsCodeDisplay({ code, participantCount, sessionStartedAt }: T
             <div className="flex gap-2">
                 <button
                     onClick={handleCopy}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border bg-card hover:bg-accent text-sm font-medium transition-colors"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border bg-card hover:bg-accent text-sm font-medium transition-colors"
                 >
                     {copied ? (
-                        <Check className="w-3.5 h-3.5 text-green-500" />
+                        <Check className="w-3.5 h-3.5 text-success" />
                     ) : (
                         <Copy className="w-3.5 h-3.5" />
                     )}
@@ -100,7 +100,7 @@ export function TeamsCodeDisplay({ code, participantCount, sessionStartedAt }: T
 
                 <button
                     onClick={handleShare}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border bg-card hover:bg-accent text-sm font-medium transition-colors"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border bg-card hover:bg-accent text-sm font-medium transition-colors"
                 >
                     <Share2 className="w-3.5 h-3.5" />
                     <span>{t('sidepanel.teamsCode.share')}</span>
@@ -116,7 +116,7 @@ export function TeamsCodeDisplay({ code, participantCount, sessionStartedAt }: T
             {/* End session */}
             <button
                 onClick={handleEndSession}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-destructive hover:bg-destructive/10 transition-colors mt-2"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm text-destructive hover:bg-danger-muted transition-colors mt-2"
             >
                 <LogOut className="w-3.5 h-3.5" />
                 <span>{t('sidepanel.teamsCode.endSession')}</span>

@@ -170,25 +170,25 @@ export function RestoreModal({
         >
             <div className="space-y-4">
                 {/* Archive Info */}
-                <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                <div className="bg-muted rounded-lg p-4">
                     <div className="flex items-center gap-3 mb-2">
-                        <Archive className="w-5 h-5 text-blue-500" />
+                        <Archive className="w-5 h-5 text-primary" />
                         <div>
-                            <h3 className="font-medium text-gray-900 dark:text-gray-100">
+                            <h3 className="font-medium text-text-strong">
                                 {t('popup.restoreModal.archiveId', { id: isolateBidi(archive.id.slice(0, 8), 'ltr') })}
                             </h3>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                            <p className="text-xs text-text-muted">
                                 {t('popup.restoreModal.createdAt', {
                                     date: isolateBidi(new Date(archive.metadata.archivedDate).toLocaleString(getLocaleTag()), 'ltr'),
                                 })}
                             </p>
                         </div>
                         {archive.protection.passwordProtected && (
-                            <Lock className="w-4 h-4 text-yellow-500" aria-label={t('popup.restoreModal.passwordProtectedAria')} />
+                            <Lock className="w-4 h-4 text-warning" aria-label={t('popup.restoreModal.passwordProtectedAria')} />
                         )}
                     </div>
                     {archive.metadata.archiveReason && (
-                        <p className="text-sm text-gray-600 dark:text-gray-300 italic">
+                        <p className="text-sm text-text-muted italic">
                             <bdi dir="auto">"{archive.metadata.archiveReason}"</bdi>
                         </p>
                     )}
@@ -198,7 +198,7 @@ export function RestoreModal({
                 {archive.protection.passwordProtected && !previewData && (
                     <div className="space-y-3">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <label className="block text-sm font-medium text-text-strong mb-2">
                                 {t('popup.restoreModal.enterPassword')}
                             </label>
                             <PasswordInput
@@ -209,17 +209,17 @@ export function RestoreModal({
                                 autoFocus
                             />
                             {passwordError && (
-                                <p className="mt-1 text-sm text-red-600 dark:text-red-400">{passwordError}</p>
+                                <p className="mt-1 text-sm text-danger">{passwordError}</p>
                             )}
                         </div>
 
                         {archive.protection.passwordHint && (
-                            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
+                            <div className="bg-primary-muted border border-primary/30 rounded-lg p-3">
                                 <div className="flex items-start gap-2">
-                                    <Lightbulb className="w-4 h-4 text-blue-500" />
+                                    <Lightbulb className="w-4 h-4 text-primary" />
                                     <div>
-                                        <div className="text-sm font-medium text-blue-800 dark:text-blue-200">{t('popup.restoreModal.passwordHint')}</div>
-                                        <div dir="auto" className="text-sm text-blue-700 dark:text-blue-300">{archive.protection.passwordHint}</div>
+                                        <div className="text-sm font-medium text-primary">{t('popup.restoreModal.passwordHint')}</div>
+                                        <div dir="auto" className="text-sm text-primary">{archive.protection.passwordHint}</div>
                                     </div>
                                 </div>
                             </div>
@@ -228,7 +228,7 @@ export function RestoreModal({
                         <button
                             onClick={loadPreviewWithPassword}
                             disabled={!password || isLoadingPreview}
-                            className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                            className="w-full px-4 py-2 bg-primary text-white rounded-full hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                         >
                             {isLoadingPreview && <Loader2 className="w-4 h-4 animate-spin" />}
                             {isLoadingPreview ? t('popup.restoreModal.decrypting') : t('popup.restoreModal.decryptAndPreview')}
@@ -239,7 +239,7 @@ export function RestoreModal({
                 {/* Loading State */}
                 {isLoadingPreview && !archive.protection.passwordProtected && (
                     <div className="flex items-center justify-center py-8">
-                        <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+                        <div className="flex items-center gap-2 text-text-muted">
                             <Loader2 className="w-4 h-4 animate-spin" />
                             <span>{t('popup.restoreModal.loadingPreview')}</span>
                         </div>
@@ -248,8 +248,8 @@ export function RestoreModal({
 
                 {/* Preview Error */}
                 {previewError && (
-                    <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3">
-                        <div className="flex items-center gap-2 text-red-800 dark:text-red-200">
+                    <div className="bg-danger-muted border border-danger/30 rounded-lg p-3">
+                        <div className="flex items-center gap-2 text-danger">
                             <AlertCircle className="w-4 h-4" />
                             <span dir="auto" className="text-sm">{previewError}</span>
                         </div>
@@ -261,23 +261,23 @@ export function RestoreModal({
                     <div className="space-y-4">
                         {/* Group Info */}
                         <div className="border border-border rounded-lg p-4">
-                            <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">
+                            <h4 className="font-medium text-text-strong mb-2">
                                 {t('popup.restoreModal.previewTitle', { name: isolateBidi(previewData.groupName) })}
                             </h4>
-                            <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                            <p className="text-sm text-text-muted mb-3">
                                 {t('popup.restoreModal.tabsWillBeRestored', { count: previewData.tabCount })}
                             </p>
 
                             {/* Duplicate Warnings */}
                             {previewData.duplicateWarnings.length > 0 && (
-                                <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3 mb-3">
+                                <div className="bg-warning-muted border border-warning/30 rounded-lg p-3 mb-3">
                                     <div className="flex items-start gap-2">
-                                        <AlertTriangle className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />
+                                        <AlertTriangle className="w-4 h-4 text-warning" />
                                         <div>
-                                            <div className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
+                                            <div className="text-sm font-medium text-warning">
                                                 {t('popup.restoreModal.potentialDuplicates')}
                                             </div>
-                                            <div className="text-sm text-yellow-700 dark:text-yellow-300 mt-1">
+                                            <div className="text-sm text-warning mt-1">
                                                 {t('popup.restoreModal.duplicatesMayBeOpen', { count: previewData.duplicateWarnings.length })}
                                             </div>
                                         </div>
@@ -289,7 +289,7 @@ export function RestoreModal({
                             {previewData.tabs.length > 0 && (
                                 <div className="space-y-2 max-h-40 overflow-y-auto">
                                     {previewData.tabs.map((tab, index) => (
-                                        <div key={index} className="flex items-center gap-3 p-2 bg-gray-50 dark:bg-gray-700 rounded">
+                                        <div key={index} className="flex items-center gap-3 p-2 bg-muted rounded">
                                             <img
                                                 src={tab.favicon || '/icons/default-favicon.png'}
                                                 alt=""
@@ -299,10 +299,10 @@ export function RestoreModal({
                                                 }}
                                             />
                                             <div className="flex-1 min-w-0">
-                                                <div className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                                                <div className="text-sm font-medium text-text-strong truncate">
                                                     <bdi dir="auto">{tab.title}</bdi>
                                                 </div>
-                                                <div className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                                                <div className="text-xs text-text-muted truncate">
                                                     <bdi dir="ltr">{tab.url}</bdi>
                                                 </div>
                                             </div>
@@ -310,7 +310,7 @@ export function RestoreModal({
                                     ))}
 
                                     {previewData.tabCount > previewData.tabs.length && (
-                                        <div className="text-center text-sm text-gray-500 dark:text-gray-400 py-2">
+                                        <div className="text-center text-sm text-text-muted py-2">
                                             {t('popup.restoreModal.moreTabs', {
                                                 count: previewData.tabCount - previewData.tabs.length
                                             })}
@@ -322,17 +322,17 @@ export function RestoreModal({
 
                         {/* Restore Options */}
                         <div className="space-y-3">
-                            <h4 className="font-medium text-gray-900 dark:text-gray-100">{t('popup.restoreModal.optionsTitle')}</h4>
+                            <h4 className="font-medium text-text-strong">{t('popup.restoreModal.optionsTitle')}</h4>
 
                             {/* Conflict Handling */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                <label className="block text-sm font-medium text-text-strong mb-2">
                                     {t('popup.restoreModal.handleDuplicates')}
                                 </label>
                                 <select
                                     value={conflictStrategy}
                                     onChange={(e) => setConflictStrategy(e.target.value as RestoreOptions['handleConflicts'])}
-                                    className="w-full px-3 py-2 text-sm border border-border rounded-md bg-bg-1/60 text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                                    className="w-full px-3.5 py-2 text-sm border border-field rounded-input bg-bg-1 text-foreground"
                                 >
                                     <option value="skip">{t('popup.restoreModal.conflictStrategies.skip')}</option>
                                     <option value="replace">{t('popup.restoreModal.conflictStrategies.replace')}</option>
@@ -347,9 +347,9 @@ export function RestoreModal({
                                     id="restore-active"
                                     checked={restoreToActive}
                                     onChange={(e) => setRestoreToActive(e.target.checked)}
-                                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                    className="rounded border-border text-primary"
                                 />
-                                <label htmlFor="restore-active" className="text-sm text-gray-700 dark:text-gray-300">
+                                <label htmlFor="restore-active" className="text-sm text-text-strong">
                                     {t('popup.restoreModal.restoreToActive')}
                                 </label>
                             </div>
@@ -362,14 +362,14 @@ export function RestoreModal({
                     <button
                         onClick={onClose}
                         disabled={isRestoring}
-                        className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors disabled:opacity-50"
+                        className="px-4 py-2 text-sm font-medium text-text-strong bg-muted hover:bg-accent rounded-full transition-colors disabled:opacity-50"
                     >
                         {t('common.cancel')}
                     </button>
                     <button
                         onClick={handleRestore}
                         disabled={!canRestore || isRestoring}
-                        className="px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                        className="px-4 py-2 text-sm font-medium text-white bg-success hover:bg-success rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                     >
                         {isRestoring && <Loader2 className="w-4 h-4 animate-spin" />}
                         {isRestoring ? t('popup.restoreModal.restoring') : t('popup.restoreModal.restoreArchive')}

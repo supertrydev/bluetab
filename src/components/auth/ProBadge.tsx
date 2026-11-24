@@ -17,7 +17,7 @@ interface ProBadgeProps {
 
 export function ProBadge({ size = 'sm', className = '' }: ProBadgeProps) {
     const sizeClasses = {
-        sm: 'text-micro px-1.5 py-0.5 gap-0.5',
+        sm: 'text-xs px-1.5 py-0.5 gap-0.5',
         md: 'text-xs px-2 py-1 gap-1',
     }
 

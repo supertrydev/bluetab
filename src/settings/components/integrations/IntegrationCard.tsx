@@ -130,7 +130,7 @@ function DefaultSyncTargetField({
         title={value || placeholder}
         autoComplete="off"
         dir="ltr"
-        className="h-8 w-full min-w-0 rounded-md border border-border bg-bg-0 px-2.5 py-1.5 text-xs text-text-strong placeholder:text-text-muted shadow-inner focus:outline-none focus:ring-1 focus:ring-primary"
+        className="h-8 w-full min-w-0 rounded-input border border-field bg-bg-1 px-3 py-1.5 text-xs text-text-strong placeholder:text-text-muted shadow-inner"
       />
     </div>
   );
@@ -281,7 +281,7 @@ export function IntegrationCard({
   };
 
   return (
-    <div className="flex flex-col rounded-lg border border-border-glass bg-bg-0/80 backdrop-blur-sm p-4 gap-3">
+    <div className="flex flex-col rounded-md bg-muted border-border-glass backdrop-blur-sm p-4 gap-3">
       {/* Top row — brand icon + name, with status pill stacked below the name
           so cramped widths don't truncate the integration name to "N..." */}
       <div className="flex items-start gap-3 min-w-0">
@@ -298,14 +298,14 @@ export function IntegrationCard({
           <span
             className={`self-start inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-micro font-medium leading-none ${
               isConnected
-                ? 'bg-green-500/10 text-green-700 dark:text-green-400'
+                ? 'bg-success-muted text-success'
                 : 'bg-muted text-muted-foreground'
             }`}
             title={isConnected ? t('settings.integrations.connected') : t('settings.integrations.notConnected')}
           >
             <span
               className={`h-1.5 w-1.5 rounded-full ${
-                isConnected ? 'bg-green-500' : 'bg-muted-foreground/60'
+                isConnected ? 'bg-success' : 'bg-muted-foreground/60'
               }`}
               aria-hidden="true"
             />
@@ -392,7 +392,7 @@ export function IntegrationCard({
 
       {/* Token-paste inline form */}
       {pasteFormOpen && entry.auth_type === 'token_paste' && (
-        <div className="flex flex-col gap-2 rounded-md border border-border bg-bg-1/60 p-3">
+        <div className="flex flex-col gap-2 rounded-md bg-muted p-3">
           <span className="text-xs text-muted-foreground">
             {t('settings.integrations.pasteApiToken')}
             {entry.token_paste_instructions_url && (
@@ -417,7 +417,7 @@ export function IntegrationCard({
             onChange={(e) => setPasteToken(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter') handlePasteSubmit(); }}
             placeholder={t('settings.integrations.pasteTokenPlaceholder')}
-            className="w-full text-xs rounded-md border border-border bg-bg-0/80 px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary"
+            className="w-full text-xs rounded-input border border-field bg-bg-1 px-3 py-1.5"
           />
           <div className="flex gap-2">
             <Button size="sm" className="flex-1" onClick={handlePasteSubmit} disabled={connecting || !pasteToken.trim()}>

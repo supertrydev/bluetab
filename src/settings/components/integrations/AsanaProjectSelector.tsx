@@ -113,9 +113,9 @@ export function AsanaProjectSelector({ accountId, workspaceGid }: AsanaProjectSe
       <div className="flex flex-col gap-1">
         <label className="text-xs text-muted-foreground">{t('settings.integrations.asanaProject')}</label>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-amber-600 dark:text-amber-400">{t('settings.integrations.sessionExpired')}</span>
+          <span className="text-xs text-warning">{t('settings.integrations.sessionExpired')}</span>
           <button
-            className="text-xs font-medium text-amber-600 underline dark:text-amber-400 hover:no-underline"
+            className="text-xs font-medium text-warning underline hover:no-underline"
             onClick={handleReconnect}
           >
             {t('common.reconnect')}
@@ -129,7 +129,7 @@ export function AsanaProjectSelector({ accountId, workspaceGid }: AsanaProjectSe
     return (
       <div className="flex flex-col gap-1">
         <label className="text-xs text-muted-foreground">{t('settings.integrations.asanaProject')}</label>
-        <div className="text-xs text-red-600 dark:text-red-400">
+        <div className="text-xs text-danger">
           {t('settings.integrations.errorLoading', {
             resource: t('settings.integrations.resources.projects'),
             message: isolateBidi(loadError),

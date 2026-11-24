@@ -105,7 +105,6 @@ describe('Brazilian Portuguese copy quality', () => {
     'sidepanel.aiPanel.chat',
     'sidepanel.aiPanel.messages_one',
     'sidepanel.aiPanel.messages_other',
-    'sidepanel.aiUpgradePrompt.assistantName',
     'sidepanel.brainDump',
     'sidepanel.teams',
     'sidepanel.teamsChat.label',

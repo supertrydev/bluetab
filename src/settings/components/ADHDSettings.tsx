@@ -330,7 +330,7 @@ export function ADHDSettings() {
 
   return (
     <div className="pt-4 border-t border-border">
-      <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 flex items-center gap-2 mb-4">
+      <h3 className="text-base font-semibold text-text-strong flex items-center gap-2 mb-4">
         <Brain className="w-5 h-5" />
         {t('settings.adhd.title')}
       </h3>
@@ -343,7 +343,7 @@ export function ADHDSettings() {
         {/* Master Toggle */}
         <div className="flex items-center justify-between">
           <div className="pe-4">
-            <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            <p className="text-sm font-medium text-text-strong">
               {t('settings.adhd.masterTitle')}
             </p>
             <p className="text-xs text-muted-foreground">
@@ -371,7 +371,7 @@ export function ADHDSettings() {
         >
           {subToggles.map((meta) => (
             <div key={meta.name}>
-              <div className="flex items-center justify-between p-3 border border-border rounded-lg">
+              <div className="flex items-center justify-between p-3 rounded-md border border-border bg-bg-1">
                 <div className="min-w-0 flex-1 me-3">
                   <p className="text-sm font-medium text-foreground">{meta.label}</p>
                   <p className="text-xs text-muted-foreground">{meta.description}</p>
@@ -388,7 +388,7 @@ export function ADHDSettings() {
                   chip-list. Rendered only when the master AND the
                   autoSuspend sub-toggle are both ON (ADHD-02 gate). */}
               {meta.name === 'autoSuspend' && autoSuspendActive && (
-                <div className="mt-3 ms-3 ps-3 border-s-2 border-border space-y-4">
+                <div className="mt-3 ms-3 ps-3 border-s border-border space-y-4">
                   <p className="text-xs text-muted-foreground max-w-prose">
                     {t('settings.adhd.autoSuspendDescription')}
                   </p>
@@ -397,7 +397,7 @@ export function ADHDSettings() {
                       users can reason about the interaction when the browser's
                       native Memory Saver is enabled. See 09-CONTEXT.md
                       §Safe Auto-Suspend. */}
-                  <p className="text-xs text-muted-foreground italic max-w-prose">
+                  <p className="text-xs text-muted-foreground max-w-prose">
                     {t('settings.adhd.memorySaverNote')}
                   </p>
 
@@ -453,19 +453,19 @@ export function ADHDSettings() {
                         }}
                         placeholder={t('settings.adhd.whitelistPlaceholder')}
                         aria-label={t('settings.adhd.whitelistAria')}
-                        className="flex-1 px-3 py-1.5 text-sm border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                        className="flex-1 px-3.5 py-1.5 text-sm border border-field rounded-input bg-bg-1 text-foreground placeholder:text-muted-foreground"
                       />
                       <button
                         type="button"
                         onClick={handleAddDomain}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-lg border border-border text-foreground hover:bg-accent transition-colors"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-full border border-border text-foreground hover:bg-accent transition-colors"
                       >
                         <Plus className="w-3.5 h-3.5" />
                         {t('settings.adhd.addWhitelist')}
                       </button>
                     </div>
                     {domainError && (
-                      <p dir="auto" className="text-xs text-red-500 mb-2">{domainError}</p>
+                      <p dir="auto" className="text-xs text-danger mb-2">{domainError}</p>
                     )}
                     {settings.autoSuspend.whitelistDomains.length > 0 && (
                       <div className="border border-border rounded-lg divide-y divide-border">
@@ -478,7 +478,7 @@ export function ADHDSettings() {
                             <button
                               type="button"
                               onClick={() => handleRemoveDomain(domain)}
-                              className="p-1 text-muted-foreground hover:text-red-500 transition-colors"
+                              className="p-1 text-muted-foreground hover:text-danger transition-colors"
                               title={t('settings.adhd.removeDomainTitle', { domain: isolateBidi(domain, 'ltr') })}
                               aria-label={t('settings.adhd.removeDomainAria', { domain: isolateBidi(domain, 'ltr') })}
                             >
@@ -499,20 +499,20 @@ export function ADHDSettings() {
                   group rows per CONTEXT.md — the description below states
                   this explicitly. */}
               {meta.name === 'simplify' && simplifyActive && (
-                <div className="mt-3 ms-3 ps-3 border-s-2 border-border space-y-3">
+                <div className="mt-3 ms-3 ps-3 border-s border-border space-y-3">
                   <label className="flex items-start gap-2 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={settings.simplify.aggressive}
                       onChange={(e) => handleSimplifyAggressive(e.target.checked)}
                       aria-label={t('settings.adhd.simplifyAggressiveAria')}
-                      className="mt-0.5 w-4 h-4 rounded border-border text-primary focus:ring-1 focus:ring-primary cursor-pointer"
+                      className="mt-0.5 w-4 h-4 rounded border-border text-primary cursor-pointer"
                     />
                     <div>
                       <p className="text-xs font-medium text-foreground">
                         {t('settings.adhd.simplifyAggressiveTitle')}
                       </p>
-                      <p className="text-caption text-muted-foreground mt-1 max-w-prose">
+                      <p className="text-xs text-muted-foreground mt-1 max-w-prose">
                         {t('settings.adhd.simplifyAggressiveDescription')}
                       </p>
                     </div>
@@ -527,7 +527,7 @@ export function ADHDSettings() {
                   unconditional inside VisualTimeDisc itself — NOT exposed
                   as a setting here because it must never be optional. */}
               {meta.name === 'visualTime' && visualTimeActive && (
-                <div className="mt-3 ms-3 ps-3 border-s-2 border-border space-y-3">
+                <div className="mt-3 ms-3 ps-3 border-s border-border space-y-3">
                   <p className="text-xs text-muted-foreground max-w-prose">
                     {t('settings.adhd.visualTimeDescription')}
                   </p>
@@ -537,13 +537,13 @@ export function ADHDSettings() {
                       checked={settings.visualTime.colorBlindSafe}
                       onChange={(e) => handleVisualTimeColorBlindSafe(e.target.checked)}
                       aria-label={t('settings.adhd.colorBlindAria')}
-                      className="mt-0.5 w-4 h-4 rounded border-border text-primary focus:ring-1 focus:ring-primary cursor-pointer"
+                      className="mt-0.5 w-4 h-4 rounded border-border text-primary cursor-pointer"
                     />
                     <div>
                       <p className="text-xs font-medium text-foreground">
                         {t('settings.adhd.colorBlindTitle')}
                       </p>
-                      <p className="text-caption text-muted-foreground mt-1 max-w-prose">
+                      <p className="text-xs text-muted-foreground mt-1 max-w-prose">
                         {t('settings.adhd.colorBlindDescription')}
                       </p>
                     </div>
@@ -556,19 +556,19 @@ export function ADHDSettings() {
                   using computeBreakMinutes (pure helper, importable by Settings).
                   Appears when master AND flowtimeTimer.enabled are both ON. */}
               {meta.name === 'flowtimeTimer' && flowtimeActive && (
-                <div className="mt-3 ms-3 ps-3 border-s-2 border-border space-y-4">
+                <div className="mt-3 ms-3 ps-3 border-s border-border space-y-4">
                   {/* First-enable onboarding card */}
                   {flowtimeOnboardingVisible && (
-                    <div className="rounded-xl border border-blue-500/20 bg-blue-500/10 p-4">
+                    <div className="rounded-xl border border-primary/30 bg-primary-muted p-4">
                       <div className="flex items-start gap-3">
-                        <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-blue-500/20 bg-bg-0/70 text-blue-500 shadow-sm">
+                        <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-primary/30 bg-bg-0/70 text-primary shadow-sm">
                           <Clock className="h-4 w-4" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-3">
                             <div>
                               <p className="text-sm font-medium text-foreground">{t('settings.adhd.flowtimeOnboardingTitle')}</p>
-                              <p className="text-caption text-muted-foreground mt-1 max-w-prose">
+                              <p className="text-xs text-muted-foreground mt-1 max-w-prose">
                                 {t('settings.adhd.flowtimeOnboardingDescription')}
                               </p>
                             </div>
@@ -582,16 +582,16 @@ export function ADHDSettings() {
                             </button>
                           </div>
 
-                          <div className="mt-3 flex flex-wrap items-center gap-3 text-blue-500">
+                          <div className="mt-3 flex flex-wrap items-center gap-3 text-primary">
                             <div className="min-w-[5.25rem]">
                               <div dir="ltr" className="text-lg font-semibold tabular-nums leading-none">12:34</div>
-                              <div className="mt-1 text-[10px] font-medium uppercase tracking-[0.08em] text-blue-500/70">
+                              <div className="mt-1 text-xs font-medium text-primary">
                                 {t('settings.adhd.flowtimeElapsed')}
                               </div>
                             </div>
-                            <ArrowRight className="h-4 w-4 text-blue-500/60 rtl:rotate-180" />
+                            <ArrowRight className="h-4 w-4 text-primary rtl:rotate-180" />
                             <div className="inline-flex items-center gap-2 text-xs text-muted-foreground">
-                              <Coffee className="h-3.5 w-3.5 text-blue-500" />
+                              <Coffee className="h-3.5 w-3.5 text-primary" />
                               <span>{t('settings.adhd.flowtimeBreakSuggested')}</span>
                             </div>
                           </div>
@@ -626,22 +626,22 @@ export function ADHDSettings() {
                       aria-label={t('settings.adhd.breakRatioAria')}
                     />
                     {/* Live preview */}
-                    <p dir="auto" className="text-caption text-muted-foreground mt-2 font-mono">
+                    <p dir="auto" className="text-xs text-muted-foreground mt-2 font-mono">
                       {t('settings.adhd.breakPreview', {
                         thirty: isolateBidi(flowtimePreview.thirty, 'ltr'),
                         sixty: isolateBidi(flowtimePreview.sixty, 'ltr'),
                         oneTwenty: isolateBidi(flowtimePreview.oneTwenty, 'ltr'),
                       })}
                     </p>
-                    <p className="text-caption text-muted-foreground mt-1">
+                    <p className="text-xs text-muted-foreground mt-1">
                       {t('settings.adhd.shorterThanFive')}
                     </p>
                   </div>
 
-                  <div className="flex items-center justify-between rounded-lg border border-border px-3 py-3">
+                  <div className="flex items-center justify-between rounded-md border border-border bg-bg-1 px-3 py-3">
                     <div className="min-w-0 pe-3">
                       <p className="text-sm font-medium text-foreground">{t('settings.adhd.autoFocusTitle')}</p>
-                      <p className="text-caption text-muted-foreground mt-1 max-w-prose">
+                      <p className="text-xs text-muted-foreground mt-1 max-w-prose">
                         {t('settings.adhd.autoFocusDescription')}
                       </p>
                     </div>
@@ -659,19 +659,19 @@ export function ADHDSettings() {
                   always exempt (fixed rule, no toggle per CONTEXT.md).
                   Appears when master AND visibleTabLimit.enabled are both ON. */}
               {meta.name === 'visibleTabLimit' && vtlActive && (
-                <div className="mt-3 ms-3 ps-3 border-s-2 border-border space-y-4">
+                <div className="mt-3 ms-3 ps-3 border-s border-border space-y-4">
                   {/* First-enable onboarding card */}
                   {vtlOnboardingVisible && (
-                    <div className="rounded-xl border border-violet-500/20 bg-violet-500/10 p-4">
+                    <div className="rounded-md bg-primary-muted p-4">
                       <div className="flex items-start gap-3">
-                        <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-violet-500/20 bg-bg-0/70 text-violet-400 shadow-sm">
+                        <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-bg-1 text-primary">
                           <PanelTop className="h-4 w-4" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-3">
                             <div>
                               <p className="text-sm font-medium text-foreground">{t('settings.adhd.visibleTabLimitOnboardingTitle')}</p>
-                              <p className="text-caption text-muted-foreground mt-1 max-w-prose">
+                              <p className="text-xs text-muted-foreground mt-1 max-w-prose">
                                 {t('settings.adhd.visibleTabLimitOnboardingDescription')}
                               </p>
                             </div>
@@ -686,11 +686,11 @@ export function ADHDSettings() {
                           </div>
 
                           <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
-                            <span className="inline-flex items-center gap-1.5 rounded-full border border-violet-500/20 bg-bg-0/70 px-2.5 py-1 text-violet-300">
+                            <span className="inline-flex items-center gap-1.5 rounded-full bg-bg-1 px-2.5 py-1 text-primary">
                               <PanelTop className="h-3.5 w-3.5" />
                               {t('settings.adhd.visibleTabsLabel', { count: 20 })}
                             </span>
-                            <ArrowRight className="h-3.5 w-3.5 text-violet-400/70 rtl:rotate-180" />
+                            <ArrowRight className="h-3.5 w-3.5 text-primary rtl:rotate-180" />
                             <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-bg-0/70 px-2.5 py-1 text-muted-foreground">
                               {t('settings.adhd.foldIntoHidden')}
                             </span>
@@ -725,10 +725,10 @@ export function ADHDSettings() {
                       className="settings-range w-full"
                       aria-label={t('settings.adhd.visibleTabsAria')}
                     />
-                    <p className="text-caption text-muted-foreground mt-2">
+                    <p className="text-xs text-muted-foreground mt-2">
                       {t('settings.adhd.pinnedAlwaysVisible')}
                     </p>
-                    <p className="text-caption text-muted-foreground mt-1">
+                    <p className="text-xs text-muted-foreground mt-1">
                       {t('settings.adhd.overflowMoveNote')}
                     </p>
                   </div>
@@ -739,19 +739,19 @@ export function ADHDSettings() {
                   Enable toggle (from SUB_TOGGLES) + domain-mode sub-toggle.
                   Appears when master AND hardFocus.enabled are both ON. */}
               {meta.name === 'hardFocus' && hardFocusActive && (
-                <div className="mt-3 ms-3 ps-3 border-s-2 border-border space-y-3">
+                <div className="mt-3 ms-3 ps-3 border-s border-border space-y-3">
                   {/* First-enable onboarding card */}
                   {hardFocusOnboardingVisible && (
-                    <div className="rounded-xl border border-orange-500/20 bg-orange-500/10 p-4">
+                    <div className="rounded-xl border border-warning/30 bg-warning-muted p-4">
                       <div className="flex items-start gap-3">
-                        <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-orange-500/20 bg-bg-0/70 text-orange-500 shadow-sm">
+                        <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-warning/30 bg-bg-0/70 text-warning shadow-sm">
                           <Lock className="h-4 w-4" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-3">
                             <div>
                               <p className="text-sm font-medium text-foreground">{t('settings.adhd.hardFocusOnboardingTitle')}</p>
-                              <p className="text-caption text-muted-foreground mt-1 max-w-prose">
+                              <p className="text-xs text-muted-foreground mt-1 max-w-prose">
                                 {t('settings.adhd.hardFocusOnboardingDescription')}
                               </p>
                             </div>
@@ -766,13 +766,13 @@ export function ADHDSettings() {
                           </div>
 
                           <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
-                            <span className="inline-flex items-center gap-1.5 rounded-full border border-orange-500/20 bg-bg-0/70 px-2.5 py-1 text-orange-400">
+                            <span className="inline-flex items-center gap-1.5 rounded-full border border-warning/30 bg-bg-0/70 px-2.5 py-1 text-warning">
                               <Lock className="h-3.5 w-3.5" />
                               {t('settings.adhd.snapshotLocked')}
                             </span>
-                            <ArrowRight className="h-3.5 w-3.5 text-orange-500/60 rtl:rotate-180" />
+                            <ArrowRight className="h-3.5 w-3.5 text-warning rtl:rotate-180" />
                             <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-bg-0/70 px-2.5 py-1 text-muted-foreground">
-                              <Globe2 className="h-3.5 w-3.5 text-orange-500" />
+                              <Globe2 className="h-3.5 w-3.5 text-warning" />
                               {t('settings.adhd.outsideLinksBlocked')}
                             </span>
                           </div>
@@ -788,13 +788,13 @@ export function ADHDSettings() {
                       checked={settings.hardFocus?.domainMode ?? false}
                       onChange={(e) => handleHardFocusDomainMode(e.target.checked)}
                       aria-label={t('settings.adhd.whitelistByDomainAria')}
-                      className="mt-0.5 w-4 h-4 rounded border-border text-primary focus:ring-1 focus:ring-primary cursor-pointer"
+                      className="mt-0.5 w-4 h-4 rounded border-border text-primary cursor-pointer"
                     />
                     <div>
                       <p className="text-xs font-medium text-foreground">
                         {t('settings.adhd.whitelistByDomainTitle')}
                       </p>
-                      <p className="text-caption text-muted-foreground mt-1 max-w-prose">
+                      <p className="text-xs text-muted-foreground mt-1 max-w-prose">
                         {t('settings.adhd.whitelistByDomainDescription')}
                       </p>
                     </div>

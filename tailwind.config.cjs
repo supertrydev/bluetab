@@ -1,3 +1,11 @@
+// Colours are CSS variables. A plain utility uses the variable as is; an opacity
+// modifier (bg-primary/10) mixes it with transparent. Without this, Tailwind 3
+// silently drops every modifier on a var() colour.
+const token = (name) => ({ opacityValue }) =>
+    opacityValue === undefined || String(opacityValue).startsWith('var(')
+        ? `var(--${name})`
+        : `color-mix(in srgb, var(--${name}) ${Number(opacityValue) * 100}%, transparent)`;
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
     content: [
@@ -121,68 +129,73 @@ module.exports = {
     			'safe-right': 'env(safe-area-inset-right)'
     		},
     		colors: {
-    			'bg-0': 'var(--bg-0)',
-    			'bg-1': 'var(--bg-1)',
-    			'bg-2': 'var(--bg-2)',
-    			'text-strong': 'var(--text-strong)',
-    			'text-default': 'var(--text)',
-    			'text-muted': 'var(--text-muted)',
-    			border: 'var(--border)',
-    			'border-subtle': 'var(--border-subtle)',
-    			'border-glass': 'var(--border-glass)',
-    			highlight: 'var(--highlight)',
+    			'bg-0': token('bg-0'),
+    			'bg-1': token('bg-1'),
+    			'bg-2': token('bg-2'),
+    			text: token('text'),
+    			'text-strong': token('text-strong'),
+    			'text-default': token('text'),
+    			'text-muted': token('text-muted'),
+    			border: token('border'),
+    			'border-subtle': token('border-subtle'),
+    			'border-glass': token('border-glass'),
+    			field: token('field'),
+    			segment: token('segment'),
+    			mark: { DEFAULT: token('mark'), foreground: token('mark-foreground') },
+    			highlight: token('highlight'),
     			glass: {
-    				bg: 'var(--glass-bg)',
+    				bg: token('glass-bg'),
     			},
     			primary: {
-    				DEFAULT: 'var(--primary)',
-    				hover: 'var(--primary-hover)',
-    				active: 'var(--primary-active)',
-    				foreground: 'var(--primary-foreground)',
-    				muted: 'var(--primary-muted)'
+    				DEFAULT: token('primary'),
+    				hover: token('primary-hover'),
+    				active: token('primary-active'),
+    				foreground: token('primary-foreground'),
+    				muted: token('primary-muted')
     			},
     			success: {
-    				DEFAULT: 'var(--success)',
-    				muted: 'var(--success-muted)'
+    				DEFAULT: token('success'),
+    				muted: token('success-muted')
     			},
     			warning: {
-    				DEFAULT: 'var(--warning)',
-    				muted: 'var(--warning-muted)'
+    				DEFAULT: token('warning'),
+    				muted: token('warning-muted')
     			},
     			danger: {
-    				DEFAULT: 'var(--danger)',
-    				muted: 'var(--danger-muted)'
+    				DEFAULT: token('danger'),
+    				muted: token('danger-muted')
     			},
     			info: {
-    				DEFAULT: 'var(--info)',
-    				muted: 'var(--info-muted)'
+    				DEFAULT: token('info'),
+    				muted: token('info-muted')
     			},
-    			background: 'var(--bg-0)',
-    			foreground: 'var(--text)',
-    			input: 'var(--border)',
-    			ring: 'var(--primary)',
+    			chart: token('chart-1'),
+    			background: token('bg-0'),
+    			foreground: token('text-strong'),
+    			input: token('input'),
+    			ring: token('ring'),
     			muted: {
-    				DEFAULT: 'var(--bg-1)',
-    				foreground: 'var(--text-muted)'
+    				DEFAULT: token('muted'),
+    				foreground: token('text-muted')
     			},
     			card: {
-    				DEFAULT: 'var(--bg-1)',
-    				foreground: 'var(--text)'
+    				DEFAULT: token('bg-1'),
+    				foreground: token('text-strong')
     			},
     			popover: {
-    				DEFAULT: 'var(--bg-2)',
-    				foreground: 'var(--text)'
+    				DEFAULT: token('bg-2'),
+    				foreground: token('text-strong')
     			},
     			secondary: {
-    				DEFAULT: 'var(--bg-2)',
-    				foreground: 'var(--text)'
+    				DEFAULT: token('bg-2'),
+    				foreground: token('text-strong')
     			},
     			accent: {
-    				DEFAULT: 'var(--bg-2)',
-    				foreground: 'var(--text-strong)'
+    				DEFAULT: token('accent'),
+    				foreground: token('text-strong')
     			},
     			destructive: {
-    				DEFAULT: 'var(--danger)',
+    				DEFAULT: token('danger'),
     				foreground: 'white'
     			},
     			sidebar: {
@@ -196,14 +209,26 @@ module.exports = {
     				ring: 'hsl(var(--sidebar-ring))'
     			}
     		},
+    		// Filled and written colours differ: bg-primary is the fill, text-primary
+    		// is the readable text tone of the same colour.
+    		textColor: {
+    			primary: { DEFAULT: token('primary-text'), foreground: token('primary-foreground') },
+    			success: token('success-text'),
+    			warning: token('warning-text'),
+    			danger: token('danger-text'),
+    			destructive: { DEFAULT: token('danger-text'), foreground: 'white' },
+    			info: token('info-text')
+    		},
     		borderRadius: {
+    			DEFAULT: 'var(--radius-xs)',
+    			xs: 'var(--radius-xs)',
     			sm: 'var(--radius-sm)',
     			md: 'var(--radius-md)',
     			lg: 'var(--radius-lg)',
     			xl: 'var(--radius-xl)',
     			'2xl': 'var(--radius-2xl)',
     			full: 'var(--radius-full)',
-    			input: 'var(--radius-input)'  // 16px — locked decision for input fields
+    			input: 'var(--radius-input)'  // same shape as buttons
     		},
     		boxShadow: {
     			sm: 'var(--shadow-sm)',
