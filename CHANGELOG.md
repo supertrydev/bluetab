@@ -3,6 +3,57 @@
 All notable changes to Bluetab. Versions are the same in the Chrome Web Store
 and Firefox Add-ons.
 
+## 2.0.0 (unreleased)
+
+### New look
+
+- Every screen uses one set of surfaces, corners, controls and text sizes. Text
+  has a contrast of at least 4.5:1 in both themes and control edges at least
+  3:1; no text is smaller than 12 px. Features, shortcuts and animations stay.
+- A group in a project takes the project's color and carries its label, in the
+  manager and in the side panel. The colors are chosen per theme and tested for
+  contrast.
+- The side panel shows group notes and has the manager's restore button and a
+  copy button on each saved tab. The free AI view is one message and one button.
+- Share menus show the real logos of the places you can share to.
+
+### Feeds, rebuilt
+
+- Feeds live in folders instead of free-text categories. Existing categories
+  become folders on the first visit; read, starred and pinned state and
+  notification filters are kept. Feeds are dragged into folders, and folders
+  can be renamed, reordered, muted and deleted without losing their feeds.
+- Smart views (Today, Unread, Starred, All), articles grouped by day with their
+  source, a reader that only takes room while an article is open, reading
+  options, and keyboard shortcuts.
+- Adding takes the address of a site and finds its feed. Suggested sources can
+  be added together; sources in another language than English are offered only
+  in that language. OPML keeps folders both ways.
+- Feeds, folders and starred articles are part of backups.
+- Settings > Feeds turns notifications on per folder and feed. Notifications
+  are translated and count every new article.
+
+### Settings
+
+- Tab Behavior, Side Panel, Group Memory and Floating Button have sections of
+  their own.
+- Search finds any text in Settings, goes to it and marks it; Enter moves on to
+  the next match.
+- The HTML export is a self-contained page in the app's look, with projects,
+  tags and notes, light, dark, right-to-left and print.
+
+### Fixed
+
+- HTML export: addresses and icons are fully escaped.
+- The manager search finds group notes.
+- Locked groups are locked in the side panel too: their tabs cannot be opened,
+  renamed or deleted there.
+- Refreshing feeds checks all of them, not only those that are due, and no
+  longer overwrites what was read while it ran. Starred articles are never
+  dropped, and articles over the limit no longer come back as new.
+- Links in the feed reader open in a tab instead of replacing the page.
+- The collapsed sidebar no longer squeezes the sign-in button.
+
 ## 1.0.7
 
 - Teams no longer reopens shared tabs that are still loading or have been
