@@ -72,7 +72,6 @@ describe('Spanish copy quality', () => {
     'notifications.appTitle',
     'notifications.pomodoroTitle',
     'onboarding.extended.sync.badge',
-    'options.addFeedDialog.urlPlaceholder',
     'options.groupList.sort.alphabetical',
     'options.helpPage.tabs.faq',
     'options.projectModal.colorLabel',

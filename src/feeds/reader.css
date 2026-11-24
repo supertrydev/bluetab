@@ -1,0 +1,59 @@
+/* Article text in the reader. Sizes are set by the reading options. */
+
+.reader-content {
+    color: var(--text-strong);
+    font-size: var(--reader-size, 1.0625rem);
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+}
+.reader-content.is-serif { font-family: Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif; }
+.reader-content > * + * { margin-top: 1em; }
+.reader-content :is(h1, h2, h3, h4, h5, h6) {
+    margin-top: 1.6em;
+    margin-bottom: 0.5em;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.012em;
+}
+.reader-content h1 { font-size: 1.5em; }
+.reader-content h2 { font-size: 1.3em; }
+.reader-content h3 { font-size: 1.15em; }
+.reader-content p { margin-bottom: 1em; }
+.reader-content a {
+    color: var(--primary-text);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+.reader-content a:hover { text-decoration-thickness: 2px; }
+.reader-content img, .reader-content video {
+    max-width: 100%;
+    height: auto;
+    margin: 1.25em 0;
+    border-radius: var(--radius-md);
+}
+.reader-content blockquote {
+    margin: 1.25em 0;
+    padding-inline-start: 1rem;
+    border-inline-start: 4px solid var(--border);
+    color: var(--text-muted);
+}
+.reader-content ul { list-style: disc; padding-inline-start: 1.5rem; margin-bottom: 1em; }
+.reader-content ol { list-style: decimal; padding-inline-start: 1.5rem; margin-bottom: 1em; }
+.reader-content li { margin-bottom: 0.35em; }
+.reader-content pre {
+    margin: 1.25em 0;
+    padding: 1rem;
+    overflow-x: auto;
+    border-radius: var(--radius-md);
+    background: var(--muted);
+    font-size: 0.875em;
+    line-height: 1.55;
+}
+.reader-content code { padding: 0.15em 0.35em; border-radius: var(--radius-xs); background: var(--muted); font-size: 0.9em; }
+.reader-content pre code { padding: 0; background: none; font-size: 1em; }
+.reader-content figure { margin: 1.25em 0; }
+.reader-content figcaption { margin-top: 0.5em; color: var(--text-muted); font-size: 0.85em; text-align: start; }
+.reader-content table { display: block; max-width: 100%; overflow-x: auto; margin: 1.25em 0; border-collapse: collapse; font-size: 0.9em; }
+.reader-content :is(th, td) { padding: 0.5rem 0.75rem; border: 1px solid var(--border); text-align: start; }
+.reader-content th { background: var(--muted); font-weight: 600; }
+.reader-content hr { margin: 2em 0; border: 0; border-top: 1px solid var(--border); }

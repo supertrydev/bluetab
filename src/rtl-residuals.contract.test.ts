@@ -23,7 +23,7 @@ describe('final RTL presentation residuals', () => {
     expect(source('styles/navbar/logo.css')).toContain('margin-inline-end:');
     expect(source('styles/navbar/logo.css')).not.toContain('margin-right:');
     expect(source('styles/popup-header.css')).toContain('margin-inline-end: 0;');
-    expect(source('options/components/ReaderPanel.tsx')).toContain('text-align: start;');
+    expect(source('feeds/reader.css')).toContain('text-align: start;');
     expect(source('options/components/OfflineReaderView.tsx')).toContain('text-align: start;');
   });
 

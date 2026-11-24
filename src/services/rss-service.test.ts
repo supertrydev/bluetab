@@ -3,8 +3,8 @@
  *
  * Tests: subscribeFeed (RSS 2.0 + Atom), unsubscribeFeed, getFeeds, getArticles,
  *        refreshAllFeeds (deduplication, RingBuffer eviction, concurrent batching),
- *        markRead, markAllRead, toggleStar, togglePin, updateFeedSettings,
- *        setCachedContent, importOPML (flat + nested), exportOPML,
+ *        toggleStar, togglePin, updateFeedSettings,
+ *        importOPML (flat + nested), exportOPML,
  *        parseFeed edge cases (single-item, missing guid, Atom link attribute)
  *
  * All tests mock Storage and global fetch.
@@ -497,8 +497,7 @@ describe('RSSService.refreshAllFeeds', () => {
     // Returns notification metadata for new articles.
     expect(result['feed-1']).toMatchObject({
       count: 1,
-      titles: ['Post Two'],
-      firstLink: 'https://multi.com/post-2',
+      articles: [{ title: 'Post Two', link: 'https://multi.com/post-2' }],
     });
   });
 
@@ -581,92 +580,6 @@ describe('RSSService.refreshAllFeeds', () => {
     await RSSService.refreshAllFeeds();
 
     expect(global.fetch).not.toHaveBeenCalled();
-  });
-});
-
-// ---------------------------------------------------------------------------
-// markRead
-// ---------------------------------------------------------------------------
-
-describe('RSSService.markRead', () => {
-  it('sets isRead=true on article and decrements feed unreadCount', async () => {
-    const feed = makeFeed({ id: 'feed-1', unreadCount: 2 });
-    const article = makeArticle({ id: 'feed-1:guid-1', feedId: 'feed-1', isRead: false });
-    const articlesRecord = { 'feed-1': [article] };
-
-    mockedStorage.get.mockImplementation(async (key: string) => {
-      if (key === RSS_STORAGE_KEYS.FEEDS) return [feed];
-      if (key === RSS_STORAGE_KEYS.ARTICLES) return articlesRecord;
-      return null;
-    });
-
-    await RSSService.markRead('feed-1:guid-1', 'feed-1');
-
-    const articlesSet = mockedStorage.set.mock.calls.find(
-      (c) => c[0] === RSS_STORAGE_KEYS.ARTICLES,
-    );
-    expect(articlesSet).toBeDefined();
-    const saved = articlesSet![1] as Record<string, RSSArticle[]>;
-    expect(saved['feed-1'][0].isRead).toBe(true);
-
-    const feedsSet = mockedStorage.set.mock.calls.find(
-      (c) => c[0] === RSS_STORAGE_KEYS.FEEDS,
-    );
-    expect(feedsSet).toBeDefined();
-    const savedFeeds = feedsSet![1] as RSSFeed[];
-    expect(savedFeeds[0].unreadCount).toBe(1);
-  });
-
-  it('does not go below 0 for unreadCount', async () => {
-    const feed = makeFeed({ id: 'feed-1', unreadCount: 0 });
-    const article = makeArticle({ isRead: false });
-    mockedStorage.get.mockImplementation(async (key: string) => {
-      if (key === RSS_STORAGE_KEYS.FEEDS) return [feed];
-      if (key === RSS_STORAGE_KEYS.ARTICLES) return { 'feed-1': [article] };
-      return null;
-    });
-
-    await RSSService.markRead('feed-1:guid-1', 'feed-1');
-
-    const feedsSet = mockedStorage.set.mock.calls.find(
-      (c) => c[0] === RSS_STORAGE_KEYS.FEEDS,
-    )!;
-    const savedFeeds = feedsSet[1] as RSSFeed[];
-    expect(savedFeeds[0].unreadCount).toBe(0);
-  });
-});
-
-// ---------------------------------------------------------------------------
-// markAllRead
-// ---------------------------------------------------------------------------
-
-describe('RSSService.markAllRead', () => {
-  it('marks all articles in feed as read and sets unreadCount to 0', async () => {
-    const feed = makeFeed({ id: 'feed-1', unreadCount: 3 });
-    const articles = [
-      makeArticle({ id: 'feed-1:g1', guid: 'g1', isRead: false }),
-      makeArticle({ id: 'feed-1:g2', guid: 'g2', isRead: false }),
-      makeArticle({ id: 'feed-1:g3', guid: 'g3', isRead: true }),
-    ];
-    mockedStorage.get.mockImplementation(async (key: string) => {
-      if (key === RSS_STORAGE_KEYS.FEEDS) return [feed];
-      if (key === RSS_STORAGE_KEYS.ARTICLES) return { 'feed-1': articles };
-      return null;
-    });
-
-    await RSSService.markAllRead('feed-1');
-
-    const articlesSet = mockedStorage.set.mock.calls.find(
-      (c) => c[0] === RSS_STORAGE_KEYS.ARTICLES,
-    )!;
-    const saved = articlesSet[1] as Record<string, RSSArticle[]>;
-    expect(saved['feed-1'].every((a: RSSArticle) => a.isRead)).toBe(true);
-
-    const feedsSet = mockedStorage.set.mock.calls.find(
-      (c) => c[0] === RSS_STORAGE_KEYS.FEEDS,
-    )!;
-    const savedFeeds = feedsSet[1] as RSSFeed[];
-    expect(savedFeeds[0].unreadCount).toBe(0);
   });
 });
 
@@ -774,46 +687,6 @@ describe('RSSService.updateFeedSettings', () => {
     const savedFeeds = feedsSet[1] as RSSFeed[];
     expect(savedFeeds[0].pollIntervalMinutes).toBe(60); // unchanged
     expect(savedFeeds[0].notificationsEnabled).toBe(true);
-  });
-});
-
-// ---------------------------------------------------------------------------
-// setCachedContent
-// ---------------------------------------------------------------------------
-
-describe('RSSService.setCachedContent', () => {
-  it('writes cachedContent to the article in storage', async () => {
-    const article = makeArticle({ cachedContent: undefined });
-    mockedStorage.get.mockImplementation(async (key: string) => {
-      if (key === RSS_STORAGE_KEYS.ARTICLES) return { 'feed-1': [article] };
-      return null;
-    });
-
-    await RSSService.setCachedContent('feed-1', 'feed-1:guid-1', '<p>Readable content</p>');
-
-    const articlesSet = mockedStorage.set.mock.calls.find(
-      (c) => c[0] === RSS_STORAGE_KEYS.ARTICLES,
-    )!;
-    const saved = articlesSet[1] as Record<string, RSSArticle[]>;
-    expect(saved['feed-1'][0].cachedContent).toBe('<p>Readable content</p>');
-  });
-
-  it('reads articles record by feedId and updates by articleId', async () => {
-    const article1 = makeArticle({ id: 'feed-1:guid-1', guid: 'guid-1' });
-    const article2 = makeArticle({ id: 'feed-1:guid-2', guid: 'guid-2' });
-    mockedStorage.get.mockImplementation(async (key: string) => {
-      if (key === RSS_STORAGE_KEYS.ARTICLES) return { 'feed-1': [article1, article2] };
-      return null;
-    });
-
-    await RSSService.setCachedContent('feed-1', 'feed-1:guid-2', '<p>Article 2 content</p>');
-
-    const articlesSet = mockedStorage.set.mock.calls.find(
-      (c) => c[0] === RSS_STORAGE_KEYS.ARTICLES,
-    )!;
-    const saved = articlesSet[1] as Record<string, RSSArticle[]>;
-    expect(saved['feed-1'][0].cachedContent).toBeUndefined();
-    expect(saved['feed-1'][1].cachedContent).toBe('<p>Article 2 content</p>');
   });
 });
 

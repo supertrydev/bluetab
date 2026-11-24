@@ -28,6 +28,7 @@
 import { createBrowserTabGroup } from '@/platform/create-browser-tab-group';
 import { isBrowserInternalUrl } from '@/platform/extension-platform';
 import { ALARM_NAMES } from '@/config/alarms';
+import { RSSService } from '@/services/rss-service';
 import { Storage } from '@/utils/storage';
 import { ArchiveStorageService } from '@/utils/archive-storage';
 import { RingBuffer } from '@/utils/ring-buffer';
@@ -104,15 +105,17 @@ export class BackupService {
     }
 
     // Copy the persisted representation. In particular, never decrypt archives.
-    const [groups, tags, projects, brainDump, archives] = await Promise.all([
+    const [groups, tags, projects, brainDump, archives, rss] = await Promise.all([
       Storage.get<BackupSavedData['groups']>('groups'),
       Storage.get<BackupSavedData['tags']>('tags'),
       Storage.get<BackupSavedData['projects']>('projects'),
       Storage.get<BackupSavedData['brain_dump_inbox']>('brain_dump_inbox'),
       Storage.get<BackupSavedData['archivedGroups']>('archivedGroups'),
+      // Feeds must never keep the rest from being backed up.
+      RSSService.exportBackup().catch((): undefined => undefined),
     ]);
     const snapshot: BackupSnapshot = {
-      savedData: { groups: groups || [], tags: tags || [], projects: projects || [], brain_dump_inbox: brainDump || [], archivedGroups: archives },
+      savedData: { groups: groups || [], tags: tags || [], projects: projects || [], brain_dump_inbox: brainDump || [], archivedGroups: archives, rss },
       id: crypto.randomUUID(),
       timestamp: Date.now(),
       windows: backupWindows,
@@ -183,6 +186,7 @@ export class BackupService {
           return [...records, ...(current || []).filter(record => !restoredIds.has(record.id))];
         }, []);
       }
+      if (snapshot.savedData.rss) await RSSService.importBackup(snapshot.savedData.rss);
       const savedArchives = snapshot.savedData.archivedGroups;
       if (savedArchives) {
         await Storage.atomicUpdate<NonNullable<BackupSavedData['archivedGroups']>>('archivedGroups', current => {

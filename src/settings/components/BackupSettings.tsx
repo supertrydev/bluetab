@@ -16,6 +16,7 @@ import {
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { RSSService } from '@/services/rss-service';
 import { Storage } from '@/utils/storage';
 import { buildHtmlExport } from '../html-export';
 import type { Project, Settings, TabGroup, Tag } from '@/types/models';
@@ -255,6 +256,7 @@ export function BackupSettings({ settings, groups, onSettingsChange, onGroupsCha
             }
 
             const projects = await Storage.getProjects();
+            const rss = await RSSService.exportBackup();
 
             const data = {
                 groups,
@@ -268,8 +270,9 @@ export function BackupSettings({ settings, groups, onSettingsChange, onGroupsCha
                 flowSettings,
                 groupMemory,
                 projects,
+                rss,
                 exportedAt: Date.now(),
-                version: '2.3.0'
+                version: '2.4.0'
             };
 
             console.log('Exporting comprehensive backup:', {
@@ -279,7 +282,8 @@ export function BackupSettings({ settings, groups, onSettingsChange, onGroupsCha
                 settings: Object.keys(settings).length,
                 flowRules: flowSettings?.rules?.length || 0,
                 groupMemory: groupMemory ? Object.keys(groupMemory.groups).length : 0,
-                projects: projects.length
+                projects: projects.length,
+                feeds: rss.feeds.length
             });
 
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });

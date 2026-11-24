@@ -14,19 +14,21 @@
  * HOW:  - feed parsing uses fast-xml-parser with isArray normalization
  *       - refresh uses Promise.allSettled in batches of 5 for concurrency
  *       - articles stored as Record<feedId, RSSArticle[]> under ARTICLES key
- *       - RingBuffer(50) for per-feed article eviction
+ *       - the newest articles per feed are kept; starred ones are never evicted
+ *       - every write runs under one lock, so a background refresh and the page
+ *         never overwrite each other
  *       - deduplication by guid prevents re-insertion on refresh
  *       - all storage operations via Storage.get/set
  *
  * NOT:  Does not render UI. Does not perform DOMParser HTML extraction
- *       (Readability runs in options page context, writes back via setCachedContent).
+ *       (Readability runs in the feeds page, writes back via setArticleContent).
  *       Does not manage the RSS_REFRESH alarm lifecycle (handled by service-worker).
  */
 
 import { siteFaviconUrl } from '@/platform/extension-platform';
 import { XMLParser } from 'fast-xml-parser';
 import { Storage } from '@/utils/storage';
-import { RingBuffer } from '@/utils/ring-buffer';
+import { discoverFeedLinks, WELL_KNOWN_FEED_PATHS } from '@/services/rss-discovery';
 import { assertFeedHostAccess } from '@/services/rss-host-permissions';
 import type {
   RSSFeed,
@@ -38,10 +40,66 @@ import type {
   FeedFormat,
   PollInterval,
   FeedRefreshNotification,
+  RSSFolder,
+  RSSErrorCode,
+  RSSFeedError,
+  RSSBackup,
+  DiscoveredFeed,
 } from '@/types/rss';
-import { RSS_STORAGE_KEYS, RSS_DEFAULTS } from '@/types/rss';
+import { POLL_INTERVALS, RSS_STORAGE_KEYS, RSS_DEFAULTS } from '@/types/rss';
 
 const LOG_PREFIX = '[BlueTab][RSSService]';
+
+/** An error the UI can explain; `message` stays for logs. */
+export class RSSError extends Error {
+  constructor(readonly code: RSSErrorCode, message: string, readonly status?: number) {
+    super(message);
+    this.name = 'RSSError';
+  }
+}
+
+function toFeedError(error: unknown, previous: RSSFeedError | undefined, now: number): RSSFeedError {
+  const known = error instanceof RSSError ? error : undefined;
+  return {
+    code: known?.code ?? 'network',
+    ...(known?.status ? { status: known.status } : {}),
+    since: previous?.since ?? now,
+  };
+}
+
+// One writer at a time, across the service worker and open pages.
+let pendingWrite: Promise<unknown> = Promise.resolve();
+function withLock<T>(run: () => Promise<T>): Promise<T> {
+  const locks = typeof navigator === 'undefined' ? undefined : navigator.locks;
+  if (locks) return locks.request('bluetab-rss', run) as Promise<T>;
+  const next = pendingWrite.catch(() => {}).then(run);
+  pendingWrite = next;
+  return next;
+}
+
+type ArticlesRecord = Record<string, RSSArticle[]>;
+
+const readFeeds = async () => (await Storage.get<RSSFeed[]>(RSS_STORAGE_KEYS.FEEDS)) ?? [];
+const readArticles = async () => (await Storage.get<ArticlesRecord>(RSS_STORAGE_KEYS.ARTICLES)) ?? {};
+const readFolders = async () => (await Storage.get<RSSFolder[]>(RSS_STORAGE_KEYS.FOLDERS)) ?? [];
+const contentKey = (feedId: string) => `${RSS_STORAGE_KEYS.CONTENT_PREFIX}${feedId}`;
+const unreadOf = (articles: RSSArticle[] | undefined) => (articles ?? []).filter((a) => !a.isRead).length;
+
+/** Two names are the same folder when they differ only in case or outer space. */
+const folderKey = (name: string) => name.trim().toLowerCase();
+
+function newId(): string {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+}
+
+/** The newest articles up to the limit, plus every starred one. */
+function keepNewest(articles: RSSArticle[], capacity: number): RSSArticle[] {
+  if (articles.length <= capacity) return articles;
+  const newest = new Set(
+    [...articles].sort((a, b) => b.pubDate - a.pubDate).slice(0, capacity).map((a) => a.id),
+  );
+  return articles.filter((a) => a.isStarred || newest.has(a.id));
+}
 
 // fast-xml-parser instance shared across calls
 const xmlParser = new XMLParser({
@@ -52,12 +110,10 @@ const xmlParser = new XMLParser({
 
 /**
  * Resolve the current per-feed article capacity from user settings,
- * clamped to the supported range. Used to build a fresh RingBuffer for
- * each refresh/subscribe cycle so edits in the settings panel take effect
- * on the very next operation without requiring a restart.
+ * clamped to the supported range. Read again on every refresh, so edits in
+ * the settings panel take effect without a restart.
  *
- * Returns Infinity when the setting is 'unlimited' — RingBuffer.push and
- * trim both handle Infinity as "never evict".
+ * Returns Infinity when the setting is 'unlimited'.
  */
 async function getArticleCapacity(): Promise<number> {
   const settings = await Storage.get<RSSSettings>(RSS_STORAGE_KEYS.SETTINGS);
@@ -121,15 +177,28 @@ function assertPublicHttpUrl(rawUrl: string): URL {
 
 async function fetchFeedXml(rawUrl: string): Promise<string> {
   const url = assertPublicHttpUrl(rawUrl);
-  await assertFeedHostAccess(url.toString());
+  try {
+    await assertFeedHostAccess(url.toString());
+  } catch (error) {
+    throw new RSSError('access', error instanceof Error ? error.message : String(error));
+  }
   const response = await fetch(url.toString(), {
     credentials: 'omit',
     referrerPolicy: 'no-referrer',
   });
   if (!response.ok) {
-    throw new Error(`Feed fetch failed with status ${response.status}`);
+    throw new RSSError('http', `Feed fetch failed with status ${response.status}`, response.status);
   }
   return response.text();
+}
+
+async function fetchFeed(url: string): Promise<ParsedFeed> {
+  const xml = await fetchFeedXml(url);
+  try {
+    return parseFeed(xml);
+  } catch (error) {
+    throw new RSSError('format', error instanceof Error ? error.message : String(error));
+  }
 }
 
 /**
@@ -402,96 +471,87 @@ async function runInBatches<T, R>(
 // ---------------------------------------------------------------------------
 
 export class RSSService {
+  // -------------------------------------------------------------------------
+  // Feeds
+  // -------------------------------------------------------------------------
+
   /**
    * Subscribe to a feed URL: fetch XML, parse, store feed + initial articles.
    * Returns the created RSSFeed.
    *
-   * @throws When the URL fails to fetch or the XML is not a recognised feed format
+   * @throws RSSError when the URL fails to fetch, is not a recognised feed
+   *         format, or is already subscribed
    */
-  static async subscribeFeed(url: string): Promise<RSSFeed> {
-    const xml = await fetchFeedXml(url);
-    const parsed = parseFeed(xml); // throws if not a feed
+  static async subscribeFeed(url: string, options: { folderId?: string } = {}): Promise<RSSFeed> {
+    if ((await readFeeds()).some((feed) => feed.url === url)) {
+      throw new RSSError('duplicate', 'Already subscribed to this feed');
+    }
+    const parsed = await fetchFeed(url);
 
     const now = Date.now();
-    const id =
-      now.toString(36) + Math.random().toString(36).slice(2, 8);
+    const id = newId();
 
     // Determine site URL from feed link or fall back to feed URL origin
     let siteUrl = parsed.link;
     if (!siteUrl) {
       try {
-        const u = new URL(url);
-        siteUrl = u.origin;
+        siteUrl = new URL(url).origin;
       } catch {
         siteUrl = url;
       }
     }
 
-    // Cap initial articles to the user-configured capacity so a large
-    // initial fetch cannot bypass the per-feed storage budget. Items are
-    // already sorted newest-first by itemsToArticles.
-    const capacity = await getArticleCapacity();
-    const initialArticles = itemsToArticles(parsed.items, id);
-    const newArticles =
-      initialArticles.length > capacity
-        ? initialArticles.slice(0, capacity)
-        : initialArticles;
+    return withLock(async () => {
+      const [feeds, articles, folders, capacity] = await Promise.all([
+        readFeeds(), readArticles(), readFolders(), getArticleCapacity(),
+      ]);
+      if (feeds.some((feed) => feed.url === url)) {
+        throw new RSSError('duplicate', 'Already subscribed to this feed');
+      }
+      const initial = keepNewest(itemsToArticles(parsed.items, id), capacity);
+      const folder = folders.find((item) => item.id === options.folderId);
 
-    const feed: RSSFeed = {
-      id,
-      url,
-      title: parsed.title || url,
-      description: parsed.description,
-      siteUrl,
-      faviconUrl: getFaviconUrl(siteUrl),
-      format: parsed.format,
-      addedAt: now,
-      lastFetchedAt: now,
-      nextPollAt: now + RSS_DEFAULTS.POLL_INTERVAL_MINUTES * 60 * 1000,
-      pollIntervalMinutes: RSS_DEFAULTS.POLL_INTERVAL_MINUTES,
-      unreadCount: newArticles.length,
-      isPinned: false,
-      notificationsEnabled: false,
-    };
+      const feed: RSSFeed = {
+        id,
+        url,
+        title: parsed.title || url,
+        description: parsed.description,
+        siteUrl,
+        faviconUrl: getFaviconUrl(siteUrl),
+        format: parsed.format,
+        addedAt: now,
+        lastFetchedAt: now,
+        nextPollAt: now + RSS_DEFAULTS.POLL_INTERVAL_MINUTES * 60 * 1000,
+        pollIntervalMinutes: RSS_DEFAULTS.POLL_INTERVAL_MINUTES,
+        unreadCount: initial.length,
+        isPinned: false,
+        notificationsEnabled: false,
+        ...(folder ? { folderId: folder.id, category: folder.name } : {}),
+      };
 
-    // Store feed
-    const existingFeeds =
-      (await Storage.get<RSSFeed[]>(RSS_STORAGE_KEYS.FEEDS)) ?? [];
-    await Storage.set(RSS_STORAGE_KEYS.FEEDS, [...existingFeeds, feed]);
+      await Storage.set(RSS_STORAGE_KEYS.FEEDS, [...feeds, feed]);
+      await Storage.set(RSS_STORAGE_KEYS.ARTICLES, { ...articles, [id]: initial });
 
-    // Store initial articles
-    const existingArticles =
-      (await Storage.get<Record<string, RSSArticle[]>>(
-        RSS_STORAGE_KEYS.ARTICLES,
-      )) ?? {};
-    existingArticles[id] = newArticles;
-    await Storage.set(RSS_STORAGE_KEYS.ARTICLES, existingArticles);
-
-    console.log(
-      `${LOG_PREFIX} Subscribed to "${feed.title}" (${newArticles.length} initial articles)`,
-    );
-
-    return feed;
+      console.log(
+        `${LOG_PREFIX} Subscribed to "${feed.title}" (${initial.length} initial articles)`,
+      );
+      return feed;
+    });
   }
 
   /**
    * Unsubscribe from a feed: remove from feed list and delete its articles.
    */
   static async unsubscribeFeed(feedId: string): Promise<void> {
-    const feeds =
-      (await Storage.get<RSSFeed[]>(RSS_STORAGE_KEYS.FEEDS)) ?? [];
-    await Storage.set(
-      RSS_STORAGE_KEYS.FEEDS,
-      feeds.filter((f) => f.id !== feedId),
-    );
+    await withLock(async () => {
+      const feeds = await readFeeds();
+      await Storage.set(RSS_STORAGE_KEYS.FEEDS, feeds.filter((f) => f.id !== feedId));
 
-    const articles =
-      (await Storage.get<Record<string, RSSArticle[]>>(
-        RSS_STORAGE_KEYS.ARTICLES,
-      )) ?? {};
-    delete articles[feedId];
-    await Storage.set(RSS_STORAGE_KEYS.ARTICLES, articles);
-
+      const articles = await readArticles();
+      delete articles[feedId];
+      await Storage.set(RSS_STORAGE_KEYS.ARTICLES, articles);
+      await Storage.remove(contentKey(feedId));
+    });
     console.log(`${LOG_PREFIX} Unsubscribed from feed "${feedId}"`);
   }
 
@@ -499,7 +559,7 @@ export class RSSService {
    * Return all subscribed feeds.
    */
   static async getFeeds(): Promise<RSSFeed[]> {
-    return (await Storage.get<RSSFeed[]>(RSS_STORAGE_KEYS.FEEDS)) ?? [];
+    return readFeeds();
   }
 
   /**
@@ -507,242 +567,331 @@ export class RSSService {
    * descending when feedId is 'all'.
    */
   static async getArticles(feedId: string): Promise<RSSArticle[]> {
-    const articlesRecord =
-      (await Storage.get<Record<string, RSSArticle[]>>(
-        RSS_STORAGE_KEYS.ARTICLES,
-      )) ?? {};
-
+    const articles = await readArticles();
     if (feedId === 'all') {
-      const all: RSSArticle[] = Object.values(articlesRecord).flat();
-      return all.sort((a, b) => b.pubDate - a.pubDate);
+      return Object.values(articles).flat().sort((a, b) => b.pubDate - a.pubDate);
     }
-
-    return articlesRecord[feedId] ?? [];
+    return articles[feedId] ?? [];
   }
 
   /**
-   * Refresh all feeds that are due (Date.now() >= nextPollAt).
-   * Uses concurrent batches of 5 via Promise.allSettled.
-   * Deduplicates by guid and applies a per-feed FIFO eviction cap sourced
-   * from RSSSettings.articlesPerFeed (default RSS_DEFAULTS.ARTICLES_PER_FEED).
+   * Check feeds for new articles: the ones that are due, or with `force` all
+   * of them. Fetches in batches of 5 and stores the results in one step, on
+   * top of whatever the user changed in the meantime.
    *
    * @returns Record<feedId, FeedRefreshNotification> for feeds that were refreshed
    */
-  static async refreshAllFeeds(): Promise<Record<string, FeedRefreshNotification>> {
-    const feeds =
-      (await Storage.get<RSSFeed[]>(RSS_STORAGE_KEYS.FEEDS)) ?? [];
-    const articlesRecord =
-      (await Storage.get<Record<string, RSSArticle[]>>(
-        RSS_STORAGE_KEYS.ARTICLES,
-      )) ?? {};
+  static async refreshAllFeeds(
+    options: { force?: boolean; feedIds?: string[] } = {},
+  ): Promise<Record<string, FeedRefreshNotification>> {
+    const startedAt = Date.now();
+    const wanted = options.feedIds ? new Set(options.feedIds) : null;
+    const checked = (await readFeeds()).filter((f) =>
+      (!wanted || wanted.has(f.id)) && (options.force || startedAt >= f.nextPollAt),
+    );
+    if (checked.length === 0) return {};
 
-    const now = Date.now();
-    const dueFeeds = feeds.filter((f) => now >= f.nextPollAt);
+    const fetched = await runInBatches(checked, (feed) => fetchFeed(feed.url));
 
-    if (dueFeeds.length === 0) {
-      return {};
-    }
+    return withLock(async () => {
+      const [feeds, articles, capacity] = await Promise.all([
+        readFeeds(), readArticles(), getArticleCapacity(),
+      ]);
+      const now = Date.now();
+      const notifications: Record<string, FeedRefreshNotification> = {};
 
-    // Build a RingBuffer sized to the current setting. Recreated on every
-    // refresh so changes in the settings panel apply to the next poll cycle
-    // without requiring a service-worker restart.
-    const capacity = await getArticleCapacity();
-    const ringBuffer = new RingBuffer<RSSArticle>(capacity);
+      const updatedFeeds = feeds.map((feed) => {
+        const index = checked.findIndex((item) => item.id === feed.id);
+        if (index === -1) return feed;
+        const nextPollAt = now + feed.pollIntervalMinutes * 60 * 1000;
 
-    const newCountsMap: Record<string, FeedRefreshNotification> = {};
-    const updatedFeeds = [...feeds];
-
-    type RefreshResult = { feedId: string; newArticles: RSSArticle[]; count: number; brandNewArticles: RSSArticle[] };
-
-    const results = await runInBatches<RSSFeed, RefreshResult>(
-      dueFeeds,
-      async (feed) => {
-        const xml = await fetchFeedXml(feed.url);
-        const parsed = parseFeed(xml);
-
-        const existingArticles = articlesRecord[feed.id] ?? [];
-        const existingGuids = new Set(existingArticles.map((a) => a.guid));
-
-        const freshArticles = itemsToArticles(parsed.items, feed.id);
-        const brandNew = freshArticles.filter(
-          (a) => !existingGuids.has(a.guid),
-        );
-
-        // If the setting was lowered since last refresh, trim any legacy
-        // excess before appending new articles.
-        let buffer = ringBuffer.trim(existingArticles, capacity);
-        for (const article of brandNew) {
-          buffer = ringBuffer.push(buffer, article);
+        const result = fetched[index];
+        if (result.status === 'rejected') {
+          console.error(`${LOG_PREFIX} Failed to refresh a feed:`, result.reason);
+          return { ...feed, lastError: toFeedError(result.reason, feed.lastError, now) };
         }
 
-        return { feedId: feed.id, newArticles: buffer, count: brandNew.length, brandNewArticles: brandNew };
-      },
-    );
-
-    // Apply results
-    for (const result of results) {
-      if (result.status === 'fulfilled') {
-        const { feedId, newArticles, count, brandNewArticles } = result.value;
-        articlesRecord[feedId] = newArticles;
-        newCountsMap[feedId] = {
-          count,
-          titles: brandNewArticles.slice(0, 5).map(a => a.title),
-          firstLink: brandNewArticles.length === 1 ? brandNewArticles[0].link : null,
+        const existing = articles[feed.id] ?? [];
+        const knownGuids = new Set(existing.map((a) => a.guid));
+        const fresh = itemsToArticles(result.value.items, feed.id).filter((a) => !knownGuids.has(a.guid));
+        const kept = keepNewest([...existing, ...fresh], capacity);
+        const keptIds = new Set(kept.map((a) => a.id));
+        const added = fresh.filter((a) => keptIds.has(a.id));
+        articles[feed.id] = kept;
+        notifications[feed.id] = {
+          count: added.length,
+          articles: added.map(({ title, link }) => ({ title, link })),
         };
 
-        // Update feed metadata
-        const feedIndex = updatedFeeds.findIndex((f) => f.id === feedId);
-        if (feedIndex !== -1) {
-          const feed = updatedFeeds[feedIndex];
-          const additionalUnread = count;
-          updatedFeeds[feedIndex] = {
-            ...feed,
-            lastFetchedAt: now,
-            nextPollAt: now + feed.pollIntervalMinutes * 60 * 1000,
-            unreadCount: feed.unreadCount + additionalUnread,
-          };
-        }
-      } else {
-        console.error(
-          `${LOG_PREFIX} Failed to refresh a feed:`,
-          result.reason,
-        );
+        const { lastError: _lastError, ...rest } = feed;
+        return { ...rest, lastFetchedAt: now, nextPollAt, unreadCount: unreadOf(kept) };
+      });
+
+      await Storage.set(RSS_STORAGE_KEYS.ARTICLES, articles);
+      await Storage.set(RSS_STORAGE_KEYS.FEEDS, updatedFeeds);
+
+      const total = Object.values(notifications).reduce((sum, n) => sum + n.count, 0);
+      console.log(`${LOG_PREFIX} Refresh complete, ${total} new articles across ${checked.length} feeds`);
+      return notifications;
+    });
+  }
+
+  /** Mark any number of articles, from any feeds, read or unread. */
+  static async setArticlesRead(articleIds: string[], isRead: boolean): Promise<void> {
+    const ids = new Set(articleIds);
+    await withLock(async () => {
+      const [articles, feeds] = await Promise.all([readArticles(), readFeeds()]);
+      const changedFeeds = new Set<string>();
+      for (const [feedId, list] of Object.entries(articles)) {
+        if (!list.some((a) => ids.has(a.id) && a.isRead !== isRead)) continue;
+        articles[feedId] = list.map((a) => (ids.has(a.id) ? { ...a, isRead } : a));
+        changedFeeds.add(feedId);
       }
-    }
-
-    await Storage.set(RSS_STORAGE_KEYS.ARTICLES, articlesRecord);
-    await Storage.set(RSS_STORAGE_KEYS.FEEDS, updatedFeeds);
-
-    const totalNew = Object.values(newCountsMap).reduce((a, b) => a + b.count, 0);
-    console.log(`${LOG_PREFIX} Refresh complete — ${totalNew} new articles across ${dueFeeds.length} feeds`);
-
-    return newCountsMap;
-  }
-
-  /**
-   * Mark an article as read and decrement its feed's unreadCount.
-   */
-  static async markRead(articleId: string, feedId: string): Promise<void> {
-    const [articlesRecord, feeds] = await Promise.all([
-      Storage.get<Record<string, RSSArticle[]>>(RSS_STORAGE_KEYS.ARTICLES),
-      Storage.get<RSSFeed[]>(RSS_STORAGE_KEYS.FEEDS),
-    ]);
-
-    const record = articlesRecord ?? {};
-    const feedList = feeds ?? [];
-
-    const feedArticles = record[feedId] ?? [];
-    const updated = feedArticles.map((a) =>
-      a.id === articleId ? { ...a, isRead: true } : a,
-    );
-    record[feedId] = updated;
-
-    const updatedFeeds = feedList.map((f) =>
-      f.id === feedId
-        ? { ...f, unreadCount: Math.max(0, f.unreadCount - 1) }
-        : f,
-    );
-
-    await Promise.all([
-      Storage.set(RSS_STORAGE_KEYS.ARTICLES, record),
-      Storage.set(RSS_STORAGE_KEYS.FEEDS, updatedFeeds),
-    ]);
-  }
-
-  /**
-   * Mark all articles in a feed as read and reset unreadCount to 0.
-   */
-  static async markAllRead(feedId: string): Promise<void> {
-    const [articlesRecord, feeds] = await Promise.all([
-      Storage.get<Record<string, RSSArticle[]>>(RSS_STORAGE_KEYS.ARTICLES),
-      Storage.get<RSSFeed[]>(RSS_STORAGE_KEYS.FEEDS),
-    ]);
-
-    const record = articlesRecord ?? {};
-    const feedList = feeds ?? [];
-
-    const feedArticles = record[feedId] ?? [];
-    record[feedId] = feedArticles.map((a) => ({ ...a, isRead: true }));
-
-    const updatedFeeds = feedList.map((f) =>
-      f.id === feedId ? { ...f, unreadCount: 0 } : f,
-    );
-
-    await Promise.all([
-      Storage.set(RSS_STORAGE_KEYS.ARTICLES, record),
-      Storage.set(RSS_STORAGE_KEYS.FEEDS, updatedFeeds),
-    ]);
+      if (changedFeeds.size > 0) await Storage.set(RSS_STORAGE_KEYS.ARTICLES, articles);
+      await Storage.set(
+        RSS_STORAGE_KEYS.FEEDS,
+        feeds.map((f) => (articles[f.id] ? { ...f, unreadCount: unreadOf(articles[f.id]) } : f)),
+      );
+    });
   }
 
   /**
    * Toggle the isStarred flag on an article.
    */
   static async toggleStar(articleId: string, feedId: string): Promise<void> {
-    const articlesRecord =
-      (await Storage.get<Record<string, RSSArticle[]>>(
-        RSS_STORAGE_KEYS.ARTICLES,
-      )) ?? {};
-
-    const feedArticles = articlesRecord[feedId] ?? [];
-    articlesRecord[feedId] = feedArticles.map((a) =>
-      a.id === articleId ? { ...a, isStarred: !a.isStarred } : a,
-    );
-
-    await Storage.set(RSS_STORAGE_KEYS.ARTICLES, articlesRecord);
+    await withLock(async () => {
+      const articles = await readArticles();
+      articles[feedId] = (articles[feedId] ?? []).map((a) =>
+        a.id === articleId ? { ...a, isStarred: !a.isStarred } : a,
+      );
+      await Storage.set(RSS_STORAGE_KEYS.ARTICLES, articles);
+    });
   }
 
   /**
    * Toggle the isPinned flag on a feed.
    */
   static async togglePin(feedId: string): Promise<void> {
-    const feeds =
-      (await Storage.get<RSSFeed[]>(RSS_STORAGE_KEYS.FEEDS)) ?? [];
-    const updated = feeds.map((f) =>
-      f.id === feedId ? { ...f, isPinned: !f.isPinned } : f,
-    );
-    await Storage.set(RSS_STORAGE_KEYS.FEEDS, updated);
+    await RSSService.updateFeeds((f) => (f.id === feedId ? { ...f, isPinned: !f.isPinned } : f));
   }
 
   /**
-   * Update per-feed settings: pollIntervalMinutes and/or notificationsEnabled.
+   * Update per-feed settings. A new interval counts from the last check.
    */
   static async updateFeedSettings(
     feedId: string,
-    settings: Partial<Pick<RSSFeed, 'pollIntervalMinutes' | 'notificationsEnabled' | 'category'>>,
+    settings: Partial<Pick<RSSFeed, 'title' | 'pollIntervalMinutes' | 'notificationsEnabled'>>,
   ): Promise<void> {
-    const feeds =
-      (await Storage.get<RSSFeed[]>(RSS_STORAGE_KEYS.FEEDS)) ?? [];
-    const updated = feeds.map((f) =>
-      f.id === feedId ? { ...f, ...settings } : f,
-    );
-    await Storage.set(RSS_STORAGE_KEYS.FEEDS, updated);
+    await RSSService.updateFeeds((f) => {
+      if (f.id !== feedId) return f;
+      const next = { ...f, ...settings };
+      if (settings.pollIntervalMinutes && f.lastFetchedAt > 0) {
+        next.nextPollAt = f.lastFetchedAt + settings.pollIntervalMinutes * 60 * 1000;
+      }
+      return next;
+    });
   }
 
+  private static async updateFeeds(update: (feed: RSSFeed) => RSSFeed): Promise<void> {
+    await withLock(async () => {
+      await Storage.set(RSS_STORAGE_KEYS.FEEDS, (await readFeeds()).map(update));
+    });
+  }
+
+  // -------------------------------------------------------------------------
+  // Folders
+  // -------------------------------------------------------------------------
+
   /**
-   * Write extracted reader-mode HTML content to an article's cachedContent field.
-   * The ReaderPanel calls this after running @mozilla/readability in the UI context.
+   * Folders in their order. The first call after the update turns the old
+   * free-text categories into folders; nothing else is changed by it.
    */
-  static async setCachedContent(
-    feedId: string,
-    articleId: string,
-    content: string,
-  ): Promise<void> {
-    const articlesRecord =
-      (await Storage.get<Record<string, RSSArticle[]>>(
-        RSS_STORAGE_KEYS.ARTICLES,
-      )) ?? {};
+  static async getFolders(): Promise<RSSFolder[]> {
+    if ((await Storage.get<RSSFolder[]>(RSS_STORAGE_KEYS.FOLDERS)) == null) {
+      await withLock(() => RSSService.migrateCategories());
+    }
+    return (await readFolders()).sort((a, b) => a.order - b.order);
+  }
 
-    const feedArticles = articlesRecord[feedId] ?? [];
-    articlesRecord[feedId] = feedArticles.map((a) =>
-      a.id === articleId ? { ...a, cachedContent: content } : a,
-    );
+  private static async migrateCategories(): Promise<void> {
+    if ((await Storage.get<RSSFolder[]>(RSS_STORAGE_KEYS.FOLDERS)) != null) return;
 
-    await Storage.set(RSS_STORAGE_KEYS.ARTICLES, articlesRecord);
+    const [feeds, articles] = await Promise.all([readFeeds(), readArticles()]);
+    const byKey = new Map<string, RSSFolder>();
+    for (const feed of feeds) {
+      const name = feed.category?.trim();
+      if (name && !byKey.has(folderKey(name))) {
+        byKey.set(folderKey(name), { id: newId(), name, order: 0 });
+      }
+    }
+    const folders = [...byKey.values()]
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map((folder, order) => ({ ...folder, order }));
+
+    if (feeds.length > 0) {
+      await Storage.set(RSS_STORAGE_KEYS.FEEDS, feeds.map((feed) => {
+        const folder = feed.category ? byKey.get(folderKey(feed.category)) : undefined;
+        return folder ? { ...feed, folderId: folder.id, category: folder.name } : feed;
+      }));
+    }
+
+    // Reader texts move out of the article list, which is rewritten on every read.
+    let moved = false;
+    for (const [feedId, list] of Object.entries(articles)) {
+      const withContent = list.filter((a) => a.cachedContent);
+      if (withContent.length === 0) continue;
+      moved = true;
+      await Storage.set(contentKey(feedId), Object.fromEntries(
+        withContent.slice(-RSS_DEFAULTS.CONTENT_PER_FEED).map((a) => [a.id, a.cachedContent]),
+      ));
+      articles[feedId] = list.map(({ cachedContent: _cachedContent, ...article }) => article);
+    }
+    if (moved) await Storage.set(RSS_STORAGE_KEYS.ARTICLES, articles);
+
+    // Last, so an interrupted run starts over.
+    await Storage.set(RSS_STORAGE_KEYS.FOLDERS, folders);
+  }
+
+  /** Create a folder, or return the one that already has this name. */
+  static async createFolder(name: string): Promise<RSSFolder> {
+    await RSSService.getFolders();
+    return withLock(async () => {
+      const folders = await readFolders();
+      const existing = folders.find((f) => folderKey(f.name) === folderKey(name));
+      if (existing) return existing;
+      const folder: RSSFolder = {
+        id: newId(),
+        name: name.trim(),
+        order: Math.max(-1, ...folders.map((f) => f.order)) + 1,
+      };
+      await Storage.set(RSS_STORAGE_KEYS.FOLDERS, [...folders, folder]);
+      return folder;
+    });
   }
 
   /**
-   * Parse an OPML XML string and return all feed outlines with xmlUrl attributes.
-   * Handles both flat and nested category structures recursively.
+   * Rename a folder. Its feeds and the notification filters that name it follow.
+   *
+   * @throws RSSError 'duplicate' when another folder has this name
+   */
+  static async renameFolder(folderId: string, name: string): Promise<void> {
+    await withLock(async () => {
+      const folders = await readFolders();
+      const folder = folders.find((f) => f.id === folderId);
+      const trimmed = name.trim();
+      if (!folder || !trimmed) return;
+      if (folders.some((f) => f.id !== folderId && folderKey(f.name) === folderKey(trimmed))) {
+        throw new RSSError('duplicate', 'A folder with this name exists');
+      }
+      await Storage.set(RSS_STORAGE_KEYS.FOLDERS, folders.map((f) =>
+        f.id === folderId ? { ...f, name: trimmed } : f,
+      ));
+      await Storage.set(RSS_STORAGE_KEYS.FEEDS, (await readFeeds()).map((f) =>
+        f.folderId === folderId ? { ...f, category: trimmed } : f,
+      ));
+      await RSSService.updateFolderFilters(folder.name, trimmed);
+    });
+  }
+
+  /** Delete a folder. Its feeds stay, in no folder. */
+  static async deleteFolder(folderId: string): Promise<void> {
+    await withLock(async () => {
+      const folders = await readFolders();
+      const folder = folders.find((f) => f.id === folderId);
+      if (!folder) return;
+      await Storage.set(RSS_STORAGE_KEYS.FOLDERS, folders.filter((f) => f.id !== folderId));
+      await Storage.set(RSS_STORAGE_KEYS.FEEDS, (await readFeeds()).map((f) => {
+        if (f.folderId !== folderId) return f;
+        const { folderId: _folderId, category: _category, ...rest } = f;
+        return rest;
+      }));
+      await RSSService.updateFolderFilters(folder.name, null);
+    });
+  }
+
+  /** Runs inside the lock. `null` drops the filters of a deleted folder. */
+  private static async updateFolderFilters(oldName: string, newName: string | null): Promise<void> {
+    const settings = await Storage.get<RSSSettings>(RSS_STORAGE_KEYS.SETTINGS);
+    const filters = settings?.notificationFilters ?? [];
+    const names = (value: string) => folderKey(value) === folderKey(oldName);
+    if (!settings || !filters.some((f) => f.type === 'category' && names(f.value))) return;
+    await Storage.set(RSS_STORAGE_KEYS.SETTINGS, {
+      ...settings,
+      notificationFilters: filters.flatMap((f) => {
+        if (f.type !== 'category' || !names(f.value)) return [f];
+        return newName === null ? [] : [{ ...f, value: newName }];
+      }),
+    });
+  }
+
+  /** Put the folders in this order; folders that are not listed keep their place at the end. */
+  static async reorderFolders(folderIds: string[]): Promise<void> {
+    await withLock(async () => {
+      const folders = (await readFolders()).sort((a, b) => a.order - b.order);
+      const rank = (folder: RSSFolder) => {
+        const index = folderIds.indexOf(folder.id);
+        return index === -1 ? folderIds.length : index;
+      };
+      await Storage.set(
+        RSS_STORAGE_KEYS.FOLDERS,
+        folders.sort((a, b) => rank(a) - rank(b)).map((folder, order) => ({ ...folder, order })),
+      );
+    });
+  }
+
+  /** Move feeds into a folder, or out of any with `undefined`. */
+  static async moveFeeds(feedIds: string[], folderId: string | undefined): Promise<void> {
+    const ids = new Set(feedIds);
+    await withLock(async () => {
+      const [feeds, folders] = await Promise.all([readFeeds(), readFolders()]);
+      const folder = folders.find((f) => f.id === folderId);
+      await Storage.set(RSS_STORAGE_KEYS.FEEDS, feeds.map((feed) => {
+        if (!ids.has(feed.id)) return feed;
+        const { folderId: _folderId, category: _category, ...rest } = feed;
+        return folder ? { ...rest, folderId: folder.id, category: folder.name } : rest;
+      }));
+    });
+  }
+
+  /** Turn new-article notifications on or off for some feeds. */
+  static async setNotifications(feedIds: string[], enabled: boolean): Promise<void> {
+    const ids = new Set(feedIds);
+    await RSSService.updateFeeds((f) => (ids.has(f.id) ? { ...f, notificationsEnabled: enabled } : f));
+  }
+
+  // -------------------------------------------------------------------------
+  // Reader texts
+  // -------------------------------------------------------------------------
+
+  /** Reader-mode HTML of an article, if it was read before. */
+  static async getArticleContent(article: RSSArticle): Promise<string | undefined> {
+    const stored = await Storage.get<Record<string, string>>(contentKey(article.feedId));
+    return stored?.[article.id] ?? article.cachedContent;
+  }
+
+  /**
+   * Keep the extracted reader-mode HTML of an article, under a key of its own
+   * so reading never rewrites the article list. The oldest texts make room.
+   */
+  static async setArticleContent(feedId: string, articleId: string, content: string): Promise<void> {
+    await withLock(async () => {
+      const stored = (await Storage.get<Record<string, string>>(contentKey(feedId))) ?? {};
+      delete stored[articleId];
+      const entries = [...Object.entries(stored), [articleId, content]];
+      await Storage.set(
+        contentKey(feedId),
+        Object.fromEntries(entries.slice(-RSS_DEFAULTS.CONTENT_PER_FEED)),
+      );
+    });
+  }
+
+  // -------------------------------------------------------------------------
+  // OPML
+  // -------------------------------------------------------------------------
+
+  /**
+   * Parse an OPML XML string and return all feed outlines with xmlUrl
+   * attributes, each with the innermost outline it is nested in.
    */
   static async importOPML(opmlXml: string): Promise<OPMLFeed[]> {
     const parsed = xmlParser.parse(opmlXml) as Record<string, unknown>;
@@ -750,21 +899,19 @@ export class RSSService {
     const body = (opml['body'] as Record<string, unknown>) ?? {};
     const outlines = (body['outline'] as unknown[]) ?? [];
 
-    function extractFeeds(items: unknown[]): OPMLFeed[] {
+    function extractFeeds(items: unknown[], folder?: string): OPMLFeed[] {
       const feeds: OPMLFeed[] = [];
       for (const item of items) {
         const outline = item as Record<string, unknown>;
+        const label = String(outline['@_text'] ?? outline['@_title'] ?? '');
         const xmlUrl = outline['@_xmlUrl'] as string | undefined;
         if (xmlUrl) {
-          feeds.push({
-            title: String(outline['@_text'] ?? outline['@_title'] ?? ''),
-            xmlUrl,
-          });
+          feeds.push({ title: label, xmlUrl, ...(folder ? { folder } : {}) });
         }
         // Recurse into nested outlines
         const nested = outline['outline'];
         if (Array.isArray(nested)) {
-          feeds.push(...extractFeeds(nested));
+          feeds.push(...extractFeeds(nested, (xmlUrl ? folder : label.trim()) || folder));
         }
       }
       return feeds;
@@ -776,39 +923,193 @@ export class RSSService {
   }
 
   /**
-   * Generate a valid OPML 2.0 XML string from the given feed list.
-   * All attribute values are XML-escaped.
+   * Generate a valid OPML 2.0 XML string from the given feeds, nested in their
+   * folders. All attribute values are XML-escaped.
    */
-  static exportOPML(feeds: RSSFeed[]): string {
-    const outlines = feeds
-      .map((f) => {
-        const title = escapeXml(f.title);
-        const xmlUrl = escapeXml(f.url);
-        const htmlUrl = escapeXml(f.siteUrl);
-        return `    <outline text="${title}" title="${title}" type="rss" xmlUrl="${xmlUrl}" htmlUrl="${htmlUrl}"/>`;
-      })
-      .join('\n');
+  static exportOPML(feeds: RSSFeed[], folders: RSSFolder[] = []): string {
+    const outline = (f: RSSFeed, indent: string) => {
+      const title = escapeXml(f.title);
+      const xmlUrl = escapeXml(f.url);
+      const htmlUrl = escapeXml(f.siteUrl);
+      return `${indent}<outline text="${title}" title="${title}" type="rss" xmlUrl="${xmlUrl}" htmlUrl="${htmlUrl}"/>`;
+    };
+    const folderIds = new Set(folders.map((folder) => folder.id));
+    const lines = folders.flatMap((folder) => {
+      const inside = feeds.filter((f) => f.folderId === folder.id);
+      if (inside.length === 0) return [];
+      const name = escapeXml(folder.name);
+      return [
+        `    <outline text="${name}" title="${name}">`,
+        ...inside.map((f) => outline(f, '      ')),
+        '    </outline>',
+      ];
+    });
+    lines.push(...feeds.filter((f) => !f.folderId || !folderIds.has(f.folderId)).map((f) => outline(f, '    ')));
 
     return [
       '<?xml version="1.0" encoding="UTF-8"?>',
       '<opml version="2.0">',
-      '  <head><title>BlueTab RSS Feeds</title></head>',
+      '  <head><title>Bluetab feeds</title></head>',
       '  <body>',
-      outlines,
+      ...lines,
       '  </body>',
       '</opml>',
     ].join('\n');
   }
 
+  // -------------------------------------------------------------------------
+  // Adding
+  // -------------------------------------------------------------------------
+
   /**
-   * Fetch and parse a feed URL without persisting anything.
-   * Used by AddFeedDialog to show a preview before the user confirms subscription.
+   * Find the feeds at an address: the address itself when it is a feed, else
+   * the ones its page announces, else the usual paths of the site.
    *
-   * @throws When the URL fails to fetch or the XML is not a recognised feed format
+   * @throws RSSError when the address cannot be read
    */
-  static async previewFeed(url: string): Promise<ParsedFeed> {
-    const xml = await fetchFeedXml(url);
-    return parseFeed(xml);
+  static async discoverFeeds(url: string): Promise<DiscoveredFeed[]> {
+    const text = await fetchFeedXml(url);
+    const asFeed = (address: string, parsed: ParsedFeed): DiscoveredFeed => ({
+      url: address,
+      title: parsed.title,
+      articleCount: parsed.items.length,
+      sampleTitles: parsed.items.slice(0, 3).map((item) => item.title).filter(Boolean),
+    });
+    try {
+      return [asFeed(url, parseFeed(text))];
+    } catch {
+      // Not a feed: a web page.
+    }
+
+    const links = discoverFeedLinks(text, url);
+    if (links.length > 0) return links;
+
+    const guesses = await Promise.allSettled(WELL_KNOWN_FEED_PATHS.map(async (path) => {
+      const address = new URL(path, url).toString();
+      return asFeed(address, await fetchFeed(address));
+    }));
+    const found = guesses.find((guess) => guess.status === 'fulfilled');
+    return found?.status === 'fulfilled' ? [found.value] : [];
+  }
+
+  // -------------------------------------------------------------------------
+  // Backup
+  // -------------------------------------------------------------------------
+
+  /** Folders, subscriptions and starred articles; not the rest of the articles. */
+  static async exportBackup(): Promise<RSSBackup> {
+    const folders = await RSSService.getFolders();
+    const [feeds, articles] = await Promise.all([readFeeds(), readArticles()]);
+    return {
+      folders,
+      feeds: feeds.map(({ lastError: _lastError, ...feed }) => feed),
+      starred: Object.values(articles).flat()
+        .filter((a) => a.isStarred)
+        .map(({ cachedContent: _cachedContent, ...article }) => article),
+    };
+  }
+
+  /**
+   * Add what a backup holds to what is here. Folders are matched by name and
+   * feeds by address; nothing that exists is replaced.
+   *
+   * @returns how many feeds were added
+   */
+  static async importBackup(data: unknown): Promise<number> {
+    const backup = data as Partial<RSSBackup> | null | undefined;
+    const isRecord = (value: unknown): value is Record<string, unknown> =>
+      typeof value === 'object' && value !== null;
+    const importedFeeds = (Array.isArray(backup?.feeds) ? backup.feeds : []).filter((f) => {
+      if (!isRecord(f) || typeof f.id !== 'string' || typeof f.url !== 'string') return false;
+      try {
+        assertPublicHttpUrl(f.url);
+        return true;
+      } catch {
+        return false;
+      }
+    });
+    const importedFolders = (Array.isArray(backup?.folders) ? backup.folders : [])
+      .filter((f) => isRecord(f) && typeof f.id === 'string' && typeof f.name === 'string' && f.name.trim());
+    const starred = (Array.isArray(backup?.starred) ? backup.starred : [])
+      .filter((a) => isRecord(a) && typeof a.guid === 'string' && typeof a.feedId === 'string' && typeof a.title === 'string');
+    if (importedFeeds.length === 0 && importedFolders.length === 0) return 0;
+
+    await RSSService.getFolders();
+    return withLock(async () => {
+      const [folders, feeds, articles] = await Promise.all([readFolders(), readFeeds(), readArticles()]);
+
+      const folderByOldId = new Map<string, RSSFolder>();
+      for (const imported of importedFolders) {
+        let folder = folders.find((f) => folderKey(f.name) === folderKey(imported.name));
+        if (!folder) {
+          folder = { id: newId(), name: imported.name.trim(), order: folders.length };
+          folders.push(folder);
+        }
+        folderByOldId.set(imported.id, folder);
+      }
+
+      const now = Date.now();
+      const feedIdByOldId = new Map<string, string>();
+      let added = 0;
+      for (const imported of importedFeeds) {
+        const existing = feeds.find((f) => f.url === imported.url);
+        if (existing) {
+          feedIdByOldId.set(imported.id, existing.id);
+          continue;
+        }
+        const id = newId();
+        const folder = imported.folderId ? folderByOldId.get(imported.folderId) : undefined;
+        const siteUrl = typeof imported.siteUrl === 'string' ? imported.siteUrl : imported.url;
+        feedIdByOldId.set(imported.id, id);
+        feeds.push({
+          id,
+          url: imported.url,
+          title: typeof imported.title === 'string' && imported.title ? imported.title : imported.url,
+          description: typeof imported.description === 'string' ? imported.description : '',
+          siteUrl,
+          faviconUrl: getFaviconUrl(siteUrl),
+          format: imported.format ?? 'rss2',
+          addedAt: now,
+          lastFetchedAt: 0,
+          nextPollAt: now,
+          pollIntervalMinutes: POLL_INTERVALS.includes(imported.pollIntervalMinutes)
+            ? imported.pollIntervalMinutes
+            : RSS_DEFAULTS.POLL_INTERVAL_MINUTES,
+          unreadCount: 0,
+          isPinned: imported.isPinned === true,
+          notificationsEnabled: imported.notificationsEnabled === true,
+          ...(folder ? { folderId: folder.id, category: folder.name } : {}),
+        });
+        articles[id] = [];
+        added++;
+      }
+
+      for (const article of starred) {
+        const feedId = feedIdByOldId.get(article.feedId);
+        if (!feedId) continue;
+        const list = articles[feedId] ?? [];
+        const existing = list.find((a) => a.guid === article.guid);
+        articles[feedId] = existing
+          ? list.map((a) => (a === existing ? { ...a, isStarred: true } : a))
+          : [...list, {
+            id: `${feedId}:${article.guid}`,
+            feedId,
+            guid: article.guid,
+            title: article.title,
+            link: typeof article.link === 'string' ? article.link : '',
+            description: typeof article.description === 'string' ? article.description : '',
+            thumbnailUrl: typeof article.thumbnailUrl === 'string' ? article.thumbnailUrl : '',
+            pubDate: typeof article.pubDate === 'number' ? article.pubDate : now,
+            isRead: article.isRead === true,
+            isStarred: true,
+          }];
+      }
+
+      await Storage.set(RSS_STORAGE_KEYS.FOLDERS, folders);
+      await Storage.set(RSS_STORAGE_KEYS.ARTICLES, articles);
+      await Storage.set(RSS_STORAGE_KEYS.FEEDS, feeds.map((f) => ({ ...f, unreadCount: unreadOf(articles[f.id]) })));
+      return added;
+    });
   }
 
   /**

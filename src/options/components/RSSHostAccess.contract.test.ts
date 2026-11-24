@@ -2,15 +2,15 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 const addFeedDialogSource = fs.readFileSync(
-  path.resolve(__dirname, './AddFeedDialog.tsx'),
+  path.resolve(__dirname, '../../feeds/components/AddFeedDialog.tsx'),
   'utf-8',
 );
 const feedsPageSource = fs.readFileSync(
-  path.resolve(__dirname, './FeedsPage.tsx'),
+  path.resolve(__dirname, '../../feeds/components/FeedsPage.tsx'),
   'utf-8',
 );
 const opmlActionsSource = fs.readFileSync(
-  path.resolve(__dirname, './OPMLActions.tsx'),
+  path.resolve(__dirname, '../../feeds/opml.ts'),
   'utf-8',
 );
 const english = JSON.parse(fs.readFileSync(

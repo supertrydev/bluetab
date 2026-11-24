@@ -12,13 +12,14 @@ import { LocaleDirectionProvider } from '@/components/LocaleDirectionProvider';
 import { initI18n, setDocumentTitle } from '@/i18n';
 import { Storage } from '../utils/storage';
 import { textSizeService } from '../utils/TextSizeService';
-import { FeedsPage } from '../options/components/FeedsPage';
+import { FeedsPage } from './components/FeedsPage';
 import type { ActivePage } from '../components/app-sidebar';
 import type { Project } from '../types/models';
 import { useDirection } from '@radix-ui/react-direction';
 import '../styles/tailwind.css';
 import '../styles/pin-indicators.css';
 import '../styles/options-layout.css';
+import './reader.css';
 
 function FeedsStandalonePage() {
     const direction = useDirection();
@@ -73,7 +74,7 @@ function FeedsStandalonePage() {
                 }}
             />
             <SidebarInset>
-                <div className="min-h-screen bg-background text-foreground">
+                <div className="min-h-svh bg-background text-foreground">
                     <FeedsPage
                         sidebarTrigger={<><SidebarTrigger className="-ms-1" /><Separator orientation="vertical" className="me-2 h-4" /></>}
                     />

@@ -21,7 +21,7 @@ describe('Settings RTL and bidi contract', () => {
       'MCPServerSection.tsx',
       'PomodoroSettings.tsx',
       'ReminderSettings.tsx',
-      'RSSNotificationSettings.tsx',
+      'FeedsSettings.tsx',
       'integrations/IntegrationReauthBanner.tsx',
       'mcp/ConnectedClientCard.tsx',
     ];

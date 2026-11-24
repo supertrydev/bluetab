@@ -25,7 +25,7 @@ import { FocusSettings } from './components/FocusSettings';
 import { AISettings } from './components/AISettings';
 import { StatsSettings } from './components/StatsSettings';
 import { ReminderSettings } from './components/ReminderSettings';
-import { RSSNotificationSettings } from './components/RSSNotificationSettings';
+import { FeedsSettings } from './components/FeedsSettings';
 import { SessionBackupSettings } from './components/SessionBackupSettings';
 import { GeneralSettings } from './components/GeneralSettings';
 import { TabBehaviorSettings } from './components/TabBehaviorSettings';
@@ -57,7 +57,7 @@ function buildSettingsTabs(t: (key: string, options?: Record<string, unknown>) =
         { id: 'brain-dump', label: t('settingsTabs.brainDump'), icon: StickyNote, keywords: 'brain dump capture thought inbox shortcut quick note dusunce not' },
         { id: 'adhd', label: t('settingsTabs.adhd'), icon: Brain, keywords: 'adhd accessibility simplify visual time auto-suspend suspend calm focus dikkat' },
         ...(ENABLE_READINGS ? [{ id: 'readings', label: t('settingsTabs.readings'), icon: BookMarked, keywords: 'readings offline reading storage quota article cache clear okumalar' }] : []),
-        { id: 'rss', label: t('settingsTabs.rss'), icon: Rss, keywords: 'rss feed notification sound category filter bildirim' },
+        { id: 'rss', label: t('settingsTabs.rss'), icon: Rss, keywords: 'rss feed notification sound folder category filter bildirim klasor' },
         { id: 'reminders', label: t('settingsTabs.reminders'), icon: Bell, keywords: 'reminder notification alert hatirlatici bildirim' },
         { id: 'ai', label: t('settingsTabs.ai'), icon: Sparkles, keywords: 'ai assistant suggestion smart yapay zeka asistan' },
         { id: 'stats', label: t('settingsTabs.stats'), icon: BarChart2, keywords: 'statistics tracking usage analytics istatistik' },
@@ -450,7 +450,7 @@ function SettingsPage() {
             case 'ai': return <AISettings />;
             case 'stats': return <StatsSettings />;
             case 'reminders': return <ReminderSettings />;
-            case 'rss': return <RSSNotificationSettings />;
+            case 'rss': return <FeedsSettings />;
             case 'backup-sessions': return <SessionBackupSettings />;
             case 'general': return <GeneralSettings settings={settings} onSettingsChange={setSettings} />;
             case 'tabs': return <TabBehaviorSettings settings={settings} onSettingsChange={setSettings} />;

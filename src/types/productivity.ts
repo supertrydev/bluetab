@@ -20,6 +20,7 @@
  *       Does not define the alarm name registry (see config/alarms.ts).
  */
 
+import type { RSSBackup } from './rss';
 import type { TabGroup, Tag, Project } from '@/types/models';
 import type { BrainDumpEntry } from '@/types/adhd';
 import type { ArchiveStorage } from '@/types/archive';
@@ -152,6 +153,8 @@ export interface BackupSavedData {
   projects: Project[];
   brain_dump_inbox: BrainDumpEntry[];
   archivedGroups: ArchiveStorage | null;
+  /** Absent in snapshots from before feeds were backed up. */
+  rss?: RSSBackup;
 }
 
 export interface BackupSnapshot {

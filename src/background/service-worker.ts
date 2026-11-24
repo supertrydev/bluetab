@@ -107,7 +107,8 @@ import type { TabGroup, TabItem, Settings, Project } from '../types/models';
 import type { FocusSettings, HardFocusState, PomodoroSettings, PomodoroState, Reminder, ReminderSettings } from '../types/productivity';
 import type { ADHDSettings as ADHDSettingsType } from '../types/adhd';
 import { DEFAULT_REMINDER_SETTINGS } from '../types/productivity';
-import type { RSSSettings, RSSNotificationFilter } from '../types/rss';
+import { buildFeedNotification } from '../services/rss-notifications';
+import type { RSSSettings } from '../types/rss';
 import { RSS_STORAGE_KEYS } from '../types/rss';
 
 type RssNotificationMeta = { type: 'single'; link: string } | { type: 'multi' };
@@ -295,67 +296,6 @@ async function playNotificationDing(sound = 'ping'): Promise<void> {
 }
 
 // Reminder recurrence lives in src/utils/reminder-recurrence.ts.
-
-// ---------------------------------------------------------------------------
-// Notification filter helpers
-// ---------------------------------------------------------------------------
-
-/**
- * Checks whether a feed should produce any notifications at all.
- * Category-level mute/allow filters are evaluated here.
- */
-function shouldNotifyFeed(
-    feedCategory: string | undefined,
-    filters: RSSNotificationFilter[],
-): boolean {
-    const categoryMutes = filters.filter(f => f.type === 'category' && f.mode === 'mute');
-    const categoryAllows = filters.filter(f => f.type === 'category' && f.mode === 'allow');
-
-    // Mute: if feed's category matches any mute filter, skip entire feed
-    if (feedCategory && categoryMutes.some(f => f.value.toLowerCase() === feedCategory.toLowerCase())) {
-        return false;
-    }
-
-    // Allow: if category allow filters exist, feed must match at least one
-    if (categoryAllows.length > 0) {
-        if (!feedCategory) return false;
-        if (!categoryAllows.some(f => f.value.toLowerCase() === feedCategory.toLowerCase())) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-/**
- * Filters article titles based on keyword-level mute/allow filters.
- * Returns only the titles that pass all active keyword filters.
- */
-function filterArticleTitles(
-    titles: string[],
-    filters: RSSNotificationFilter[],
-): string[] {
-    const keywordMutes = filters.filter(f => f.type === 'keyword' && f.mode === 'mute');
-    const keywordAllows = filters.filter(f => f.type === 'keyword' && f.mode === 'allow');
-
-    return titles.filter(title => {
-        const lower = title.toLowerCase();
-
-        // Mute: skip if any keyword mute matches
-        if (keywordMutes.some(f => lower.includes(f.value.toLowerCase()))) {
-            return false;
-        }
-
-        // Allow: if keyword allow filters exist, must match at least one
-        if (keywordAllows.length > 0) {
-            if (!keywordAllows.some(f => lower.includes(f.value.toLowerCase()))) {
-                return false;
-            }
-        }
-
-        return true;
-    });
-}
 
 function isHttpUrl(url: string): boolean {
     return url.startsWith('http://') || url.startsWith('https://');
@@ -739,46 +679,28 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
             // Load RSS settings to check sound preference and notification filters
             const rssSettings = await Storage.get<RSSSettings>(RSS_STORAGE_KEYS.SETTINGS);
             const soundEnabled = rssSettings?.notificationSoundEnabled !== false;
-            const notificationFilters = (rssSettings?.notificationFilters ?? []).filter(f => f.enabled);
+            const notificationFilters = rssSettings?.notificationFilters ?? [];
+            await initI18n();
 
             let anyNotificationCreated = false;
 
             for (const [feedId, result] of Object.entries(results)) {
-                if (result.count > 0) {
-                    const feed = feeds.find(f => f.id === feedId);
-                    if (feed?.notificationsEnabled) {
-                        // Apply category-level filters (skips entire feed)
-                        if (!shouldNotifyFeed(feed.category, notificationFilters)) continue;
+                const feed = feeds.find(f => f.id === feedId);
+                const notification = feed && buildFeedNotification(feed, result, notificationFilters);
+                if (!notification) continue;
 
-                        // Apply keyword-level filters to individual article titles
-                        const filteredTitles = filterArticleTitles(result.titles, notificationFilters);
-                        if (filteredTitles.length === 0) continue;
-
-                        const notifId = filteredTitles.length === 1
-                            ? `rss-single-${feedId}-${Date.now()}`
-                            : `rss-multi-${feedId}-${Date.now()}`;
-
-                        let message: string;
-                        if (filteredTitles.length === 1) {
-                            // Single article: show title as message
-                            message = filteredTitles[0] ?? 'New article';
-                            await setRssNotificationMeta(notifId, { type: 'single', link: result.firstLink! });
-                        } else {
-                            // Multiple articles: list titles with bullet dashes
-                            const listedTitles = filteredTitles.map(t => `- ${t}`).join('\n');
-                            message = `${filteredTitles.length} new articles:\n${listedTitles}`;
-                            await setRssNotificationMeta(notifId, { type: 'multi' });
-                        }
-
-                        chrome.notifications.create(notifId, {
-                            type: 'basic',
-                            iconUrl: chrome.runtime.getURL('src/assets/icon128.png'),
-                            title: feed.title,
-                            message,
-                        });
-                        anyNotificationCreated = true;
-                    }
-                }
+                const notifId = `rss-${notification.link ? 'single' : 'multi'}-${feedId}-${Date.now()}`;
+                await setRssNotificationMeta(
+                    notifId,
+                    notification.link ? { type: 'single', link: notification.link } : { type: 'multi' },
+                );
+                chrome.notifications.create(notifId, {
+                    type: 'basic',
+                    iconUrl: chrome.runtime.getURL('src/assets/icon128.png'),
+                    title: notification.title,
+                    message: notification.message,
+                });
+                anyNotificationCreated = true;
             }
 
             // Play sound once per batch if any notification was created and sound is enabled

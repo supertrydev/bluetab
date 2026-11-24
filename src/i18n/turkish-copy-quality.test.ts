@@ -64,6 +64,7 @@ const INTENTIONAL_IDENTICAL_COPY = new Set([
     'settingsTabs.brainDump',
     'settingsTabs.adhd',
     'settingsTabs.mcp',
+    'options.feeds.addShort',
     'settings.about.copyright', // Copyright symbol, year, and company name are language-neutral.
     'settings.brainDump.title',
     'settings.mcp.bearerToken',
@@ -92,7 +93,6 @@ const INTENTIONAL_IDENTICAL_COPY = new Set([
     'notifications.pomodoroTitle',
     'options.stats.sessionCount.pomodoro_one',
     'options.stats.sessionCount.flowtime_one',
-    'options.addFeedDialog.urlPlaceholder',
     'flow.conditionTypes.url_matches_regex',
     'flow.ruleCard.not',
     'flow.page.title',

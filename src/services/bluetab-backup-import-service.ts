@@ -7,6 +7,7 @@ import { ArchiveStorageService } from '@/utils/archive-storage';
 import { canAccessFeature } from '@/utils/feature-gate';
 import { FlowStorageService } from '@/utils/flow-storage';
 import { GroupMemoryStorageService } from '@/utils/group-memory-storage';
+import { RSSService } from '@/services/rss-service';
 
 export interface BlueTabBackupImportResult {
   updatedGroups: TabGroup[];
@@ -17,6 +18,7 @@ export interface BlueTabBackupImportResult {
   flowRulesCount: number;
   groupMemoryCount: number;
   projectsCount: number;
+  feedsCount: number;
 }
 
 type BackupPayload = Record<string, any>;
@@ -73,6 +75,7 @@ export async function importBlueTabBackup(data: unknown): Promise<BlueTabBackupI
   const archiveCount = await importArchives(data.archives, tagIdMapping);
   const flowRulesCount = await importFlowSettings(data.flowSettings, tagIdMapping);
   const groupMemoryCount = await importGroupMemory(data.groupMemory, tagIdMapping);
+  const feedsCount = await importFeeds(data.rss);
 
   return {
     updatedGroups,
@@ -83,6 +86,7 @@ export async function importBlueTabBackup(data: unknown): Promise<BlueTabBackupI
     flowRulesCount,
     groupMemoryCount,
     projectsCount: countNewProjects(data.projects),
+    feedsCount,
   };
 }
 
@@ -92,6 +96,7 @@ export function formatBlueTabBackupImportSuccess(result: BlueTabBackupImportResu
   if (result.flowRulesCount > 0) parts.push(`${result.flowRulesCount} Flow rule${result.flowRulesCount !== 1 ? 's' : ''}`);
   if (result.groupMemoryCount > 0) parts.push(`${result.groupMemoryCount} remembered group${result.groupMemoryCount !== 1 ? 's' : ''}`);
   if (result.projectsCount > 0) parts.push(`${result.projectsCount} project${result.projectsCount !== 1 ? 's' : ''}`);
+  if (result.feedsCount > 0) parts.push(`${result.feedsCount} feed${result.feedsCount !== 1 ? 's' : ''}`);
   return `${parts.join(', ')} successfully!`;
 }
 
@@ -140,6 +145,16 @@ function isImportedTag(value: unknown): value is Tag {
     && value !== null
     && typeof (value as Tag).id === 'string'
     && typeof (value as Tag).name === 'string';
+}
+
+async function importFeeds(rss: unknown): Promise<number> {
+  if (!rss) return 0;
+  try {
+    return await RSSService.importBackup(rss);
+  } catch (feedError) {
+    console.error('Failed to import feeds:', feedError);
+    return 0;
+  }
 }
 
 async function importProjects(projects: unknown): Promise<Set<string>> {

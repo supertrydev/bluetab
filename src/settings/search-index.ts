@@ -50,7 +50,7 @@ export const SECTION_TRANSLATIONS: Record<string, readonly string[]> = {
     'brain-dump': ['settings.brainDump'],
     adhd: ['settings.adhd', 'settings.autoSuspendOnboarding'],
     readings: ['settings.readings'],
-    rss: ['settings.rss', 'common.sounds'],
+    rss: ['settings.rss', 'settingsTabs.rss', 'options.feeds.noFolder', 'common.sounds'],
     reminders: ['settings.reminders', 'common.sounds'],
     ai: ['settings.ai'],
     stats: ['settings.stats'],

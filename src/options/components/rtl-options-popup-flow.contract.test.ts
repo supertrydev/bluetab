@@ -9,7 +9,7 @@ describe('popup, options, feeds, and flow RTL presentation contract', () => {
   it('mirrors semantic navigation and disclosure arrows without mirroring action icons', () => {
     expect(source('popup/main.tsx')).toMatch(/ChevronRight className="[^"]*rtl:rotate-180/);
     expect(source('popup/pages/ArchivePage.tsx')).toMatch(/ArrowLeft className="[^"]*rtl:rotate-180/);
-    expect(source('options/components/FeedsPage.tsx')).toMatch(/ArrowLeft className="[^"]*rtl:rotate-180/);
+    expect(source('feeds/components/Reader.tsx')).toMatch(/ArrowLeft className="[^"]*rtl:rotate-180/);
     expect(source('options/components/OfflineReaderView.tsx')).toMatch(/ArrowLeft className="[^"]*rtl:rotate-180/);
     expect(source('flow/FlowProposalModal.tsx')).toMatch(/ChevronRight className="[^"]*rtl:rotate-180/);
     expect(source('options/components/WrappedExperience.tsx')).toMatch(/ChevronLeft className="[^"]*rtl:rotate-180/);
@@ -17,7 +17,7 @@ describe('popup, options, feeds, and flow RTL presentation contract', () => {
     for (const fileName of [
       'popup/components/modals/ModalWrapper.tsx',
       'popup/components/archive/ArchiveViewModal.tsx',
-      'options/components/FeedsPage.tsx',
+      'feeds/components/FeedsPage.tsx',
       'options/components/WrappedExperience.tsx',
     ]) {
       expect(source(fileName)).not.toMatch(/<(?:X|ExternalLink)[^>]*className="[^"]*rtl:/);
@@ -32,9 +32,12 @@ describe('popup, options, feeds, and flow RTL presentation contract', () => {
       'popup/components/archive/ArchiveViewModal.tsx',
       'popup/components/modals/ArchiveModal.tsx',
       'popup/components/modals/ModalWrapper.tsx',
-      'options/components/AddFeedDialog.tsx',
-      'options/components/ArticleListPanel.tsx',
-      'options/components/FeedsPage.tsx',
+      'feeds/components/AddFeedDialog.tsx',
+      'feeds/components/ArticleList.tsx',
+      'feeds/components/ArticleRow.tsx',
+      'feeds/components/Reader.tsx',
+      'feeds/components/SourceTree.tsx',
+      'feeds/components/FeedsPage.tsx',
       'options/components/GroupListView.tsx',
       'options/components/HelpPage.tsx',
       'options/components/OfflineFailureBanner.tsx',
@@ -47,7 +50,7 @@ describe('popup, options, feeds, and flow RTL presentation contract', () => {
       );
     }
 
-    expect(source('options/components/ReaderPanel.tsx')).toContain('border-inline-start: 4px solid');
+    expect(source('feeds/reader.css')).toContain('border-inline-start: 4px solid');
     expect(source('options/components/OfflineReaderView.tsx')).toContain('border-inline-start: 4px solid');
 
     for (const fileName of [
@@ -67,9 +70,9 @@ describe('popup, options, feeds, and flow RTL presentation contract', () => {
     expect(source('popup/main.tsx')).toContain('<bdi dir="auto">{tab.title}</bdi>');
     expect(source('popup/components/archive/ArchiveViewModal.tsx')).toContain('<bdi dir="ltr">{tab.url}</bdi>');
 
-    expect(source('options/components/FeedListPanel.tsx')).toContain('<bdi dir="auto">{feed.title}</bdi>');
-    expect(source('options/components/ArticleListPanel.tsx')).toContain('<bdi dir="auto">{article.title}</bdi>');
-    expect(source('options/components/ArticleListPanel.tsx')).toContain('dir="ltr"');
+    expect(source('feeds/components/SourceTree.tsx')).toContain('<bdi dir="auto">{feed.title}</bdi>');
+    expect(source('feeds/components/ArticleRow.tsx')).toContain('<bdi dir="auto">{article.title}</bdi>');
+    expect(source('feeds/components/AddFeedDialog.tsx')).toContain('dir="ltr"');
     expect(source('options/components/OfflineFailureBanner.tsx')).toContain('<bdi dir="ltr">{f.url}</bdi>');
     expect(source('options/components/StatsDashboard.tsx')).toContain('dir="ltr"');
 

@@ -24,7 +24,8 @@
 // ---------------------------------------------------------------------------
 
 /** Allowed poll interval values in minutes */
-export type PollInterval = 15 | 30 | 60 | 240 | 1440;
+export const POLL_INTERVALS = [15, 30, 60, 240, 1440] as const;
+export type PollInterval = (typeof POLL_INTERVALS)[number];
 
 // ---------------------------------------------------------------------------
 // Feed types
@@ -62,8 +63,49 @@ export interface RSSFeed {
   isPinned: boolean;
   /** Whether to fire Chrome notifications when new articles arrive */
   notificationsEnabled: boolean;
-  /** User-assigned category label (e.g. "Technology", "News") */
+  /** Folder the feed is in; absent when it is in none */
+  folderId?: string;
+  /**
+   * Name of that folder. Written along with folderId so notification filters,
+   * which go by name, and versions before folders keep working.
+   */
   category?: string;
+  /** Why the last check failed; absent after a successful one */
+  lastError?: RSSFeedError;
+}
+
+/** A named place for feeds. A feed is in one folder or in none. */
+export interface RSSFolder {
+  id: string;
+  name: string;
+  /** Position in the list, ascending */
+  order: number;
+}
+
+export type RSSErrorCode = 'access' | 'http' | 'format' | 'network' | 'duplicate';
+
+export interface RSSFeedError {
+  code: RSSErrorCode;
+  /** HTTP status, for code 'http' */
+  status?: number;
+  /** Epoch ms of the first failed check in a row */
+  since: number;
+}
+
+/** A feed found at an address the user typed. */
+export interface DiscoveredFeed {
+  url: string;
+  title: string;
+  /** Present when the address was the feed itself */
+  articleCount?: number;
+  sampleTitles?: string[];
+}
+
+/** What a backup keeps of the feeds. */
+export interface RSSBackup {
+  folders: RSSFolder[];
+  feeds: RSSFeed[];
+  starred: RSSArticle[];
 }
 
 // ---------------------------------------------------------------------------
@@ -94,7 +136,7 @@ export interface RSSArticle {
   isRead: boolean;
   /** Whether the user has starred this article */
   isStarred: boolean;
-  /** Cached reader-mode HTML content (set by RSSService.setCachedContent) */
+  /** Reader text from before it moved to its own storage key; see RSSService.getFolders */
   cachedContent?: string;
 }
 
@@ -114,7 +156,7 @@ export interface RSSNotificationFilter {
   mode: 'mute' | 'allow';
   /** Filter target */
   type: 'category' | 'keyword';
-  /** The category name or keyword string to match */
+  /** The folder name (type 'category') or keyword string to match */
   value: string;
   /** Whether this filter is active */
   enabled: boolean;
@@ -127,8 +169,6 @@ export interface RSSSettings {
   notificationSoundEnabled: boolean;
   /** Which sound to play (default 'ping') */
   notificationSound: NotificationSound;
-  /** User-defined category labels */
-  categories: string[];
   /** Notification filter rules */
   notificationFilters: RSSNotificationFilter[];
   /**
@@ -141,13 +181,10 @@ export interface RSSSettings {
   articlesPerFeed?: number | 'unlimited';
 }
 
-/** Summary of new articles for a single feed, used by notification logic */
+/** New articles of a single feed, used by notification logic */
 export interface FeedRefreshNotification {
   count: number;
-  /** First 5 new article titles (truncated for notification display) */
-  titles: string[];
-  /** First new article link (used for single-article click-to-open) */
-  firstLink: string | null;
+  articles: { title: string; link: string }[];
 }
 
 // ---------------------------------------------------------------------------
@@ -159,6 +196,8 @@ export interface OPMLFeed {
   title: string;
   /** Feed URL from OPML outline @xmlUrl attribute */
   xmlUrl: string;
+  /** Name of the outline the feed is nested in */
+  folder?: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -204,6 +243,12 @@ export const RSS_STORAGE_KEYS = {
   ARTICLES: 'rssArticles',
   /** Key for RSSSettings */
   SETTINGS: 'rssSettings',
+  /** Key for RSSFolder[]; its presence means categories were turned into folders */
+  FOLDERS: 'rssFolders',
+  /** Key for how the feeds page was last set up on this device */
+  VIEW: 'rssViewState',
+  /** Prefix of Record<articleId, html> keys, one per feed */
+  CONTENT_PREFIX: 'rssContent:',
 } as const;
 
 // ---------------------------------------------------------------------------
@@ -222,6 +267,8 @@ export const RSS_DEFAULTS = {
   ARTICLES_PER_FEED_MIN: 10,
   /** Maximum value accepted for the per-feed article limit setting */
   ARTICLES_PER_FEED_MAX: 10000,
+  /** Reader texts kept per feed */
+  CONTENT_PER_FEED: 100,
   /** Advisory max feeds (not enforced) */
   MAX_FEEDS: 20,
 } as const;

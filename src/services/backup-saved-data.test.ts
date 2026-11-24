@@ -26,6 +26,12 @@ beforeEach(() => {
     jest.clearAllMocks();
     data = JSON.parse(JSON.stringify(savedData));
     data.brain_dump_inbox = [{ id: 'thought', text: 'Remember this', createdAt: 1 }];
+    data.rssFolders = [{ id: 'folder', name: 'News', order: 0 }];
+    data.rssFeeds = [{ id: 'feed', url: 'https://a.example/feed', title: 'A', folderId: 'folder', category: 'News', siteUrl: 'https://a.example', pollIntervalMinutes: 60, unreadCount: 1 }];
+    data.rssArticles = { feed: [
+        { id: 'feed:1', feedId: 'feed', guid: '1', title: 'Starred', link: 'https://a.example/1', pubDate: 1, isRead: true, isStarred: true },
+        { id: 'feed:2', feedId: 'feed', guid: '2', title: 'Other', link: 'https://a.example/2', pubDate: 2, isRead: false, isStarred: false },
+    ] };
     jest.spyOn(Storage, 'get').mockImplementation(async key => JSON.parse(JSON.stringify(data[key] ?? null)));
     jest.spyOn(Storage, 'set').mockImplementation(async (key, value) => { data[key] = JSON.parse(JSON.stringify(value)); });
     (chrome.windows.getAll as jest.Mock).mockResolvedValue([]);
@@ -60,7 +66,9 @@ it('does not postpone the backup on every worker wake', async () => {
 it('captures saved data even with no open windows, preserving encrypted archives exactly', async () => {
     await BackupService.capture();
     const snapshot = (data.sessionBackups as BackupSnapshot[])[0];
-    expect(snapshot.savedData).toEqual({ ...savedData, brain_dump_inbox: data.brain_dump_inbox });
+    const { rss, ...rest } = snapshot.savedData!;
+    expect(rest).toEqual({ ...savedData, brain_dump_inbox: data.brain_dump_inbox });
+    expect(rss).toMatchObject({ folders: [{ name: 'News' }], feeds: [{ title: 'A' }], starred: [{ title: 'Starred' }] });
     expect(snapshot.savedData?.archivedGroups?.archives.secret.originalGroup).toBe('stored-ciphertext-do-not-decrypt');
 });
 
@@ -79,9 +87,14 @@ it.each(['group', 'window'] as const)('restores all saved data in %s mode withou
     data.projects = [];
     data.brain_dump_inbox = [];
     data.archivedGroups = null;
+    data.rssFolders = [];
+    data.rssFeeds = [{ id: 'newer', url: 'https://b.example/feed', title: 'B' }];
+    data.rssArticles = {};
     await BackupService.restore(snapshot.id, mode);
     expect(data.groups).toEqual([...savedData.groups, { id: 'later', name: 'New work' }]);
     expect(data.tags).toEqual(savedData.tags);
+    expect((data.rssFeeds as { title: string; category?: string }[]).map(feed => [feed.title, feed.category])).toEqual([['B', undefined], ['A', 'News']]);
+    expect(Object.values(data.rssArticles as Record<string, { title: string }[]>).flat().map(article => article.title)).toEqual(['Starred']);
     expect(data.projects).toEqual(savedData.projects);
     expect(data.brain_dump_inbox).toEqual(snapshot.savedData?.brain_dump_inbox);
     expect((data.archivedGroups as BackupSavedData['archivedGroups'])?.archives).toEqual(savedData.archivedGroups?.archives);
